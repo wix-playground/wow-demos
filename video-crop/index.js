@@ -1,11 +1,15 @@
 const video = document.querySelector('#video');
-let clip;
 const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d');
 const clipContainer = document.querySelector('#clip-container');
-const SVG = [
-    'svg/tiger-head.svg'
-];
+const SVG = {
+    tigerHead: 'svg/tiger-head.svg',
+    tigerProfile: 'svg/tiger-profile.svg',
+    waves: 'svg/waves.svg',
+    circles: 'svg/circles.svg',
+    plaque: 'svg/plaque.svg',
+    text: 'svg/text.svg'
+};
 
 function drawInlineSVG (ctx, rawSVG, callback) {
     const svg = new Blob([rawSVG], {type:"image/svg+xml"}),
@@ -21,10 +25,9 @@ function drawInlineSVG (ctx, rawSVG, callback) {
     img.src = url;
 }
 
-function initVideo () {
-    video.removeEventListener('timeupdate', initVideo);
-    clip.setAttribute('width', video.videoWidth);
-    clip.setAttribute('height', video.videoHeight);
+function applyMask (clip) {
+    clip.setAttribute('width', video.offsetWidth);
+    clip.setAttribute('height', video.offsetHeight);
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
 
@@ -36,22 +39,34 @@ function initVideo () {
         });
     }
 }
+
 function fetchSVG (url) {
     return fetch(new Request(url))
-        .then(response => response.text())
+        .then(response => response.text());
 }
 
 function main () {
-    fetchSVG(SVG[0])
-        .then(svg => {
-            const div = document.createElement('div');
-            div.innerHTML = svg;
-            clip = div.firstElementChild;
-            clipContainer.appendChild(clip);
-        })
-        .then(() => {
-            video.addEventListener('timeupdate', initVideo);
+    const fetching = new Promise(resolve => {
+        Promise.all(Object.keys(SVG).map(id => {
+            return fetchSVG(SVG[id])
+                .then(svg => {
+                    const div = document.createElement('div');
+                    div.classList.add('clip');
+                    div.innerHTML = svg;
+                    const clip = div.firstElementChild;
+                    clip.id = id;
+                    clipContainer.appendChild(div);
+                });
+        })).then(resolve);
+    });
+
+    fetching.then(() => {
+        clipContainer.addEventListener('click', e => {
+            const clip = e.target.closest('svg');
+            const clone = clip.cloneNode(true);
+            applyMask(clone);
         });
+    });
 }
 
 main();

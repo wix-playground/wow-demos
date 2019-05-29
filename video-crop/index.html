@@ -7,9 +7,28 @@
     <meta name='viewport' content='width=device-width,initial-scale=1'>
     <title>Video Crop Demo</title>
     <style>
-        #clip-container {
-            display: none;
+        body {
+            height: 100vh;
+            text-align: center;
+        }
 
+        #video {
+            display: inline-block;
+            height: 70%;
+        }
+
+        #clip-container {
+            display: flex;
+            height: 30%;
+        }
+
+        .clip {
+            flex: 1;
+            cursor: pointer;
+        }
+
+        .clip svg {
+            width: 200px;
         }
     </style>
 </head>
