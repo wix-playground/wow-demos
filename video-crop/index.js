@@ -22,6 +22,7 @@ function drawInlineSVG (ctx, rawSVG, callback) {
 }
 
 function initVideo () {
+    video.removeEventListener('timeupdate', initVideo);
     clip.setAttribute('width', video.videoWidth);
     clip.setAttribute('height', video.videoHeight);
     canvas.width = video.videoWidth;
@@ -49,7 +50,7 @@ function main () {
             clipContainer.appendChild(clip);
         })
         .then(() => {
-            video.addEventListener('playing', initVideo);
+            video.addEventListener('timeupdate', initVideo);
         });
 }
 
