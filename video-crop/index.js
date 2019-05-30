@@ -7,7 +7,6 @@ const SVG = {
     tigerProfile: 'svg/tiger-profile.svg',
     waves: 'svg/waves.svg',
     circles: 'svg/circles.svg',
-    plaque: 'svg/plaque.svg',
     text: 'svg/text.svg'
 };
 
