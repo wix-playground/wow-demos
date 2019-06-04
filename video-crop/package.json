@@ -1,0 +1,37 @@
+{
+  "name": "wow-demo-video-crop",
+  "version": "0.1.0",
+  "description": "wow!Team demo of video shape crop",
+  "main": "index.js",
+  "scripts": {
+    "build": "rollup -c",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wix-playground/wow-demos.git"
+  },
+  "keywords": [
+    "video",
+    "shape",
+    "crop",
+    "svg"
+  ],
+  "author": "wow!Team",
+  "license": "WTFPL",
+  "bugs": {
+    "url": "https://github.com/wix-playground/wow-demos/issues"
+  },
+  "homepage": "https://github.com/wix-playground/wow-demos#readme",
+  "dependencies": {
+    "text-to-svg": "^3.1.5"
+  },
+  "devDependencies": {
+    "rollup": "^1.13.1",
+    "rollup-plugin-commonjs": "^10.0.0",
+    "rollup-plugin-node-builtins": "^2.1.2",
+    "rollup-plugin-node-globals": "^1.4.0",
+    "rollup-plugin-node-resolve": "^5.0.1",
+    "rollup-plugin-progress": "^1.1.1"
+  }
+}
