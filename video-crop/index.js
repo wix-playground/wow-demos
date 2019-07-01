@@ -1,5 +1,3 @@
-// import TextToSVG from 'text-to-svg';
-
 const video = document.querySelector('#video');
 const clipDummy = document.querySelector('#clip-dummy');
 const canvas = document.createElement('canvas');

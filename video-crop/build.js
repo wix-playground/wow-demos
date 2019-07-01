@@ -3,13 +3,13 @@
     factory();
 }(function () { 'use strict';
 
-    // import TextToSVG from 'text-to-svg';
-
     const video = document.querySelector('#video');
     const clipDummy = document.querySelector('#clip-dummy');
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     const clipContainer = document.querySelector('#clip-container');
+    const videoSelector = document.querySelector('#video-selector');
+    const backgroundColor = document.querySelector('#background-color');
     const SVG = {
         // tigerHead: 'svg/tiger-head.svg',
         // tigerProfile: 'svg/tiger-profile.svg',
@@ -20,8 +20,8 @@
         fest3: 'svg/fest3.svg',
         fest4: 'svg/fest4.svg',
         fest5: 'svg/fest5.svg',
-        fest6: 'svg/fest6.svg'
-        // fest7: 'svg/fest7.svg'
+        // fest6: 'svg/fest6.svg'
+        fest7: 'svg/fest7.svg'
     };
 
     const TEXT_SVG = `<svg viewBox="0 0 200 200" height="200" width="200" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
@@ -29,7 +29,7 @@
         /*@import url('https://fonts.googleapis.com/css?family=Allerta+Stencil&display=swap');*/
         text {
             /*font-family: 'Allerta Stencil', sans-serif;*/
-            font-family: sans-serif;
+            font-family: 'Impact', sans-serif;
             font-size: 60px;
             font-weight: bold;
         }
@@ -112,6 +112,19 @@
 
             clipContainer.addEventListener('click', clipClickHandler);
 
+            videoSelector.addEventListener('change', e => {
+                const index = e.target.selectedIndex;
+                const src = e.target.children[index].value;
+
+                video.src = src;
+            });
+
+            backgroundColor.addEventListener('input', e => {
+                const value = e.target.value;
+
+                document.body.style.backgroundColor = value;
+            });
+
             const textButton = document.querySelector('text').closest('.clip');
             const editTextButton = document.createElement('button');
             const editTextInput = document.createElement('input');
@@ -158,9 +171,19 @@
                     }
                 };
 
+                const applyHandler = () => {
+                    textElement.innerHTML = editTextInput.value;
+
+                    clipClickHandler({
+                        target: textElement
+                    });
+
+                    cancelHandler();
+                };
+
                 const clickOutsideHandler = e => {
                     e.stopPropagation();
-                    cancelHandler();
+                    applyHandler();
                     document.body.removeEventListener('click', clickOutsideHandler, true);
                 };
 
@@ -168,13 +191,7 @@
 
                 const keydownHandler = e => {
                     if (e.code === 'Enter') {
-                        textElement.innerHTML = editTextInput.value;
-
-                        clipClickHandler({
-                            target: textElement
-                        });
-
-                        cancelHandler();
+                        applyHandler();
                     } else if (e.code === 'Escape') {
                         cancelHandler(true);
                     } else {
