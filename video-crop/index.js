@@ -1,10 +1,9 @@
 const video = document.querySelector('#video');
 const clipDummy = document.querySelector('#clip-dummy');
-const canvas = document.createElement('canvas');
-const ctx = canvas.getContext('2d');
 const clipContainer = document.querySelector('#clip-container');
 const videoSelector = document.querySelector('#video-selector');
 const backgroundColor = document.querySelector('#background-color');
+const mainEl = document.querySelector('main');
 const SVG = {
     // tigerHead: 'svg/tiger-head.svg',
     // tigerProfile: 'svg/tiger-profile.svg',
@@ -32,34 +31,23 @@ const TEXT_SVG = `<svg viewBox="0 0 200 200" height="200" width="200" xmlns="htt
     <text x="5" y="120">TIGER</text>
 </svg>`;
 
-function drawInlineSVG (ctx, rawSVG, callback) {
-    const svg = new Blob([rawSVG], {type:"image/svg+xml"}),
-        url = URL.createObjectURL(svg),
-        img = new Image;
+const symbols = /[\r\n%#()<>?\[\\\]^`{|}]/g;
 
-    img.onload = function () {
-        ctx.drawImage(this, 0, 0);
-        URL.revokeObjectURL(url);
-        callback(this);
-    };
+function encodeSVG(data) {
+    // Use single quotes instead of double to avoid encoding.
+    const escaped = data.replace( /"/g, '\'' )
+        .replace( />\s{1,}</g, "><" )
+        .replace( /\s{2,}/g, " " )
+        .replace(symbols, encodeURIComponent);
 
-    img.src = url;
+    return `url("data:image/svg+xml,${escaped}")`;
 }
 
-function applyMask (clip) {
-    clip.setAttribute('width', video.offsetWidth);
-    clip.setAttribute('height', video.offsetHeight);
+const prefix = 'webkitMaskImage' in video.style ? 'webkitMask' : 'mask';
 
-    canvas.width = video.offsetWidth;
-    canvas.height = video.offsetHeight;
-
-    // if ('maskImage' in canvas.style || 'webkitMaskImage' in canvas.style) {
-    drawInlineSVG(ctx, clip.outerHTML, function () {
-        const mask = `url(${canvas.toDataURL()})`;
-        video.style.webkitMaskImage = mask;  // -> PNG data-uri
-        // video.style.maskImage = mask;  // -> PNG data-uri
-    });
-    // }
+function applyMask (svg) {
+    video.style[`${prefix}Size`] = `${video.offsetWidth}px ${video.offsetHeight}px`;
+    video.style[`${prefix}Image`] = encodeSVG(svg);
 }
 
 function fetchSVG (url) {
@@ -98,10 +86,11 @@ function main () {
 
                 const {width, height, x, y} = clone.getBBox();
                 clone.setAttribute('viewBox', `${x} ${y} ${width} ${height}`);
+                clone.setAttribute('preserveAspectRatio', 'xMidYMid meet');
 
                 clone.remove();
 
-                applyMask(clone);
+                applyMask(clone.outerHTML);
             }
         };
 
@@ -223,6 +212,47 @@ function main () {
             editTextInput.addEventListener('keydown', keydownHandler);
         });
     });
+
+    function dragEnter (e) {
+        e.stopPropagation();
+        e.preventDefault();
+    }
+
+    function dragOver (e) {
+        e.stopPropagation();
+        e.preventDefault();
+    }
+
+    function drop (e) {
+        e.stopPropagation();
+        e.preventDefault();
+
+        const svg_type = /^image\/svg\+xml$/;
+        const files = e.dataTransfer.files;
+        const file = files && files[0];
+
+        if (file && svg_type.test(file.type)) {
+            const reader = new FileReader();
+
+            reader.onload = (event) => {
+                const source_data = event.target.result;
+
+                clipDummy.innerHTML = source_data;
+                const clone = clipDummy.querySelector('svg');
+                const {width, height, x, y} = clone.getBBox();
+                clone.setAttribute('viewBox', `${x} ${y} ${width} ${height}`);
+
+                applyMask(clone.outerHTML);
+            };
+
+            reader.readAsText(file);
+        }
+    }
+
+    // drag n` drop handlers
+    mainEl.addEventListener('dragenter', dragEnter, false);
+    mainEl.addEventListener('dragover', dragOver, false);
+    mainEl.addEventListener('drop', drop, false);
 }
 
 main();
