@@ -1,6 +1,6 @@
 {
   "name": "wow-demos",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Playground and demos of wow!Team",
   "main": "index.js",
   "scripts": {
