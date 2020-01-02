@@ -3,6 +3,7 @@ const clipDummy = document.querySelector('#clip-dummy');
 const clipContainer = document.querySelector('#clip-container');
 const videoSelector = document.querySelector('#video-selector');
 const backgroundColor = document.querySelector('#background-color');
+const luminanceToggle = document.querySelector('#luminance-toggle');
 const mainEl = document.querySelector('main');
 const SVG = {
     // tigerHead: 'svg/tiger-head.svg',
@@ -46,6 +47,17 @@ function encodeSVG(data) {
 const prefix = 'webkitMaskImage' in video.style ? 'webkitMask' : 'mask';
 
 function applyMask (svg) {
+    if (luminanceToggle.checked) {
+        const LUMINANCE = 'luminance';
+        clipDummy.innerHTML = svg;
+        const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+        defs.innerHTML = `<filter id="${LUMINANCE}"><feColorMatrix type="luminanceToAlpha"/></filter>`
+        const svgEl = clipDummy.querySelector('svg');
+        svgEl.prepend(defs);
+        svgEl.setAttribute('filter', `url(#${LUMINANCE})`)
+        svg = svgEl.outerHTML;
+    }
+
     video.style[`${prefix}Size`] = `${video.offsetWidth}px ${video.offsetHeight}px`;
     video.style[`${prefix}Image`] = encodeSVG(svg);
 }
