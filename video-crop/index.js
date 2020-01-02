@@ -46,7 +46,16 @@ function encodeSVG(data) {
 
 const prefix = 'webkitMaskImage' in video.style ? 'webkitMask' : 'mask';
 
+let lastSVGMask;
+
 function applyMask (svg) {
+    if (svg) {
+        lastSVGMask = svg;
+    }
+    else {
+        svg = lastSVGMask;
+    }
+
     if (luminanceToggle.checked) {
         const LUMINANCE = 'luminance';
         clipDummy.innerHTML = svg;
@@ -119,6 +128,10 @@ function main () {
             const value = e.target.value;
 
             document.body.style.backgroundColor = value;
+        });
+
+        luminanceToggle.addEventListener('change', e => {
+            applyMask();
         });
 
         const textButton = document.querySelector('text').closest('.clip');
