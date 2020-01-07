@@ -60,10 +60,16 @@ function applyMask (svg) {
         const LUMINANCE = 'luminance';
         clipDummy.innerHTML = svg;
         const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-        defs.innerHTML = `<filter id="${LUMINANCE}"><feColorMatrix type="luminanceToAlpha"/></filter>`
+        // luminance gets poorer AA then alpha when rendered by browsers
+        // so we explicitly multiply alpha values we get from luminance with SourceAlpha
+        // to get the same smooth edges that alpha masks produce
+        defs.innerHTML = `<filter id="${LUMINANCE}">
+    <feColorMatrix type="luminanceToAlpha" result="luma"/>
+    <feComposite in="luma" in2="SourceAlpha" operator="in"/>
+</filter>`;
         const svgEl = clipDummy.querySelector('svg');
         svgEl.prepend(defs);
-        svgEl.setAttribute('filter', `url(#${LUMINANCE})`)
+        svgEl.setAttribute('filter', `url(#${LUMINANCE})`);
         svg = svgEl.outerHTML;
     }
 
