@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="animation-playground">
+        <div class="animation-selection" id="animation-selection">
+            <h1>Animation Settings | <span class="animation-viewmode-name" id="animation-viewmode-name"></span></h1>
+            <h2>GSAP 2.1.3 [<a href="./index3.html">Reload with 3.2.6</a>]</h2>
+            <form class="animation-selection-form" id="animation-selection-form">
+                <span class="animation-name">
+                    <div>
+                        <label for="animation-name-out">Out Animation:</label>
+                        <select name="animation-name-out" id="animation-name-out"></select>
+                        <span class="animation-params" id="animation-params-out"></span>
+                    </div>
+                    <div>
+                        <label for="animation-name-in">In Animation:</label>
+                        <select name="animation-name-in" id="animation-name-in"></select>
+                        <span class="animation-params" id="animation-params-in"></span>
+                    </div>
+                </span>
+
+                <span class="animation-execute">
+                    <button type="button" id="animation-execute">Play</button>
+                </span>
+            </form>
+
+            <span class="animation-info">
+                <strong>Out Info</strong>
+                <pre id="animation-info-out"></pre>
+                <strong>In Info</strong>
+                <pre id="animation-info-in"></pre>
+            </span>
+
+        </div>
+        <div class="animation-stage">
+            <div class="comp" id="comp-1">
+                <svg style="stroke-width:0;fill-opacity:1;stroke:rgba(0, 0, 0, 1);stroke-opacity:1;fill:#393939"
+                    preserveAspectRatio="none" data-bbox="0 0 298.185 352.082" xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 298.185 352.082" role="img">
+                    <g>
+                        <path d="M298.185 264.061l-149.093 88.021L0 264.061V88.021L149.092 0l149.093 88.021v176.04z">
+                        </path>
+                    </g>
+                </svg>
+            </div>
+            <div class="comp" id="comp-2">
+                <span style="font-size:24px; font-weight: bold; font-family: sans-serif"><span
+                        style="color:#292929;">ALL CAPS TITLE</span></span>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.3/TweenMax.min.js"></script>
+    <script src="https://static.parastorage.com/unpkg/santa-core-utils@1.2513.0/dist/tweenEngine3.js"></script>
+    <script src="https://static.parastorage.com/unpkg/santa-animations@1.432.0/dist/santa-animations.js"></script>
+    <script src="./playground.js"></script>
+</body>
+
+</html>
