@@ -46,8 +46,6 @@ h2 {
 .animation-selection-form {
     padding: 10px;
     border-bottom: 1px solid #000;
-    display: flex;
-    flex-direction: column;
 }
 
 .animation-info {
@@ -59,15 +57,15 @@ h2 {
     padding-top: 5px;
     display: block;
 }
-.animation-name {
+.animation-settings {
     padding-bottom: 10px;
     display: flex;
     justify-content: space-between;
 }
-.animation-name > div{
+.animation-settings > div{
     width: 48%
 }
-.animation-name select {
+.animation-settings select {
     width: 100%;
 }
 .animation-params {
@@ -81,6 +79,7 @@ h2 {
 }
 .animation-execute {
     text-align: center;
+    display: block;
 }
 .animation-execute button {
     font-size: 16px;
