@@ -20,10 +20,18 @@
         main {
             grid-area: stage;
             background-image: var(--gradient);
+        }
+
+        main[data-action="add"] {
             cursor: pointer;
         }
 
+        main[data-action="move"] {
+            cursor: move;
+        }
+
         .circle {
+            box-sizing: border-box;
             position: absolute;
             top: var(--y);
             left: var(--x);
@@ -39,10 +47,15 @@
         [data-show-circles="last"] .circle:last-of-type {
             border: 2px dashed black;
         }
+
+        .circle[data-hover="true"],
+        [data-show-circles="last"] .circle[data-hover="true"] {
+            border: 2px dotted gray;
+        }
     </style>
 </head>
 <body>
-    <main data-show-circles="last">
+    <main data-show-circles="last" data-action="add">
     </main>
     <script src="dat.gui.js"></script>
     <script src="index.js"></script>
