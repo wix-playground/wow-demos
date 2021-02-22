@@ -1,0 +1,24 @@
+{
+  "name": "wow-gradient-playground",
+  "version": "0.0.1",
+  "description": "wow!Team playground for gradients",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wix-playground/wow-demos.git"
+  },
+  "keywords": [
+    "CSS",
+    "SVG",
+    "gradients",
+    "blend-mode"
+  ],
+  "author": "wow!Team",
+  "license": "WTFPL",
+  "dependencies": {
+    "dat.gui": "^0.7.7"
+  }
+}

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta name='viewport' content='width=device-width,initial-scale=1'>
+    <title>Gradients Playground</title>
+    <style>
+        body, main, section {
+            margin: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            display: grid;
+            grid-template: 'stage' 1fr / 1fr;
+        }
+
+        main {
+            grid-area: stage;
+            background-image: var(--gradient);
+            cursor: pointer;
+        }
+
+        .circle {
+            position: absolute;
+            top: var(--y);
+            left: var(--x);
+            width: var(--radius);
+            height: var(--radius);
+            border-radius: 50%;
+            border: 2px dashed black;
+        }
+    </style>
+</head>
+<body>
+    <main>
+    </main>
+    <script src="./node_modules/dat.gui/build/dat.gui.js"></script>
+    <script src="index.js"></script>
+</body>
+</html>
