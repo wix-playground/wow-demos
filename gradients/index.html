@@ -30,12 +30,19 @@
             width: var(--radius);
             height: var(--radius);
             border-radius: 50%;
+       }
+
+        [data-show-circles="all"] .circle {
+            border: 2px dashed black;
+        }
+
+        [data-show-circles="last"] .circle:last-of-type {
             border: 2px dashed black;
         }
     </style>
 </head>
 <body>
-    <main>
+    <main data-show-circles="last">
     </main>
     <script src="dat.gui.js"></script>
     <script src="index.js"></script>

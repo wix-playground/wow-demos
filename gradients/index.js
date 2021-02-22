@@ -3,21 +3,36 @@ const gui = new dat.gui.GUI();
 const DEFAULT_COLOR = [159, 60, 34];
 const DEFAULT_RADIUS = 50;
 const MIN_RADIUS = 10;
-const MAX_RADIUS = 1000;
+const MAX_RADIUS = 2000;
 const RADIUS_STEP = 1;
+const GENERAL_FIELDS = {
+    SHOW_CIRCLES: 'Show circles',
+    BG_COLOR: 'BG color',
+}
 
 const config = {
-    'Circle 1': {}
+    [GENERAL_FIELDS.SHOW_CIRCLES]: 'last',
+    [GENERAL_FIELDS.BG_COLOR]: '#fff'
 };
 
 gui.remember(config);
 
+gui.addColor(config, GENERAL_FIELDS.BG_COLOR)
+    .onChange(value => {
+        mainEl.style.backgroundColor = value;
+    })
+gui.add(config, GENERAL_FIELDS.SHOW_CIRCLES, ['last', 'all', 'none'])
+    .onChange(value => {
+        mainEl.dataset.showCircles = value.toLowerCase();
+    });
+
 let circlesIndex = 0;
 
-function addFolder ({onColor, onSize, onRemove}) {
+function addFolder ({onColor, onSize, onRemove, onMiddle}) {
     const folderConfig = {
         color: DEFAULT_COLOR,
         size: DEFAULT_RADIUS,
+        middle: 50,
         remove: false
     };
     const folder = gui.addFolder(`Circle ${++circlesIndex}`);
@@ -26,6 +41,8 @@ function addFolder ({onColor, onSize, onRemove}) {
         .onChange(onColor);
     folder.add(folderConfig, 'size', MIN_RADIUS, MAX_RADIUS, RADIUS_STEP)
         .onChange(onSize);
+    folder.add(folderConfig, 'middle', 0, 100, 1)
+        .onChange(onMiddle);
     folder.add(folderConfig, 'remove', false)
         .onChange(onRemove)
 
@@ -56,7 +73,8 @@ class Circle {
         const {config, folder} = addFolder({
             onColor: () => this.onColor(),
             onSize: () => this.onSize(),
-            onRemove: () => this.onRemove()
+            onRemove: () => this.onRemove(),
+            onMiddle: () => this.onMiddle()
         });
         this.x = x;
         this.y = y;
@@ -87,7 +105,7 @@ class Circle {
 
     createGradient () {
         this.setSize();
-        this.gradient = [`${this.config.size}px`, `${this.x}px ${this.y}px`, `rgb(${this.config.color})`];
+        this.gradient = [`${this.config.size}px`, `${this.x}px ${this.y}px`, `rgb(${this.config.color})`, `${this.config.middle}%`];
     }
 
     onColor () {
@@ -104,6 +122,12 @@ class Circle {
         generateGradients();
     }
 
+    onMiddle () {
+        this.createGradient();
+
+        generateGradients();
+    }
+
     onRemove () {
         gui.removeFolder(this.folder);
         this.el.remove();
@@ -114,8 +138,8 @@ class Circle {
 
 function generateGradients () {
     const gradients = circles.map(circle => {
-        const [size, position, color] = circle.gradient;
-        return `radial-gradient(${size} at ${position}, ${color}, transparent)`;
+        const [size, position, color, middle] = circle.gradient;
+        return `radial-gradient(${size} at ${position}, ${color}, ${middle}, transparent)`;
     }).reverse().join(',');
     mainEl.style.setProperty('--gradient', gradients);
 }
