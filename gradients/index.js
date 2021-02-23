@@ -9,7 +9,25 @@ const GENERAL_FIELDS = {
     ACTION: 'Action',
     SHOW_CIRCLES: 'Show circles',
     BG_COLOR: 'BG color',
-}
+};
+const BLEND_MODES = [
+    'normal',
+    'multiply',
+    'screen',
+    'overlay',
+    'darken',
+    'lighten',
+    'color-dodge',
+    'color-burn',
+    'hard-light',
+    'soft-light',
+    'difference',
+    'exclusion',
+    'hue',
+    'saturation',
+    'color',
+    'luminosity'
+]
 
 const config = {
     [GENERAL_FIELDS.ACTION]: 'add',
@@ -35,11 +53,12 @@ gui.add(config, GENERAL_FIELDS.SHOW_CIRCLES, ['last', 'all', 'none'])
 
 let circlesIndex = 0;
 
-function addFolder ({onColor, onSize, onRemove, onMiddle}) {
+function addFolder ({onColor, onSize, onRemove, onMiddle, onBlend}) {
     const folderConfig = {
         color: DEFAULT_COLOR,
         size: DEFAULT_RADIUS,
         middle: 50,
+        'blend mode': 'normal',
         remove: false
     };
     const folder = gui.addFolder(`Circle ${++circlesIndex}`);
@@ -50,6 +69,8 @@ function addFolder ({onColor, onSize, onRemove, onMiddle}) {
         .onChange(onSize);
     folder.add(folderConfig, 'middle', 0, 100, 1)
         .onChange(onMiddle);
+    folder.add(folderConfig, 'blend mode', BLEND_MODES)
+        .onChange(onBlend)
     folder.add(folderConfig, 'remove', false)
         .onChange(onRemove)
 
@@ -150,13 +171,15 @@ class Circle {
             onColor: () => this.onColor(),
             onSize: () => this.onSize(),
             onRemove: () => this.onRemove(),
-            onMiddle: () => this.onMiddle()
+            onMiddle: () => this.onMiddle(),
+            onBlend: value => this.onBlend(value)
         });
         this.x = x;
         this.y = y;
         this.r = config.size;
         this.config = config;
         this.folder = folder;
+        this.blendMode = 'normal';
 
         this.createElement();
         this.createGradient();
@@ -207,6 +230,11 @@ class Circle {
         this.updateGradient();
     }
 
+    onBlend (value) {
+        this.blendMode = value;
+        updateBlendModes()
+    }
+
     onRemove () {
         gui.removeFolder(this.folder);
         this.el.remove();
@@ -219,6 +247,13 @@ function generateGradients () {
     const gradients = circles.map(circle => {
         const [size, position, color, middle] = circle.gradient;
         return `radial-gradient(${size} at ${position}, ${color}, ${middle}, transparent)`;
-    }).reverse().join(',');
+    }).reverse().join(', ');
     mainEl.style.setProperty('--gradient', gradients);
+}
+
+function updateBlendModes () {
+    const blends = circles.map(circle => circle.blendMode)
+        .reverse()
+        .join(', ');
+    mainEl.style.setProperty('--blendMode', blends);
 }
