@@ -1,6 +1,6 @@
 const gui = new dat.gui.GUI();
 
-const DEFAULT_COLOR = [159, 60, 34];
+const DEFAULT_COLOR = [60, 160, 34];
 const DEFAULT_RADIUS = 50;
 const MIN_RADIUS = 10;
 const MAX_RADIUS = 2000;
