@@ -10,6 +10,7 @@ const GENERAL_FIELDS = {
     ACTION: 'Action',
     SHOW_CIRCLES: 'Show circles',
     BG_COLOR: 'BG color',
+    BLEND_MODE: 'Blend mode',
     ADD_LINEAR: 'Add linear gradient'
 };
 const BLEND_MODES = [
@@ -43,6 +44,7 @@ const config = {
     [GENERAL_FIELDS.ACTION]: 'add',
     [GENERAL_FIELDS.SHOW_CIRCLES]: 'last',
     [GENERAL_FIELDS.BG_COLOR]: '#fff',
+    [GENERAL_FIELDS.BLEND_MODE]: 'normal',
     [GENERAL_FIELDS.ADD_LINEAR]: addLinearGradient
 };
 
@@ -57,6 +59,10 @@ gui.addColor(config, GENERAL_FIELDS.BG_COLOR)
     .onChange(value => {
         mainEl.style.backgroundColor = value;
     })
+gui.add(config, GENERAL_FIELDS.BLEND_MODE, BLEND_MODES)
+    .onChange(value => {
+        mainEl.style.setProperty('--blendMode', value);
+    })
 gui.add(config, GENERAL_FIELDS.SHOW_CIRCLES, ['last', 'all', 'none'])
     .onChange(value => {
         mainEl.dataset.showCircles = value.toLowerCase();
@@ -70,12 +76,12 @@ linearFolder.open();
 let circlesIndex = 0;
 let linearsIndex = 0;
 
-function addCircleFolder ({onColor, onSize, onRemove, onMiddle, onBlend}) {
+function addCircleFolder ({onColor, onSize, onRemove, onMiddle/*, onBlend*/}) {
     const folderConfig = {
         color: DEFAULT_COLOR,
         size: DEFAULT_RADIUS,
         middle: 50,
-        'blend mode': 'normal',
+        // 'blend mode': 'normal',
         remove: onRemove
     };
     const folder = gui.addFolder(`Circle ${++circlesIndex}`);
@@ -86,8 +92,8 @@ function addCircleFolder ({onColor, onSize, onRemove, onMiddle, onBlend}) {
         .onChange(onSize);
     folder.add(folderConfig, 'middle', 0, 100, 1)
         .onChange(onMiddle);
-    folder.add(folderConfig, 'blend mode', BLEND_MODES)
-        .onChange(onBlend)
+    // folder.add(folderConfig, 'blend mode', BLEND_MODES)
+    //     .onChange(onBlend)
     folder.add(folderConfig, 'remove');
 
     return {
@@ -96,10 +102,10 @@ function addCircleFolder ({onColor, onSize, onRemove, onMiddle, onBlend}) {
     };
 }
 
-function addLinearFolder ({onStopAdd, onFrom, onRemove, onBlend}) {
+function addLinearFolder ({onStopAdd, onFrom, onRemove/*, onBlend*/}) {
     const folderConfig = {
         from: DEFAULT_LINEAR_ANGLE,
-        'blend mode': 'normal',
+        // 'blend mode': 'normal',
         'add stop': onStopAdd,
         remove: onRemove
     };
@@ -107,8 +113,8 @@ function addLinearFolder ({onStopAdd, onFrom, onRemove, onBlend}) {
     folder.open();
     folder.add(folderConfig, 'from', 0, 359, 1)
         .onChange(onFrom);
-    folder.add(folderConfig, 'blend mode', BLEND_MODES)
-        .onChange(onBlend);
+    // folder.add(folderConfig, 'blend mode', BLEND_MODES)
+    //     .onChange(onBlend);
     folder.add(folderConfig, 'add stop');
     folder.add(folderConfig, 'remove');
 
@@ -245,15 +251,15 @@ class Circle {
             onColor: () => this.onColor(),
             onSize: () => this.onSize(),
             onRemove: () => this.onRemove(),
-            onMiddle: () => this.onMiddle(),
-            onBlend: value => this.onBlend(value)
+            onMiddle: () => this.onMiddle()
+            // onBlend: value => this.onBlend(value)
         });
         this.x = x;
         this.y = y;
         this.r = config.size;
         this.config = config;
         this.folder = folder;
-        this.blendMode = 'normal';
+        // this.blendMode = 'normal';
 
         this.createElement();
         this.createGradient();
@@ -304,10 +310,10 @@ class Circle {
         this.updateGradient();
     }
 
-    onBlend (value) {
-        this.blendMode = value;
-        updateBlendModes();
-    }
+    // onBlend (value) {
+    //     this.blendMode = value;
+    //     updateBlendModes();
+    // }
 
     onRemove () {
         gui.removeFolder(this.folder);
@@ -323,13 +329,13 @@ class Linear {
             onStopAdd: () => this.addColorStop(),
             onFrom: () => this.onFrom(),
             onRemove: () => this.onRemove(),
-            onBlend: value => this.onBlend(value)
+            // onBlend: value => this.onBlend(value)
         });
         this.index = 0;
         this.stops = [];
         this.config = config;
         this.folder = folder;
-        this.blendMode = 'normal';
+        // this.blendMode = 'normal';
         this.stopsFolder = stopsFolder;
 
         this.addColorStop({stop: 50});
@@ -363,10 +369,10 @@ class Linear {
         this.updateGradient();
     }
 
-    onBlend (value) {
-        this.blendMode = value;
-        updateBlendModes();
-    }
+    // onBlend (value) {
+    //     this.blendMode = value;
+    //     updateBlendModes();
+    // }
 
     onRemove () {
         linearFolder.removeFolder(this.folder);
@@ -430,11 +436,11 @@ function generateGradients () {
     }).reverse());
     mainEl.style.setProperty('--gradient', gradients.join(', '));
 
-    updateBlendModes();
+    // updateBlendModes();
 }
 
-function updateBlendModes () {
-    const blends = circles.map(circle => circle.blendMode).reverse();
-    blends.push(...linears.map(linear => linear.blendMode).reverse());
-    mainEl.style.setProperty('--blendMode', blends.join(', '));
-}
+// function updateBlendModes () {
+//     const blends = circles.map(circle => circle.blendMode).reverse();
+//     blends.push(...linears.map(linear => linear.blendMode).reverse());
+//     mainEl.style.setProperty('--blendMode', blends.join(', '));
+// }
