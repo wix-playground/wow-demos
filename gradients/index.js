@@ -6,12 +6,15 @@ const MIN_RADIUS = 10;
 const MAX_RADIUS = 2000;
 const RADIUS_STEP = 1;
 const DEFAULT_LINEAR_ANGLE = 90;
+const DEFAULT_CONIC_ANGLE = 0;
+const DEFAULT_CONIC_POSITION = 0;
 const GENERAL_FIELDS = {
     ACTION: 'Action',
     SHOW_CIRCLES: 'Show circles',
     BG_COLOR: 'BG color',
     BLEND_MODE: 'Blend mode',
-    ADD_LINEAR: 'Add linear gradient'
+    ADD_LINEAR: 'Add linear gradient',
+    ADD_CONIC: 'Add conic gradient'
 };
 const BLEND_MODES = [
     'normal',
@@ -45,7 +48,8 @@ const config = {
     [GENERAL_FIELDS.SHOW_CIRCLES]: 'last',
     [GENERAL_FIELDS.BG_COLOR]: '#fff',
     [GENERAL_FIELDS.BLEND_MODE]: 'normal',
-    [GENERAL_FIELDS.ADD_LINEAR]: addLinearGradient
+    [GENERAL_FIELDS.ADD_LINEAR]: addLinearGradient,
+    [GENERAL_FIELDS.ADD_CONIC]: addConicGradient
 };
 
 gui.remember(config);
@@ -69,12 +73,17 @@ gui.add(config, GENERAL_FIELDS.SHOW_CIRCLES, ['last', 'all', 'none'])
     });
 
 gui.add(config, GENERAL_FIELDS.ADD_LINEAR);
+gui.add(config, GENERAL_FIELDS.ADD_CONIC);
 
 const linearFolder = gui.addFolder('Linear Gradients');
 linearFolder.open();
 
+const conicFolder = gui.addFolder('Conic Gradients');
+conicFolder.open();
+
 let circlesIndex = 0;
 let linearsIndex = 0;
+let conicsIndex = 0;
 
 function addCircleFolder ({onColor, onSize, onRemove, onMiddle/*, onBlend*/}) {
     const folderConfig = {
@@ -111,7 +120,7 @@ function addLinearFolder ({onStopAdd, onFrom, onRemove/*, onBlend*/}) {
     };
     const folder = linearFolder.addFolder(`Linear ${++linearsIndex}`);
     folder.open();
-    folder.add(folderConfig, 'from', 0, 359, 1)
+    folder.add(folderConfig, 'from', 0, 360, 1)
         .onChange(onFrom);
     // folder.add(folderConfig, 'blend mode', BLEND_MODES)
     //     .onChange(onBlend);
@@ -128,9 +137,39 @@ function addLinearFolder ({onStopAdd, onFrom, onRemove/*, onBlend*/}) {
     };
 }
 
-function addColorStopFolder ({parentFolder, index, color, stop, onColor, onStop, onRemove}) {
+function addConicFolder ({onStopAdd, onPosition, onAngle, onRemove}) {
+    const folderConfig = {
+        angle: DEFAULT_CONIC_ANGLE,
+        position: DEFAULT_CONIC_POSITION,
+        // 'blend mode': 'normal',
+        'add stop': onStopAdd,
+        remove: onRemove
+    };
+    const folder = conicFolder.addFolder(`Conic ${++conicsIndex}`);
+    folder.open();
+    folder.add(folderConfig, 'angle', 0, 360, 1)
+        .onChange(onAngle);
+    // folder.add(folderConfig, 'blend mode', BLEND_MODES)
+    //     .onChange(onBlend);
+    folder.add(folderConfig, 'position', 0, 360, 1)
+        .onChange(onPosition);
+    folder.add(folderConfig, 'add stop');
+    folder.add(folderConfig, 'remove');
+
+    const stopsFolder = folder.addFolder('Color stops');
+    stopsFolder.open();
+
+    return {
+        folder,
+        config: folderConfig,
+        stopsFolder
+    };
+}
+
+function addColorStopFolder ({parentFolder, index, color, stop, onColor, onOpacity, onStop, onRemove}) {
     const folderConfig = {
         color,
+        opacity: 100,
         stop,
         remove: onRemove
     };
@@ -138,6 +177,8 @@ function addColorStopFolder ({parentFolder, index, color, stop, onColor, onStop,
     folder.open();
     folder.addColor(folderConfig, 'color')
         .onChange(onColor);
+    folder.add(folderConfig, 'opacity', 0, 100, 1)
+        .onChange(onOpacity);
     folder.add(folderConfig, 'stop', 0, 100, 1)
         .onChange(onStop);
     folder.add(folderConfig, 'remove');
@@ -148,9 +189,13 @@ function addColorStopFolder ({parentFolder, index, color, stop, onColor, onStop,
     };
 }
 
+const WINDOW_WIDTH = document.documentElement.clientWidth;
+const WINDOW_HEIGHT = document.documentElement.clientHeight;
+
 const mainEl = document.querySelector('main');
 const circles = [];
 const linears = [];
+const conics = [];
 
 function setAction (type) {
     if (type === 'add') {
@@ -173,6 +218,13 @@ function setAction (type) {
 function addLinearGradient () {
     const linear = new Linear();
     linears.push(linear);
+
+    generateGradients();
+}
+
+function addConicGradient () {
+    const conic = new Conic();
+    conics.push(conic);
 
     generateGradients();
 }
@@ -323,6 +375,73 @@ class Circle {
     }
 }
 
+class Conic {
+    constructor () {
+        const {config, folder, stopsFolder} = addConicFolder({
+            onStopAdd: () => this.addColorStop(),
+            onPosition: () => this.onPosition(),
+            onAngle: () => this.onAngle(),
+            onRemove: () => this.onRemove(),
+            // onBlend: value => this.onBlend(value)
+        });
+        this.index = 0;
+        this.stops = [];
+        this.config = config;
+        this.folder = folder;
+        // this.blendMode = 'normal';
+        this.stopsFolder = stopsFolder;
+
+        this.addColorStop({stop: 50});
+        this.addColorStop();
+
+        this.createGradient();
+    }
+
+    createGradient () {
+        this.gradient = [`from ${this.config.angle}deg at ${this._getPosition()}`, this.createStops().join(', ')];
+    }
+
+    updateGradient () {
+        this.createGradient();
+        generateGradients();
+    }
+
+    createStops () {
+        return this.stops.map((stop, i) => i + 1 < this.stops.length ? stop.stop.join(', ') : stop.stop[0]);
+    }
+
+    addColorStop ({stop = 100} = {}) {
+        const color = DEFAULT_LINEAR_COLORS[this.index % DEFAULT_LINEAR_COLORS.length];
+        const colorStop = new ColorStop({parentFolder: this.stopsFolder, index: ++this.index, color, stop, parent: this});
+        this.stops.push(colorStop);
+
+        this.updateGradient();
+    }
+
+    onAngle () {
+        this.updateGradient();
+    }
+
+    onPosition () {
+        this.updateGradient();
+    }
+
+    _getPosition () {
+        const r = Math.hypot(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2) * 1.05; // enlarge radius by 5% to push the cone's tip off screen
+        const angle = Math.PI * this.config.position / 180;
+        const x = (WINDOW_WIDTH / 2 + r * Math.sin(angle)) / WINDOW_WIDTH * 100;
+        const y = (WINDOW_HEIGHT / 2 -  r * Math.cos(angle)) / WINDOW_HEIGHT * 100;
+
+        return `${clamp(-5, 105, x)}% ${clamp(-5, 105, y)}%`;
+    }
+
+    onRemove () {
+        conicFolder.removeFolder(this.folder);
+        conics.splice(conics.indexOf(this), 1);
+        generateGradients();
+    }
+}
+
 class Linear {
     constructor () {
         const {config, folder, stopsFolder} = addLinearFolder({
@@ -391,6 +510,7 @@ class ColorStop {
             color,
             stop,
             onColor: () => this.onColor(),
+            onOpacity: () => this.onOpacity(),
             onStop: () => this.onStop(),
             onRemove: () => this.onRemove()
         });
@@ -403,12 +523,17 @@ class ColorStop {
 
     updateStop () {
         this.stop = [
-            `rgb(${this.config.color})`,
+            `rgba(${this.config.color}, ${this.config.opacity})`,
             `${this.config.stop}%`
         ];
     }
 
     onColor () {
+        this.updateStop();
+        this.parent.updateGradient();
+    }
+
+    onOpacity () {
         this.updateStop();
         this.parent.updateGradient();
     }
@@ -430,6 +555,10 @@ function generateGradients () {
         const [size, position, color, middle] = circle.gradient;
         return `radial-gradient(${size} at ${position}, ${color}, ${middle}, transparent)`;
     }).reverse()
+    gradients.push(...conics.map(conic => {
+        const [start, stops] = conic.gradient;
+        return `conic-gradient(${start}, ${stops})`
+    }).reverse());
     gradients.push(...linears.map(linear => {
         const [start, stops] = linear.gradient;
         return `linear-gradient(${start}, ${stops})`
@@ -437,6 +566,10 @@ function generateGradients () {
     mainEl.style.setProperty('--gradient', gradients.join(', '));
 
     // updateBlendModes();
+}
+
+function clamp (min, max, val) {
+    return Math.max(min, Math.min(max, val));
 }
 
 // function updateBlendModes () {
