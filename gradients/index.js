@@ -12,6 +12,7 @@ const GENERAL_FIELDS = {
     ACTION: 'Action',
     SHOW_CIRCLES: 'Show circles',
     BG_COLOR: 'BG color',
+    BG_OPACITY: 'BG opacity',
     BLEND_MODE: 'Blend mode',
     ADD_LINEAR: 'Add linear gradient',
     ADD_CONIC: 'Add conic gradient'
@@ -47,6 +48,7 @@ const config = {
     [GENERAL_FIELDS.ACTION]: 'add',
     [GENERAL_FIELDS.SHOW_CIRCLES]: 'last',
     [GENERAL_FIELDS.BG_COLOR]: '#fff',
+    [GENERAL_FIELDS.BG_OPACITY]: 100,
     [GENERAL_FIELDS.BLEND_MODE]: 'normal',
     [GENERAL_FIELDS.ADD_LINEAR]: addLinearGradient,
     [GENERAL_FIELDS.ADD_CONIC]: addConicGradient
@@ -61,7 +63,13 @@ gui.add(config, GENERAL_FIELDS.ACTION, ['add', 'move'])
     })
 gui.addColor(config, GENERAL_FIELDS.BG_COLOR)
     .onChange(value => {
-        mainEl.style.backgroundColor = value;
+        const alpha = (config[GENERAL_FIELDS.BG_OPACITY] / 100 * 255).toString(16).split('.')[0];
+        mainEl.style.backgroundColor = `${value}${alpha.length === 1 ? `0${alpha}` : alpha}`;
+    })
+gui.add(config, GENERAL_FIELDS.BG_OPACITY, 0, 100, 1)
+    .onChange(value => {
+        const alpha = (value / 100 * 255).toString(16).split('.')[0];
+        mainEl.style.backgroundColor = `${config[GENERAL_FIELDS.BG_COLOR]}${alpha.length === 1 ? `0${alpha}` : alpha}`;
     })
 gui.add(config, GENERAL_FIELDS.BLEND_MODE, BLEND_MODES)
     .onChange(value => {
