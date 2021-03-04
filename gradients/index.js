@@ -1,6 +1,6 @@
 const gui = new dat.gui.GUI();
 
-const DEFAULT_COLOR = [60, 160, 34];
+const DEFAULT_COLOR = '#58D68D';
 const DEFAULT_RADIUS = 50;
 const MIN_RADIUS = 10;
 const MAX_RADIUS = 2000;
@@ -36,12 +36,12 @@ const BLEND_MODES = [
     'luminosity'
 ];
 const DEFAULT_LINEAR_COLORS = [
-    [245, 61, 61],
-    [61, 61, 245],
-    [61, 245, 61],
-    [61, 245, 245],
-    [245, 61, 245],
-    [245, 245, 61]
+    '#f53d3d',
+    '#3d3df5',
+    '#3df53d',
+    '#3df5f5',
+    '#f53df5',
+    '#f5f53d'
 ];
 
 const config = {
@@ -531,7 +531,7 @@ class ColorStop {
 
     updateStop () {
         this.stop = [
-            `rgba(${this.config.color}, ${this.config.opacity})`,
+            `${this.config.color}${this.config.opacity})`,
             `${this.config.stop}%`
         ];
     }
