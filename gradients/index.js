@@ -63,13 +63,11 @@ gui.add(config, GENERAL_FIELDS.ACTION, ['add', 'move'])
     })
 gui.addColor(config, GENERAL_FIELDS.BG_COLOR)
     .onChange(value => {
-        const alpha = (config[GENERAL_FIELDS.BG_OPACITY] / 100 * 255).toString(16).split('.')[0];
-        mainEl.style.backgroundColor = `${value}${alpha.length === 1 ? `0${alpha}` : alpha}`;
+        mainEl.style.backgroundColor = `${value}${percentToHex(config[GENERAL_FIELDS.BG_OPACITY])}`;
     })
 gui.add(config, GENERAL_FIELDS.BG_OPACITY, 0, 100, 1)
     .onChange(value => {
-        const alpha = (value / 100 * 255).toString(16).split('.')[0];
-        mainEl.style.backgroundColor = `${config[GENERAL_FIELDS.BG_COLOR]}${alpha.length === 1 ? `0${alpha}` : alpha}`;
+        mainEl.style.backgroundColor = `${config[GENERAL_FIELDS.BG_COLOR]}${percentToHex(value)}`;
     })
 gui.add(config, GENERAL_FIELDS.BLEND_MODE, BLEND_MODES)
     .onChange(value => {
@@ -145,9 +143,9 @@ function addLinearFolder ({onStopAdd, onFrom, onRemove/*, onBlend*/}) {
     };
 }
 
-function addConicFolder ({onStopAdd, onPosition, onAngle, onRemove}) {
+function addConicFolder ({onStopAdd, onPosition/*, onAngle*/, onRemove}) {
     const folderConfig = {
-        angle: DEFAULT_CONIC_ANGLE,
+        // angle: DEFAULT_CONIC_ANGLE,
         position: DEFAULT_CONIC_POSITION,
         // 'blend mode': 'normal',
         'add stop': onStopAdd,
@@ -155,8 +153,8 @@ function addConicFolder ({onStopAdd, onPosition, onAngle, onRemove}) {
     };
     const folder = conicFolder.addFolder(`Conic ${++conicsIndex}`);
     folder.open();
-    folder.add(folderConfig, 'angle', 0, 360, 1)
-        .onChange(onAngle);
+    // folder.add(folderConfig, 'angle', 0, 360, 1)
+    //     .onChange(onAngle);
     // folder.add(folderConfig, 'blend mode', BLEND_MODES)
     //     .onChange(onBlend);
     folder.add(folderConfig, 'position', 0, 360, 1)
@@ -348,7 +346,7 @@ class Circle {
 
     createGradient () {
         this.setSize();
-        this.gradient = [`${this.config.size}px`, `${this.x}px ${this.y}px`, `rgb(${this.config.color})`, `${this.config.middle}%`];
+        this.gradient = [`${this.config.size}px`, `${this.x}px ${this.y}px`, `${this.config.color}`, `${this.config.middle}%`];
     }
 
     updateGradient () {
@@ -388,7 +386,7 @@ class Conic {
         const {config, folder, stopsFolder} = addConicFolder({
             onStopAdd: () => this.addColorStop(),
             onPosition: () => this.onPosition(),
-            onAngle: () => this.onAngle(),
+            // onAngle: () => this.onAngle(),
             onRemove: () => this.onRemove(),
             // onBlend: value => this.onBlend(value)
         });
@@ -406,7 +404,7 @@ class Conic {
     }
 
     createGradient () {
-        this.gradient = [`from ${this.config.angle}deg at ${this._getPosition()}`, this.createStops().join(', ')];
+        this.gradient = [`from ${this.config.position}deg at ${this._getPosition()}`, this.createStops().join(', ')];
     }
 
     updateGradient () {
@@ -426,9 +424,9 @@ class Conic {
         this.updateGradient();
     }
 
-    onAngle () {
-        this.updateGradient();
-    }
+    // onAngle () {
+    //     this.updateGradient();
+    // }
 
     onPosition () {
         this.updateGradient();
@@ -531,7 +529,7 @@ class ColorStop {
 
     updateStop () {
         this.stop = [
-            `${this.config.color}${this.config.opacity})`,
+            `${this.config.color}${percentToHex(this.config.opacity)}`,
             `${this.config.stop}%`
         ];
     }
@@ -578,6 +576,11 @@ function generateGradients () {
 
 function clamp (min, max, val) {
     return Math.max(min, Math.min(max, val));
+}
+
+function percentToHex (value) {
+    const alpha = (value / 100 * 255).toString(16).split('.')[0];
+    return alpha.length === 1 ? `0${alpha}` : alpha;
 }
 
 // function updateBlendModes () {
