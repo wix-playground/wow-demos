@@ -6,7 +6,7 @@ const MIN_RADIUS = 10;
 const MAX_RADIUS = 2000;
 const RADIUS_STEP = 1;
 const DEFAULT_LINEAR_ANGLE = 90;
-const DEFAULT_CONIC_ANGLE = 0;
+// const DEFAULT_CONIC_ANGLE = 0;
 const DEFAULT_CONIC_POSITION = 0;
 const GENERAL_FIELDS = {
     ACTION: 'Action',
@@ -413,7 +413,21 @@ class Conic {
     }
 
     createStops () {
-        return this.stops.map((stop, i) => i + 1 < this.stops.length ? stop.stop.join(', ') : stop.stop[0]);
+        function mapStop (value) {
+            return map(parseInt(value), 0, 100, 25, 75);
+        }
+
+        return this.stops.map((stop, i) => {
+            if (i + 1 < this.stops.length) {
+                if (i === 0) {
+                    return `${stop.stop[0]} 25%, ${mapStop(stop.stop[1])}%`;
+                }
+
+                return `${stop.stop[0]}, ${mapStop(stop.stop[1])}%`;
+            }
+
+            return `${stop.stop[0]} 75%`;
+        });
     }
 
     addColorStop ({stop = 100} = {}) {
@@ -576,6 +590,10 @@ function generateGradients () {
 
 function clamp (min, max, val) {
     return Math.max(min, Math.min(max, val));
+}
+
+function map (x, a, b, c, d) {
+    return (x - a) * (d - c) / (b - a) + c;
 }
 
 function percentToHex (value) {
