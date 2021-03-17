@@ -7,8 +7,8 @@ const MAX_RADIUS = 2000;
 const RADIUS_STEP = 1;
 const DEFAULT_LINEAR_ANGLE = 90;
 const DEFAULT_CONIC_ANGLE = 0;
-const DEFAULT_CONICSPOT_X = 0;
-const DEFAULT_CONICSPOT_Y = 0;
+const DEFAULT_CONICSPOT_X = 50;
+const DEFAULT_CONICSPOT_Y = 50;
 const DEFAULT_CONIC_POSITION = 0;
 const GENERAL_FIELDS = {
     ACTION: 'Action',
@@ -178,8 +178,8 @@ function addConicFolder ({onStopAdd, onPosition, onRemove}) {
 function addConicSpotFolder ({onStopAdd, onChangeX, onChangeY, onAngle, onRemove}) {
     const folderConfig = {
         angle: DEFAULT_CONIC_ANGLE,
-        x: DEFAULT_CONIC_ANGLE,
-        y: DEFAULT_CONIC_ANGLE,
+        x: DEFAULT_CONICSPOT_X,
+        y: DEFAULT_CONICSPOT_Y,
         'add stop': onStopAdd,
         remove: onRemove
     };
@@ -514,8 +514,6 @@ class ConicSpot {
         this.index = 0;
         this.stops = [];
         this.config = config;
-        this.config.x = 50;
-        this.config.y = 50;
         this.folder = folder;
         this.stopsFolder = stopsFolder;
 
