@@ -47,12 +47,6 @@ const DEFAULT_LINEAR_COLORS = [
     '#f5f53d'
 ];
 
-const DEFAULT_CONICSPOT_COLORS = [
-    '#f53d3d',
-    '#3d3df5',
-    '#f53d3d',
-];
-
 const config = {
     [GENERAL_FIELDS.ACTION]: 'add',
     [GENERAL_FIELDS.SHOW_CIRCLES]: 'last',
@@ -522,7 +516,6 @@ class ConicSpot {
             onChangeY: () => this.onChangeY(),
             onAngle: () => this.onAngle(),
             onRemove: () => this.onRemove(),
-            // onBlend: value => this.onBlend(value)
         });
         this.index = 0;
         this.stops = [];
@@ -530,7 +523,6 @@ class ConicSpot {
         this.config.x = 50;
         this.config.y = 50;
         this.folder = folder;
-        // this.blendMode = 'normal';
         this.stopsFolder = stopsFolder;
 
         this.addColorStop({stop: 50});
@@ -540,7 +532,6 @@ class ConicSpot {
     }
 
     createGradient () {
-        // this.gradient = [`from ${this.config.position}deg at ${this._getPosition()}`, this.createStops().join(', ')];
         this.gradient = [`from ${this.config.angle}deg at ${this.config.x}% ${this.config.y}%`, this.createStops().join(', ')];
     }
 
@@ -554,7 +545,7 @@ class ConicSpot {
     }
 
     addColorStop ({stop = 100} = {}) {
-        const color = DEFAULT_CONICSPOT_COLORS[this.index % DEFAULT_CONICSPOT_COLORS.length];
+        const color = DEFAULT_LINEAR_COLORS[this.index % DEFAULT_LINEAR_COLORS.length];
         const colorStop = new ColorStop({parentFolder: this.stopsFolder, index: ++this.index, color, stop, parent: this});
         this.stops.push(colorStop);
 
