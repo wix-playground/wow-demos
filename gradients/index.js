@@ -6,7 +6,9 @@ const MIN_RADIUS = 10;
 const MAX_RADIUS = 2000;
 const RADIUS_STEP = 1;
 const DEFAULT_LINEAR_ANGLE = 90;
-// const DEFAULT_CONIC_ANGLE = 0;
+const DEFAULT_CONIC_ANGLE = 0;
+const DEFAULT_CONICSPOT_X = 0;
+const DEFAULT_CONICSPOT_Y = 0;
 const DEFAULT_CONIC_POSITION = 0;
 const GENERAL_FIELDS = {
     ACTION: 'Action',
@@ -15,7 +17,8 @@ const GENERAL_FIELDS = {
     BG_OPACITY: 'BG opacity',
     BLEND_MODE: 'Blend mode',
     ADD_LINEAR: 'Add linear gradient',
-    ADD_CONIC: 'Add conic gradient'
+    ADD_CONIC: 'Add conic gradient',
+    ADD_CONIC_SPOT: 'Add conic spot gradient'
 };
 const BLEND_MODES = [
     'normal',
@@ -44,6 +47,12 @@ const DEFAULT_LINEAR_COLORS = [
     '#f5f53d'
 ];
 
+const DEFAULT_CONICSPOT_COLORS = [
+    '#f53d3d',
+    '#3d3df5',
+    '#f53d3d',
+];
+
 const config = {
     [GENERAL_FIELDS.ACTION]: 'add',
     [GENERAL_FIELDS.SHOW_CIRCLES]: 'last',
@@ -51,7 +60,8 @@ const config = {
     [GENERAL_FIELDS.BG_OPACITY]: 100,
     [GENERAL_FIELDS.BLEND_MODE]: 'normal',
     [GENERAL_FIELDS.ADD_LINEAR]: addLinearGradient,
-    [GENERAL_FIELDS.ADD_CONIC]: addConicGradient
+    [GENERAL_FIELDS.ADD_CONIC]: addConicGradient,
+    [GENERAL_FIELDS.ADD_CONIC_SPOT]: addConicSpotGradient
 };
 
 gui.remember(config);
@@ -80,6 +90,7 @@ gui.add(config, GENERAL_FIELDS.SHOW_CIRCLES, ['last', 'all', 'none'])
 
 gui.add(config, GENERAL_FIELDS.ADD_LINEAR);
 gui.add(config, GENERAL_FIELDS.ADD_CONIC);
+gui.add(config, GENERAL_FIELDS.ADD_CONIC_SPOT);
 
 const linearFolder = gui.addFolder('Linear Gradients');
 linearFolder.open();
@@ -87,9 +98,13 @@ linearFolder.open();
 const conicFolder = gui.addFolder('Conic Gradients');
 conicFolder.open();
 
+const conicSpotFolder = gui.addFolder('ConicSpot Gradients');
+conicSpotFolder.open();
+
 let circlesIndex = 0;
 let linearsIndex = 0;
 let conicsIndex = 0;
+let conicSpotsIndex = 0;
 
 function addCircleFolder ({onColor, onSize, onRemove, onMiddle/*, onBlend*/}) {
     const folderConfig = {
@@ -145,7 +160,7 @@ function addLinearFolder ({onStopAdd, onFrom, onRemove/*, onBlend*/}) {
 
 function addConicFolder ({onStopAdd, onPosition/*, onAngle*/, onRemove}) {
     const folderConfig = {
-        // angle: DEFAULT_CONIC_ANGLE,
+        angle: DEFAULT_CONIC_ANGLE,
         position: DEFAULT_CONIC_POSITION,
         // 'blend mode': 'normal',
         'add stop': onStopAdd,
@@ -159,6 +174,35 @@ function addConicFolder ({onStopAdd, onPosition/*, onAngle*/, onRemove}) {
     //     .onChange(onBlend);
     folder.add(folderConfig, 'position', 0, 360, 1)
         .onChange(onPosition);
+    folder.add(folderConfig, 'add stop');
+    folder.add(folderConfig, 'remove');
+
+    const stopsFolder = folder.addFolder('Color stops');
+    stopsFolder.open();
+
+    return {
+        folder,
+        config: folderConfig,
+        stopsFolder
+    };
+}
+
+function addConicSpotFolder ({onStopAdd, onChangeX, onChangeY, onAngle, onRemove}) {
+    const folderConfig = {
+        angle: DEFAULT_CONIC_ANGLE,
+        x: DEFAULT_CONIC_ANGLE,
+        y: DEFAULT_CONIC_ANGLE,
+        'add stop': onStopAdd,
+        remove: onRemove
+    };
+    const folder = conicSpotFolder.addFolder(`Conic ${++conicSpotsIndex}`);
+    folder.open();
+    folder.add(folderConfig, 'angle', 0, 360, 1)
+        .onChange(onAngle);
+    folder.add(folderConfig, 'x', 0, 100, 1)
+        .onChange(onChangeX);
+    folder.add(folderConfig, 'y', 0, 100, 1)
+        .onChange(onChangeY);
     folder.add(folderConfig, 'add stop');
     folder.add(folderConfig, 'remove');
 
@@ -202,6 +246,7 @@ const mainEl = document.querySelector('main');
 const circles = [];
 const linears = [];
 const conics = [];
+const conicSpots = [];
 
 function setAction (type) {
     if (type === 'add') {
@@ -231,6 +276,13 @@ function addLinearGradient () {
 function addConicGradient () {
     const conic = new Conic();
     conics.push(conic);
+
+    generateGradients();
+}
+
+function addConicSpotGradient () {
+    const conicSpot = new ConicSpot();
+    conicSpots.push(conicSpot);
 
     generateGradients();
 }
@@ -462,6 +514,72 @@ class Conic {
     }
 }
 
+class ConicSpot {
+    constructor () {
+        const {config, folder, stopsFolder} = addConicSpotFolder({
+            onStopAdd: () => this.addColorStop(),
+            onChangeX: () => this.onChangeX(),
+            onChangeY: () => this.onChangeY(),
+            onAngle: () => this.onAngle(),
+            onRemove: () => this.onRemove(),
+            // onBlend: value => this.onBlend(value)
+        });
+        this.index = 0;
+        this.stops = [];
+        this.config = config;
+        this.config.x = 50;
+        this.config.y = 50;
+        this.folder = folder;
+        // this.blendMode = 'normal';
+        this.stopsFolder = stopsFolder;
+
+        this.addColorStop({stop: 50});
+        this.addColorStop();
+
+        this.createGradient();
+    }
+
+    createGradient () {
+        // this.gradient = [`from ${this.config.position}deg at ${this._getPosition()}`, this.createStops().join(', ')];
+        this.gradient = [`from ${this.config.angle}deg at ${this.config.x}% ${this.config.y}%`, this.createStops().join(', ')];
+    }
+
+    updateGradient () {
+        this.createGradient();
+        generateGradients();
+    }
+
+    createStops () {
+        return this.stops.map((stop, i) => i + 1 < this.stops.length ? stop.stop.join(', ') : stop.stop[0]);
+    }
+
+    addColorStop ({stop = 100} = {}) {
+        const color = DEFAULT_CONICSPOT_COLORS[this.index % DEFAULT_CONICSPOT_COLORS.length];
+        const colorStop = new ColorStop({parentFolder: this.stopsFolder, index: ++this.index, color, stop, parent: this});
+        this.stops.push(colorStop);
+
+        this.updateGradient();
+    }
+
+    onAngle () {
+        this.updateGradient();
+    }
+
+    onChangeX () {
+        this.updateGradient();
+    }
+
+    onChangeY () {
+        this.updateGradient();
+    }
+
+    onRemove () {
+        conicSpotFolder.removeFolder(this.folder);
+        conicSpots.splice(conicSpots.indexOf(this), 1);
+        generateGradients();
+    }
+}
+
 class Linear {
     constructor () {
         const {config, folder, stopsFolder} = addLinearFolder({
@@ -577,6 +695,10 @@ function generateGradients () {
     }).reverse()
     gradients.push(...conics.map(conic => {
         const [start, stops] = conic.gradient;
+        return `conic-gradient(${start}, ${stops})`
+    }).reverse());
+    gradients.push(...conicSpots.map(conicSpot => {
+        const [start, stops] = conicSpot.gradient;
         return `conic-gradient(${start}, ${stops})`
     }).reverse());
     gradients.push(...linears.map(linear => {
