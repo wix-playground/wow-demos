@@ -152,20 +152,14 @@ function addLinearFolder ({onStopAdd, onFrom, onRemove/*, onBlend*/}) {
     };
 }
 
-function addConicFolder ({onStopAdd, onPosition/*, onAngle*/, onRemove}) {
+function addConicFolder ({onStopAdd, onPosition, onRemove}) {
     const folderConfig = {
-        angle: DEFAULT_CONIC_ANGLE,
         position: DEFAULT_CONIC_POSITION,
-        // 'blend mode': 'normal',
         'add stop': onStopAdd,
         remove: onRemove
     };
     const folder = conicFolder.addFolder(`Conic ${++conicsIndex}`);
     folder.open();
-    // folder.add(folderConfig, 'angle', 0, 360, 1)
-    //     .onChange(onAngle);
-    // folder.add(folderConfig, 'blend mode', BLEND_MODES)
-    //     .onChange(onBlend);
     folder.add(folderConfig, 'position', 0, 360, 1)
         .onChange(onPosition);
     folder.add(folderConfig, 'add stop');
@@ -684,12 +678,12 @@ function generateGradients () {
         const [size, position, color, middle] = circle.gradient;
         return `radial-gradient(${size} at ${position}, ${color}, ${middle}, transparent)`;
     }).reverse()
-    gradients.push(...conics.map(conic => {
-        const [start, stops] = conic.gradient;
-        return `conic-gradient(${start}, ${stops})`
-    }).reverse());
     gradients.push(...conicSpots.map(conicSpot => {
         const [start, stops] = conicSpot.gradient;
+        return `conic-gradient(${start}, ${stops})`
+    }).reverse());
+    gradients.push(...conics.map(conic => {
+        const [start, stops] = conic.gradient;
         return `conic-gradient(${start}, ${stops})`
     }).reverse());
     gradients.push(...linears.map(linear => {
