@@ -1,7 +1,7 @@
 {
-  "name": "wow-demos",
-  "version": "0.0.5",
-  "description": "Playground and demos of wow!Team",
+  "name": "wow-shape-divider-playground",
+  "version": "0.0.1",
+  "description": "wow!Team playground for shape dividers",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,16 +11,13 @@
     "url": "git+https://github.com/wix-playground/wow-demos.git"
   },
   "keywords": [
-    "wow",
-    "wow!Team",
-    "demo",
-    "playground"
+    "SVG",
+    "divider"
   ],
   "author": "wow!Team",
   "license": "WTFPL",
   "bugs": {
     "url": "https://github.com/wix-playground/wow-demos/issues"
   },
-  "homepage": "https://github.com/wix-playground/wow-demos#readme",
-  "dependencies": {}
+  "homepage": "https://github.com/wix-playground/wow-demos#readme"
 }

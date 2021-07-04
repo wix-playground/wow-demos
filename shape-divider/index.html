@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta name='viewport' content='width=device-width,initial-scale=1'>
+    <title>Shape Divider Playground</title>
+    <style>
+        body, main, section {
+            margin: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            display: grid;
+            grid-template: 'stage' 1fr / 1fr;
+        }
+
+        main {
+            grid-area: stage;
+        }
+
+        section {
+            position: relative;
+            display: grid;
+            grid-template: 1fr / 1fr;
+        }
+
+        section .bg {
+            grid-area: 1 / 2 / 1 / 2;
+        }
+
+        section .bg img {
+            height: 100%;
+            object-fit: cover;
+        }
+
+        section .content {
+            grid-area: 1 / 2 / 1 / 2;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <section id="strip-1" data-speed="0">
+            <div class="bg">
+                <img src="https://picsum.photos/1920/1066?random=1" crossorigin="anonymous"/>
+            </div>
+            <div class="content">
+                <p></p>
+            </div>
+        </section>
+
+        <section id="strip-2" data-speed="0.25">
+            <div class="bg">
+                <img src="https://picsum.photos/1920/1066?random=2" crossorigin="anonymous"/>
+            </div>
+            <div class="content">
+                <p></p>
+            </div>
+        </section>
+
+        <section id="strip-3" data-speed="0.5">
+            <div class="bg">
+                <img src="https://picsum.photos/1920/1066?random=3" crossorigin="anonymous"/>
+            </div>
+            <div class="content">
+                <p></p>
+            </div>
+        </section>
+
+        <section id="strip-4" data-speed="0.75">
+            <div class="bg">
+                <img src="https://picsum.photos/1920/1066?random=4" crossorigin="anonymous"/>
+            </div>
+            <div class="content">
+                <p></p>
+            </div>
+        </section>
+
+        <section id="strip-5" data-speed="1">
+            <div class="bg">
+                <img src="https://picsum.photos/1920/1066?random=5" crossorigin="anonymous"/>
+            </div>
+            <div class="content">
+                <p></p>
+            </div>
+        </section>
+    </main>
+    <script src="dat.gui.js"></script>
+    <script src="index.js"></script>
+</body>
+</html>
