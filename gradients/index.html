@@ -15,12 +15,19 @@
             min-height: 100vh;
             display: grid;
             grid-template: 'stage' 1fr / 1fr;
+            overflow: hidden;
         }
 
         main {
+            position: relative;
+            width: var(--canvas-width, 100%);
+            height: var(--canvas-height, 100%);
             grid-area: stage;
             background-image: var(--gradient);
             background-blend-mode: var(--blendMode);
+            place-self: center;
+            border: 2px dashed crimson;
+            box-sizing: border-box;
         }
 
         main[data-action="add"] {
@@ -39,6 +46,7 @@
             width: var(--radius);
             height: var(--radius);
             border-radius: 50%;
+            pointer-events: none;
        }
 
         [data-show-circles="all"] .circle {

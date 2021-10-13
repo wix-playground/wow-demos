@@ -11,6 +11,8 @@ const DEFAULT_CONICSPOT_X = 50;
 const DEFAULT_CONICSPOT_Y = 50;
 const DEFAULT_CONIC_POSITION = 0;
 const GENERAL_FIELDS = {
+    CANVAS_SIZE: 'Canvas size',
+    MESH_STYLE: 'Mesh style',
     ACTION: 'Action',
     SHOW_CIRCLES: 'Show circles',
     BG_COLOR: 'BG color',
@@ -48,6 +50,8 @@ const DEFAULT_LINEAR_COLORS = [
 ];
 
 const config = {
+    [GENERAL_FIELDS.CANVAS_SIZE]: 100,
+    [GENERAL_FIELDS.MESH_STYLE]: 'fixed',
     [GENERAL_FIELDS.ACTION]: 'add',
     [GENERAL_FIELDS.SHOW_CIRCLES]: 'last',
     [GENERAL_FIELDS.BG_COLOR]: '#fff',
@@ -60,6 +64,15 @@ const config = {
 
 gui.remember(config);
 
+gui.add(config, GENERAL_FIELDS.CANVAS_SIZE, 5, 100, 1)
+    .onChange(value => {
+        mainEl.style.setProperty('--canvas-width', `${value}%`);
+        mainEl.style.setProperty('--canvas-height', `${value}%`);
+        setCanvasSize();
+    })
+    .onFinishChange(updateCirclePositions);
+gui.add(config, GENERAL_FIELDS.MESH_STYLE, ['fixed', 'mesher'])
+    .onChange(generateGradients);
 gui.add(config, GENERAL_FIELDS.ACTION, ['add', 'move'])
     .onChange(value => {
         mainEl.dataset.action = value;
@@ -242,11 +255,13 @@ function setAction (type) {
         if (hoveredCircle) {
             delete hoveredCircle.el.dataset.hover;
         }
+        mainEl.dataset.showCircles = config[GENERAL_FIELDS.SHOW_CIRCLES];
         mainEl.removeEventListener('pointerdown', moveStart);
         mainEl.removeEventListener('pointerup', moveEnd);
         mainEl.addEventListener('click', addCircle);
     }
     else if (type === 'move') {
+        mainEl.dataset.showCircles = 'none';
         mainEl.removeEventListener('click', addCircle);
         mainEl.addEventListener('pointerdown', moveStart);
         mainEl.addEventListener('pointerup', moveEnd);
@@ -277,8 +292,8 @@ function addConicSpotGradient () {
 
 function addCircle (e) {
     const circle = new Circle({
-        x: e.clientX,
-        y: e.clientY
+        x: e.offsetX,
+        y: e.offsetY
     });
     circles.push(circle);
     mainEl.appendChild(circle.el);
@@ -289,6 +304,25 @@ function addCircle (e) {
 let hoveredCircle = null;
 let current = {x: 0, y: 0};
 let shouldCheckCircleToMove = true;
+
+let canvasWidth;
+let canvasHeight;
+
+function setCanvasSize() {
+    canvasWidth = mainEl.offsetWidth;
+    canvasHeight = mainEl.offsetHeight;
+}
+
+setCanvasSize();
+
+function updateCirclePositions(value) {
+    circles.forEach(circle => {
+        circle.setPosition({
+            offsetX: circle.px / 100 * canvasWidth,
+            offsetY: circle.py / 100 * canvasHeight
+        });
+    });
+}
 
 function checkCirclesDist () {
     shouldCheckCircleToMove = true;
@@ -312,8 +346,8 @@ function checkCirclesDist () {
 }
 
 function checkCircleToMove (e) {
-    current.x = e.x;
-    current.y = e.y;
+    current.x = e.offsetX;
+    current.y = e.offsetY;
     if (shouldCheckCircleToMove) {
         shouldCheckCircleToMove = false;
         requestAnimationFrame(checkCirclesDist);
@@ -357,6 +391,7 @@ class Circle {
         this.r = config.size;
         this.config = config;
         this.folder = folder;
+        this.gradient = {};
         // this.blendMode = 'normal';
 
         this.createElement();
@@ -377,16 +412,47 @@ class Circle {
 
     setPosition (position) {
         if (position) {
-            this.x = position.x;
-            this.y = position.y;
+            this.x = position.offsetX;
+            this.y = position.offsetY;
         }
-        this.el.style.setProperty('--x', `${this.x - this.config.size / 2}px`);
-        this.el.style.setProperty('--y', `${this.y - this.config.size / 2}px`);
+        this.el.style.setProperty('--x', `${(this.x - this.config.size / 2) / canvasWidth * 100}%`);
+        this.el.style.setProperty('--y', `${(this.y - this.config.size / 2) / canvasHeight * 100}%`);
     }
 
     createGradient () {
+        this.px = this.x / canvasWidth * 100;
+        this.py = this.y / canvasHeight * 100;
+
         this.setSize();
-        this.gradient = [`${this.config.size}px`, `${this.x}px ${this.y}px`, `${this.config.color}`, `${this.config.middle}%`];
+
+        this.createMesherStyle();
+        this.createFixedStyle();
+    }
+
+    createFixedStyle () {
+        this.gradient.fixed = [`${this.config.size}px`, `${this.px}% ${this.py}%`, `${this.config.color}`, `${this.config.middle}%`];
+    }
+
+    createMesherStyle () {
+        this.gradient.mesher = [`${this.px}% ${this.py}%`, `${this.config.color} 0px`, `${this.config.middle}%`];
+    }
+
+    generate () {
+        if (config[GENERAL_FIELDS.MESH_STYLE] === 'mesher') {
+            return this.generateMesherStyle();
+        }
+
+        return this.generateFixedStyle();
+    }
+
+    generateFixedStyle () {
+        const [size, position, color, middle] = this.gradient.fixed;
+        return `radial-gradient(${size} at ${position}, ${color}, ${middle}, transparent)`;
+    }
+
+    generateMesherStyle () {
+        const [position, color, middle] = this.gradient.mesher;
+        return `radial-gradient(at ${position}, ${color}, transparent ${middle})`;
     }
 
     updateGradient () {
@@ -672,10 +738,7 @@ class ColorStop {
 }
 
 function generateGradients () {
-    const gradients = circles.map(circle => {
-        const [size, position, color, middle] = circle.gradient;
-        return `radial-gradient(${size} at ${position}, ${color}, ${middle}, transparent)`;
-    }).reverse()
+    const gradients = circles.map(circle => circle.generate()).reverse()
     gradients.push(...conicSpots.map(conicSpot => {
         const [start, stops] = conicSpot.gradient;
         return `conic-gradient(${start}, ${stops})`
