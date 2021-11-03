@@ -2,8 +2,8 @@ const gui = new dat.gui.GUI();
 
 const DEFAULT_COLOR = '#58D68D';
 const DEFAULT_RADIUS = 50;
-const MIN_RADIUS = 10;
-const MAX_RADIUS = 2000;
+const MIN_RADIUS = 5;
+const MAX_RADIUS = 100;
 const RADIUS_STEP = 1;
 const DEFAULT_LINEAR_ANGLE = 90;
 const DEFAULT_CONIC_ANGLE = 0;
@@ -407,7 +407,7 @@ class Circle {
     }
 
     setSize () {
-        this.el.style.setProperty('--radius', `${this.config.size}px`);
+        this.el.style.setProperty('--radius', `${this.config.size}%`);
     }
 
     setPosition (position) {
@@ -415,8 +415,9 @@ class Circle {
             this.x = position.offsetX;
             this.y = position.offsetY;
         }
-        this.el.style.setProperty('--x', `${(this.x - this.config.size / 2) / canvasWidth * 100}%`);
-        this.el.style.setProperty('--y', `${(this.y - this.config.size / 2) / canvasHeight * 100}%`);
+        const size = this.config.size / 100 * canvasWidth;
+        this.el.style.setProperty('--x', `${(this.x - size / 2) / canvasWidth * 100}%`);
+        this.el.style.setProperty('--y', `${(this.y - size / 2) / canvasHeight * 100}%`);
     }
 
     createGradient () {
@@ -430,7 +431,7 @@ class Circle {
     }
 
     createFixedStyle () {
-        this.gradient.fixed = [`${this.config.size}px`, `${this.px}% ${this.py}%`, `${this.config.color}`, `${this.config.middle}%`];
+        this.gradient.fixed = [`${this.px}% ${this.py}%`, `${this.config.color}`, this.config.middle, this.config.size];
     }
 
     createMesherStyle () {
@@ -446,13 +447,13 @@ class Circle {
     }
 
     generateFixedStyle () {
-        const [size, position, color, middle] = this.gradient.fixed;
-        return `radial-gradient(${size} at ${position}, ${color}, ${middle}, transparent)`;
+        const [position, color, middle, size] = this.gradient.fixed;
+        return `radial-gradient(circle at ${position}, ${color}, ${middle / 100 * size}%, transparent ${size}%)`;
     }
 
     generateMesherStyle () {
         const [position, color, middle] = this.gradient.mesher;
-        return `radial-gradient(at ${position}, ${color}, transparent ${middle})`;
+        return `radial-gradient(circle at ${position}, ${color}, transparent ${middle})`;
     }
 
     updateGradient () {
