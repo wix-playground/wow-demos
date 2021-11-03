@@ -12,7 +12,7 @@ const DEFAULT_CONICSPOT_Y = 50;
 const DEFAULT_CONIC_POSITION = 0;
 const GENERAL_FIELDS = {
     CANVAS_SIZE: 'Canvas size',
-    MESH_STYLE: 'Mesh style',
+    SHAPE: 'Shape',
     ACTION: 'Action',
     SHOW_CIRCLES: 'Show circles',
     BG_COLOR: 'BG color',
@@ -51,7 +51,7 @@ const DEFAULT_LINEAR_COLORS = [
 
 const config = {
     [GENERAL_FIELDS.CANVAS_SIZE]: 100,
-    [GENERAL_FIELDS.MESH_STYLE]: 'fixed',
+    [GENERAL_FIELDS.SHAPE]: 'circle',
     [GENERAL_FIELDS.ACTION]: 'add',
     [GENERAL_FIELDS.SHOW_CIRCLES]: 'last',
     [GENERAL_FIELDS.BG_COLOR]: '#fff',
@@ -71,7 +71,7 @@ gui.add(config, GENERAL_FIELDS.CANVAS_SIZE, 5, 100, 1)
         setCanvasSize();
     })
     .onFinishChange(updateCirclePositions);
-gui.add(config, GENERAL_FIELDS.MESH_STYLE, ['fixed', 'mesher'])
+gui.add(config, GENERAL_FIELDS.SHAPE, ['circle', 'ellipse'])
     .onChange(generateGradients);
 gui.add(config, GENERAL_FIELDS.ACTION, ['add', 'move'])
     .onChange(value => {
@@ -426,34 +426,12 @@ class Circle {
 
         this.setSize();
 
-        this.createMesherStyle();
-        this.createFixedStyle();
-    }
-
-    createFixedStyle () {
         this.gradient.fixed = [`${this.px}% ${this.py}%`, `${this.config.color}`, this.config.middle, this.config.size];
     }
 
-    createMesherStyle () {
-        this.gradient.mesher = [`${this.px}% ${this.py}%`, `${this.config.color} 0px`, `${this.config.middle}%`];
-    }
-
     generate () {
-        if (config[GENERAL_FIELDS.MESH_STYLE] === 'mesher') {
-            return this.generateMesherStyle();
-        }
-
-        return this.generateFixedStyle();
-    }
-
-    generateFixedStyle () {
         const [position, color, middle, size] = this.gradient.fixed;
-        return `radial-gradient(circle at ${position}, ${color}, ${middle / 100 * size}%, transparent ${size}%)`;
-    }
-
-    generateMesherStyle () {
-        const [position, color, middle] = this.gradient.mesher;
-        return `radial-gradient(circle at ${position}, ${color}, transparent ${middle})`;
+        return `radial-gradient(${config[GENERAL_FIELDS.SHAPE]} at ${position}, ${color}, ${middle / 100 * size}%, transparent ${size}%)`;
     }
 
     updateGradient () {
