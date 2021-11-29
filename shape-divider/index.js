@@ -10,7 +10,7 @@ const sectionsFolder = gui.addFolder('Sections');
 sectionsFolder.open();
 
 const SECTIONS = [];
-const COLORS = ['#37b', '#b37', '#7b3', '#73b', '#3b7', '#b73'];
+const COLORS = ['#b73', '#37b', '#b37', '#7b3', '#73b', '#3b7'];
 const SHAPE_NAMES = {
     TRIANGLE: 'triangle',
     ELLIPSE: 'ellipse',
