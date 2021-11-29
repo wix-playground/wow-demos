@@ -11,10 +11,17 @@ sectionsFolder.open();
 
 const SECTIONS = [];
 const COLORS = ['#37b', '#b37', '#7b3', '#73b', '#3b7', '#b73'];
+const SHAPE_NAMES = {
+    TRIANGLE: 'triangle',
+    ELLIPSE: 'ellipse',
+    CURVE: 'curve',
+    WAVE: 'wave'
+};
 const SHAPES = {
-    line: ({x}) => `M 0,100 L ${x},0 L 100,100 z`,
-    arc: () => `M 0,100 A 50 100 0 0 1 50,0 A 50 100 0 0 1 100,100 z`,
-    bezier: ({x}) => `M 0,100 C ${x/2},100 ${x/2},0 ${x},0 C ${(100 + x)/2},0 ${(100 + x)/2},100 100,100 z`
+    [SHAPE_NAMES.TRIANGLE]: ({x}) => `M 0,100 L ${x},0 L 100,100 z`,
+    [SHAPE_NAMES.ELLIPSE]: ({x}) => `M 0,100 A ${x} 100 0 0 1 ${x},0 A ${100 - x} 100 0 0 1 100,100 z`,
+    [SHAPE_NAMES.CURVE]: ({x}) => `M 0,100 Q ${x},-100 100,100 z`,
+    [SHAPE_NAMES.WAVE]: ({x}) => `M 0,100 C ${x/2},100 ${x/2},0 ${x},0 C ${(100 + x)/2},0 ${(100 + x)/2},100 100,100 z`
 };
 const FILTER_OPTIONS = ['off', 'up', 'down'];
 
@@ -54,7 +61,7 @@ function createSection ({ parent, el, index }) {
 function createDivider ({ parent, section, side, index }) {
     const config = {
         active: false,
-        shape: 'line',
+        shape: SHAPE_NAMES.TRIANGLE,
         color: '#06f',
         padding: 0,
         x: 50,
