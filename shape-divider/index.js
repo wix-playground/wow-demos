@@ -68,10 +68,12 @@ function createDivider ({ parent, section, side, index }) {
         y: 33,
         flip: false,
         pattern: {
+            active: true,
             repeat: 0,
             x: 0
         },
         stagger: {
+            active: true,
             clones: 0,
             x: 0,
             y: 10,
@@ -95,10 +97,12 @@ function createDivider ({ parent, section, side, index }) {
     folder.add(config, 'flip').onChange(divider.update);
 
     const pattern = folder.addFolder('Pattern');
+    pattern.add(config.pattern, 'active').onChange(divider.update);
     pattern.add(config.pattern, 'repeat', 0, 40, 1).onChange(divider.update);
     pattern.add(config.pattern, 'x', 0, 50, 1).onChange(divider.update);
 
     const stagger = folder.addFolder('Stagger');
+    stagger.add(config.stagger, 'active').onChange(divider.update);
     stagger.add(config.stagger, 'clones', 0, 5, 1).onChange(divider.update);
     stagger.add(config.stagger, 'x', -50, 50, 1).onChange(divider.update);
     stagger.add(config.stagger, 'y', 0, 100, 1).onChange(divider.update);
@@ -148,7 +152,7 @@ class Divider {
 
     generateShape () {
         const { x, pattern } = this.config;
-        const { repeat } = pattern;
+        const { active, repeat } = pattern;
         const patternId = `pattern-${this.side}-${this.index}`;
         this.el.innerHTML = `<svg
     viewBox="0 0 100 100"
@@ -159,7 +163,7 @@ class Divider {
         <pattern
             id="${patternId}"
             viewBox="0 0 100 100"
-            width="${100 / (repeat + 1)}%"
+            width="${active ? 100 / (repeat + 1) : 100}%"
             height="100%"
             preserveAspectRatio="none"
             patternTransform="translate(${pattern.x})">
@@ -196,6 +200,7 @@ class Divider {
 
     getRects (patternId) {
         const {
+            active,
             clones,
             x,
             y,
@@ -204,7 +209,7 @@ class Divider {
             saturation,
             brightness
         } = this.config.stagger;
-        const rectsNum = clones + 1;
+        const rectsNum = active ? clones + 1 : 1;
         let rects = '';
 
         for (let i = 0; i < rectsNum; i++) {
