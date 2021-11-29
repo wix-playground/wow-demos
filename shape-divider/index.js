@@ -10,7 +10,7 @@ const sectionsFolder = gui.addFolder('Sections');
 sectionsFolder.open();
 
 const SECTIONS = [];
-const COLORS = ['#b73', '#37b', '#b37', '#7b3', '#73b', '#3b7'];
+const COLORS = ['#f68', '#37b', '#b37', '#7b3', '#73b', '#3b7'];
 const SHAPE_NAMES = {
     TRIANGLE: 'triangle',
     ELLIPSE: 'ellipse',
@@ -18,10 +18,30 @@ const SHAPE_NAMES = {
     WAVE: 'wave'
 };
 const SHAPES = {
-    [SHAPE_NAMES.TRIANGLE]: ({x}) => `M 0,100 L ${x},0 L 100,100 z`,
-    [SHAPE_NAMES.ELLIPSE]: ({x}) => `M 0,100 A ${x} 100 0 0 1 ${x},0 A ${100 - x} 100 0 0 1 100,100 z`,
-    [SHAPE_NAMES.CURVE]: ({x}) => `M 0,100 Q ${x},-100 100,100 z`,
-    [SHAPE_NAMES.WAVE]: ({x}) => `M 0,100 C ${x/2},100 ${x/2},0 ${x},0 C ${(100 + x)/2},0 ${(100 + x)/2},100 100,100 z`
+    [SHAPE_NAMES.TRIANGLE]: ({x, invert}) => {
+        if (invert) {
+            return `M 0,100 L 0,0 L ${x},100 L 100,0 L 100,100 z`;
+        }
+        return `M 0,100 L ${x},0 L 100,100 z`;
+    },
+    [SHAPE_NAMES.ELLIPSE]: ({x, invert}) => {
+        if (invert) {
+            return `M 0,100 L 0,0 A ${x} 100 0 0 0 ${x},100 A ${100 - x} 100 0 0 0 100,0 L 100,100 z`;
+        }
+        return `M 0,100 A ${x} 100 0 0 1 ${x},0 A ${100 - x} 100 0 0 1 100,100 z`;
+    },
+    [SHAPE_NAMES.CURVE]: ({x, invert}) => {
+        if (invert) {
+            return `M 0,100 L 0,0 Q ${x},200 100,0 L 100,100 z`;
+        }
+        return `M 0,100 Q ${x},-100 100,100 z`;
+    },
+    [SHAPE_NAMES.WAVE]: ({x, invert}) => {
+        if (invert) {
+            return `M 0,100 L 0,0 C ${x/2},0 ${x/2},100 ${x},100 C ${(100 + x)/2},100 ${(100 + x)/2},0 100,0 L 100,100 z`;
+        }
+        return `M 0,100 C ${x/2},100 ${x/2},0 ${x},0 C ${(100 + x)/2},0 ${(100 + x)/2},100 100,100 z`;
+    }
 };
 const FILTER_OPTIONS = ['off', 'up', 'down'];
 
@@ -67,6 +87,7 @@ function createDivider ({ parent, section, side, index }) {
         x: 50,
         y: 33,
         flip: false,
+        invert: false,
         pattern: {
             active: true,
             repeat: 0,
@@ -95,6 +116,7 @@ function createDivider ({ parent, section, side, index }) {
     folder.add(config, 'x', 0, 100, 1).onChange(divider.update);
     folder.add(config, 'y', 5, 50, 1).onChange(divider.update);
     folder.add(config, 'flip').onChange(divider.update);
+    folder.add(config, 'invert').onChange(divider.update);
 
     const pattern = folder.addFolder('Pattern');
     pattern.add(config.pattern, 'active').onChange(divider.update);
@@ -151,7 +173,7 @@ class Divider {
     }
 
     generateShape () {
-        const { x, pattern } = this.config;
+        const { x, pattern, invert } = this.config;
         const { active, repeat } = pattern;
         const patternId = `pattern-${this.side}-${this.index}`;
         this.el.innerHTML = `<svg
@@ -167,7 +189,7 @@ class Divider {
             height="100%"
             preserveAspectRatio="none"
             patternTransform="translate(${pattern.x})">
-          <path d="${SHAPES[this.config.shape]({ x })}" />
+          <path d="${SHAPES[this.config.shape]({ x, invert })}" />
         </pattern>
     </defs>
     <g transform="${this.getTransform()}">
