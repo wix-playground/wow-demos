@@ -13,7 +13,7 @@ const SECTIONS = [];
 const COLORS = ['#f68', '#37b', '#b37', '#7b3', '#73b', '#3b7'];
 const SHAPE_NAMES = {
     TRIANGLE: 'triangle',
-    ELLIPSE: 'ellipse',
+    SLOPE: 'slope',
     CURVE: 'curve',
     WAVE: 'wave'
 };
@@ -24,11 +24,11 @@ const SHAPES = {
         }
         return `M 0,100 L ${x},0 L 100,100 z`;
     },
-    [SHAPE_NAMES.ELLIPSE]: ({x, invert}) => {
+    [SHAPE_NAMES.SLOPE]: ({x, invert}) => {
         if (invert) {
-            return `M 0,100 L 0,0 A ${x} 100 0 0 0 ${x},100 A ${100 - x} 100 0 0 0 100,0 L 100,100 z`;
+            return `M 0,100 L 0,0 C ${x},0 100,50 100,100 z`;
         }
-        return `M 0,100 A ${x} 100 0 0 1 ${x},0 A ${100 - x} 100 0 0 1 100,100 z`;
+        return `M 0,100 C ${x},100 100,50 100,0 L 100,100 z`;
     },
     [SHAPE_NAMES.CURVE]: ({x, invert}) => {
         if (invert) {
@@ -238,7 +238,10 @@ class Divider {
             const fillOpacity = opacity ? 1 - i / rectsNum : 1;
             const dx = x * i;
             const dy = y * i;
-            rects = `<rect style="filter: ${this.getFilter(i, rectsNum, hue, saturation, brightness)};" fill="url(#${patternId})" fill-opacity="${fillOpacity}" x="${-dy + dx}" y="${-2 * dy}" width="${100 + 2 * dy}" height="${100 + 2 * dy}" />` + rects;
+            const filter = this.getFilter(i, rectsNum, hue, saturation, brightness);
+            rects = `<rect style="filter: ${filter};" fill="url(#${patternId})" fill-opacity="${fillOpacity}" x="${dx}" y="${-dy}" width="100" height="100" />${
+                i ? `<rect width="100" height="${dy}" x="${dx}" y="${100 - dy}" fill-opacity="${fillOpacity}" style="filter: ${filter}; fill: var(--div-bg-color)"/>` : ''
+            }` + rects;
         }
 
         return rects;
