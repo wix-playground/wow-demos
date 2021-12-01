@@ -44,6 +44,7 @@ const SHAPES = {
     }
 };
 const FILTER_OPTIONS = ['off', 'up', 'down'];
+const DUPLICATE_TITLE = 'Duplicate';
 
 function createSection ({ parent, el, index }) {
     const config = {
@@ -79,6 +80,8 @@ function createSection ({ parent, el, index }) {
 }
 
 function createDivider ({ parent, section, side, index }) {
+    const isTop = side.toLowerCase() === 'top';
+    const DUPLICATE = isTop ? index ? DUPLICATE_TITLE : false : index < sectionElements.length -1 ? DUPLICATE_TITLE : false;
     const config = {
         active: false,
         shape: SHAPE_NAMES.TRIANGLE,
@@ -105,11 +108,19 @@ function createDivider ({ parent, section, side, index }) {
         }
     };
 
-    const el = section.querySelector(`.divider.${side.toLowerCase()}`);
-    const divider = new Divider(config, el, side, index);
+    if (DUPLICATE) {
+        config[DUPLICATE] = () => divider.clone(SECTIONS[index + (isTop ? -1 : 1)].config[isTop ? 'bottom' : 'top']);
+    }
 
+    const el = section.querySelector(`.divider.${side.toLowerCase()}`);
     const folder = parent.addFolder(side);
+
+    const divider = new Divider(config, el, folder, side, index);
+
     folder.add(config, 'active').onChange(divider.update);
+    if (DUPLICATE) {
+        folder.add(config, DUPLICATE);
+    }
     folder.add(config, 'shape', Object.keys(SHAPES)).onChange(divider.update);
     folder.addColor(config, 'color').onChange(divider.update);
     folder.add(config, 'padding', 0, 400, 1).onChange(divider.update);
@@ -152,9 +163,10 @@ class Section {
 }
 
 class Divider {
-    constructor (config, el, side, index) {
+    constructor (config, el, folder, side, index) {
         this.config = config;
         this.el = el;
+        this.folder = folder;
         this.side = side.toLowerCase();
         this.index = index;
 
@@ -245,6 +257,22 @@ class Divider {
         }
 
         return rects;
+    }
+
+    clone (config) {
+        Object.assign(
+            this.config,
+            {
+                ...config,
+                pattern: Object.assign(this.config.pattern, config.pattern),
+                stagger: Object.assign(this.config.stagger, config.stagger),
+                [DUPLICATE_TITLE]: this.config[DUPLICATE_TITLE] || null
+            }
+        );
+
+        this.update();
+
+        this.folder.updateDisplay();
     }
 }
 
