@@ -16,6 +16,8 @@
             min-height: 100vh;
             display: grid;
             grid-template: 'stage' 1fr / 1fr;
+            perspective: 1000px;
+            perspective-origin: top center;
         }
 
         main {
@@ -25,6 +27,7 @@
         section {
             position: relative;
             height: 100vh;
+            overflow: hidden;
             background-color: var(--bg-color, transparent);
         }
 

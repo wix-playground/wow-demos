@@ -1,10 +1,18 @@
 const gui = new dat.gui.GUI();
 
 const CONFIG = {
+    zoom: 0,
     sections: []
 };
 
 gui.remember(CONFIG);
+
+gui.add(CONFIG, 'zoom', 0, 1000, 10)
+    .onChange(() => {
+        mainEl.style.transform = `translateZ(-${CONFIG.zoom}px)`;
+    });
+
+const mainEl = document.querySelector('main');
 
 const sectionsFolder = gui.addFolder('Sections');
 sectionsFolder.open();
