@@ -52,6 +52,7 @@ const SHAPES = {
     }
 };
 const FILTER_OPTIONS = ['off', 'up', 'down'];
+const PIN_OPTIONS = ['off', 'in', 'out'];
 const DUPLICATE_TITLE = 'Duplicate';
 
 function createSection ({ parent, el, index }) {
@@ -109,6 +110,7 @@ function createDivider ({ parent, section, side, index }) {
             clones: 0,
             x: 0,
             y: 10,
+            pin: PIN_OPTIONS[0],
             opacity: true,
             hue: FILTER_OPTIONS[0],
             saturation: FILTER_OPTIONS[0],
@@ -147,6 +149,7 @@ function createDivider ({ parent, section, side, index }) {
     stagger.add(config.stagger, 'clones', 0, 5, 1).onChange(divider.update);
     stagger.add(config.stagger, 'x', -50, 50, 1).onChange(divider.update);
     stagger.add(config.stagger, 'y', 0, 100, 1).onChange(divider.update);
+    stagger.add(config.stagger, 'pin', PIN_OPTIONS).onChange(divider.update);
     stagger.add(config.stagger, 'opacity').onChange(divider.update);
     stagger.add(config.stagger, 'hue', FILTER_OPTIONS).onChange(divider.update);
     stagger.add(config.stagger, 'saturation', FILTER_OPTIONS).onChange(divider.update);
@@ -246,11 +249,14 @@ class Divider {
             clones,
             x,
             y,
+            pin,
             opacity,
             hue,
             saturation,
             brightness
         } = this.config.stagger;
+        const pinIn = pin === PIN_OPTIONS[1];
+        const pinOut = pin === PIN_OPTIONS[2];
         const rectsNum = active ? clones + 1 : 1;
         let rects = '';
 
@@ -259,8 +265,8 @@ class Divider {
             const dx = x * i;
             const dy = y * i;
             const filter = this.getFilter(i, rectsNum, hue, saturation, brightness);
-            rects = `<rect style="filter: ${filter};" fill="url(#${patternId})" fill-opacity="${fillOpacity}" x="${dx}" y="${-dy}" width="100" height="100" />${
-                i ? `<rect width="100" height="${dy}" x="${dx}" y="${100 - dy}" fill-opacity="${fillOpacity}" style="filter: ${filter}; fill: var(--div-bg-color)"/>` : ''
+            rects = `<rect style="filter: ${filter};" fill="url(#${patternId})" fill-opacity="${fillOpacity}" x="${dx}" y="${pinIn ? 0 : -dy}" width="100" height="${100 + (pinOut ? dy : pinIn ? - dy : 0)}" />${
+                i && !pinOut ? `<rect width="100" height="${dy}" x="${dx}" y="${100 - dy}" fill-opacity="${fillOpacity}" style="filter: ${filter}; fill: var(--div-bg-color)"/>` : ''
             }` + rects;
         }
 
