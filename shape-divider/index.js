@@ -113,6 +113,7 @@ function createDivider ({ parent, section, side, index }) {
             pin: PIN_OPTIONS[0],
             opacity: true,
             hue: FILTER_OPTIONS[0],
+            'hue limit': 180,
             saturation: FILTER_OPTIONS[0],
             brightness: FILTER_OPTIONS[0]
         }
@@ -151,6 +152,7 @@ function createDivider ({ parent, section, side, index }) {
     stagger.add(config.stagger, 'y', 0, 100, 1).onChange(divider.update);
     stagger.add(config.stagger, 'pin', PIN_OPTIONS).onChange(divider.update);
     stagger.add(config.stagger, 'opacity').onChange(divider.update);
+    stagger.add(config.stagger, 'hue limit', 90, 360, 10).onChange(divider.update);
     stagger.add(config.stagger, 'hue', FILTER_OPTIONS).onChange(divider.update);
     stagger.add(config.stagger, 'saturation', FILTER_OPTIONS).onChange(divider.update);
     stagger.add(config.stagger, 'brightness', FILTER_OPTIONS).onChange(divider.update);
@@ -228,12 +230,12 @@ class Divider {
         return `scale(${isFlipped ? -1 : 1} ${isTop ? -1 : 1}) translate(${isFlipped ? -100 : 0} ${isTop ? -100 : 0})`;
     }
 
-    getFilter (index, length, hue, saturation, brightness) {
+    getFilter (index, length, hue, saturation, brightness, hueLimit) {
         const factor = index / length;
         const [OFF, UP] = FILTER_OPTIONS;
         return `${hue === OFF
             ? ''
-            : `hue-rotate(${1 - factor * (hue === UP ? 180 : -180)}deg)`
+            : `hue-rotate(${1 - factor * (hue === UP ? 1 : -1) * hueLimit}deg)`
         } ${saturation === OFF
             ? ''
             : `saturate(${(saturation === UP ? 1 + factor : 1 - factor) * 100}%)`
@@ -251,6 +253,7 @@ class Divider {
             y,
             pin,
             opacity,
+            'hue limit': hueLimit,
             hue,
             saturation,
             brightness
@@ -264,7 +267,7 @@ class Divider {
             const fillOpacity = opacity ? 1 - i / rectsNum : 1;
             const dx = x * i;
             const dy = y * i;
-            const filter = this.getFilter(i, rectsNum, hue, saturation, brightness);
+            const filter = this.getFilter(i, rectsNum, hue, saturation, brightness, hueLimit);
             rects = `<rect style="filter: ${filter};" fill="url(#${patternId})" fill-opacity="${fillOpacity}" x="${dx}" y="${pinIn ? 0 : -dy}" width="100" height="${100 + (pinOut ? dy : pinIn ? - dy : 0)}" />${
                 i && !pinOut ? `<rect width="100" height="${dy}" x="${dx}" y="${100 - dy}" fill-opacity="${fillOpacity}" style="filter: ${filter}; fill: var(--div-bg-color)"/>` : ''
             }` + rects;
