@@ -55,6 +55,47 @@ const FILTER_OPTIONS = ['off', 'up', 'down'];
 const PIN_OPTIONS = ['off', 'in', 'out'];
 const DUPLICATE_TITLE = 'Duplicate';
 
+const PRESETS_NAMES = {
+    BRUSH: {
+        PAINT: 'paint',
+        SKETCH: 'sketch',
+        WAVES: 'waves',
+        TAPE: 'tape',
+        STRIPES: 'stripes',
+        LAVA: 'lava'
+    },
+    PATTERN: {
+        ZIPPER: 'zipper',
+        TETRIS: 'tetris',
+        DROPS: 'drops',
+        PEARLS: 'pearls'
+    }
+};
+const PRESETS = {
+    [PRESETS_NAMES.BRUSH.PAINT]: '/shape-divider/svg/Dividers_FIN-18.svg',
+    [PRESETS_NAMES.BRUSH.SKETCH]: '/shape-divider/svg/Dividers_FIN-19.svg',
+    [PRESETS_NAMES.BRUSH.WAVES]: '/shape-divider/svg/Dividers_FIN-20.svg',
+    [PRESETS_NAMES.BRUSH.TAPE]: '/shape-divider/svg/Dividers_FIN-21.svg',
+    [PRESETS_NAMES.BRUSH.STRIPES]: '/shape-divider/svg/Dividers_FIN-22.svg',
+    [PRESETS_NAMES.BRUSH.LAVA]: '/shape-divider/svg/Dividers_FIN-23.svg',
+    [PRESETS_NAMES.PATTERN.ZIPPER]: '/shape-divider/svg/Dividers_FIN-24.svg',
+    [PRESETS_NAMES.PATTERN.TETRIS]: '/shape-divider/svg/Dividers_FIN-25.svg',
+    [PRESETS_NAMES.PATTERN.DROPS]: '/shape-divider/svg/Dividers_FIN-26.svg',
+    [PRESETS_NAMES.PATTERN.PEARLS]: '/shape-divider/svg/Dividers_FIN-27.svg'
+};
+
+function fetchSVG(url) {
+    return fetch(url).then(result => result.text());
+}
+
+Object.entries(PRESETS)
+    .map(([key, url]) => [key, fetchSVG(url)])
+    .forEach(([key, result]) => {
+        result.then(svg => {
+            PRESETS[key] = svg;
+        });
+    });
+
 function createSection ({ parent, el, index }) {
     const config = {
         bgColor: COLORS[index],
@@ -116,6 +157,10 @@ function createDivider ({ parent, section, side, index }) {
             'hue limit': 180,
             saturation: FILTER_OPTIONS[0],
             brightness: FILTER_OPTIONS[0]
+        },
+        presets: {
+            active: false,
+            preset: PRESETS_NAMES.BRUSH.PAINT
         }
     };
 
@@ -156,6 +201,11 @@ function createDivider ({ parent, section, side, index }) {
     stagger.add(config.stagger, 'hue', FILTER_OPTIONS).onChange(divider.update);
     stagger.add(config.stagger, 'saturation', FILTER_OPTIONS).onChange(divider.update);
     stagger.add(config.stagger, 'brightness', FILTER_OPTIONS).onChange(divider.update);
+
+    const presets = folder.addFolder('Presets');
+    presets.add(config.presets, 'active').onChange(divider.update);
+    presets.add(config.presets, 'preset', [...Object.values(PRESETS_NAMES.BRUSH), ...Object.values(PRESETS_NAMES.PATTERN)]).onChange(divider.update);
+
     return config;
 }
 
@@ -198,24 +248,40 @@ class Divider {
     }
 
     generateShape () {
-        const { x, pattern, invert } = this.config;
+        const { x, pattern, invert, presets } = this.config;
         const { active, repeat } = pattern;
         const patternId = `pattern-${this.side}-${this.index}`;
+        const isBrush = this.isBrush();
+        const isPattern = presets.active && !isBrush;
+        let brushViewBox = isBrush && PRESETS[presets.preset].match(/viewBox="([\d\s.]+)"/)[1];
+        let patternViewBox = isPattern && PRESETS[presets.preset].match(/viewBox="([\d\s.]+)"/)[1];
+        let patternContent = isPattern ? PRESETS[presets.preset].match(/^<svg[^>]+>(.*)<\/svg>$/m)[1] : '';
+
+        this.viewBox = brushViewBox
+            ? brushViewBox.split(' ').map(x => +x)
+            : patternViewBox
+                ? patternViewBox.split(' ').map(x => +x)
+                : [0, 0, 100, 100];
+
         this.el.innerHTML = `<svg
-    viewBox="0 0 100 100"
+    viewBox="${this.viewBox.join(' ')}"
     width="100%"
     height="100%"
-    preserveAspectRatio="none">
+    preserveAspectRatio="${brushViewBox ? 'xMidYMid slice' : isPattern ? 'xMinYMin' : 'none'}">
     <defs>
-        <pattern
-            id="${patternId}"
-            viewBox="0 0 100 100"
-            width="${active ? 100 / (repeat + 1) : 100}%"
-            height="100%"
-            preserveAspectRatio="none"
-            patternTransform="translate(${pattern.x})">
-          <path d="${SHAPES[this.config.shape]({ x, invert })}" />
-        </pattern>
+        ${isBrush
+            ? PRESETS[presets.preset].replace('Layer_1', patternId)
+            : `<pattern
+                id="${patternId}"
+                viewBox="${this.viewBox.join(' ')}"
+                width="${active ? 100 / (repeat + 1) : 100}%"
+                height="100%"
+                ${isPattern ? '' : 'preserveAspectRatio="none"'}
+                ${isPattern ? 'patternUnits="userSpaceOnUse"' : ''}
+                patternTransform="translate(${pattern.x})">
+                ${isPattern ? `<g>${patternContent}</g>` : `<path d="${SHAPES[this.config.shape]({ x, invert })}" />`}
+            </pattern>`
+        }
     </defs>
     <g transform="${this.getTransform()}">
         ${this.getRects(patternId)}
@@ -226,8 +292,9 @@ class Divider {
     getTransform () {
         const isTop = this.side === 'top';
         const isFlipped = this.config.flip;
+        const [,, width, height] = this.viewBox;
 
-        return `scale(${isFlipped ? -1 : 1} ${isTop ? -1 : 1}) translate(${isFlipped ? -100 : 0} ${isTop ? -100 : 0})`;
+        return `scale(${isFlipped ? -1 : 1} ${isTop ? -1 : 1}) translate(${isFlipped ? -width : 0} ${isTop ? -height : 0})`;
     }
 
     getFilter (index, length, hue, saturation, brightness, hueLimit) {
@@ -261,19 +328,44 @@ class Divider {
         const pinIn = pin === PIN_OPTIONS[1];
         const pinOut = pin === PIN_OPTIONS[2];
         const rectsNum = active ? clones + 1 : 1;
+        const isBrush = this.isBrush();
         let rects = '';
 
         for (let i = 0; i < rectsNum; i++) {
-            const fillOpacity = opacity ? 1 - i / rectsNum : 1;
+            // values here are not a simple linear interpolation since we take into account overlapping layers that composite with each other
+            const fillOpacity = opacity ? 1 - i / (i + 1) : 1;
             const dx = x * i;
             const dy = y * i;
             const filter = this.getFilter(i, rectsNum, hue, saturation, brightness, hueLimit);
-            rects = `<rect style="filter: ${filter};" fill="url(#${patternId})" fill-opacity="${fillOpacity}" x="${dx}" y="${pinIn ? 0 : -dy}" width="100" height="${100 + (pinOut ? dy : pinIn ? - dy : 0)}" />${
-                i && !pinOut ? `<rect width="100" height="${dy}" x="${dx}" y="${100 - dy}" fill-opacity="${fillOpacity}" style="filter: ${filter}; fill: var(--div-bg-color)"/>` : ''
-            }` + rects;
+            rects = this.getRect(i, isBrush, filter, patternId, fillOpacity, dx, dy, pinIn, pinOut) + rects;
         }
 
         return rects;
+    }
+
+    isBrush () {
+        return this.config.presets.active && Object.values(PRESETS_NAMES.BRUSH).includes(this.config.presets.preset);
+    }
+
+    getRect (i, isBrush, filter, patternId, fillOpacity, dx, dy, pinIn, pinOut) {
+        const [,, width, height] = this.viewBox;
+
+        if (isBrush) {
+            return `<use x="${dx}" y="${-dy}" href="#${patternId}" style="filter: ${filter}; fill: var(--div-bg-color); fill-opacity: ${fillOpacity}"></use>${
+                i ? `<rect width="${width}" height="${dy}" x="${dx}" y="${height - dy}" fill-opacity="${fillOpacity}" style="filter: ${filter}; fill: var(--div-bg-color)"/>` : ''
+            }`;
+        }
+
+        const isPattern = this.config.presets.active;
+        if (isPattern) {
+            return `<rect style="filter: ${filter};" fill="url(#${patternId})" fill-opacity="${fillOpacity}" x="${dx}" y="${pinIn ? 0 : -dy}" width="1500" height="${height}" />${
+                i ? `<rect width="${width}" height="${dy}" x="${dx}" y="${height - dy}" fill-opacity="${fillOpacity}" style="filter: ${filter}; fill: var(--div-bg-color)"/>` : ''
+            }`;
+        }
+
+        return `<rect style="filter: ${filter};" fill="url(#${patternId})" fill-opacity="${fillOpacity}" x="${dx}" y="${pinIn ? 0 : -dy}" width="100" height="${height + (pinOut ? dy : pinIn ? - dy : 0)}" />${
+            i && !pinOut ? `<rect width="${width}" height="${dy}" x="${dx}" y="${height - dy}" fill-opacity="${fillOpacity}" style="filter: ${filter}; fill: var(--div-bg-color)"/>` : ''
+        }`;
     }
 
     clone (config) {
