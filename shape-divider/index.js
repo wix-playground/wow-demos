@@ -351,7 +351,8 @@ class Divider {
         const [,, width, height] = this.viewBox;
 
         if (isBrush) {
-            return `<use x="${dx}" y="${-dy}" href="#${patternId}" style="filter: ${filter}; fill: var(--div-bg-color); fill-opacity: ${fillOpacity}"></use>${
+            const x = this.viewBox[2] * (this.config.x / 100 - 0.5);
+            return `<use x="${x + dx}" y="${-dy}" href="#${patternId}" style="filter: ${filter}; fill: var(--div-bg-color); fill-opacity: ${fillOpacity}"></use>${
                 i ? `<rect width="${width}" height="${dy}" x="${dx}" y="${height - dy}" fill-opacity="${fillOpacity}" style="filter: ${filter}; fill: var(--div-bg-color)"/>` : ''
             }`;
         }
