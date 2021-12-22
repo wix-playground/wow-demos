@@ -72,16 +72,16 @@ const PRESETS_NAMES = {
     }
 };
 const PRESETS = {
-    [PRESETS_NAMES.BRUSH.PAINT]: '/shape-divider/svg/Dividers_FIN-18.svg',
-    [PRESETS_NAMES.BRUSH.SKETCH]: '/shape-divider/svg/Dividers_FIN-19.svg',
-    [PRESETS_NAMES.BRUSH.WAVES]: '/shape-divider/svg/Dividers_FIN-20.svg',
-    [PRESETS_NAMES.BRUSH.TAPE]: '/shape-divider/svg/Dividers_FIN-21.svg',
-    [PRESETS_NAMES.BRUSH.STRIPES]: '/shape-divider/svg/Dividers_FIN-22.svg',
-    [PRESETS_NAMES.BRUSH.LAVA]: '/shape-divider/svg/Dividers_FIN-23.svg',
-    [PRESETS_NAMES.PATTERN.ZIPPER]: '/shape-divider/svg/Dividers_FIN-24.svg',
-    [PRESETS_NAMES.PATTERN.TETRIS]: '/shape-divider/svg/Dividers_FIN-25.svg',
-    [PRESETS_NAMES.PATTERN.DROPS]: '/shape-divider/svg/Dividers_FIN-26.svg',
-    [PRESETS_NAMES.PATTERN.PEARLS]: '/shape-divider/svg/Dividers_FIN-27.svg'
+    [PRESETS_NAMES.BRUSH.PAINT]: './svg/Dividers_FIN-18.svg',
+    [PRESETS_NAMES.BRUSH.SKETCH]: './svg/Dividers_FIN-19.svg',
+    [PRESETS_NAMES.BRUSH.WAVES]: './svg/Dividers_FIN-20.svg',
+    [PRESETS_NAMES.BRUSH.TAPE]: './svg/Dividers_FIN-21.svg',
+    [PRESETS_NAMES.BRUSH.STRIPES]: './svg/Dividers_FIN-22.svg',
+    [PRESETS_NAMES.BRUSH.LAVA]: './svg/Dividers_FIN-23.svg',
+    [PRESETS_NAMES.PATTERN.ZIPPER]: './svg/Dividers_FIN-24.svg',
+    [PRESETS_NAMES.PATTERN.TETRIS]: './svg/Dividers_FIN-25.svg',
+    [PRESETS_NAMES.PATTERN.DROPS]: './svg/Dividers_FIN-26.svg',
+    [PRESETS_NAMES.PATTERN.PEARLS]: './svg/Dividers_FIN-27.svg'
 };
 
 function fetchSVG(url) {
