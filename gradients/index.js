@@ -20,7 +20,8 @@ const GENERAL_FIELDS = {
     BLEND_MODE: 'Blend mode',
     ADD_LINEAR: 'Add linear gradient',
     ADD_CONIC: 'Add conic gradient',
-    ADD_CONIC_SPOT: 'Add conic spot gradient'
+    ADD_CONIC_SPOT: 'Add conic spot gradient',
+    EASING_POINTS: 'Easing points'
 };
 const BLEND_MODES = [
     'normal',
@@ -59,7 +60,8 @@ const config = {
     [GENERAL_FIELDS.BLEND_MODE]: 'normal',
     [GENERAL_FIELDS.ADD_LINEAR]: addLinearGradient,
     [GENERAL_FIELDS.ADD_CONIC]: addConicGradient,
-    [GENERAL_FIELDS.ADD_CONIC_SPOT]: addConicSpotGradient
+    [GENERAL_FIELDS.ADD_CONIC_SPOT]: addConicSpotGradient,
+    [GENERAL_FIELDS.EASING_POINTS]: 6
 };
 
 gui.remember(config);
@@ -94,6 +96,8 @@ gui.add(config, GENERAL_FIELDS.SHOW_CIRCLES, ['last', 'all', 'none'])
     .onChange(value => {
         mainEl.dataset.showCircles = value.toLowerCase();
     });
+gui.add(config, GENERAL_FIELDS.EASING_POINTS, 1, 12, 1)
+    .onChange(generateGradients);
 
 gui.add(config, GENERAL_FIELDS.ADD_LINEAR);
 gui.add(config, GENERAL_FIELDS.ADD_CONIC);
@@ -430,7 +434,28 @@ class Circle {
     }
 
     generate () {
+        const numOfLerpPoints = config[GENERAL_FIELDS.EASING_POINTS];
         const [position, color, middle, size] = this.gradient.fixed;
+        const middleHint = middle / 100 * size;
+
+        if (numOfLerpPoints > 1) {
+            // east in from color (start) to middle (x * x * x)
+            const easeInPoints = Array(numOfLerpPoints)
+                .fill(1)
+                .map((_, i, a) => {
+                    const p = i / (a.length - 1);
+                    return `${color}${Math.round(lerp(1, 0.5, easeIn(p)) * 255).toString(16).padStart(2, '0')} ${p * middleHint}%`;
+                }).join(', ');
+            // ease out from  middle to size (end) (1 - Math.pow(1 - x, 3))
+            const easeOutPoints = Array(numOfLerpPoints)
+                .fill(1)
+                .map((_, i, a) => {
+                    const p = i / (a.length - 1);
+                    return `${color}${Math.round(lerp(0.5, 0, easeOut(p)) * 255).toString(16).padStart(2, '0')} ${lerp(middleHint, size, p)}%`;
+                }).join(', ');
+            return `radial-gradient(${config[GENERAL_FIELDS.SHAPE]} at ${position}, ${easeInPoints}, ${easeOutPoints})`;
+        }
+
         return `radial-gradient(${config[GENERAL_FIELDS.SHAPE]} at ${position}, ${color}, ${middle / 100 * size}%, transparent ${size}%)`;
     }
 
@@ -465,6 +490,19 @@ class Circle {
         generateGradients();
     }
 }
+
+function easeIn (t) {
+    return t * t * t;
+}
+
+function easeOut (t) {
+    return 1 - Math.pow(1 - t, 3);
+}
+
+function lerp (a, b, t) {
+    return a * (1 - t) + b * t;
+}
+
 
 class Conic {
     constructor () {
