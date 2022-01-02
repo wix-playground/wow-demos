@@ -1,11 +1,20 @@
 const gui = new dat.gui.GUI();
 
 const CONFIG = {
+    'Save to File': function() {
+        download(getValues(), `shape-dividers-${getTimeStamp()}.txt`);
+    },
+    'Load from Files': function() {
+        upload(); // stub
+    },
     zoom: 0,
     sections: {}
 };
 
 gui.remember(CONFIG);
+
+gui.add(CONFIG, 'Save to File');
+gui.add(CONFIG, 'Load from Files');
 
 gui.add(CONFIG, 'zoom', 0, 1000, 10)
     .onChange(() => {
@@ -401,3 +410,125 @@ const sectionElements = [...document.querySelectorAll('section')];
 sectionElements.forEach((el, index) => {
     SECTIONS.push(createSection({ parent: sectionsFolder, el, index }));
 });
+
+/**
+ * Get a date string
+ * @returns {string} YYYY-MM-DD-HH:MM:SS
+ */
+function getTimeStamp () {
+    const date = new Date();
+    return `${date.toISOString().split('T')[0]}-${date.toLocaleTimeString('en-US', { hour12: false })}`
+}
+
+/**
+ * Download data to a file
+ * https://stackoverflow.com/a/30832210
+ * @param {string} data the file contents
+ * @param {string} filename the file to save
+ * @param {string} [type='text/plain'] file mime type ('text/plain' etc.)
+ */
+function download (data, filename, type='text/plain') {
+    const file = new Blob([data], {type});
+    const a = document.createElement("a");
+    const url = URL.createObjectURL(file);
+
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+
+    a.click();
+    setTimeout(function() {
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+    }, 0);
+}
+
+function parseFile (file) {
+    const reader = new FileReader();
+
+    reader.addEventListener('load', function (e) {
+        console.log('loading', file.name);
+        setValues(JSON.parse(e.target.result));
+        gui.saveAs(file.name);
+    });
+
+    reader.readAsBinaryString(file);
+}
+
+/**
+ * Read data from a text file
+ * https://stackoverflow.com/a/45815534
+ */
+function upload () {
+    //alert('Not implemented yet')
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'text/plain';
+    input.multiple = 'multiple';
+    input.onchange = function () {
+        for (const file of this.files || []) {
+            if (file) {
+                parseFile(file);
+            }
+        }
+    };
+    document.body.appendChild(input);
+
+    input.click();
+    setTimeout(function() {
+        document.body.removeChild(input);
+    }, 0);
+}
+
+
+
+/**
+ * @param {Array<Object>} rememberedValues in the format of the output of getValues()
+ * [
+ *   {
+ *     "someKey": "value",
+ *     "otherKey": "otherValue"
+ *   },
+ *   {
+ *     "thirdKey": "thirdValue"
+ *   },
+ *   ...
+ * ]
+ */
+function setValues (rememberedValues) {
+    rememberedValues.forEach((values, index) => {
+        Object.keys(values).forEach((key) => {
+            const controller = gui.__rememberedObjectIndecesToControllers[index][key];
+            controller && controller.setValue(values[key]);
+        });
+    });
+}
+
+function getValues () {
+    return JSON.stringify(gui.__rememberedObjects, null, 2);
+}
+
+function dragEnter (e) {
+    e.stopPropagation();
+    e.preventDefault();
+}
+
+function dragOver (e) {
+    e.stopPropagation();
+    e.preventDefault();
+}
+
+function drop (e) {
+    e.stopPropagation && e.stopPropagation();
+    e.preventDefault && e.preventDefault();
+
+    const files = e.dataTransfer.files;
+    const file = files && files[0];
+
+    parseFile(file);
+}
+
+// drag n` drop handlers
+mainEl.addEventListener('dragenter', dragEnter, false);
+mainEl.addEventListener('dragover', dragOver, false);
+mainEl.addEventListener('drop', drop, false);
