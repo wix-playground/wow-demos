@@ -2,7 +2,7 @@ const gui = new dat.gui.GUI();
 
 const CONFIG = {
     zoom: 0,
-    sections: []
+    sections: {}
 };
 
 gui.remember(CONFIG);
@@ -102,6 +102,8 @@ function createSection ({ parent, el, index }) {
         useImage: false
     };
 
+    gui.remember(config);
+
     const section = new Section(config, el);
 
     const folder = parent.addFolder(`Section ${index}`);
@@ -124,7 +126,10 @@ function createSection ({ parent, el, index }) {
         index
     });
 
-    CONFIG.sections.push(config);
+    gui.remember(config.top);
+    gui.remember(config.bottom);
+
+    CONFIG.sections[`Section ${index}`] = config;
 
     return section;
 }
@@ -163,6 +168,11 @@ function createDivider ({ parent, section, side, index }) {
             preset: PRESETS_NAMES.BRUSH.PAINT
         }
     };
+
+    gui.remember(config);
+    gui.remember(config.pattern);
+    gui.remember(config.stagger);
+    gui.remember(config.presets);
 
     if (DUPLICATE) {
         config[DUPLICATE] = () => divider.clone(SECTIONS[index + (isTop ? -1 : 1)].config[isTop ? 'bottom' : 'top']);
