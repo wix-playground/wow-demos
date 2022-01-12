@@ -26,13 +26,14 @@
 
         section {
             position: relative;
-            height: 100vh;
+            height: var(--strip-height, 100vh);
             overflow: hidden;
             background-color: var(--bg-color, transparent);
         }
 
         section .bg {
             position: absolute;
+            z-index: 1;
             inset: 0;
         }
 
@@ -47,6 +48,7 @@
         }
 
         .divider {
+            z-index: 2;
             box-sizing: content-box;
             border-style: solid;
             border-color: var(--div-bg-color, transparent);
@@ -87,7 +89,36 @@
         }
 
         section .content {
+            position: absolute;
+            z-index: 3;
+            inset: 0;
             grid-area: 1 / 1 / 4 / 2;
+            display: grid;
+            grid-template: 'header    header' 3rem
+                           'paragraph figure'  auto
+                           'paragraph figure'  auto / 600px auto;
+            gap: 1.5rem;
+            padding: 3em;
+            font-size: 22px;
+        }
+
+        .content header {
+            grid-area: header;
+            font: 3rem sans-serif;
+            mix-blend-mode: difference;
+        }
+
+        .content .text {
+            grid-area: paragraph;
+            mix-blend-mode: difference;
+        }
+
+        .content .text p {
+            margin-bottom: 1.5rem;
+        }
+
+        .content figure {
+            grid-area: figure;
         }
 
         .dg.ac {
@@ -104,7 +135,12 @@
             <div class="divider top"></div>
             <div class="divider bottom"></div>
             <div class="content">
-                <p></p>
+                <header contenteditable="true">Generate Lorem Ipsum placeholder</header>
+                <div class="text">
+                    <p contenteditable="true">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                    <p contenteditable="true">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                </div>
+                <figure><img src="https://picsum.photos/600/400?random=10"/></figure>
             </div>
         </section>
 
@@ -115,7 +151,12 @@
             <div class="divider top"></div>
             <div class="divider bottom"></div>
             <div class="content">
-                <p></p>
+                <header contenteditable="true">Generate Lorem Ipsum placeholder</header>
+                <div class="text">
+                    <p contenteditable="true">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                    <p contenteditable="true">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                </div>
+                <figure><img src="https://picsum.photos/600/400?random=11"/></figure>
             </div>
         </section>
 
@@ -126,7 +167,12 @@
             <div class="divider top"></div>
             <div class="divider bottom"></div>
             <div class="content">
-                <p></p>
+                <header contenteditable="true">Generate Lorem Ipsum placeholder</header>
+                <div class="text">
+                    <p contenteditable="true">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                    <p contenteditable="true">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                </div>
+                <figure><img src="https://picsum.photos/600/400?random=12"/></figure>
             </div>
         </section>
 
@@ -137,7 +183,12 @@
             <div class="divider top"></div>
             <div class="divider bottom"></div>
             <div class="content">
-                <p></p>
+                <header contenteditable="true">Generate Lorem Ipsum placeholder</header>
+                <div class="text">
+                    <p contenteditable="true">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                    <p contenteditable="true">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                </div>
+                <figure><img src="https://picsum.photos/600/400?random=13"/></figure>
             </div>
         </section>
 
@@ -148,11 +199,16 @@
             <div class="divider top"></div>
             <div class="divider bottom"></div>
             <div class="content">
-                <p></p>
+                <header contenteditable="true">Generate Lorem Ipsum placeholder</header>
+                <div class="text">
+                    <p contenteditable="true">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                    <p contenteditable="true">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                </div>
+                <figure><img src="https://picsum.photos/600/400?random=14"/></figure>
             </div>
         </section>
     </main>
     <script src="dat.gui.js"></script>
-    <script src="index.js?=7"></script>
+    <script src="index.js?=8"></script>
 </body>
 </html>

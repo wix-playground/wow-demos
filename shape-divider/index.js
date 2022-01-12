@@ -1,10 +1,16 @@
 const gui = new dat.gui.GUI();
 
+const CONFIG_KEYS = {
+    SAVE: 'Save to File',
+    LOAD: 'Load from Files',
+    STRIP_HEIGHT: 'Strip height'
+};
+
 const CONFIG = {
-    'Save to File': function() {
+    [CONFIG_KEYS.SAVE]: function() {
         download(getValues(), `shape-dividers-${getTimeStamp()}.txt`);
     },
-    'Load from Files': function() {
+    [CONFIG_KEYS.LOAD]: function() {
         upload(); // stub
     },
     zoom: 0,
@@ -13,8 +19,8 @@ const CONFIG = {
 
 gui.remember(CONFIG);
 
-gui.add(CONFIG, 'Save to File');
-gui.add(CONFIG, 'Load from Files');
+gui.add(CONFIG, CONFIG_KEYS.SAVE);
+gui.add(CONFIG, CONFIG_KEYS.LOAD);
 
 gui.add(CONFIG, 'zoom', 0, 1000, 10)
     .onChange(() => {
@@ -43,9 +49,9 @@ const SHAPES = {
     },
     [SHAPE_NAMES.SLOPE]: ({x, invert}) => {
         if (invert) {
-            return `M 0,100 L 0,0 C ${x},0 100,50 100,100 z`;
+            return `M 0,100 L 0,0 C ${x},0 100,0 100,100 z`;
         }
-        return `M 0,100 C ${x},100 100,50 100,0 L 100,100 z`;
+        return `M 0,100 C ${x},100 100,100 100,0 L 100,100 z`;
     },
     [SHAPE_NAMES.CURVE]: ({x, invert}) => {
         if (invert) {
@@ -108,7 +114,8 @@ Object.entries(PRESETS)
 function createSection ({ parent, el, index }) {
     const config = {
         bgColor: COLORS[index],
-        useImage: false
+        useImage: false,
+        [CONFIG_KEYS.STRIP_HEIGHT]: 100
     };
 
     gui.remember(config);
@@ -121,6 +128,10 @@ function createSection ({ parent, el, index }) {
         .onChange(section.update);
     folder.add(config, 'useImage')
         .onChange(section.update);
+    folder.add(config, CONFIG_KEYS.STRIP_HEIGHT, 50, 300, 10)
+        .onChange(() => {
+            el.style.setProperty('--strip-height', `${config[CONFIG_KEYS.STRIP_HEIGHT]}vh`);
+        });
 
     config.top = createDivider({
         parent: folder,
