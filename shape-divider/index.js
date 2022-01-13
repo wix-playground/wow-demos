@@ -37,6 +37,7 @@ const COLORS = ['#f68', '#37b', '#b37', '#7b3', '#73b', '#3b7'];
 const SHAPE_NAMES = {
     TRIANGLE: 'triangle',
     SLOPE: 'slope',
+    ELLIPSE: 'ellipse',
     CURVE: 'curve',
     WAVE: 'wave'
 };
@@ -53,11 +54,17 @@ const SHAPES = {
         }
         return `M 0,100 C ${x},100 100,100 100,0 L 100,100 z`;
     },
-    [SHAPE_NAMES.CURVE]: ({x, invert}) => {
+    [SHAPE_NAMES.ELLIPSE]: ({x, invert}) => {
         if (invert) {
             return `M 0,100 L 0,0 Q ${x},200 100,0 L 100,100 z`;
         }
         return `M 0,100 Q ${x},-100 100,100 z`;
+    },
+    [SHAPE_NAMES.CURVE]: ({x, y, invert}) => {
+        if (invert) {
+            return `M 0,100 L 0,0 C ${x/2},${y} ${x/2},${100 - y} 100,100 z`;
+        }
+        return `M 0,100 C ${x/2},${100 - y} ${x/2},${y} 100,0 L 100,100 z`;
     },
     [SHAPE_NAMES.WAVE]: ({x, invert}) => {
         if (invert) {
@@ -163,7 +170,8 @@ function createDivider ({ parent, section, side, index }) {
         color: '#06f',
         padding: 0,
         x: 50,
-        y: 33,
+        y: 0,
+        height: 33,
         flip: false,
         invert: false,
         pattern: {
@@ -211,7 +219,8 @@ function createDivider ({ parent, section, side, index }) {
     folder.addColor(config, 'color').onChange(divider.update);
     folder.add(config, 'padding', 0, 400, 1).onChange(divider.update);
     folder.add(config, 'x', 0, 100, 1).onChange(divider.update);
-    folder.add(config, 'y', 5, 50, 1).onChange(divider.update);
+    folder.add(config, 'y', 0, 100, 1).onChange(divider.update);
+    folder.add(config, 'height', 5, 50, 1).onChange(divider.update);
     folder.add(config, 'flip').onChange(divider.update);
     folder.add(config, 'invert').onChange(divider.update);
 
@@ -271,14 +280,14 @@ class Divider {
     update () {
         this.el.classList.toggle('active', this.config.active);
         this.el.style.setProperty('--div-bg-color', this.config.color);
-        this.el.style.setProperty('--div-y', `${this.config.y}%`);
+        this.el.style.setProperty('--div-height', `${this.config.height}%`);
         this.el.style.setProperty('--div-padding', `${this.config.padding}px`);
 
         this.generateShape();
     }
 
     generateShape () {
-        const { x, pattern, invert, presets } = this.config;
+        const { x, y, pattern, invert, presets } = this.config;
         const { active, repeat } = pattern;
         const patternId = `pattern-${this.side}-${this.index}`;
         const isBrush = this.isBrush();
@@ -309,7 +318,7 @@ class Divider {
                 ${isPattern ? '' : 'preserveAspectRatio="none"'}
                 ${isPattern ? 'patternUnits="userSpaceOnUse"' : ''}
                 patternTransform="translate(${pattern.x})">
-                ${isPattern ? `<g>${patternContent}</g>` : `<path d="${SHAPES[this.config.shape]({ x, invert })}" />`}
+                ${isPattern ? `<g>${patternContent}</g>` : `<path d="${SHAPES[this.config.shape]({ x, y, invert })}" />`}
             </pattern>`
         }
     </defs>
