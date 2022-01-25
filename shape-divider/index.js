@@ -3,7 +3,8 @@ const gui = new dat.gui.GUI();
 const CONFIG_KEYS = {
     SAVE: 'Save to File',
     LOAD: 'Load from Files',
-    STRIP_HEIGHT: 'Strip height'
+    STRIP_HEIGHT: 'Strip height',
+    KEEP_AR: 'Keep aspect-ratio'
 };
 
 const CONFIG = {
@@ -44,33 +45,33 @@ const SHAPE_NAMES = {
 const SHAPES = {
     [SHAPE_NAMES.TRIANGLE]: ({x, invert}) => {
         if (invert) {
-            return `M 0,100 L 0,0 L ${x},100 L 100,0 L 100,100 z`;
+            return `<svg viewBox="0 0 300 200"><g><path d="M 0,200 L 0,0 L ${300 * x / 100},200 L 300,0 L 300,200 z" /></g></svg>`;
         }
-        return `M 0,100 L ${x},0 L 100,100 z`;
+        return `<svg viewBox="0 0 300 200"><g><path d="M 0,200 L ${300 * x / 100},0 L 300,200 z" /></g></svg>`;
     },
     [SHAPE_NAMES.SLOPE]: ({x, invert}) => {
         if (invert) {
-            return `M 0,100 L 0,0 C ${x},0 100,0 100,100 z`;
+            return `<svg viewBox="0 0 300 200"><g><path d="M 0,200 L 0,0 C ${300 * x / 100},0 300,0 300,200 z" /></g></svg>`;
         }
-        return `M 0,100 C ${x},100 100,100 100,0 L 100,100 z`;
+        return `<svg viewBox="0 0 300 200"><g><path d="M 0,200 C ${300 * x / 100},200 300,200 300,0 L 300,200 z" /></g></svg>`;
     },
     [SHAPE_NAMES.ELLIPSE]: ({x, invert}) => {
         if (invert) {
-            return `M 0,100 L 0,0 Q ${x},200 100,0 L 100,100 z`;
+            return `<svg viewBox="0 0 300 200"><g><path d="M 0,200 L 0,0 Q ${300 * x / 100},400 300,0 L 300,200 z" /></g></svg>`;
         }
-        return `M 0,100 Q ${x},-100 100,100 z`;
+        return `<svg viewBox="0 0 300 200"><g><path d="M 0,200 Q ${300 * x / 100},-200 300,200 z" /></g></svg>`;
     },
     [SHAPE_NAMES.CURVE]: ({x, y, invert}) => {
         if (invert) {
-            return `M 0,100 L 0,0 C ${x/2},${y} ${x/2},${100 - y} 100,100 z`;
+            return `<svg viewBox="0 0 300 200"><g><path d="M 0,200 L 0,0 C ${300 * x / 2 / 100},${200 * y / 100} ${300 * x / 2 / 100},${200 * (1 - y / 100)} 300,200 z" /></g></svg>`;
         }
-        return `M 0,100 C ${x/2},${100 - y} ${x/2},${y} 100,0 L 100,100 z`;
+        return `<svg viewBox="0 0 300 200"><g><path d="M 0,200 C ${300 * x / 2 / 100},${200 * (1 - y / 100)} ${300 * x / 2 / 100},${200 * y / 100} 300,0 L 300,200 z" /></g></svg>`;
     },
     [SHAPE_NAMES.WAVE]: ({x, invert}) => {
         if (invert) {
-            return `M 0,100 L 0,0 C ${x/2},0 ${x/2},100 ${x},100 C ${(100 + x)/2},100 ${(100 + x)/2},0 100,0 L 100,100 z`;
+            return `<svg viewBox="0 0 300 200"><g><path d="M 0,200 L 0,0 C ${300 * x / 2 / 100},0 ${300 * x / 2 / 100},200 ${300 * x / 100},200 C ${(300 * (1 + x / 100)) / 2},200 ${(300 * (1 + x / 100)) / 2},0 300,0 L 300,200 z" /></g></svg>`;
         }
-        return `M 0,100 C ${x/2},100 ${x/2},0 ${x},0 C ${(100 + x)/2},0 ${(100 + x)/2},100 100,100 z`;
+        return `<svg viewBox="0 0 300 200"><g><path d="M 0,200 C ${300 * x / 2 / 100},200 ${300 * x / 2 / 100},0 ${300 * x / 100},0 C ${(300 * (1 + x / 100)) / 2},0 ${(300 * (1 + x / 100)) / 2},200 300,200 z" /></g></svg>`;
     }
 };
 const FILTER_OPTIONS = ['off', 'up', 'down'];
@@ -174,6 +175,7 @@ function createDivider ({ parent, section, side, index }) {
         height: 33,
         flip: false,
         invert: false,
+        [CONFIG_KEYS.KEEP_AR]: false,
         pattern: {
             active: true,
             repeat: 0,
@@ -223,6 +225,7 @@ function createDivider ({ parent, section, side, index }) {
     folder.add(config, 'height', 5, 50, 1).onChange(divider.update);
     folder.add(config, 'flip').onChange(divider.update);
     folder.add(config, 'invert').onChange(divider.update);
+    folder.add(config, CONFIG_KEYS.KEEP_AR).onChange(divider.update);
 
     const pattern = folder.addFolder('Pattern');
     pattern.add(config.pattern, 'active').onChange(divider.update);
@@ -287,7 +290,8 @@ class Divider {
     }
 
     generateShape () {
-        const { x, y, pattern, invert, presets } = this.config;
+        const { pattern, presets } = this.config;
+        const keepAspectRatio = this.config[CONFIG_KEYS.KEEP_AR];
         const { active, repeat } = pattern;
         const patternId = `pattern-${this.side}-${this.index}`;
         const isBrush = this.isBrush();
@@ -296,36 +300,53 @@ class Divider {
         let patternViewBox = isPattern && PRESETS[presets.preset].match(/viewBox="([\d\s.]+)"/)[1];
         let patternContent = isPattern ? PRESETS[presets.preset].match(/^<svg[^>]+>(.*)<\/svg>$/m)[1] : '';
 
-        this.viewBox = brushViewBox
+        const shapeContent = this.getShapeContent();
+        const isRepeatInAspectRatio = active && keepAspectRatio;
+        let boundingBox;
+
+        if (isRepeatInAspectRatio) {
+            boundingBox = this.el.getBoundingClientRect();
+        }
+
+        this.viewBox = isBrush
             ? brushViewBox.split(' ').map(x => +x)
-            : patternViewBox
+            : isPattern
                 ? patternViewBox.split(' ').map(x => +x)
-                : [0, 0, 100, 100];
+                : this.viewBox || [0, 0, 100, 100];
 
         this.el.innerHTML = `<svg
-    viewBox="${this.viewBox.join(' ')}"
+    viewBox="${isRepeatInAspectRatio ? `0 0 ${boundingBox.width} ${boundingBox.height}` : this.viewBox.join(' ')}"
     width="100%"
     height="100%"
-    preserveAspectRatio="${brushViewBox ? 'xMidYMid slice' : isPattern ? 'xMinYMin' : 'none'}">
+    preserveAspectRatio="${brushViewBox ? 'xMidYMid slice' : isPattern ? 'xMinYMin' : keepAspectRatio ? 'xMinYMin' : 'none'}">
     <defs>
         ${isBrush
             ? PRESETS[presets.preset].replace('Layer_1', patternId)
             : `<pattern
                 id="${patternId}"
                 viewBox="${this.viewBox.join(' ')}"
-                width="${active ? 100 / (repeat + 1) : 100}%"
+                width="${keepAspectRatio ? (active ? (this.viewBox[2] / this.viewBox[3]) / (boundingBox.width / boundingBox.height) * 100 : 100) : (active ? 100 / (repeat + 1) : 100)}%"
                 height="100%"
-                ${isPattern ? '' : 'preserveAspectRatio="none"'}
-                ${isPattern ? 'patternUnits="userSpaceOnUse"' : ''}
-                patternTransform="translate(${pattern.x})">
-                ${isPattern ? `<g>${patternContent}</g>` : `<path d="${SHAPES[this.config.shape]({ x, y, invert })}" />`}
+                ${isPattern || keepAspectRatio ? '' : 'preserveAspectRatio="none"'}
+                ${isPattern || keepAspectRatio ? 'patternUnits="userSpaceOnUse"' : ''}
+                patternTransform="translate(${(keepAspectRatio ? boundingBox.width : this.viewBox[2]) * pattern.x / 100})">
+                ${isPattern ? `<g>${patternContent}</g>` : shapeContent}
             </pattern>`
         }
     </defs>
     <g transform="${this.getTransform()}">
-        ${this.getRects(patternId)}
+        ${this.getRects(patternId, boundingBox)}
     </g>
 </svg>`;
+    }
+
+    getShapeContent () {
+        const { x, y, invert } = this.config;
+        const content = SHAPES[this.config.shape]({ x, y, invert });
+
+        this.viewBox = content.match(/viewBox="([\d\s.]+)"/)[1].split(' ').map(x => +x);
+
+        return content.match(/^<svg[^>]+>(.*)<\/svg>$/m)[1];
     }
 
     getTransform () {
@@ -351,7 +372,7 @@ class Divider {
         }`;
     }
 
-    getRects (patternId) {
+    getRects (patternId, boundingBox) {
         const {
             active,
             clones,
@@ -376,7 +397,7 @@ class Divider {
             const dx = x * i;
             const dy = y * i;
             const filter = this.getFilter(i, rectsNum, hue, saturation, brightness, hueLimit);
-            rects = this.getRect(i, isBrush, filter, patternId, fillOpacity, dx, dy, pinIn, pinOut) + rects;
+            rects = this.getRect(i, isBrush, filter, patternId, fillOpacity, dx, dy, pinIn, pinOut, boundingBox) + rects;
         }
 
         return rects;
@@ -386,8 +407,16 @@ class Divider {
         return this.config.presets.active && Object.values(PRESETS_NAMES.BRUSH).includes(this.config.presets.preset);
     }
 
-    getRect (i, isBrush, filter, patternId, fillOpacity, dx, dy, pinIn, pinOut) {
-        const [,, width, height] = this.viewBox;
+    getRect (i, isBrush, filter, patternId, fillOpacity, dx, dy, pinIn, pinOut, boundingBox) {
+        let width, height;
+
+        if (boundingBox) {
+            width = boundingBox.width;
+            height = boundingBox.height;
+        }
+        else {
+            [, , width, height] = this.viewBox;
+        }
 
         if (isBrush) {
             const x = this.viewBox[2] * (this.config.x / 100 - 0.5);
@@ -403,7 +432,7 @@ class Divider {
             }`;
         }
 
-        return `<rect style="filter: ${filter};" fill="url(#${patternId})" fill-opacity="${fillOpacity}" x="${dx}" y="${pinIn ? 0 : -dy}" width="100" height="${height + (pinOut ? dy : pinIn ? - dy : 0)}" />${
+        return `<rect style="filter: ${filter};" fill="url(#${patternId})" fill-opacity="${fillOpacity}" x="${dx}" y="${pinIn ? 0 : -dy}" width="${width}" height="${height + (pinOut ? dy : pinIn ? - dy : 0)}" />${
             i && !pinOut ? `<rect width="${width}" height="${dy}" x="${dx}" y="${height - dy}" fill-opacity="${fillOpacity}" style="filter: ${filter}; fill: var(--div-bg-color)"/>` : ''
         }`;
     }
