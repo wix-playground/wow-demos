@@ -307,6 +307,10 @@ class Divider {
         if (isRepeatInAspectRatio) {
             boundingBox = this.el.getBoundingClientRect();
         }
+        else if (keepAspectRatio) {
+            const bBox = this.el.getBoundingClientRect();
+            this.el.style.setProperty('--div-height', `${bBox.width * this.viewBox[3] / this.viewBox[2]}px`);
+        }
 
         this.viewBox = isBrush
             ? brushViewBox.split(' ').map(x => +x)
@@ -329,7 +333,7 @@ class Divider {
                 height="100%"
                 ${isPattern || keepAspectRatio ? '' : 'preserveAspectRatio="none"'}
                 ${isPattern || keepAspectRatio ? 'patternUnits="userSpaceOnUse"' : ''}
-                patternTransform="translate(${(keepAspectRatio ? boundingBox.width : this.viewBox[2]) * pattern.x / 100})">
+                patternTransform="translate(${(isRepeatInAspectRatio ? boundingBox.width : this.viewBox[2]) * pattern.x / 100})">
                 ${isPattern ? `<g>${patternContent}</g>` : shapeContent}
             </pattern>`
         }
