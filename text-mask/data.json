@@ -1,0 +1,56 @@
+{
+    "fonts": [
+        {
+            "url": "https://fonts.gstatic.com/s/abrilfatface/v12/zOL64pLDlL1D99S8g8PtiKchq-dmjQ.woff2",
+            "family": "Abril Fatface",
+            "features": {}
+        },
+        {
+            "url": "https://fonts.gstatic.com/s/gorditas/v10/ll8_K2aTVD26DsPEtTDvB68.woff2",
+            "family": "Gorditas",
+            "features": {}
+        },
+        {
+            "url": "https://fonts.gstatic.com/s/inconsolata/v21/QldgNThLqRwH-OJ1UHjlKENVzkWGVkL3GZQmAwLYxYWI2qfdm7Lpp7c8WR32lw.woff2",
+            "family": "Inconsolata",
+            "features": {}
+        },
+        {
+            "url": "https://fonts.gstatic.com/s/loversquarrel/v14/~ChAKDkxvdmVycyBRdWFycmVsEAcgBQ==.woff2",
+            "family": "Lovers Quarrel",
+            "features": {}
+        },
+        {
+            "url": "https://fonts.gstatic.com/s/tomorrow/v5/WBLjrETNbFtZCeGqgRXXQ73MPMeJjQ.woff2",
+            "family": "Tomorrow",
+            "features": {}
+        }
+    ],
+    "media": [
+        {
+            "thumb": "https://picsum.photos/id/1062/150/100",
+            "url": "https://picsum.photos/id/1062/1920/1200",
+            "type": "image"
+        },
+        {
+            "thumb": "https://picsum.photos/id/1020/150/100",
+            "url": "https://picsum.photos/id/1020/1920/1200",
+            "type": "image"
+        },
+        {
+            "thumb": "https://picsum.photos/id/62/150/100",
+            "url": "https://picsum.photos/id/62/1920/1200",
+            "type": "image"
+        },
+        {
+            "thumb": "https://video.wixstatic.com/video/11062b_d14ea38398994dd3af199158a56b311a/480p/mp4/file.mp4",
+            "url": "https://video.wixstatic.com/video/11062b_d14ea38398994dd3af199158a56b311a/1080p/mp4/file.mp4",
+            "type": "video"
+        },
+        {
+            "thumb": "https://video.wixstatic.com/video/11062b_0f8758e51a5341cd8b26833e9484ff97/480p/mp4/file.mp4",
+            "url": "https://video.wixstatic.com/video/11062b_0f8758e51a5341cd8b26833e9484ff97/1080p/mp4/file.mp4",
+            "type": "video"
+        }
+    ]
+}

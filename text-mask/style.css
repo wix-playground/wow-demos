@@ -1,0 +1,168 @@
+/*
+ * layout
+ */
+.container {
+    width: 100%;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    grid-template-rows: 4em auto auto;
+    gap: 15px 15px;
+    grid-auto-flow: row;
+    grid-template-areas:
+        "font-list text-input"
+        "font-list result"
+        "media result";
+}
+
+.text-input {
+    grid-area: text-input;
+    background-color: hsl(0, 0%, 80%);
+}
+
+.font-list {
+    grid-area: font-list;
+    background-color: hsl(0, 29%, 80%);
+}
+
+.media {
+    grid-area: media;
+    background-color: hsl(40, 29%, 80%);
+
+}
+
+.result {
+    grid-area: result;
+    background-color: hsl(120, 29%, 80%);
+
+}
+
+ul, li {
+    list-style-type: none;
+    padding:0;
+    margin: 0;
+}
+
+/*
+ * Text Input
+ */
+.text-input {
+    display: flex;
+    justify-content: space-between;
+}
+
+.text-input-text{
+    border: none;
+    background: none;
+    font-size: 2em;
+    font-weight: bold;
+    padding: .4em;
+    color: hsl(0, 0%, 20%);
+    width: 100%;
+}
+
+/*
+ * Font list
+ */
+.font-name {
+    display: block;
+    padding: 5px 10px;
+    font-size: 16px;
+    box-sizing: border-box;
+    border: 1px solid transparent;
+}
+
+.font-name:hover {
+    background:hsl(0, 29%, 75%);
+    border-color: hsl(0, 29%, 65%);
+}
+
+.font-input {
+    display: none;
+}
+.font-input:checked + .font-name {
+    background:hsl(0, 29%, 65%);
+    border-color: hsl(0, 29%, 75%);
+
+}
+/*
+ * Media list
+ */
+.media-thumb {
+    display: block;
+    border: 4px solid hsl(40, 29%, 80%);
+    opacity: 0.8;
+    width: 150px;
+    height: 100px;
+    object-fit: cover;
+}
+
+.media-thumb:hover {
+    border-color: hsl(40, 29%, 65%);
+    opacity: 1;
+}
+
+.media-input {
+    display: none;
+}
+.media-input:checked + .media-thumb {
+    border-color: hsl(40, 29%, 50%);
+    opacity: 1;
+
+}
+
+/*
+ * Stage
+ */
+.result {
+    position: relative;
+    user-select: none;
+}
+.result * {
+    user-select: none;
+}
+ /*
+ * Draggable Text Box
+ */
+.text-box {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 1px solid hsl(214, 100%, 50%);
+}
+
+.text-box-handle {
+    position: absolute;
+    width: 13px;
+    height:13px;
+    border-radius: 50%;
+    background: hsl(214, 100%, 50%);
+    margin: -6px;
+}
+
+[data-handle=top-left] {
+    left: 0;
+    top: 0;
+}
+
+[data-handle=top-right] {
+    right: 0;
+    top: 0;
+}
+
+[data-handle=bottom-right] {
+    right: 0;
+    bottom: 0;
+}
+
+[data-handle=bottom-left] {
+    bottom: 0;
+    left: 0;
+}
+
+.text-svg {
+    width: 100%;
+    height: 100%;
+}
+
+

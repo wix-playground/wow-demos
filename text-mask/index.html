@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
+    <title>Text Mask</title>
+
+
+
+</head>
+<body>
+    <div class="container">
+        <div class="text-input">
+            <input form="form" size="1" type="text" name="text" class="text-input-text" value="Wow!Team">
+            <button form="form" name="submit" type="submit" class="text-input-submit">Change</button>
+        </div>
+        <div class="font-list">
+            <ul id="fontList">
+                <template id="font-item-template">
+                    <li class="font-item">
+                        <label>
+                            <input form="form" data-font-input class="font-input" type="radio" name="fontFamily" value="">
+                            <span data-font-name class="font-name">Font Name</span>
+                        </label>
+                    </li>
+                </template>
+            </ul>
+        </div>
+        <div class="media">
+            <ul id="mediaList">
+                <template id="media-item-image-template">
+                    <li class="media-item">
+                        <input form="form" type="hidden" name="mediaType" value="image">
+                        <label>
+                            <input form="form" data-media-input class="media-input" type="radio" name="mediaItem" value="">
+                            <img data-thumb class="media-thumb" src="" alt=""/>
+                        </label>
+                    </li>
+                </template>
+                <template id="media-item-video-template">
+                    <li class="media-item">
+                        <input form="form" type="hidden" name="mediaType" value="video">
+                        <label>
+                            <input form="form" data-media-input class="media-input" type="radio" name="mediaItem" value="">
+                            <video data-thumb class="media-thumb" src="" muted></video>
+                        </label>
+                    </li>
+                </template>
+            </ul>
+        </div>
+        <div class="result" id="result">
+            <div id="text-box" class="text-box">
+                <svg id="text-svg" class="text-svg" xmlns="http://www.w3.org/2000/svg">
+                    <text id="text-content">Placeholder</text>
+                </svg>
+                <div class="text-box-handle" data-handle="top-left"></div>
+                <div class="text-box-handle" data-handle="top-right"></div>
+                <div class="text-box-handle" data-handle="bottom-left"></div>
+                <div class="text-box-handle" data-handle="bottom-right"></div>
+            </div>
+        </div>
+      </div>
+      <form name="form" id="form" action=""></form>
+<script type="module" src="./index.js"></script>
+</body>
+</html>
