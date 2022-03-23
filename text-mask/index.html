@@ -49,7 +49,7 @@
                         <label>
                             <input form="form" data-media-input class="media-input" type="radio" name="mediaItem"
                                 value="">
-                            <video data-thumb class="media-thumb" src="" muted></video>
+                            <video data-thumb class="media-thumb" src="" muted playsinline></video>
                         </label>
                     </li>
                 </template>
@@ -59,10 +59,10 @@
             <div id="text-box" class="text-box">
                 <div id="text-box-content" class="text-box-content">
                     <svg id="text-svg" class="text-svg" xmlns="http://www.w3.org/2000/svg">
-                        <path fill="#ffffff" id="text-as-path"/>
+                        <path fill="#ffffff" id="text-as-path" />
                     </svg>
                     <div id="text-media" class="text-media">
-                        <video id="media-video" src="" autoplay mutted hidden loop></video>
+                        <video id="media-video" src="" playsinline autoplay mutted loop hidden></video>
                         <img id="media-image" src="" hidden />
                     </div>
                 </div>
