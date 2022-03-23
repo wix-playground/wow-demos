@@ -1,6 +1,13 @@
 import { $id, $select, $selectAll, clamp } from "./utils.js";
 import opentypeJs from "https://cdn.skypack.dev/opentype.js";
 
+/**
+ * Use Opentype.js to convert text + font to path
+ * TODO: Support bold, italic, multiline, variants, features
+ * @param {string} text
+ * @param {string} fontUrl
+ * @returns {Promise<string>} svg path
+ */
 async function textToPath(text, fontUrl) {
     const font = await opentypeJs.load(fontUrl);
     const path = font.getPath(text, 0, 0, 20);
@@ -8,8 +15,9 @@ async function textToPath(text, fontUrl) {
 }
 
 /**
- *
- * @returns {Promise<{fonts: {url: string, family: string, features?: any}[], media: {thumb: string, url: string, type: 'image'|'video'}[]}>}
+ * Get configuration from a json file (because we cant natively import json files just yet)
+ * @typedef {{fonts: {url: string, family: string, features?: any}[], media: {thumb: string, url: string, type: 'image'|'video'}[]}} ConfigData
+ * @returns {Promise<ConfigData>}
  */
 async function getConfig() {
     const response = await fetch("./data.json");
@@ -17,7 +25,7 @@ async function getConfig() {
 }
 
 /**
- *
+ * get an html template from the dom by a selector
  * @param {string} selector
  * @returns {HTMLElement}
  */
@@ -25,11 +33,15 @@ function getTempalteItem(selector) {
     return $select(selector).content.cloneNode(true).firstElementChild;
 }
 
+/**
+ * Helper matcher for SVG encoding
+ */
 const symbols = /[\r\n%#()<>?\[\\\]^`{|}]/g;
 /**
- * From Yehonathan
+ * encode an SVG to data url
+ * (copied from Yehonathan https://github.com/wix-playground/wow-demos/blob/85639c80e98df802e7389c816c5cebeb51e6542b/video-crop/index.js#L35-L45)
  * @param {string} data svg outerHTML
- * @returns
+ * @returns {string} svg data url
  */
 function encodeSVG(data) {
     // Use single quotes instead of double to avoid encoding.
@@ -42,31 +54,29 @@ function encodeSVG(data) {
     return `url("data:image/svg+xml,${escaped}")`;
 }
 /**
- *
- * @param {{fontFamily: string, fontUrl: string, mediaItem: string, mediaType: string, text: string}} data
+ * Set svg text to stage
+ * @param {ConfigData} data
  */
-function setSvgText({ text, fontFamily, fontUrl }) {
+async function setSvgText({ text, fontFamily, fontUrl }) {
     const svg = $id("text-svg");
     const media = $id("text-media");
 
-    textToPath(text, fontUrl).then(pathContent => {
-        svg.innerHTML = pathContent;
-        const path = svg.querySelector('path');
-        const { x, y, width, height } = path.getBBox();
-        svg.setAttribute("viewBox", `${x} ${y} ${width} ${height}`);
+    const pathContent = await textToPath(text, fontUrl)
 
-        const serialized = encodeSVG(svg.outerHTML);
-        console.log(serialized);
-        media.style.WebkitMaskImage = serialized;
-        media.style.maskImage = serialized;
-    })
+    svg.innerHTML = pathContent;
+    const path = svg.querySelector('path');
+    const { x, y, width, height } = path.getBBox();
+    svg.setAttribute("viewBox", `${x} ${y} ${width} ${height}`);
 
-
+    const serialized = encodeSVG(svg.outerHTML);
+    console.log(serialized);
+    media.style.WebkitMaskImage = serialized;
+    media.style.maskImage = serialized;
 }
 
 /**
- *
- * @param {{fontFamily: string, fontUrl: string, mediaItem: string, mediaType: string, text: string}} data
+ * Set media to stage
+ * @param {ConfigData} data
  */
 function setMedia({ mediaItem, mediaType }) {
     const video = $id("media-video");
@@ -92,6 +102,9 @@ function setMedia({ mediaItem, mediaType }) {
     }
 }
 
+/**
+ * Reset on stage box size to content limits
+ */
 function resetBoxSize() {
     const box = $id("text-box");
     const svg = $id("text-svg");
@@ -101,8 +114,8 @@ function resetBoxSize() {
 }
 
 /**
- *
- * @param {{url: string, family: string, features?: any}[]} fonts
+ * Get font list from configuration and build UI + form event
+ * @param {ConfigData['fonts']} fonts
  * @param {HTMLFormElement} form
  */
 function populateFonts(fonts, form = document.forms[0]) {
@@ -139,8 +152,8 @@ function populateFonts(fonts, form = document.forms[0]) {
 }
 
 /**
- *
- * @param {{thumb: string, url: string, type: "video" | "image"}[]} media
+ * Get media list from configuration and build UI + form event
+ * @param {ConfigData['media']} media
  * @param {HTMLFormElement} form
  */
 function populateMedia(media, form = document.forms[0]) {
@@ -191,20 +204,21 @@ function populateMedia(media, form = document.forms[0]) {
  * @param {HTMLFormElement} form
  */
 function handleFormSubmit(form = document.forms[0]) {
-    form.addEventListener("submit", (event) => {
+    form.addEventListener("submit", async (event) => {
         event.preventDefault();
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
         console.log(data);
         setMedia(data);
-        setSvgText(data);
+        await setSvgText(data);
         resetBoxSize();
     });
+    // Initial setup, stupidly wait 500ms for all fonts etc to load
     setTimeout(() => form.requestSubmit(), 500);
 }
 
 /**
- * Stagee editbox logic
+ * Stage editbox interaction logic
  * @param {HTMLElement} textBox
  */
 function handleBoxResize(textBox = $id("text-box")) {
@@ -213,6 +227,7 @@ function handleBoxResize(textBox = $id("text-box")) {
         handle.addEventListener("pointerdown", (event) => {
             const target = event.target;
             const container = $id("result");
+
             const containerH = container.offsetHeight;
             const containerW = container.offsetWidth;
             const corner = target.dataset.handle;
@@ -287,6 +302,9 @@ function handleBoxResize(textBox = $id("text-box")) {
     });
 }
 
+/**
+ * Start here
+ */
 async function init() {
     const { fonts, media } = await getConfig();
     populateFonts(fonts);
@@ -296,10 +314,11 @@ async function init() {
     handleBoxResize();
 }
 
+/**
+ * Not really necesary, but reminds me of the good ol' days.
+ */
 if (document.readyState === "loading") {
-    // Loading hasn't finished yet
     document.addEventListener("DOMContentLoaded", init);
 } else {
-    // `DOMContentLoaded` has already fired
     init();
 }
