@@ -1,27 +1,27 @@
 {
     "fonts": [
         {
-            "url": "https://fonts.gstatic.com/s/abrilfatface/v12/zOL64pLDlL1D99S8g8PtiKchq-dmjQ.woff2",
+            "url": "https://fonts.gstatic.com/s/abrilfatface/v12/zOL64pLDlL1D99S8g8PtiKchq-lmiw.woff",
             "family": "Abril Fatface",
             "features": {}
         },
         {
-            "url": "https://fonts.gstatic.com/s/gorditas/v10/ll8_K2aTVD26DsPEtTDvB68.woff2",
+            "url": "https://fonts.gstatic.com/s/gorditas/v10/ll84K2aTVD26DsPEtThUIroPtg0.woff",
             "family": "Gorditas",
             "features": {}
         },
         {
-            "url": "https://fonts.gstatic.com/s/inconsolata/v21/QldgNThLqRwH-OJ1UHjlKENVzkWGVkL3GZQmAwLYxYWI2qfdm7Lpp7c8WR32lw.woff2",
+            "url": "https://fonts.gstatic.com/s/inconsolata/v21/QldgNThLqRwH-OJ1UHjlKENVzkWGVkL3GZQmAwLYxYWI2qfdm7Lppyw7WRP2kQ.woff",
             "family": "Inconsolata",
             "features": {}
         },
         {
-            "url": "https://fonts.gstatic.com/s/loversquarrel/v14/~ChAKDkxvdmVycyBRdWFycmVsEAcgBQ==.woff2",
+            "url": "https://fonts.gstatic.com/s/loversquarrel/v14/~ChAKDkxvdmVycyBRdWFycmVsEAkgAw==.woff",
             "family": "Lovers Quarrel",
             "features": {}
         },
         {
-            "url": "https://fonts.gstatic.com/s/tomorrow/v5/WBLjrETNbFtZCeGqgRXXQ73MPMeJjQ.woff2",
+            "url": "https://fonts.gstatic.com/s/tomorrow/v5/WBLjrETNbFtZCeGqgRXXQ8XOPMmJiw.woff",
             "family": "Tomorrow",
             "features": {}
         }

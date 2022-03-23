@@ -1,12 +1,11 @@
 import { $id, $select, $selectAll, clamp } from "./utils.js";
-// import fontkit from "https://cdn.skypack.dev/@pdf-lib/fontkit";
+import opentypeJs from "https://cdn.skypack.dev/opentype.js";
 
-// async function registerFont(fontUrl) {
-//     // const fontUrl = "https://fonts.gstatic.com/s/raviprakash/v3/8EzbM7Rymjk25jWeHxbO6CXeN0lhaNKjYxc8tNqs5DA.woff2";
-//     const res = await fetch(fontUrl);
-//     const ab = await res.arrayBuffer();
-//     font = fontkit.create(new Buffer(ab));
-// }
+async function textToPath(text, fontUrl) {
+    const font = await opentypeJs.load(fontUrl);
+    const path = font.getPath(text, 0, 0, 20);
+    return path.toSVG();
+}
 
 /**
  *
@@ -26,17 +25,71 @@ function getTempalteItem(selector) {
     return $select(selector).content.cloneNode(true).firstElementChild;
 }
 
+const symbols = /[\r\n%#()<>?\[\\\]^`{|}]/g;
+/**
+ * From Yehonathan
+ * @param {string} data svg outerHTML
+ * @returns
+ */
+function encodeSVG(data) {
+    // Use single quotes instead of double to avoid encoding.
+    const escaped = data
+        .replace(/"/g, "'")
+        .replace(/>\s{1,}</g, "><")
+        .replace(/\s{2,}/g, " ")
+        .replace(symbols, encodeURIComponent);
+
+    return `url("data:image/svg+xml,${escaped}")`;
+}
 /**
  *
- * @param {{fontFamily: string, mediaItem: string, mediaType: string, text: string}} data
+ * @param {{fontFamily: string, fontUrl: string, mediaItem: string, mediaType: string, text: string}} data
  */
-function setSvgText({ text, fontFamily }) {
+function setSvgText({ text, fontFamily, fontUrl }) {
     const svg = $id("text-svg");
-    const svgText = $id("text-content");
-    svgText.textContent = text;
-    svgText.style.cssText = `font: normal 20px ${fontFamily}; fill: hsl(0, 0%, 0%);`;
-    const { x, y, width, height } = svgText.getBBox();
-    svg.setAttribute("viewBox", `${x} ${y} ${width} ${height}`);
+    const media = $id("text-media");
+
+    textToPath(text, fontUrl).then(pathContent => {
+        svg.innerHTML = pathContent;
+        const path = svg.querySelector('path');
+        const { x, y, width, height } = path.getBBox();
+        svg.setAttribute("viewBox", `${x} ${y} ${width} ${height}`);
+
+        const serialized = encodeSVG(svg.outerHTML);
+        console.log(serialized);
+        media.style.WebkitMaskImage = serialized;
+        media.style.maskImage = serialized;
+    })
+
+
+}
+
+/**
+ *
+ * @param {{fontFamily: string, fontUrl: string, mediaItem: string, mediaType: string, text: string}} data
+ */
+function setMedia({ mediaItem, mediaType }) {
+    const video = $id("media-video");
+    const image = $id("media-image");
+
+    if (image.src) {
+        image.setAttribute("hidden", "hidden");
+        image.removeAttribute("src");
+    }
+    if (video.src) {
+        video.setAttribute("hidden", "hidden");
+        video.pause();
+        video.removeAttribute("src"); // empty source
+        video.load();
+    }
+
+    if (mediaType === "video") {
+        video.removeAttribute("hidden");
+        video.src = mediaItem;
+    } else if (mediaType === "image") {
+        image.removeAttribute("hidden");
+        image.src = mediaItem;
+    }
 }
 
 function resetBoxSize() {
@@ -50,8 +103,11 @@ function resetBoxSize() {
 /**
  *
  * @param {{url: string, family: string, features?: any}[]} fonts
+ * @param {HTMLFormElement} form
  */
-function populateFonts(fonts) {
+function populateFonts(fonts, form = document.forms[0]) {
+    const fontUrlInput = $select("[data-font-url]");
+
     fonts.forEach(({ url, family }, index) => {
         // Load font
         const font = new FontFace(family, `url(${url})`);
@@ -64,14 +120,20 @@ function populateFonts(fonts) {
         const input = fontItem.querySelector("[data-font-input]");
 
         input.value = family;
-        input.addEventListener("change", () => form.requestSubmit());
-        if (!index) {
-            input.checked = "checked";
-        }
-
+        input.addEventListener("change", () => {
+            fontUrlInput.value = url;
+            form.requestSubmit();
+        });
         content.textContent = family;
         content.style.fontFamily = family;
 
+        // Set default
+        if (!index) {
+            fontUrlInput.value = url;
+            input.checked = "checked";
+        }
+
+        // Add to document
         $id("fontList").appendChild(fontItem);
     });
 }
@@ -79,17 +141,23 @@ function populateFonts(fonts) {
 /**
  *
  * @param {{thumb: string, url: string, type: "video" | "image"}[]} media
+ * @param {HTMLFormElement} form
  */
-function populateMedia(media) {
+function populateMedia(media, form = document.forms[0]) {
+    const typeInput = $select("[data-media-type]");
+
     media.forEach(({ thumb, url, type }, index) => {
         let mediaItem;
 
+        // Create image item
         if (type === "image") {
             mediaItem = getTempalteItem("#media-item-image-template");
 
             const image = mediaItem.querySelector("[data-thumb]");
             image.src = thumb;
-        } else if (type === "video") {
+        }
+        // or - Create video item
+        else if (type === "video") {
             mediaItem = getTempalteItem("#media-item-video-template");
 
             const video = mediaItem.querySelector("[data-thumb]");
@@ -98,26 +166,37 @@ function populateMedia(media) {
             video.addEventListener("mouseleave", () => video.pause());
         }
 
+        // Set input values
         const input = mediaItem.querySelector("[data-media-input]");
         input.value = url;
-        input.addEventListener("change", () => form.requestSubmit());
+        input.addEventListener("change", () => {
+            // Set currently selected type
+            typeInput.value = type;
+            form.requestSubmit();
+        });
+
+        // Set default
         if (!index) {
+            typeInput.value = type;
             input.checked = "checked";
         }
 
+        // Add to document
         $id("mediaList").appendChild(mediaItem);
     });
 }
 
 /**
- *
+ * this is the single point of update for stage content
  * @param {HTMLFormElement} form
  */
-function handleFormSubmit(form) {
+function handleFormSubmit(form = document.forms[0]) {
     form.addEventListener("submit", (event) => {
         event.preventDefault();
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
+        console.log(data);
+        setMedia(data);
         setSvgText(data);
         resetBoxSize();
     });
@@ -125,15 +204,15 @@ function handleFormSubmit(form) {
 }
 
 /**
- *
+ * Stagee editbox logic
  * @param {HTMLElement} textBox
  */
-function handleBoxResize(textBox) {
+function handleBoxResize(textBox = $id("text-box")) {
     const handles = [...$selectAll("[data-handle]"), textBox];
     handles.forEach((handle) => {
         handle.addEventListener("pointerdown", (event) => {
             const target = event.target;
-            const container = $id('result');
+            const container = $id("result");
             const containerH = container.offsetHeight;
             const containerW = container.offsetWidth;
             const corner = target.dataset.handle;
@@ -142,20 +221,22 @@ function handleBoxResize(textBox) {
                 top: textBox.offsetTop,
                 left: textBox.offsetLeft,
                 width: textBox.offsetWidth,
-                height: textBox.offsetHeight
-            }
-            const newDim = {...initialDim};
+                height: textBox.offsetHeight,
+            };
+            const newDim = { ...initialDim };
 
             const handleMove = ({ offsetX, offsetY }) => {
                 if (corner === "top-left") {
                     newDim.top = offsetY;
                     newDim.left = offsetX;
-                    newDim.width =  initialDim.width + initialDim.left - offsetX;
-                    newDim.height = initialDim.height + initialDim.top - offsetY;
+                    newDim.width = initialDim.width + initialDim.left - offsetX;
+                    newDim.height =
+                        initialDim.height + initialDim.top - offsetY;
                 } else if (corner === "top-right") {
                     newDim.top = offsetY;
                     newDim.width = offsetX - initialDim.left;
-                    newDim.height = initialDim.height + initialDim.top - offsetY;
+                    newDim.height =
+                        initialDim.height + initialDim.top - offsetY;
                 } else if (corner === "bottom-left") {
                     newDim.left = offsetX;
                     newDim.width = initialDim.width + initialDim.left - offsetX;
@@ -168,12 +249,28 @@ function handleBoxResize(textBox) {
                     newDim.left = offsetX - initialX;
                 }
 
-                container.dataset.dragging = 'true';
+                container.dataset.dragging = "true";
 
-                textBox.style.top = `${clamp(-newDim.height + 10, containerH - 10, newDim.top)}px`;
-                textBox.style.left = `${clamp(-newDim.width + 10, containerW - 10, newDim.left)}px`;
-                textBox.style.width = `${clamp(0, containerW * 2, newDim.width)}px`;
-                textBox.style.height = `${clamp(0, containerH * 2, newDim.height)}px`;
+                textBox.style.top = `${clamp(
+                    -newDim.height + 10,
+                    containerH - 10,
+                    newDim.top
+                )}px`;
+                textBox.style.left = `${clamp(
+                    -newDim.width + 10,
+                    containerW - 10,
+                    newDim.left
+                )}px`;
+                textBox.style.width = `${clamp(
+                    0,
+                    containerW * 2,
+                    newDim.width
+                )}px`;
+                textBox.style.height = `${clamp(
+                    0,
+                    containerH * 2,
+                    newDim.height
+                )}px`;
             };
 
             container.setPointerCapture(event.pointerId);
@@ -192,13 +289,11 @@ function handleBoxResize(textBox) {
 
 async function init() {
     const { fonts, media } = await getConfig();
-    const form = document.forms[0];
-    const textBox = $id("text-box");
     populateFonts(fonts);
     populateMedia(media);
 
-    handleFormSubmit(form);
-    handleBoxResize(textBox);
+    handleFormSubmit();
+    handleBoxResize();
 }
 
 if (document.readyState === "loading") {

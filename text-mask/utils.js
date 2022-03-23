@@ -10,4 +10,4 @@ export const $selectAll = (selector) => document.querySelectorAll(selector);
  */
 export function clamp(min, max, num) {
     return Math.min(max, Math.max(min, num));
-  }
+}
