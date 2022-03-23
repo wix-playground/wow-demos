@@ -124,20 +124,6 @@ function handleFormSubmit(form) {
     setTimeout(() => form.requestSubmit(), 500);
 }
 
-const getCalculatedOffsets = (event) => {
-    const offset = {
-        offsetX: event.offsetX,
-        offsetY: event.offsetY,
-    };
-    if (event.target !== event.currentTarget) {
-        const targetRect = event.target.getBoundingClientRect();
-        const containerRect = event.currentTarget.getBoundingClientRect();
-        offset.offsetX += targetRect.left - containerRect.left;
-        offset.offsetY += targetRect.top - containerRect.top;
-    }
-    return offset;
-};
-
 /**
  *
  * @param {HTMLElement} textBox
@@ -148,45 +134,46 @@ function handleBoxResize(textBox) {
         handle.addEventListener("pointerdown", (event) => {
             const target = event.target;
             const container = $id('result');
-            const max = container.offsetHeight;
+            const containerH = container.offsetHeight;
+            const containerW = container.offsetWidth;
             const corner = target.dataset.handle;
-            const dim = {
+            const { offsetX: initialX, offsetY: initialY } = event;
+            const initialDim = {
                 top: textBox.offsetTop,
                 left: textBox.offsetLeft,
                 width: textBox.offsetWidth,
                 height: textBox.offsetHeight
             }
-            const newDim = {...dim};
-            const handleMove = (e) => {
-                const { offsetX, offsetY } = e;
-                console.log("x", offsetX);
-                console.log("y", offsetY);
+            const newDim = {...initialDim};
 
+            const handleMove = ({ offsetX, offsetY }) => {
                 if (corner === "top-left") {
                     newDim.top = offsetY;
                     newDim.left = offsetX;
-                    newDim.width =  dim.width + dim.left - offsetX;
-                    newDim.height = dim.height + dim.top - offsetY;
+                    newDim.width =  initialDim.width + initialDim.left - offsetX;
+                    newDim.height = initialDim.height + initialDim.top - offsetY;
                 } else if (corner === "top-right") {
                     newDim.top = offsetY;
-                    newDim.width = offsetX - dim.left;
-                    newDim.height = dim.height + dim.top - offsetY;
+                    newDim.width = offsetX - initialDim.left;
+                    newDim.height = initialDim.height + initialDim.top - offsetY;
                 } else if (corner === "bottom-left") {
                     newDim.left = offsetX;
-                    newDim.width = dim.width + dim.left - offsetX;
-                    newDim.height = offsetY - dim.top;
+                    newDim.width = initialDim.width + initialDim.left - offsetX;
+                    newDim.height = offsetY - initialDim.top;
                 } else if (corner === "bottom-right") {
-                    newDim.width = offsetX - dim.left;
-                    newDim.height = offsetY - dim.top;
+                    newDim.width = offsetX - initialDim.left;
+                    newDim.height = offsetY - initialDim.top;
                 } else if (handle === textBox) {
-                    newDim.top = offsetY - dim.top ;
-                    newDim.left = offsetX - dim.left;
+                    newDim.top = offsetY - initialY;
+                    newDim.left = offsetX - initialX;
                 }
 
-                textBox.style.top = `${clamp(0, dim.top + dim.height, newDim.top)}px`;
-                textBox.style.left = `${clamp(0, dim.left + dim.width, newDim.left)}px`;
-                textBox.style.width = `${clamp(0, max - dim.left, newDim.width)}px`;
-                textBox.style.height = `${clamp(0, max - dim.top, newDim.height)}px`;
+                container.dataset.dragging = 'true';
+
+                textBox.style.top = `${clamp(-newDim.height + 10, containerH - 10, newDim.top)}px`;
+                textBox.style.left = `${clamp(-newDim.width + 10, containerW - 10, newDim.left)}px`;
+                textBox.style.width = `${clamp(0, containerW * 2, newDim.width)}px`;
+                textBox.style.height = `${clamp(0, containerH * 2, newDim.height)}px`;
             };
 
             container.setPointerCapture(event.pointerId);
@@ -194,14 +181,12 @@ function handleBoxResize(textBox) {
             container.addEventListener(
                 "pointerup",
                 function handlePointerUp(e) {
+                    delete container.dataset.dragging;
                     container.removeEventListener("pointerup", handlePointerUp);
                     container.removeEventListener("pointermove", handleMove);
                 }
             );
         });
-    });
-    $id("result").addEventListener("dragover", (event) => {
-        event.preventDefault();
     });
 }
 
