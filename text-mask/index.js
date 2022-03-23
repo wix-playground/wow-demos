@@ -242,18 +242,16 @@ function handleBoxResize(textBox = $id("text-box")) {
 
             const handleMove = ({ offsetX, offsetY }) => {
                 if (corner === "top-left") {
-                    newDim.top = offsetY;
-                    newDim.left = offsetX;
+                    newDim.top = Math.min(offsetY, initialDim.height + initialDim.top - 10);
+                    newDim.left = Math.min(offsetX, initialDim.width + initialDim.left - 10);
                     newDim.width = initialDim.width + initialDim.left - offsetX;
-                    newDim.height =
-                        initialDim.height + initialDim.top - offsetY;
+                    newDim.height = initialDim.height + initialDim.top - offsetY;
                 } else if (corner === "top-right") {
-                    newDim.top = offsetY;
+                    newDim.top = Math.min(offsetY, initialDim.height + initialDim.top - 10);
                     newDim.width = offsetX - initialDim.left;
-                    newDim.height =
-                        initialDim.height + initialDim.top - offsetY;
+                    newDim.height = initialDim.height + initialDim.top - offsetY;
                 } else if (corner === "bottom-left") {
-                    newDim.left = offsetX;
+                    newDim.left = Math.min(offsetX, initialDim.width + initialDim.left - 10);
                     newDim.width = initialDim.width + initialDim.left - offsetX;
                     newDim.height = offsetY - initialDim.top;
                 } else if (corner === "bottom-right") {
@@ -267,22 +265,22 @@ function handleBoxResize(textBox = $id("text-box")) {
                 container.dataset.dragging = "true";
 
                 textBox.style.top = `${clamp(
-                    -newDim.height + 10,
+                    Math.min(-newDim.height, 0) + 10,
                     containerH - 10,
                     newDim.top
                 )}px`;
                 textBox.style.left = `${clamp(
-                    -newDim.width + 10,
+                    Math.min(-newDim.width, 0) + 10,
                     containerW - 10,
                     newDim.left
                 )}px`;
                 textBox.style.width = `${clamp(
-                    0,
+                    10,
                     containerW * 2,
                     newDim.width
                 )}px`;
                 textBox.style.height = `${clamp(
-                    0,
+                    10,
                     containerH * 2,
                     newDim.height
                 )}px`;
