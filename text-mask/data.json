@@ -24,6 +24,16 @@
             "url": "https://fonts.gstatic.com/s/tomorrow/v5/WBLjrETNbFtZCeGqgRXXQ8XOPMmJiw.woff",
             "family": "Tomorrow",
             "features": {}
+        },
+        {
+            "url": "https://fonts.gstatic.com/s/karantina/v1/buExpo24ccnh31GVMABxTC8v8fRJ.woff",
+            "family": "Karantina",
+            "features": {}
+        },
+        {
+            "url": "https://fonts.gstatic.com/s/alef/v12/FeVQS0NQpLYglo50H55Q3g.woff",
+            "family": "Alef",
+            "features": {}
         }
     ],
     "media": [

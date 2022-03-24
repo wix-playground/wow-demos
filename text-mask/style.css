@@ -1,3 +1,6 @@
+:root {
+    --seleced-font-family: 'Arial, Helvetica, sans-serif';
+}
 /*
  * layout
  */
@@ -52,6 +55,7 @@ li {
 }
 
 .text-input-text {
+    font-family: var(--seleced-font-family);
     border: none;
     background: none;
     font-size: 2em;

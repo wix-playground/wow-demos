@@ -1,16 +1,26 @@
 import { $id, $select, $selectAll, clamp } from "./utils.js";
 import opentypeJs from "https://cdn.skypack.dev/opentype.js";
+// polyfill for form.requestSubmit in Safari, should be removed when the feature is enabled https://bugs.webkit.org/show_bug.cgi?id=197958
+import formRequestSubmitPolyfill from 'https://cdn.skypack.dev/pin/form-request-submit-polyfill@v2.0.0-szOipIemxchOslzcqvLN/mode=imports,min/optimized/form-request-submit-polyfill.js';
 
 /**
  * Use Opentype.js to convert text + font to path
  * TODO: Support bold, italic, multiline, variants, features
  * @param {string} text
  * @param {string} fontUrl
+ * @param {{kerning: boolean, hinting: boolean, features: { liga: boolean, rlig: boolean }}}
  * @returns {Promise<string>} svg path
  */
-async function textToPath(text, fontUrl) {
+async function textToPath(text, fontUrl, options = {
+    kerning: true,
+    hinting: false,
+    features: {
+        liga: true,
+        rlig: true
+    }
+}) {
     const font = await opentypeJs.load(fontUrl);
-    const path = font.getPath(text, 0, 0, 20);
+    const path = font.getPath(text, 0, 0, 20, options);
     return path.toSVG();
 }
 
@@ -72,6 +82,7 @@ async function setSvgText({ text, fontFamily, fontUrl }) {
     console.log(serialized);
     media.style.WebkitMaskImage = serialized;
     media.style.maskImage = serialized;
+    document.body.style.setProperty('--seleced-font-family', fontFamily);
 }
 
 /**
