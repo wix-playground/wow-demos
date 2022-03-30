@@ -1,7 +1,11 @@
 import { $id, $select, $selectAll, clamp } from "./utils.js";
+import webfontloader from 'https://cdn.skypack.dev/webfontloader';
 import opentypeJs from "https://cdn.skypack.dev/opentype.js";
+import bidiFactory from 'https://cdn.skypack.dev/bidi-js';
 // polyfill for form.requestSubmit in Safari, should be removed when the feature is enabled https://bugs.webkit.org/show_bug.cgi?id=197958
 import formRequestSubmitPolyfill from 'https://cdn.skypack.dev/pin/form-request-submit-polyfill@v2.0.0-szOipIemxchOslzcqvLN/mode=imports,min/optimized/form-request-submit-polyfill.js';
+
+const bidi = bidiFactory()
 
 /**
  * Use Opentype.js to convert text + font to path
@@ -9,9 +13,9 @@ import formRequestSubmitPolyfill from 'https://cdn.skypack.dev/pin/form-request-
  * @param {string} text
  * @param {string} fontUrl
  * @param {{kerning: boolean, hinting: boolean, features: { liga: boolean, rlig: boolean }}}
- * @returns {Promise<string>} svg path
+ * @returns {Promise<string[]>} svg path
  */
-async function textToPath(text, fontUrl, options = {
+async function textToPath(text, fontUrl, fontSize, textDir, options = {
     kerning: true,
     hinting: false,
     features: {
@@ -20,13 +24,14 @@ async function textToPath(text, fontUrl, options = {
     }
 }) {
     const font = await opentypeJs.load(fontUrl);
-    const path = font.getPath(text, 0, 0, 20, options);
-    return path.toSVG();
+    const bidiText = bidi.getReorderedString(text, bidi.getEmbeddingLevels(text, textDir));
+    const paths = font.getPaths(bidiText, 0, 0, fontSize, options);
+    return paths.map(path => path.toSVG());
 }
 
 /**
  * Get configuration from a json file (because we cant natively import json files just yet)
- * @typedef {{fonts: {url: string, family: string, features?: any}[], media: {thumb: string, url: string, type: 'image'|'video'}[]}} ConfigData
+ * @typedef {{fonts: {url: string, family: string, features?: {unicodeRanges: string[]}}[], media: {thumb: string, url: string, type: 'image'|'video'}[]}} ConfigData
  * @returns {Promise<ConfigData>}
  */
 async function getConfig() {
@@ -34,6 +39,14 @@ async function getConfig() {
     return await response.json();
 }
 
+/**
+ * Get Settings saved to URL
+ * @returns {Partial<MaskFormData>}
+ */
+function getSettingsFromUrl() {
+    var urlParams = new URLSearchParams(window.location.search);
+    return Object.fromEntries(urlParams.entries());
+}
 /**
  * get an html template from the dom by a selector
  * @param {string} selector
@@ -65,29 +78,95 @@ function encodeSVG(data) {
 }
 /**
  * Set svg text to stage
- * @param {ConfigData} data
+ * @param {MaskFormData} data
  */
-async function setSvgText({ text, fontFamily, fontUrl }) {
+async function setSvgText({ line1, line2, line3, fontFamily, fontUrl, fontSize = 72, lineSpacing, letterSpacing, textDir, textRotation, textOutline, textOutlineColor, textBlendMode, textAlign }) {
+    // string to number
+    fontSize = +fontSize;
+    lineSpacing = +lineSpacing;
+    letterSpacing = +letterSpacing;
+    textRotation = +textRotation;
+    textOutline = +textOutline;
+
+    // selectors
+    const svgAndMedia = $id("text-box-content");
     const svg = $id("text-svg");
+    const svgGroup = $id('text-svg-main');
     const media = $id("text-media");
 
-    const pathContent = await textToPath(text, fontUrl)
+    // convertion
+    const lines = [line1, line2, line3].filter(x => x);
+    const linesPaths = await Promise.all(lines.map(line => textToPath(line, fontUrl, fontSize, textDir)));
 
-    svg.innerHTML = pathContent;
-    const path = svg.querySelector('path');
-    const { x, y, width, height } = path.getBBox();
+    //reset stuff
+    svg.style.fillOpacity = '';
+    svg.style.strokeWidth = 0;
+    svg.style.overflow = '';
+    svgGroup.innerHTML ='';
+
+    // set svg to dom and do lines and letters manipulations
+    linesPaths.forEach((paths, i) => {
+        svgGroup.innerHTML += `<g>${paths.join('')}</g>`;
+        const g = svgGroup.lastChild;
+
+        // Set Letter Spacing
+        if (letterSpacing) {
+            [...g.querySelectorAll('path')].forEach((path, i) => path.setAttribute('transform', `translate(${letterSpacing * i} 0)`))
+        }
+
+        // Set Alignment and Line spacing
+        let gLeft = 0;
+        const {width: svgGroupWidth} = svgGroup.getBBox();
+        const {width: gWidth} = g.getBBox();
+
+        if (textAlign === 'center') {
+            gLeft = (svgGroupWidth - gWidth) / 2;
+        } else if (textAlign === 'right') {
+            gLeft = svgGroupWidth - gWidth;
+        }
+
+        g.setAttribute('transform', `translate(${gLeft} ${(fontSize + lineSpacing) * i})`);
+    });
+
+    // Set Rotation
+    svgGroup.setAttribute('transform', `rotate(${textRotation})`)
+
+    // Resize box
+    const { x, y, width, height } = svg.getBBox();
     svg.setAttribute("viewBox", `${x} ${y} ${width} ${height}`);
 
+    // Create mask
     const serialized = encodeSVG(svg.outerHTML);
     console.log(serialized);
     media.style.WebkitMaskImage = serialized;
     media.style.maskImage = serialized;
     document.body.style.setProperty('--seleced-font-family', fontFamily);
+
+    // blend mode, both mask and outline
+    svgAndMedia.style.mixBlendMode = textBlendMode;
+
+    //Apply outline to svg - Has to be AFTER serializing
+    if (textOutline) {
+        svg.style.fill = textOutlineColor;
+        //svg.style.fillOpacity = 1;
+        svg.style.stroke = textOutlineColor;
+        svg.style.strokeWidth = textOutline;
+        svg.style.overflow = 'visible';
+    }
+}
+
+/**
+ * Set text dir
+ * @param {MaskFormData} data
+ */
+function setDirection(dir) {
+    const textInputs = $id('textInputs');
+    textInputs.style.direction = dir === 'rtl' ? dir : '';
 }
 
 /**
  * Set media to stage
- * @param {ConfigData} data
+ * @param {MaskFormData} data
  */
 function setMedia({ mediaItem, mediaType }) {
     const video = $id("media-video");
@@ -116,14 +195,30 @@ function setMedia({ mediaItem, mediaType }) {
 /**
  * Reset on stage box size to content limits
  */
-function resetBoxSize() {
+function setupStage(bgColor) {
+    // fit box to svg
     const box = $id("text-box");
     const svg = $id("text-svg");
     const { width, height } = svg.getBoundingClientRect();
     box.style.width = `${width}px`;
     box.style.height = `${height}px`;
+
+    // set bg color
+    $id('result').style.background = bgColor;
 }
 
+/**
+ * Load web fonts from config with WebFontLoader 3rd party
+ * @param {ConfigData['fonts']} fonts
+ */
+function loadWebFonts(fonts) {
+    const families = fonts.map(({family, variant = 400}) => `${family}:${variant}`)
+    webfontloader.load({
+        google: {
+          families
+        }
+      })
+}
 /**
  * Get font list from configuration and build UI + form event
  * @param {ConfigData['fonts']} fonts
@@ -132,12 +227,7 @@ function resetBoxSize() {
 function populateFonts(fonts, form = document.forms[0]) {
     const fontUrlInput = $select("[data-font-url]");
 
-    fonts.forEach(({ url, family }, index) => {
-        // Load font
-        const font = new FontFace(family, `url(${url})`);
-        font.load();
-        document.fonts.add(font);
-
+    fonts.forEach(({ url, family}, index) => {
         // Create font item
         const fontItem = getTempalteItem("#font-item-template");
         const content = fontItem.querySelector("[data-font-name]");
@@ -152,7 +242,7 @@ function populateFonts(fonts, form = document.forms[0]) {
         content.style.fontFamily = family;
 
         // Set default
-        if (!index) {
+        if (family === 'Karantina') {
             fontUrlInput.value = url;
             input.checked = "checked";
         }
@@ -210,19 +300,68 @@ function populateMedia(media, form = document.forms[0]) {
     });
 }
 
+function setupTextSettings(){
+    [...$selectAll('[data-setting-change')]?.forEach(input => input.addEventListener('change', () => {
+        form.requestSubmit();
+    }));
+    [...$selectAll('[data-setting-input')]?.forEach(input => input.addEventListener('input', () => {
+        form.requestSubmit();
+    }));
+
+    $id('copy-url').addEventListener('click', (event) => {
+        navigator.clipboard.writeText(location.href).then(() => {
+            event.target.querySelector('span').textContent = '(Copied!)';
+        })
+        event.preventDefault();
+    })
+}
+
+/**
+ * Set form data from a saved object
+ * @param {Partial<MaskFormData>} defaults
+ */
+function setFormDefaults(defaults) {
+    const form = document.forms[0];
+
+    Object.entries(defaults).forEach(([key, value]) => {
+        if (form.elements[key]) {
+            form.elements[key].value = value
+        }
+    })
+}
 /**
  * this is the single point of update for stage content
+ * @typedef {{
+ *    fontFamily: string, fontUrl: string, line1: string, line2: string, line3: string, mediaItem: string, mediaType: string,
+ *    fontSize: string, letterSpacing: string, lineSpacing: string, textRotation: string, textOutline: string, textOutlineColor: string,
+ *    textDir: 'rtl' | 'ltr', textAlign: 'left' | 'right' | 'center', stageBackground: string, textBlendMode: string
+ * }} MaskFormData
  * @param {HTMLFormElement} form
  */
-function handleFormSubmit(form = document.forms[0]) {
+function handleFormSubmit() {
+    const form = document.forms[0];
     form.addEventListener("submit", async (event) => {
         event.preventDefault();
+
         const formData = new FormData(form);
+        /**
+         * @type MaskFormData
+         */
         const data = Object.fromEntries(formData.entries());
+
         console.log(data);
+
+        setDirection(data.textDir);
         setMedia(data);
         await setSvgText(data);
-        resetBoxSize();
+        setupStage(data.stageBackground);
+
+        // Update URL without reloading
+        if (history.pushState) {
+            const dataAsString = [...formData.entries()].map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`).join('&');
+            var newurl = `${window.location.protocol}//${window.location.host}${window.location.pathname}?${dataAsString}`;
+            window.history.pushState({path:newurl},'',newurl);
+        }
     });
     // Initial setup, stupidly wait 500ms for all fonts etc to load
     setTimeout(() => form.requestSubmit(), 500);
@@ -316,9 +455,12 @@ function handleBoxResize(textBox = $id("text-box")) {
  */
 async function init() {
     const { fonts, media } = await getConfig();
+    const defaults = getSettingsFromUrl();
+    loadWebFonts(fonts);
     populateFonts(fonts);
     populateMedia(media);
-
+    setupTextSettings();
+    setFormDefaults(defaults);
     handleFormSubmit();
     handleBoxResize();
 }
