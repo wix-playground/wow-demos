@@ -104,8 +104,8 @@ async function setSvgText({ line1, line2, line3, fontFamily, fontUrl, fontSize =
     svg.style.overflow = '';
     svgGroup.innerHTML ='';
 
-    // set svg to dom and do lines and letters manipulations
-    linesPaths.forEach((paths, i) => {
+    // First loop : set svg to dom and do and do letter spacing manipulations
+    linesPaths.forEach((paths) => {
         svgGroup.innerHTML += `<g>${paths.join('')}</g>`;
         const g = svgGroup.lastChild;
 
@@ -113,8 +113,10 @@ async function setSvgText({ line1, line2, line3, fontFamily, fontUrl, fontSize =
         if (letterSpacing) {
             [...g.querySelectorAll('path')].forEach((path, i) => path.setAttribute('transform', `translate(${letterSpacing * i} 0)`))
         }
-
-        // Set Alignment and Line spacing
+    });
+    // Second Loop: Set Alignment and Line spacing
+    // We need a second loop because we need to know the longes line width
+    [...svgGroup.querySelectorAll('g')].forEach((g, i) => {
         let gLeft = 0;
         const {width: svgGroupWidth} = svgGroup.getBBox();
         const {width: gWidth} = g.getBBox();
@@ -126,12 +128,12 @@ async function setSvgText({ line1, line2, line3, fontFamily, fontUrl, fontSize =
         }
 
         g.setAttribute('transform', `translate(${gLeft} ${(fontSize + lineSpacing) * i})`);
-    });
+    })
 
     // Set Rotation
     svgGroup.setAttribute('transform', `rotate(${textRotation})`)
 
-    // Resize box
+    // after all the manipulations - get the exact boundaries and resize box
     const { x, y, width, height } = svg.getBBox();
     svg.setAttribute("viewBox", `${x} ${y} ${width} ${height}`);
 
