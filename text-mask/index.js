@@ -360,9 +360,9 @@ function handleFormSubmit() {
 
         // Update URL without reloading
         if (history.pushState) {
-            const dataAsString = [...formData.entries()].map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`).join('&');
-            var newurl = `${window.location.protocol}//${window.location.host}${window.location.pathname}?${dataAsString}`;
-            window.history.pushState({path:newurl},'',newurl);
+            const url = new URL(window.location.href);
+            url.search = new URLSearchParams(formData).toString();
+            window.history.pushState({ path: url.href }, '', url.href);
         }
     });
     // Initial setup, stupidly wait 500ms for all fonts etc to load
