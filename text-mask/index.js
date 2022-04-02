@@ -44,7 +44,7 @@ async function getConfig() {
  * @returns {Partial<MaskFormData>}
  */
 function getSettingsFromUrl() {
-    var urlParams = new URLSearchParams(window.location.search);
+    const urlParams = new URLSearchParams(window.location.search);
     return Object.fromEntries(urlParams.entries());
 }
 /**
