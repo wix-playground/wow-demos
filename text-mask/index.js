@@ -40,14 +40,6 @@ async function getConfig() {
 }
 
 /**
- * Get Settings saved to URL
- * @returns {Partial<MaskFormData>}
- */
-function getSettingsFromUrl() {
-    const urlParams = new URLSearchParams(window.location.search);
-    return Object.fromEntries(urlParams.entries());
-}
-/**
  * get an html template from the dom by a selector
  * @param {string} selector
  * @returns {HTMLElement}
@@ -322,14 +314,30 @@ function setupTextSettings(){
  * Set form data from a saved object
  * @param {Partial<MaskFormData>} defaults
  */
-function setFormDefaults(defaults) {
-    const form = document.forms[0];
+function setFormDefaults() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const checkboxGroups = {};
 
-    Object.entries(defaults).forEach(([key, value]) => {
-        if (form.elements[key]) {
-            form.elements[key].value = value
+    // Iterate over all form elements that are referenced in the url search params
+    for (const [name, value] of urlParams.entries()) {
+      if (form.elements[name]) {
+        // checkboxes are special, they don't have a value in form.elements, and they are represented with a repeating key in the url
+        // Also, if there is one checkbox in a group =there is no group, so we need to account for a single one too.
+        // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox#handling_multiple_checkboxes
+        if (form.elements[name].type === 'checkbox' || form.elements[name][0]?.type === 'checkbox') {
+          checkboxGroups[name] ? checkboxGroups[name].push(value) : checkboxGroups[name] = [value];
         }
-    })
+        // Set value to the saved value
+        form.elements[name].value = value;
+      }
+    }
+
+    // Now handle checkboxes
+    for (const [name, values] of Object.entries(checkboxGroups)) {
+      form.elements[name].type === 'checkbox'
+        ? form.elements[name].checked = values.includes(form.elements[name].value)
+        : form.elements[name].forEach(element => element.checked = values.includes(element.value));
+    }
 }
 /**
  * this is the single point of update for stage content
@@ -457,12 +465,11 @@ function handleBoxResize(textBox = $id("text-box")) {
  */
 async function init() {
     const { fonts, media } = await getConfig();
-    const defaults = getSettingsFromUrl();
     loadWebFonts(fonts);
     populateFonts(fonts);
     populateMedia(media);
     setupTextSettings();
-    setFormDefaults(defaults);
+    setFormDefaults();
     handleFormSubmit();
     handleBoxResize();
 }
