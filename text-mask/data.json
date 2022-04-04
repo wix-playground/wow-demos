@@ -48,7 +48,8 @@
         {
             "thumb": "https://picsum.photos/id/1062/150/100",
             "url": "https://picsum.photos/id/1062/1920/1200",
-            "type": "image"
+            "type": "image",
+            "defaults": true
         },
         {
             "thumb": "https://picsum.photos/id/1020/150/100",

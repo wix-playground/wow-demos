@@ -22,15 +22,13 @@
                 <button form="form" name="submit" type="submit" class="text-input-submit">Change</button>
             </div>
             <div class="font-list">
-                <input form="form" data-font-url type="hidden" name="fu" value="">
-                <!-- <input form="form" data-font-family type="hidden" name="fontFamily" value=""> -->
                 <h3>Fonts</h3>
                 <ul class="font-list-items" id="fontList">
                     <template id="font-item-template">
                         <li class="font-item">
                             <label>
-                                <input form="form" data-font-input class="font-input" type="radio" name="ff"
-                                    value="">
+                                <input form="form" data-setting-change data-font-input class="font-input" type="radio"
+                                    name="fi" value="">
                                 <span data-font-name class="font-name">Font Name</span>
                             </label>
                         </li>
@@ -38,14 +36,13 @@
                 </ul>
             </div>
             <div class="media-list">
-                <input form="form" data-media-type type="hidden" name="mt" value="">
                 <h3>Media</h3>
                 <ul class="media-list-items" id="mediaList">
                     <template id="media-item-image-template">
                         <li class="media-item">
                             <label>
-                                <input form="form" data-media-input class="media-input" type="radio" name="mi"
-                                    value="">
+                                <input form="form" data-setting-change data-media-input class="media-input" type="radio"
+                                    name="mi" value="">
                                 <img data-thumb class="media-thumb" src="" alt="" />
                             </label>
                         </li>
@@ -53,8 +50,8 @@
                     <template id="media-item-video-template">
                         <li class="media-item">
                             <label>
-                                <input form="form" data-media-input class="media-input" type="radio" name="mi"
-                                    value="">
+                                <input form="form" data-setting-change data-media-input class="media-input" type="radio"
+                                    name="mi" value="">
                                 <video data-thumb class="media-thumb" src="" muted playsinline></video>
                             </label>
                         </li>
@@ -63,97 +60,133 @@
             </div>
             <div class="text-settings">
                 <h3>Text Controls</h3>
-                <label class="pop-label">
-                    <input disabled type="number" data-setting-change form="form" name="fs" min="0" max="300"
-                        step="1" value="72"">
+                <fieldset>
+                    <label class="pop-label">
+                        <input disabled type="number" data-setting-change form="form" name="fs" min="0" max="300"
+                            step="1" value="72"">
                         <span>Font Size (TBD)</span>
                     </label>
-                <label class="pop-label">
-                    <input type="number" data-setting-change form="form" name="lts" min="0" max="100" step="1"
-                        value="0">
-                    <span>Letter Spacing</span>
-                </label>
-                <label class="pop-label">
-                    <input type="number" data-setting-change form="form" name="ls" min="0" max="100" step="1"
-                        value="5">
-                    <span>Line Spacing</span>
-                </label>
-                <label class="pop-label">
-                    <select form="form" data-setting-change name="ta">
-                        <option value="left" selected>Left</option>
-                        <option value="right">Right</option>
-                        <option value="center">Center</option>
-                    </select>
-                    <span>Text Align</span>
-                </label>
-                <label class="pop-label">
-                    <select form="form" data-setting-change name="td">
-                        <option value="lrt" selected>Left to Right</option>
-                        <option value="rtl">Right to Left</option>
-                    </select>
-                    <span>Text Direction</span>
-                </label>
+                <label class=" pop-label">
+                        <input type="number" data-setting-change form="form" name="lts" min="-20" max="100" step="1"
+                            value="0">
+                        <span>Letter Spacing</span>
+                    </label>
+                    <label class="pop-label">
+                        <input type="number" data-setting-change form="form" name="ls" min="-40" max="100" step="1"
+                            value="5">
+                        <span>Line Spacing</span>
+                    </label>
+                    <label class="pop-label">
+                        <select form="form" data-setting-change name="ta">
+                            <option value="left" selected>Left</option>
+                            <option value="right">Right</option>
+                            <option value="center">Center</option>
+                        </select>
+                        <span>Text Align</span>
+                    </label>
+                    <label class="pop-label">
+                        <select form="form" data-setting-change name="td">
+                            <option value="lrt" selected>Left to Right</option>
+                            <option value="rtl">Right to Left</option>
+                        </select>
+                        <span>Text Direction</span>
+                    </label>
+                    <label class="pop-label">
+                        <input type="checkbox" data-setting-change form="form" name="tas" checked value="keep">
+                        <span>Keep Aspect Ratio</span>
+                    </label>
+                </fieldset>
             </div>
             <div class="text-effects">
                 <h3>Text Effects</h3>
-                <label class="pop-label">
-                    <input type="number" data-setting-change form="form" name="tr" min="-180" max="180"
-                        step="1" value="0">
-                    <span>Rotate (deg)</span>
-                </label>
-                <label class="pop-label">
-                    <input type="number" data-setting-change form="form" name="ts" min="-100" max="100"
-                        step="1" value="0">
-                    <span>Skew (px)</span>
-                </label>
-                <label class="pop-label">
-                    <input type="checkbox" data-setting-change form="form" name="tas" checked value="keep">
-                    <span>Keep Aspect Ratio</span>
-                </label>
-                <label class="pop-label">
-                    <input type="number" data-setting-change form="form" name="to" min="0" max="20" step="1"
-                        value="0">
-                    <span>Outline</span>
-                </label>
-                <label class="pop-label">
-                    <input type="color" data-setting-input form="form" name="toc" value="#000000">
-                    <span>Outline Color</span>
-                </label>
 
-                <label class="pop-label">
-                    <select data-setting-change form="form" name="tbm" value="normal">
-                        <option value="normal">normal</option>
-                        <option value="multiply">multiply</option>
-                        <option value="screen">screen</option>
-                        <option value="overlay">overlay</option>
-                        <option value="darken">darken</option>
-                        <option value="lighten">lighten</option>
-                        <option value="color-dodge">color-dodge</option>
-                        <option value="color-burn">color-burn</option>
-                        <option value="hard-light">hard-light</option>
-                        <option value="soft-light">soft-light</option>
-                        <option value="difference">difference</option>
-                        <option value="exclusion">exclusion</option>
-                        <option value="hue">hue</option>
-                        <option value="saturation">saturation</option>
-                        <option value="color">color</option>
-                        <option value="luminosity">luminosity</option>
-                    </select>
-                    <span>Blend Mode</span>
-                </label>
+                <fieldset>
+                    <legend>Transforms</legend>
+                    <label class="pop-label">
+                        <input type="number" data-setting-change form="form" name="tr" min="-180" max="180" step="1"
+                            value="0">
+                        <span>Rotate (deg)</span>
+                    </label>
+                    <label class="pop-label">
+                        <input type="number" data-setting-change form="form" name="ts" min="-100" max="100" step="1"
+                            value="0">
+                        <span>Skew (px)</span>
+                    </label>
+                </fieldset>
+
+
+                <fieldset>
+                    <legend>Outline</legend>
+                    <label class="pop-label">
+                        <input type="number" data-setting-change form="form" name="to" min="0" max="20" step="1"
+                            value="0">
+                        <span>Width</span>
+                    </label>
+                    <label class="pop-label">
+                        <input type="color" data-setting-input form="form" name="toc" value="#000000">
+                        <span>Color</span>
+                    </label>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Shadow</legend>
+                    <label class="pop-label">
+                        <input type="color" data-setting-input form="form" name="tsc" value="#000000">
+                        <input type="range" data-setting-change form="form" name="tso" min="0" max="1" step="0.01" value="0.2">
+                        <span>Color</span>
+                    </label>
+                    <label class="pop-label">
+                        <i><input type="number" data-setting-change form="form" name="tsx" value="0" min="-50"
+                                max="50" title="Shadow x">
+                            <input type="number" data-setting-change form="form" name="tsy" value="0" min="-50"
+                                max="50" title="Shadow y"></i>
+                        <span>Offset</span>
+                    </label>
+
+                    <label class="pop-label">
+                            <input type="number" data-setting-change form="form" name="tsb" value="0" min="-50"
+                                max="50" title="Blur">
+                        <span>Blur</span>
+                    </label>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Background and Effects</legend>
+                    <label class="pop-label">
+                        <select data-setting-change form="form" name="tbm" value="normal">
+                            <option value="normal">normal</option>
+                            <option value="multiply">multiply</option>
+                            <option value="screen">screen</option>
+                            <option value="overlay">overlay</option>
+                            <option value="darken">darken</option>
+                            <option value="lighten">lighten</option>
+                            <option value="color-dodge">color-dodge</option>
+                            <option value="color-burn">color-burn</option>
+                            <option value="hard-light">hard-light</option>
+                            <option value="soft-light">soft-light</option>
+                            <option value="difference">difference</option>
+                            <option value="exclusion">exclusion</option>
+                            <option value="hue">hue</option>
+                            <option value="saturation">saturation</option>
+                            <option value="color">color</option>
+                            <option value="luminosity">luminosity</option>
+                        </select>
+                        <span>Blend Mode</span>
+                    </label>
+                    <label class="pop-label">
+                        <input type="color" data-setting-input name="sb" form="form" value="#ffffff">
+                        <span>BG Color</span>
+                    </label>
+                    <label class="pop-label">
+                        <input type="text" data-setting-change name="sbi" form="form" value="">
+                        <span>BG Image</span>
+                    </label>
+                </fieldset>
+
             </div>
-            <div class="others">
-                <h3>More Controls</h3>
-                <label class="pop-label">
-                    <input type="color" data-setting-input name="sb" id="" form="form" value="#ffffff">
-                    <span>Background Color</span>
-                </label>
-                <label class="pop-label">
-                    <input type="text" data-setting-change name="sbi" id="" form="form" value="">
-                    <span>Background Image</span>
-                </label>
-            </div>
-            <aside class="copy-url-note"> Every chnage you make is saved in the URL, you can <a href="" id="copy-url">copy the url <span>(Click Me!)</span></a> and open your preset playground anywhere</aside>
+            <aside class="copy-url-note"> Every chnage you make is saved in the URL, you can <a href=""
+                    id="copy-url">copy the url <span>(Click Me!)</span></a> and open your preset anywhere
+            </aside>
         </div>
         <div class="result" id="result">
             <div id="text-box" class="text-box">

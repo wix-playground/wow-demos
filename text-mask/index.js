@@ -78,6 +78,11 @@ function encodeSVG(data) {
     return `url("data:image/svg+xml,${escaped}")`;
 }
 
+const hex2rgba = (hex, alpha = 1) => {
+    const [r, g, b] = hex.match(/\w\w/g).map(x => parseInt(x, 16));
+    return `rgba(${r},${g},${b},${alpha})`;
+  };
+
 /**
  * Set svg text to stage
  * @param {MaskFormData} data
@@ -86,8 +91,7 @@ async function setSvgText({
     l1: line1,
     l2: line2,
     l3: line3,
-    ff: fontFamily,
-    fu: fontUrl,
+    fi: selectedIndex,
     fs: fontSize = 72,
     ls: lineSpacing,
     lts: letterSpacing,
@@ -99,7 +103,15 @@ async function setSvgText({
     tbm: textBlendMode,
     ta: textAlign,
     tas: textAspect,
+    tsc: textShadowColor,
+    tso: textShadowOpacity,
+    tsx: textShadowX,
+    tsy: textShadowY,
+    tsb: textShadowBlur,
 }) {
+    const fonts = state.get("fonts");
+    const { url } = fonts[selectedIndex];
+
     // string to number
     fontSize = +fontSize;
     lineSpacing = +lineSpacing;
@@ -107,6 +119,7 @@ async function setSvgText({
     textRotation = +textRotation;
     textSkew = +textSkew;
     textOutline = +textOutline;
+    textShadowOpacity = +textShadowOpacity;
 
     // selectors
     const svgAndMedia = $id("text-box-content");
@@ -119,18 +132,18 @@ async function setSvgText({
 
     if (
         state.get("text") !== lines.join() ||
-        state.get("fontUrl") !== fontUrl ||
+        state.get("fontUrl") !== url ||
         state.get("fontSize") !== fontSize ||
         state.get("textDir") !== textDir
     ) {
         // convertion
 
         linesPaths = await Promise.all(
-            lines.map((line) => textToPath(line, fontUrl, fontSize, textDir))
+            lines.map((line) => textToPath(line, url, fontSize, textDir))
         );
         state.set("linesPaths", linesPaths);
         state.set("text", lines.join());
-        state.set("fontUrl", fontUrl);
+        state.set("fontUrl", url);
         state.set("fontSize", fontSize);
         state.set("textDir", textDir);
     }
@@ -198,12 +211,11 @@ async function setSvgText({
     console.log(serialized);
     media.style.WebkitMaskImage = serialized;
     media.style.maskImage = serialized;
-    document.body.style.setProperty("--seleced-font-family", fontFamily);
 
     // blend mode, both mask and outline
     svgAndMedia.style.mixBlendMode = textBlendMode;
 
-    //Apply outline to svg - Has to be AFTER serializing
+    //Apply outline and shadow to svg - Has to be AFTER serializing
     if (textOutline) {
         svg.style.fill = textOutlineColor;
         //svg.style.fillOpacity = 1;
@@ -211,22 +223,28 @@ async function setSvgText({
         svg.style.strokeWidth = textOutline;
         svg.style.overflow = "visible";
     }
+    if (textShadowOpacity) {
+        svgAndMedia.style.filter = `drop-shadow(${textShadowX}px ${textShadowY}px ${textShadowBlur}px ${hex2rgba(textShadowColor, textShadowOpacity)})`
+    }
 }
 
 /**
  * Set text dir
  * @param {MaskFormData} data
  */
-function setDirection({ td: dir }) {
+function setDirection({ td: textDirection }) {
     const textInputs = $id("textInputs");
-    textInputs.style.direction = dir === "rtl" ? dir : "";
+    textInputs.style.direction = textDirection === "rtl" ? textDirection : "";
 }
 
 /**
  * Set media to stage
  * @param {MaskFormData} data
  */
-function setMedia({ mi: mediaItem, mt: mediaType }) {
+function setMedia({ mi: selectedIndex }) {
+    const media = state.get("media");
+    const { type, url } = media[selectedIndex];
+
     const video = $id("media-video");
     const image = $id("media-image");
 
@@ -241,12 +259,12 @@ function setMedia({ mi: mediaItem, mt: mediaType }) {
         video.load();
     }
 
-    if (mediaType === "video") {
+    if (type === "video") {
         video.removeAttribute("hidden");
-        video.src = mediaItem;
-    } else if (mediaType === "image") {
+        video.src = url;
+    } else if (type === "image") {
         image.removeAttribute("hidden");
-        image.src = mediaItem;
+        image.src = url;
     }
 }
 
@@ -266,7 +284,8 @@ function setupStage({ sb: stageBackground, sbi: stageBackgroundImage }) {
  * Load web fonts from config with WebFontLoader 3rd party
  * @param {ConfigData['fonts']} fonts
  */
-function loadWebFonts(fonts) {
+function loadWebFonts() {
+    const fonts = state.get("fonts");
     const families = fonts.map(
         ({ family, variant = 400 }) => `${family}:${variant}`
     );
@@ -281,30 +300,21 @@ function loadWebFonts(fonts) {
  * @param {ConfigData['fonts']} fonts
  * @param {HTMLFormElement} form
  */
-function populateFonts(fonts) {
-    const form = document.forms[0];
-    const fontUrlInput = $select("[data-font-url]");
+function populateFonts() {
+    const fonts = state.get("fonts");
 
-    fonts.forEach(({ url, family, defaults }, index) => {
+    fonts.forEach(({ family, defaults }, index) => {
         // Create font item
         const fontItem = getTempalteItem("#font-item-template");
         const content = fontItem.querySelector("[data-font-name]");
         const input = fontItem.querySelector("[data-font-input]");
 
-        input.value = family;
-        input.addEventListener("change", () => {
-            fontUrlInput.value = url;
-            form.requestSubmit();
-        });
+        input.value = index;
         content.textContent = family;
         content.style.fontFamily = family;
 
         // Set default
-        if (defaults) {
-            fontUrlInput.value = url;
-
-            input.checked = "checked";
-        }
+        input.checked = defaults;
 
         // Add to document
         $id("fontList").appendChild(fontItem);
@@ -316,11 +326,10 @@ function populateFonts(fonts) {
  * @param {ConfigData['media']} media
  * @param {HTMLFormElement} form
  */
-function populateMedia(media) {
-    const form = document.forms[0];
-    const typeInput = $select("[data-media-type]");
+function populateMedia() {
+    const media = state.get("media");
 
-    media.forEach(({ thumb, url, type }, index) => {
+    media.forEach(({ thumb, defaults, type }, index) => {
         let mediaItem;
 
         // Create image item
@@ -342,18 +351,10 @@ function populateMedia(media) {
 
         // Set input values
         const input = mediaItem.querySelector("[data-media-input]");
-        input.value = url;
-        input.addEventListener("change", () => {
-            // Set currently selected type
-            typeInput.value = type;
-            form.requestSubmit();
-        });
+        input.value = index;
 
         // Set default
-        if (!index) {
-            typeInput.value = type;
-            input.checked = "checked";
-        }
+        input.checked = defaults;
 
         // Add to document
         $id("mediaList").appendChild(mediaItem);
@@ -409,7 +410,11 @@ function setFormDefaults() {
             } else {
                 element.value = urlParams.get(element.name);
             }
-        }
+        } else {
+            if (element.type === "checkbox" && element.checked) {
+              element.checked = false;
+            }
+          }
     }
 }
 /*
@@ -424,13 +429,13 @@ function setFormDefaults() {
 /**
  * this is the single point of update for stage content
  * @typedef {{
- *    ff: string, fu: string, l1: string, l2: string, l3: string, mi: string, mt: string,
+ *    fi: string, l1: string, l2: string, l3: string, mi: string,
  *    fs: string, lts: string, ls: string, tr: string, to: string, toc: string,
  *    td: 'rtl' | 'ltr', ta: 'left' | 'right' | 'center', sb: string, sbi: string,
  *    tbm: string, tas?: 'keep', ts: string,
- *    x: string, y: string, w: string, h: string
+ *    x: string, y: string, w: string, h: string,
+ *    tsc: string, tso: string, tsx: string, tsy: string, tsb: string, tss: string
  * }} MaskFormData
- * @param {HTMLFormElement} form
  */
 function handleFormSubmit() {
     const form = document.forms[0];
@@ -577,6 +582,8 @@ function handleBoxResize(textBox = $id("text-box")) {
 
 const state = new Map(
     Object.entries({
+        fonts: [],
+        media: [],
         linesPaths: [],
         text: "",
         fontUrl: "",
@@ -586,9 +593,11 @@ const state = new Map(
 );
 async function init() {
     const { fonts, media } = await getConfig();
-    loadWebFonts(fonts);
-    populateFonts(fonts);
-    populateMedia(media);
+    state.set("fonts", fonts);
+    state.set("media", media);
+    loadWebFonts();
+    populateFonts();
+    populateMedia();
     setupTextSettings();
     setFormDefaults();
     handleFormSubmit();
