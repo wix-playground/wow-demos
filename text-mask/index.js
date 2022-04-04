@@ -361,7 +361,7 @@ function setupTextSettings() {
 
     $id("copy-url").addEventListener("click", (event) => {
         navigator.clipboard.writeText(location.href).then(() => {
-            event.target.querySelector("span").textContent = "(Copied!)";
+            $id("copy-url").querySelector("span").textContent = "(Copied!)";
         });
         event.preventDefault();
     });
