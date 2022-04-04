@@ -1,4 +1,4 @@
-import { $id, $select, $selectAll, clamp } from "./utils.js";
+import { $id, $select, $selectAll, clamp, hex2rgba } from "./utils.js";
 import webfontloader from "https://cdn.skypack.dev/webfontloader";
 import opentypeJs from "https://cdn.skypack.dev/opentype.js";
 import bidiFactory from "https://cdn.skypack.dev/bidi-js";
@@ -78,10 +78,7 @@ function encodeSVG(data) {
     return `url("data:image/svg+xml,${escaped}")`;
 }
 
-const hex2rgba = (hex, alpha = 1) => {
-    const [r, g, b] = hex.match(/\w\w/g).map((x) => parseInt(x, 16));
-    return `rgba(${r},${g},${b},${alpha})`;
-};
+
 
 /**
  * Set svg text to stage
