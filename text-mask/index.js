@@ -79,9 +79,9 @@ function encodeSVG(data) {
 }
 
 const hex2rgba = (hex, alpha = 1) => {
-    const [r, g, b] = hex.match(/\w\w/g).map(x => parseInt(x, 16));
+    const [r, g, b] = hex.match(/\w\w/g).map((x) => parseInt(x, 16));
     return `rgba(${r},${g},${b},${alpha})`;
-  };
+};
 
 /**
  * Set svg text to stage
@@ -224,7 +224,10 @@ async function setSvgText({
         svg.style.overflow = "visible";
     }
     if (textShadowOpacity) {
-        svgAndMedia.style.filter = `drop-shadow(${textShadowX}px ${textShadowY}px ${textShadowBlur}px ${hex2rgba(textShadowColor, textShadowOpacity)})`
+        svgAndMedia.style.filter = `drop-shadow(${textShadowX}px ${textShadowY}px ${textShadowBlur}px ${hex2rgba(
+            textShadowColor,
+            textShadowOpacity
+        )})`;
     }
 }
 
@@ -314,7 +317,9 @@ function populateFonts() {
         content.style.fontFamily = family;
 
         // Set default
-        input.checked = defaults;
+        if (defaults) {
+            input.setAttribute('checked', 'checked');
+        }
 
         // Add to document
         $id("fontList").appendChild(fontItem);
@@ -354,7 +359,10 @@ function populateMedia() {
         input.value = index;
 
         // Set default
-        input.checked = defaults;
+        if (defaults) {
+            input.setAttribute('checked', 'checked');
+        }
+
 
         // Add to document
         $id("mediaList").appendChild(mediaItem);
@@ -386,35 +394,37 @@ function setupTextSettings() {
  * @param {Partial<MaskFormData>} defaults
  */
 function setFormDefaults() {
-    const form = document.forms[0];
     const urlParams = new URLSearchParams(window.location.search);
     const elements = [...form.elements];
 
+    if ([...urlParams.entries()].length === 0) {
+        form.reset();
+        return;
+    }
     // Iterate over all form elements that are referenced in the url search params
     for (const element of elements) {
         // checkboxes, radios and multiselect selects are special, they are not set with value but with checked/selected,
-        // and they might have multiple key representations in the url
+        // and they might multiple key representations in the url
         // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox#handling_multiple_checkboxes
         if (urlParams.has(element.name)) {
             if (element.type === "checkbox" || element.type === "radio") {
                 const values = urlParams.getAll(element.name);
                 element.checked = values.includes(element.value);
-                // <select multiple>
             } else if (element.type === "select" && element.multiple) {
                 const values = urlParams.getAll(element.name);
                 [...element.querySelectorAll("option")].map(
                     (option) =>
                         (option.selected = values.includes(option.value))
                 );
-                // Everything Else
             } else {
                 element.value = urlParams.get(element.name);
             }
-        } else {
-            if (element.type === "checkbox" && element.checked) {
-              element.checked = false;
-            }
-          }
+        } else if (
+            (element.type === "checkbox" || element.type === "radio") &&
+            element.checked
+        ) {
+            element.checked = false;
+        }
     }
 }
 /*
