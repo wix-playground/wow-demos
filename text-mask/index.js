@@ -77,27 +77,28 @@ function encodeSVG(data) {
 
     return `url("data:image/svg+xml,${escaped}")`;
 }
+
 /**
  * Set svg text to stage
  * @param {MaskFormData} data
  */
 async function setSvgText({
-    line1,
-    line2,
-    line3,
-    fontFamily,
-    fontUrl,
-    fontSize = 72,
-    lineSpacing,
-    letterSpacing,
-    textDir,
-    textRotation,
-    textSkew,
-    textOutline,
-    textOutlineColor,
-    textBlendMode,
-    textAlign,
-    textAspect,
+    l1: line1,
+    l2: line2,
+    l3: line3,
+    ff: fontFamily,
+    fu: fontUrl,
+    fs: fontSize = 72,
+    ls: lineSpacing,
+    lts: letterSpacing,
+    td: textDir,
+    tr: textRotation,
+    ts: textSkew,
+    to: textOutline,
+    toc: textOutlineColor,
+    tbm: textBlendMode,
+    ta: textAlign,
+    tas: textAspect,
 }) {
     // string to number
     fontSize = +fontSize;
@@ -114,19 +115,24 @@ async function setSvgText({
     const media = $id("text-media");
     const lines = [line1, line2, line3].filter((x) => x);
 
-    let linesPaths = state.get('linesPaths');
+    let linesPaths = state.get("linesPaths");
 
-    if (state.get('text') !== lines.join() || state.get('fontUrl') !== fontUrl || state.get('fontSize') !== fontSize || state.get('textDir') !== textDir) {
+    if (
+        state.get("text") !== lines.join() ||
+        state.get("fontUrl") !== fontUrl ||
+        state.get("fontSize") !== fontSize ||
+        state.get("textDir") !== textDir
+    ) {
         // convertion
 
         linesPaths = await Promise.all(
             lines.map((line) => textToPath(line, fontUrl, fontSize, textDir))
         );
-        state.set('linesPaths', linesPaths);
-        state.set('text', lines.join());
-        state.set('fontUrl', fontUrl);
-        state.set('fontSize', fontSize);
-        state.set('textDir', textDir);
+        state.set("linesPaths", linesPaths);
+        state.set("text", lines.join());
+        state.set("fontUrl", fontUrl);
+        state.set("fontSize", fontSize);
+        state.set("textDir", textDir);
     }
 
     //reset stuff
@@ -211,7 +217,7 @@ async function setSvgText({
  * Set text dir
  * @param {MaskFormData} data
  */
-function setDirection(dir) {
+function setDirection({ td: dir }) {
     const textInputs = $id("textInputs");
     textInputs.style.direction = dir === "rtl" ? dir : "";
 }
@@ -220,7 +226,7 @@ function setDirection(dir) {
  * Set media to stage
  * @param {MaskFormData} data
  */
-function setMedia({ mediaItem, mediaType }) {
+function setMedia({ mi: mediaItem, mt: mediaType }) {
     const video = $id("media-video");
     const image = $id("media-image");
 
@@ -247,9 +253,13 @@ function setMedia({ mediaItem, mediaType }) {
 /**
  * Reset on stage box size to content limits
  */
-function setupStage({stageBackground, stageBackgroundImage}) {
+function setupStage({ sb: stageBackground, sbi: stageBackgroundImage }) {
     $id("result").style.backgroundColor = stageBackground;
-    $id("result").style.backgroundImage = /^https?|data|blob/.test(stageBackgroundImage) ? `url(${stageBackgroundImage})` : stageBackgroundImage;
+    $id("result").style.backgroundImage = /^https?|data|blob/.test(
+        stageBackgroundImage
+    )
+        ? `url(${stageBackgroundImage})`
+        : stageBackgroundImage;
 }
 
 /**
@@ -271,10 +281,11 @@ function loadWebFonts(fonts) {
  * @param {ConfigData['fonts']} fonts
  * @param {HTMLFormElement} form
  */
-function populateFonts(fonts, form = document.forms[0]) {
+function populateFonts(fonts) {
+    const form = document.forms[0];
     const fontUrlInput = $select("[data-font-url]");
 
-    fonts.forEach(({ url, family }, index) => {
+    fonts.forEach(({ url, family, defaults }, index) => {
         // Create font item
         const fontItem = getTempalteItem("#font-item-template");
         const content = fontItem.querySelector("[data-font-name]");
@@ -289,8 +300,9 @@ function populateFonts(fonts, form = document.forms[0]) {
         content.style.fontFamily = family;
 
         // Set default
-        if (family === "Karantina") {
+        if (defaults) {
             fontUrlInput.value = url;
+
             input.checked = "checked";
         }
 
@@ -304,7 +316,8 @@ function populateFonts(fonts, form = document.forms[0]) {
  * @param {ConfigData['media']} media
  * @param {HTMLFormElement} form
  */
-function populateMedia(media, form = document.forms[0]) {
+function populateMedia(media) {
+    const form = document.forms[0];
     const typeInput = $select("[data-media-type]");
 
     media.forEach(({ thumb, url, type }, index) => {
@@ -379,31 +392,43 @@ function setFormDefaults() {
     // Iterate over all form elements that are referenced in the url search params
     for (const element of elements) {
         // checkboxes, radios and multiselect selects are special, they are not set with value but with checked/selected,
-        // and they might be represented with a multiple key representations in the url
+        // and they might have multiple key representations in the url
         // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox#handling_multiple_checkboxes
-        if (element.type === "checkbox" || element.type === "radio") {
-            const values = urlParams.getAll(element.name);
-            element.checked = values.includes(element.value);
-        } else if (element.type === "select" && element.multiple) {
-            const values = urlParams.getAll(element.name);
-            [...element.querySelectorAll("option")].map(
-                (option) => (option.selected = values.includes(option.value))
-            );
-        } else {
-            if (urlParams.has(element.name)) {
+        if (urlParams.has(element.name)) {
+            if (element.type === "checkbox" || element.type === "radio") {
+                const values = urlParams.getAll(element.name);
+                element.checked = values.includes(element.value);
+                // <select multiple>
+            } else if (element.type === "select" && element.multiple) {
+                const values = urlParams.getAll(element.name);
+                [...element.querySelectorAll("option")].map(
+                    (option) =>
+                        (option.selected = values.includes(option.value))
+                );
+                // Everything Else
+            } else {
                 element.value = urlParams.get(element.name);
             }
         }
     }
 }
+/*
+ {
+    fontFamily: string, fontUrl: string, line1: string, line2: string, line3: string, mediaItem: string, mediaType: string,
+    fontSize: string, letterSpacing: string, lineSpacing: string, textRotation: string, textOutline: string, textOutlineColor: string,
+    textDir: 'rtl' | 'ltr', textAlign: 'left' | 'right' | 'center', stageBackground: string, stageBackgroundImage: string,
+    extBlendMode: string, textAspect?: 'keep', textSkew: string,
+    top-left: string, top-right: string, bottom-left: string, bottom-right: string
+ }
+*/
 /**
  * this is the single point of update for stage content
  * @typedef {{
- *    fontFamily: string, fontUrl: string, line1: string, line2: string, line3: string, mediaItem: string, mediaType: string,
- *    fontSize: string, letterSpacing: string, lineSpacing: string, textRotation: string, textOutline: string, textOutlineColor: string,
- *    textDir: 'rtl' | 'ltr', textAlign: 'left' | 'right' | 'center', stageBackground: string, stageBackgroundImage: string,
- *    extBlendMode: string, textAspect?: 'keep', textSkew: string,
- *    top-left: string, top-right: string, bottom-left: string, bottom-right: string
+ *    ff: string, fu: string, l1: string, l2: string, l3: string, mi: string, mt: string,
+ *    fs: string, lts: string, ls: string, tr: string, to: string, toc: string,
+ *    td: 'rtl' | 'ltr', ta: 'left' | 'right' | 'center', sb: string, sbi: string,
+ *    tbm: string, tas?: 'keep', ts: string,
+ *    x: string, y: string, w: string, h: string
  * }} MaskFormData
  * @param {HTMLFormElement} form
  */
@@ -420,7 +445,7 @@ function handleFormSubmit() {
 
         console.log(data);
 
-        setDirection(data.textDir);
+        setDirection(data);
         setMedia(data);
         await setSvgText(data);
         setupStage(data);
@@ -443,11 +468,11 @@ function handleFormSubmit() {
 function handleBoxResize(textBox = $id("text-box")) {
     const handles = [...$selectAll("[data-handle]"), textBox];
 
-    if (form.elements['box-top'].value) {
-        textBox.style.top = form.elements['box-top'].value;
-        textBox.style.left = form.elements['box-left'].value;
-        textBox.style.width = form.elements['box-width'].value;
-        textBox.style.height = form.elements['box-height'].value;
+    if (form.elements["y"].value) {
+        textBox.style.top = form.elements["y"].value;
+        textBox.style.left = form.elements["x"].value;
+        textBox.style.width = form.elements["w"].value;
+        textBox.style.height = form.elements["h"].value;
     }
 
     handles.forEach((handle) => {
@@ -515,16 +540,8 @@ function handleBoxResize(textBox = $id("text-box")) {
                     containerW - 10,
                     newDim.left
                 );
-                const width = clamp(
-                    10,
-                    containerW * 2,
-                    newDim.width
-                );
-                const height = clamp(
-                    10,
-                    containerH * 2,
-                    newDim.height
-                );
+                const width = clamp(10, containerW * 2, newDim.width);
+                const height = clamp(10, containerH * 2, newDim.height);
 
                 textBox.style.top = `${top}px`;
                 textBox.style.left = `${left}px`;
@@ -540,10 +557,10 @@ function handleBoxResize(textBox = $id("text-box")) {
                     delete container.dataset.dragging;
 
                     // Save box dimensions
-                    form.elements['box-top'].value = textBox.style.top;
-                    form.elements['box-left'].value = textBox.style.left ;
-                    form.elements['box-width'].value = textBox.style.width;
-                    form.elements['box-height'].value = textBox.style.height;
+                    form.elements["y"].value = textBox.style.top;
+                    form.elements["x"].value = textBox.style.left;
+                    form.elements["w"].value = textBox.style.width;
+                    form.elements["h"].value = textBox.style.height;
                     form.requestSubmit();
 
                     container.removeEventListener("pointerup", handlePointerUp);
@@ -558,13 +575,15 @@ function handleBoxResize(textBox = $id("text-box")) {
  * Start here
  */
 
-const state = new Map(Object.entries({
-    linesPaths: [],
-    text: '',
-    fontUrl: '',
-    fontSize: 0,
-    textDir: ''
-}))
+const state = new Map(
+    Object.entries({
+        linesPaths: [],
+        text: "",
+        fontUrl: "",
+        fontSize: 0,
+        textDir: "",
+    })
+);
 async function init() {
     const { fonts, media } = await getConfig();
     loadWebFonts(fonts);

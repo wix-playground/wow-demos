@@ -16,19 +16,20 @@
     <div class="container">
         <div class="controls">
             <div id="textInputs" class="text-input">
-                <input form="form" size="1" type="text" name="line1" class="text-input-text" value="Wow זה מרגש">
-                <input form="form" size="1" type="text" name="line2" class="text-input-text" value="">
-                <input form="form" size="1" type="text" name="line3" class="text-input-text" value="">
+                <input form="form" size="1" type="text" name="l1" class="text-input-text" value="Wow זה מרגש">
+                <input form="form" size="1" type="text" name="l2" class="text-input-text" value="">
+                <input form="form" size="1" type="text" name="l3" class="text-input-text" value="">
                 <button form="form" name="submit" type="submit" class="text-input-submit">Change</button>
             </div>
             <div class="font-list">
-                <input form="form" data-font-url type="hidden" name="fontUrl" value="">
+                <input form="form" data-font-url type="hidden" name="fu" value="">
+                <!-- <input form="form" data-font-family type="hidden" name="fontFamily" value=""> -->
                 <h3>Fonts</h3>
                 <ul class="font-list-items" id="fontList">
                     <template id="font-item-template">
                         <li class="font-item">
                             <label>
-                                <input form="form" data-font-input class="font-input" type="radio" name="fontFamily"
+                                <input form="form" data-font-input class="font-input" type="radio" name="ff"
                                     value="">
                                 <span data-font-name class="font-name">Font Name</span>
                             </label>
@@ -37,13 +38,13 @@
                 </ul>
             </div>
             <div class="media-list">
-                <input form="form" data-media-type type="hidden" name="mediaType" value="">
+                <input form="form" data-media-type type="hidden" name="mt" value="">
                 <h3>Media</h3>
                 <ul class="media-list-items" id="mediaList">
                     <template id="media-item-image-template">
                         <li class="media-item">
                             <label>
-                                <input form="form" data-media-input class="media-input" type="radio" name="mediaItem"
+                                <input form="form" data-media-input class="media-input" type="radio" name="mi"
                                     value="">
                                 <img data-thumb class="media-thumb" src="" alt="" />
                             </label>
@@ -52,7 +53,7 @@
                     <template id="media-item-video-template">
                         <li class="media-item">
                             <label>
-                                <input form="form" data-media-input class="media-input" type="radio" name="mediaItem"
+                                <input form="form" data-media-input class="media-input" type="radio" name="mi"
                                     value="">
                                 <video data-thumb class="media-thumb" src="" muted playsinline></video>
                             </label>
@@ -63,22 +64,22 @@
             <div class="text-settings">
                 <h3>Text Controls</h3>
                 <label class="pop-label">
-                    <input disabled type="number" data-setting-change form="form" name="fontSize" min="0" max="300"
+                    <input disabled type="number" data-setting-change form="form" name="fs" min="0" max="300"
                         step="1" value="72"">
                         <span>Font Size (TBD)</span>
                     </label>
                 <label class="pop-label">
-                    <input type="number" data-setting-change form="form" name="letterSpacing" min="0" max="100" step="1"
+                    <input type="number" data-setting-change form="form" name="lts" min="0" max="100" step="1"
                         value="0">
                     <span>Letter Spacing</span>
                 </label>
                 <label class="pop-label">
-                    <input type="number" data-setting-change form="form" name="lineSpacing" min="0" max="100" step="1"
+                    <input type="number" data-setting-change form="form" name="ls" min="0" max="100" step="1"
                         value="5">
                     <span>Line Spacing</span>
                 </label>
                 <label class="pop-label">
-                    <select form="form" data-setting-change name="textAlign">
+                    <select form="form" data-setting-change name="ta">
                         <option value="left" selected>Left</option>
                         <option value="right">Right</option>
                         <option value="center">Center</option>
@@ -86,7 +87,7 @@
                     <span>Text Align</span>
                 </label>
                 <label class="pop-label">
-                    <select form="form" data-setting-change name="textDir">
+                    <select form="form" data-setting-change name="td">
                         <option value="lrt" selected>Left to Right</option>
                         <option value="rtl">Right to Left</option>
                     </select>
@@ -96,31 +97,31 @@
             <div class="text-effects">
                 <h3>Text Effects</h3>
                 <label class="pop-label">
-                    <input type="number" data-setting-change form="form" name="textRotation" min="-180" max="180"
+                    <input type="number" data-setting-change form="form" name="tr" min="-180" max="180"
                         step="1" value="0">
                     <span>Rotate (deg)</span>
                 </label>
                 <label class="pop-label">
-                    <input type="number" data-setting-change form="form" name="textSkew" min="-100" max="100"
+                    <input type="number" data-setting-change form="form" name="ts" min="-100" max="100"
                         step="1" value="0">
                     <span>Skew (px)</span>
                 </label>
                 <label class="pop-label">
-                    <input type="checkbox" data-setting-change form="form" name="textAspect" checked value="keep">
+                    <input type="checkbox" data-setting-change form="form" name="tas" checked value="keep">
                     <span>Keep Aspect Ratio</span>
                 </label>
                 <label class="pop-label">
-                    <input type="number" data-setting-change form="form" name="textOutline" min="0" max="20" step="1"
+                    <input type="number" data-setting-change form="form" name="to" min="0" max="20" step="1"
                         value="0">
                     <span>Outline</span>
                 </label>
                 <label class="pop-label">
-                    <input type="color" data-setting-input form="form" name="textOutlineColor" value="#000000">
+                    <input type="color" data-setting-input form="form" name="toc" value="#000000">
                     <span>Outline Color</span>
                 </label>
 
                 <label class="pop-label">
-                    <select data-setting-change form="form" name="textBlendMode" value="normal">
+                    <select data-setting-change form="form" name="tbm" value="normal">
                         <option value="normal">normal</option>
                         <option value="multiply">multiply</option>
                         <option value="screen">screen</option>
@@ -144,11 +145,11 @@
             <div class="others">
                 <h3>More Controls</h3>
                 <label class="pop-label">
-                    <input type="color" data-setting-input name="stageBackground" id="" form="form" value="#ffffff">
+                    <input type="color" data-setting-input name="sb" id="" form="form" value="#ffffff">
                     <span>Background Color</span>
                 </label>
                 <label class="pop-label">
-                    <input type="text" data-setting-change name="stageBackgroundImage" id="" form="form" value="">
+                    <input type="text" data-setting-change name="sbi" id="" form="form" value="">
                     <span>Background Image</span>
                 </label>
             </div>
@@ -169,10 +170,10 @@
                 <div class="text-box-handle" data-handle="top-right"></div>
                 <div class="text-box-handle" data-handle="bottom-left"></div>
                 <div class="text-box-handle" data-handle="bottom-right"></div>
-                <input form="form" type="hidden" name="box-top"></input>
-                <input form="form" type="hidden" name="box-left"></input>
-                <input form="form" type="hidden" name="box-width"></input>
-                <input form="form" type="hidden" name="box-height"></input>
+                <input form="form" type="hidden" name="x"></input>
+                <input form="form" type="hidden" name="y"></input>
+                <input form="form" type="hidden" name="w"></input>
+                <input form="form" type="hidden" name="h"></input>
             </div>
         </div>
     </div>

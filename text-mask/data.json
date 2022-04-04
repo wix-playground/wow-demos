@@ -34,7 +34,8 @@
             "url": "https://fonts.gstatic.com/s/karantina/v9/buExpo24ccnh31GVMABxTC8f-P5Oaiw4cw.ttf",
             "family": "Karantina",
             "variant": "700",
-            "features": {}
+            "features": {},
+            "defaults": true
         },
         {
             "url": "https://fonts.gstatic.com/s/alef/v18/FeVQS0NQpLYglo50L5la2bxii28.ttf",
