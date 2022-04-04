@@ -1,11 +1,11 @@
 import { $id, $select, $selectAll, clamp } from "./utils.js";
-import webfontloader from 'https://cdn.skypack.dev/webfontloader';
+import webfontloader from "https://cdn.skypack.dev/webfontloader";
 import opentypeJs from "https://cdn.skypack.dev/opentype.js";
-import bidiFactory from 'https://cdn.skypack.dev/bidi-js';
+import bidiFactory from "https://cdn.skypack.dev/bidi-js";
 // polyfill for form.requestSubmit in Safari, should be removed when the feature is enabled https://bugs.webkit.org/show_bug.cgi?id=197958
-import formRequestSubmitPolyfill from 'https://cdn.skypack.dev/pin/form-request-submit-polyfill@v2.0.0-szOipIemxchOslzcqvLN/mode=imports,min/optimized/form-request-submit-polyfill.js';
+import formRequestSubmitPolyfill from "https://cdn.skypack.dev/pin/form-request-submit-polyfill@v2.0.0-szOipIemxchOslzcqvLN/mode=imports,min/optimized/form-request-submit-polyfill.js";
 
-const bidi = bidiFactory()
+const bidi = bidiFactory();
 
 /**
  * Use Opentype.js to convert text + font to path
@@ -15,18 +15,27 @@ const bidi = bidiFactory()
  * @param {{kerning: boolean, hinting: boolean, features: { liga: boolean, rlig: boolean }}}
  * @returns {Promise<string[]>} svg path
  */
-async function textToPath(text, fontUrl, fontSize, textDir, options = {
-    kerning: true,
-    hinting: false,
-    features: {
-        liga: true,
-        rlig: true
+async function textToPath(
+    text,
+    fontUrl,
+    fontSize,
+    textDir,
+    options = {
+        kerning: true,
+        hinting: false,
+        features: {
+            liga: true,
+            rlig: true,
+        },
     }
-}) {
+) {
     const font = await opentypeJs.load(fontUrl);
-    const bidiText = bidi.getReorderedString(text, bidi.getEmbeddingLevels(text, textDir));
+    const bidiText = bidi.getReorderedString(
+        text,
+        bidi.getEmbeddingLevels(text, textDir)
+    );
     const paths = font.getPaths(bidiText, 0, 0, fontSize, options);
-    return paths.map(path => path.toSVG());
+    return paths.map((path) => path.toSVG());
 }
 
 /**
@@ -72,69 +81,118 @@ function encodeSVG(data) {
  * Set svg text to stage
  * @param {MaskFormData} data
  */
-async function setSvgText({ line1, line2, line3, fontFamily, fontUrl, fontSize = 72, lineSpacing, letterSpacing, textDir, textRotation, textOutline, textOutlineColor, textBlendMode, textAlign }) {
+async function setSvgText({
+    line1,
+    line2,
+    line3,
+    fontFamily,
+    fontUrl,
+    fontSize = 72,
+    lineSpacing,
+    letterSpacing,
+    textDir,
+    textRotation,
+    textSkew,
+    textOutline,
+    textOutlineColor,
+    textBlendMode,
+    textAlign,
+    textAspect,
+}) {
     // string to number
     fontSize = +fontSize;
     lineSpacing = +lineSpacing;
     letterSpacing = +letterSpacing;
     textRotation = +textRotation;
+    textSkew = +textSkew;
     textOutline = +textOutline;
 
     // selectors
     const svgAndMedia = $id("text-box-content");
     const svg = $id("text-svg");
-    const svgGroup = $id('text-svg-main');
+    const svgGroup = $id("text-svg-main");
     const media = $id("text-media");
+    const lines = [line1, line2, line3].filter((x) => x);
 
-    // convertion
-    const lines = [line1, line2, line3].filter(x => x);
-    const linesPaths = await Promise.all(lines.map(line => textToPath(line, fontUrl, fontSize, textDir)));
+    let linesPaths = state.get('linesPaths');
+
+    if (state.get('text') !== lines.join() || state.get('fontUrl') !== fontUrl || state.get('fontSize') !== fontSize || state.get('textDir') !== textDir) {
+        // convertion
+
+        linesPaths = await Promise.all(
+            lines.map((line) => textToPath(line, fontUrl, fontSize, textDir))
+        );
+        state.set('linesPaths', linesPaths);
+        state.set('text', lines.join());
+        state.set('fontUrl', fontUrl);
+        state.set('fontSize', fontSize);
+        state.set('textDir', textDir);
+    }
 
     //reset stuff
-    svg.style.fillOpacity = '';
+    svg.style.fillOpacity = "";
     svg.style.strokeWidth = 0;
-    svg.style.overflow = '';
-    svgGroup.innerHTML ='';
+    svg.style.overflow = "";
+    svgGroup.innerHTML = "";
 
     // First loop : set svg to dom and do and do letter spacing manipulations
     linesPaths.forEach((paths) => {
-        svgGroup.innerHTML += `<g>${paths.join('')}</g>`;
+        svgGroup.innerHTML += `<g>${paths.join("")}</g>`;
         const g = svgGroup.lastChild;
 
         // Set Letter Spacing
         if (letterSpacing) {
-            [...g.querySelectorAll('path')].forEach((path, i) => path.setAttribute('transform', `translate(${letterSpacing * i} 0)`))
+            [...g.querySelectorAll("path")].forEach((path, i) =>
+                path.setAttribute(
+                    "transform",
+                    `translate(${letterSpacing * i} 0)`
+                )
+            );
         }
     });
     // Second Loop: Set Alignment and Line spacing
     // We need a second loop because we need to know the longes line width
-    [...svgGroup.querySelectorAll('g')].forEach((g, i) => {
+    [...svgGroup.querySelectorAll("g")].forEach((g, i) => {
         let gLeft = 0;
-        const {width: svgGroupWidth} = svgGroup.getBBox();
-        const {width: gWidth} = g.getBBox();
+        const { width: svgGroupWidth } = svgGroup.getBBox();
+        const { width: gWidth } = g.getBBox();
 
-        if (textAlign === 'center') {
+        if (textAlign === "center") {
             gLeft = (svgGroupWidth - gWidth) / 2;
-        } else if (textAlign === 'right') {
+        } else if (textAlign === "right") {
             gLeft = svgGroupWidth - gWidth;
         }
 
-        g.setAttribute('transform', `translate(${gLeft} ${(fontSize + lineSpacing) * i})`);
-    })
+        g.setAttribute(
+            "transform",
+            `translate(${gLeft} ${(fontSize + lineSpacing) * i})`
+        );
+    });
 
-    // Set Rotation
-    svgGroup.setAttribute('transform', `rotate(${textRotation})`)
+    // Set Transforms
+    const transform = [
+        ["rotate", textRotation],
+        ["skewX", textSkew],
+    ]
+        .filter(([, value]) => value)
+        .map(([key, value]) => `${key}(${value})`)
+        .join(" ");
+
+    svgGroup.setAttribute("transform", transform);
 
     // after all the manipulations - get the exact boundaries and resize box
     const { x, y, width, height } = svg.getBBox();
     svg.setAttribute("viewBox", `${x} ${y} ${width} ${height}`);
-
+    svg.setAttribute(
+        "preserveAspectRatio",
+        textAspect === "keep" ? "xMidYMid meet" : "none"
+    );
     // Create mask
     const serialized = encodeSVG(svg.outerHTML);
     console.log(serialized);
     media.style.WebkitMaskImage = serialized;
     media.style.maskImage = serialized;
-    document.body.style.setProperty('--seleced-font-family', fontFamily);
+    document.body.style.setProperty("--seleced-font-family", fontFamily);
 
     // blend mode, both mask and outline
     svgAndMedia.style.mixBlendMode = textBlendMode;
@@ -145,7 +203,7 @@ async function setSvgText({ line1, line2, line3, fontFamily, fontUrl, fontSize =
         //svg.style.fillOpacity = 1;
         svg.style.stroke = textOutlineColor;
         svg.style.strokeWidth = textOutline;
-        svg.style.overflow = 'visible';
+        svg.style.overflow = "visible";
     }
 }
 
@@ -154,8 +212,8 @@ async function setSvgText({ line1, line2, line3, fontFamily, fontUrl, fontSize =
  * @param {MaskFormData} data
  */
 function setDirection(dir) {
-    const textInputs = $id('textInputs');
-    textInputs.style.direction = dir === 'rtl' ? dir : '';
+    const textInputs = $id("textInputs");
+    textInputs.style.direction = dir === "rtl" ? dir : "";
 }
 
 /**
@@ -189,16 +247,9 @@ function setMedia({ mediaItem, mediaType }) {
 /**
  * Reset on stage box size to content limits
  */
-function setupStage(bgColor) {
-    // fit box to svg
-    const box = $id("text-box");
-    const svg = $id("text-svg");
-    const { width, height } = svg.getBoundingClientRect();
-    box.style.width = `${width}px`;
-    box.style.height = `${height}px`;
-
-    // set bg color
-    $id('result').style.background = bgColor;
+function setupStage({stageBackground, stageBackgroundImage}) {
+    $id("result").style.backgroundColor = stageBackground;
+    $id("result").style.backgroundImage = /^https?|data|blob/.test(stageBackgroundImage) ? `url(${stageBackgroundImage})` : stageBackgroundImage;
 }
 
 /**
@@ -206,12 +257,14 @@ function setupStage(bgColor) {
  * @param {ConfigData['fonts']} fonts
  */
 function loadWebFonts(fonts) {
-    const families = fonts.map(({family, variant = 400}) => `${family}:${variant}`)
+    const families = fonts.map(
+        ({ family, variant = 400 }) => `${family}:${variant}`
+    );
     webfontloader.load({
         google: {
-          families
-        }
-      })
+            families,
+        },
+    });
 }
 /**
  * Get font list from configuration and build UI + form event
@@ -221,7 +274,7 @@ function loadWebFonts(fonts) {
 function populateFonts(fonts, form = document.forms[0]) {
     const fontUrlInput = $select("[data-font-url]");
 
-    fonts.forEach(({ url, family}, index) => {
+    fonts.forEach(({ url, family }, index) => {
         // Create font item
         const fontItem = getTempalteItem("#font-item-template");
         const content = fontItem.querySelector("[data-font-name]");
@@ -236,7 +289,7 @@ function populateFonts(fonts, form = document.forms[0]) {
         content.style.fontFamily = family;
 
         // Set default
-        if (family === 'Karantina') {
+        if (family === "Karantina") {
             fontUrlInput.value = url;
             input.checked = "checked";
         }
@@ -294,20 +347,24 @@ function populateMedia(media, form = document.forms[0]) {
     });
 }
 
-function setupTextSettings(){
-    [...$selectAll('[data-setting-change')]?.forEach(input => input.addEventListener('change', () => {
-        form.requestSubmit();
-    }));
-    [...$selectAll('[data-setting-input')]?.forEach(input => input.addEventListener('input', () => {
-        form.requestSubmit();
-    }));
-
-    $id('copy-url').addEventListener('click', (event) => {
-        navigator.clipboard.writeText(location.href).then(() => {
-            event.target.querySelector('span').textContent = '(Copied!)';
+function setupTextSettings() {
+    [...$selectAll("[data-setting-change")]?.forEach((input) =>
+        input.addEventListener("change", () => {
+            form.requestSubmit();
         })
+    );
+    [...$selectAll("[data-setting-input")]?.forEach((input) =>
+        input.addEventListener("input", () => {
+            form.requestSubmit();
+        })
+    );
+
+    $id("copy-url").addEventListener("click", (event) => {
+        navigator.clipboard.writeText(location.href).then(() => {
+            event.target.querySelector("span").textContent = "(Copied!)";
+        });
         event.preventDefault();
-    })
+    });
 }
 
 /**
@@ -321,20 +378,22 @@ function setFormDefaults() {
 
     // Iterate over all form elements that are referenced in the url search params
     for (const element of elements) {
-      // checkboxes, radios and multiselect selects are special, they are not set with value but with checked/selected,
-      // and they might be represented with a multiple key representations in the url
-      // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox#handling_multiple_checkboxes
-      if (element.type === 'checkbox' || element.type === 'radio') {
-        const values = urlParams.getAll(element.name);
-        element.checked = values.includes(element.value);
-      } else if (element.type === 'select' && element.multiple) {
-        const values = urlParams.getAll(element.name);
-        [...element.querySelectorAll('option')].map(option => option.selected = values.includes(option.value));
-      } else {
-        if (urlParams.has(element.name)) {
-          element.value = urlParams.get(element.name)
+        // checkboxes, radios and multiselect selects are special, they are not set with value but with checked/selected,
+        // and they might be represented with a multiple key representations in the url
+        // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox#handling_multiple_checkboxes
+        if (element.type === "checkbox" || element.type === "radio") {
+            const values = urlParams.getAll(element.name);
+            element.checked = values.includes(element.value);
+        } else if (element.type === "select" && element.multiple) {
+            const values = urlParams.getAll(element.name);
+            [...element.querySelectorAll("option")].map(
+                (option) => (option.selected = values.includes(option.value))
+            );
+        } else {
+            if (urlParams.has(element.name)) {
+                element.value = urlParams.get(element.name);
+            }
         }
-      }
     }
 }
 /**
@@ -342,7 +401,9 @@ function setFormDefaults() {
  * @typedef {{
  *    fontFamily: string, fontUrl: string, line1: string, line2: string, line3: string, mediaItem: string, mediaType: string,
  *    fontSize: string, letterSpacing: string, lineSpacing: string, textRotation: string, textOutline: string, textOutlineColor: string,
- *    textDir: 'rtl' | 'ltr', textAlign: 'left' | 'right' | 'center', stageBackground: string, textBlendMode: string
+ *    textDir: 'rtl' | 'ltr', textAlign: 'left' | 'right' | 'center', stageBackground: string, stageBackgroundImage: string,
+ *    extBlendMode: string, textAspect?: 'keep', textSkew: string,
+ *    top-left: string, top-right: string, bottom-left: string, bottom-right: string
  * }} MaskFormData
  * @param {HTMLFormElement} form
  */
@@ -362,13 +423,13 @@ function handleFormSubmit() {
         setDirection(data.textDir);
         setMedia(data);
         await setSvgText(data);
-        setupStage(data.stageBackground);
+        setupStage(data);
 
         // Update URL without reloading
         if (history.pushState) {
             const url = new URL(window.location.href);
             url.search = new URLSearchParams(formData).toString();
-            window.history.pushState({ path: url.href }, '', url.href);
+            window.history.pushState({ path: url.href }, "", url.href);
         }
     });
     // Initial setup, stupidly wait 500ms for all fonts etc to load
@@ -381,6 +442,14 @@ function handleFormSubmit() {
  */
 function handleBoxResize(textBox = $id("text-box")) {
     const handles = [...$selectAll("[data-handle]"), textBox];
+
+    if (form.elements['box-top'].value) {
+        textBox.style.top = form.elements['box-top'].value;
+        textBox.style.left = form.elements['box-left'].value;
+        textBox.style.width = form.elements['box-width'].value;
+        textBox.style.height = form.elements['box-height'].value;
+    }
+
     handles.forEach((handle) => {
         handle.addEventListener("pointerdown", (event) => {
             const target = event.target;
@@ -400,16 +469,30 @@ function handleBoxResize(textBox = $id("text-box")) {
 
             const handleMove = ({ offsetX, offsetY }) => {
                 if (corner === "top-left") {
-                    newDim.top = Math.min(offsetY, initialDim.height + initialDim.top - 10);
-                    newDim.left = Math.min(offsetX, initialDim.width + initialDim.left - 10);
+                    newDim.top = Math.min(
+                        offsetY,
+                        initialDim.height + initialDim.top - 10
+                    );
+                    newDim.left = Math.min(
+                        offsetX,
+                        initialDim.width + initialDim.left - 10
+                    );
                     newDim.width = initialDim.width + initialDim.left - offsetX;
-                    newDim.height = initialDim.height + initialDim.top - offsetY;
+                    newDim.height =
+                        initialDim.height + initialDim.top - offsetY;
                 } else if (corner === "top-right") {
-                    newDim.top = Math.min(offsetY, initialDim.height + initialDim.top - 10);
+                    newDim.top = Math.min(
+                        offsetY,
+                        initialDim.height + initialDim.top - 10
+                    );
                     newDim.width = offsetX - initialDim.left;
-                    newDim.height = initialDim.height + initialDim.top - offsetY;
+                    newDim.height =
+                        initialDim.height + initialDim.top - offsetY;
                 } else if (corner === "bottom-left") {
-                    newDim.left = Math.min(offsetX, initialDim.width + initialDim.left - 10);
+                    newDim.left = Math.min(
+                        offsetX,
+                        initialDim.width + initialDim.left - 10
+                    );
                     newDim.width = initialDim.width + initialDim.left - offsetX;
                     newDim.height = offsetY - initialDim.top;
                 } else if (corner === "bottom-right") {
@@ -422,26 +505,31 @@ function handleBoxResize(textBox = $id("text-box")) {
 
                 container.dataset.dragging = "true";
 
-                textBox.style.top = `${clamp(
+                const top = clamp(
                     Math.min(-newDim.height, 0) + 10,
                     containerH - 10,
                     newDim.top
-                )}px`;
-                textBox.style.left = `${clamp(
+                );
+                const left = clamp(
                     Math.min(-newDim.width, 0) + 10,
                     containerW - 10,
                     newDim.left
-                )}px`;
-                textBox.style.width = `${clamp(
+                );
+                const width = clamp(
                     10,
                     containerW * 2,
                     newDim.width
-                )}px`;
-                textBox.style.height = `${clamp(
+                );
+                const height = clamp(
                     10,
                     containerH * 2,
                     newDim.height
-                )}px`;
+                );
+
+                textBox.style.top = `${top}px`;
+                textBox.style.left = `${left}px`;
+                textBox.style.width = `${width}px`;
+                textBox.style.height = `${height}px`;
             };
 
             container.setPointerCapture(event.pointerId);
@@ -450,6 +538,14 @@ function handleBoxResize(textBox = $id("text-box")) {
                 "pointerup",
                 function handlePointerUp(e) {
                     delete container.dataset.dragging;
+
+                    // Save box dimensions
+                    form.elements['box-top'].value = textBox.style.top;
+                    form.elements['box-left'].value = textBox.style.left ;
+                    form.elements['box-width'].value = textBox.style.width;
+                    form.elements['box-height'].value = textBox.style.height;
+                    form.requestSubmit();
+
                     container.removeEventListener("pointerup", handlePointerUp);
                     container.removeEventListener("pointermove", handleMove);
                 }
@@ -461,6 +557,14 @@ function handleBoxResize(textBox = $id("text-box")) {
 /**
  * Start here
  */
+
+const state = new Map(Object.entries({
+    linesPaths: [],
+    text: '',
+    fontUrl: '',
+    fontSize: 0,
+    textDir: ''
+}))
 async function init() {
     const { fonts, media } = await getConfig();
     loadWebFonts(fonts);

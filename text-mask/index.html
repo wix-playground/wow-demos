@@ -98,7 +98,12 @@
                 <label class="pop-label">
                     <input type="number" data-setting-change form="form" name="textRotation" min="-180" max="180"
                         step="1" value="0">
-                    <span>Rotation</span>
+                    <span>Rotate (deg)</span>
+                </label>
+                <label class="pop-label">
+                    <input type="number" data-setting-change form="form" name="textSkew" min="-100" max="100"
+                        step="1" value="0">
+                    <span>Skew (px)</span>
                 </label>
                 <label class="pop-label">
                     <input type="checkbox" data-setting-change form="form" name="textAspect" checked value="keep">
@@ -140,7 +145,11 @@
                 <h3>More Controls</h3>
                 <label class="pop-label">
                     <input type="color" data-setting-input name="stageBackground" id="" form="form" value="#ffffff">
-                    <span>Stage Background</span>
+                    <span>Background Color</span>
+                </label>
+                <label class="pop-label">
+                    <input type="text" data-setting-change name="stageBackgroundImage" id="" form="form" value="">
+                    <span>Background Image</span>
                 </label>
             </div>
             <aside class="copy-url-note"> Every chnage you make is saved in the URL, you can <a href="" id="copy-url">copy the url <span>(Click Me!)</span></a> and open your preset playground anywhere</aside>
@@ -160,6 +169,10 @@
                 <div class="text-box-handle" data-handle="top-right"></div>
                 <div class="text-box-handle" data-handle="bottom-left"></div>
                 <div class="text-box-handle" data-handle="bottom-right"></div>
+                <input form="form" type="hidden" name="box-top"></input>
+                <input form="form" type="hidden" name="box-left"></input>
+                <input form="form" type="hidden" name="box-width"></input>
+                <input form="form" type="hidden" name="box-height"></input>
             </div>
         </div>
     </div>

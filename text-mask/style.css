@@ -34,6 +34,7 @@ body {
     grid-area: result;
     overflow: hidden;
     padding: 1em;
+    background-size: cover;
 }
 
 ul,
