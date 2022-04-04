@@ -387,8 +387,7 @@ function setupTextSettings() {
 }
 
 /**
- * Set form data from a saved object
- * @param {Partial<MaskFormData>} defaults
+ * Set form data from URLSearchParams
  */
 function setFormDefaults() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -407,7 +406,7 @@ function setFormDefaults() {
             if (element.type === "checkbox" || element.type === "radio") {
                 const values = urlParams.getAll(element.name);
                 element.checked = values.includes(element.value);
-            } else if (element.type === "select" && element.multiple) {
+            } else if (element.type === "select-multiple") {
                 const values = urlParams.getAll(element.name);
                 [...element.querySelectorAll("option")].map(
                     (option) =>
