@@ -8,17 +8,15 @@ export const $selectAll = (selector) => document.querySelectorAll(selector);
  * @param {number} num
  * @returns {number}
  */
-export function clamp(min, max, num) {
-    return Math.min(max, Math.max(min, num));
-}
+export const clamp = (min, max, num) => Math.min(max, Math.max(min, num));
 
 /**
  * From https://stackoverflow.com/a/51564734
- * @param {string} hex #9ABCDEF or 9ABCDEF
+ * @param {string} hex #FFFFFF, #FFF, FFFFFF or FFF
  * @param {number} alpha 0 to 1
  * @returns {string} rgba() css color string
  */
-const hex2rgba = (hex, alpha = 1) => {
-    const [r, g, b] = hex.match(/\w\w/g).map((x) => parseInt(x, 16));
+export const hex2rgba = (hex, alpha = 1) => {
+    const [r, g, b] = hex.match(hex.length > 4 ? /\w\w/g : /\w/g).map((x) => parseInt(x, 16));
     return `rgba(${r},${g},${b},${alpha})`;
 };
