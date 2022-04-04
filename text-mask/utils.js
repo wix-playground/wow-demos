@@ -1,6 +1,24 @@
+/**
+ * Shorthand to getElementById
+ * @param {string} id
+ * @returns {Element | null}
+ */
 export const $id = (id) => document.getElementById(id);
+
+/**
+ * Shorthand to document.querySelector
+ * @param {string} id
+ * @returns {Element | null}
+ */
 export const $select = (selector) => document.querySelector(selector);
+
+/**
+ * Shorthand to document.querySelectorAll
+ * @param {string} id
+ * @returns {Element[] | null}
+ */
 export const $selectAll = (selector) => document.querySelectorAll(selector);
+
 /**
  * Limit a number between 2 values, inclusive
  * @param {number} min
