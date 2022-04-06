@@ -78,8 +78,6 @@ function encodeSVG(data) {
     return `url("data:image/svg+xml,${escaped}")`;
 }
 
-
-
 /**
  * Set svg text to stage
  * @param {MaskFormData} data
@@ -105,6 +103,8 @@ async function setSvgText({
     tsx: textShadowX,
     tsy: textShadowY,
     tsb: textShadowBlur,
+    tfv: textFlipVertical = 1,
+    tfh: textFlipHorizontal = 1,
 }) {
     const fonts = state.get("fonts");
     const { url } = fonts[selectedIndex];
@@ -189,6 +189,7 @@ async function setSvgText({
     const transform = [
         ["rotate", textRotation],
         ["skewX", textSkew],
+        ["scale", `${textFlipHorizontal}, ${textFlipVertical}`],
     ]
         .filter(([, value]) => value)
         .map(([key, value]) => `${key}(${value})`)
@@ -438,7 +439,7 @@ function setFormDefaults() {
  *    fi: string, l1: string, l2: string, l3: string, mi: string,
  *    fs: string, lts: string, ls: string, tr: string, to: string, toc: string,
  *    td: 'rtl' | 'ltr', ta: 'left' | 'right' | 'center', sb: string, sbi: string,
- *    tbm: string, tas?: 'keep', ts: string,
+ *    tbm: string, tas?: 'keep', ts: string, tfv: 'v', tfh: 'h'
  *    x: string, y: string, w: string, h: string,
  *    tsc: string, tso: string, tsx: string, tsy: string, tsb: string, tss: string
  * }} MaskFormData

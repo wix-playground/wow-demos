@@ -86,9 +86,23 @@ legend {
 /*
  * Text Settings and Effects
  */
+input {
+    vertical-align: middle;
+}
+
 input[type="color"] {
     padding: 0;
-    vertical-align: middle;
+    background: none;
+    border: none;
+    margin: 0 -2px;
+    cursor: context-menu;
+}
+input[type="color"], input[type="number"] {
+    min-width: 3em;
+    flex-basis: 0;
+}
+input[type="number"] {
+    width: 3em;
 }
 .pop-label {
     display: flex;

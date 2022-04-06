@@ -105,6 +105,13 @@
                         <span>Rotate (deg)</span>
                     </label>
                     <label class="pop-label">
+                        <i>
+                            <input type="checkbox" data-setting-change form="form" name="tfh" value="-1"> ↑
+                            <input type="checkbox" data-setting-change form="form" name="tfv" value="-1"> ←
+                        </i>
+                        <span>Flip</span>
+                    </label>
+                    <label class="pop-label">
                         <input type="number" data-setting-change form="form" name="ts" min="-100" max="100" step="1"
                             value="0">
                         <span>Skew (px)</span>
@@ -129,20 +136,21 @@
                     <legend>Shadow</legend>
                     <label class="pop-label">
                         <input type="color" data-setting-input form="form" name="tsc" value="#000000">
-                        <input type="range" data-setting-change form="form" name="tso" min="0" max="1" step="0.01" value="0.2">
+                        <input type="range" data-setting-change form="form" name="tso" min="0" max="1" step="0.01"
+                            value="0.2">
                         <span>Color</span>
                     </label>
                     <label class="pop-label">
-                        <i><input type="number" data-setting-change form="form" name="tsx" value="0" min="-50"
-                                max="50" title="Shadow x">
-                            <input type="number" data-setting-change form="form" name="tsy" value="0" min="-50"
-                                max="50" title="Shadow y"></i>
+                        <i><input type="number" data-setting-change form="form" name="tsx" value="0" min="-50" max="50"
+                                title="Shadow x">
+                            <input type="number" data-setting-change form="form" name="tsy" value="0" min="-50" max="50"
+                                title="Shadow y"></i>
                         <span>Offset</span>
                     </label>
 
                     <label class="pop-label">
-                            <input type="number" data-setting-change form="form" name="tsb" value="0" min="-50"
-                                max="50" title="Blur">
+                        <input type="number" data-setting-change form="form" name="tsb" value="0" min="-50" max="50"
+                            title="Blur">
                         <span>Blur</span>
                     </label>
                 </fieldset>
