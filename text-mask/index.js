@@ -90,8 +90,8 @@ async function setSvgText({
     fs: fontSize = 72,
     ls: lineSpacing,
     lts: letterSpacing,
-    td: textDir,
-    tr: textRotation,
+    td: textDirRaw,
+    tr: textRotation = 0,
     ts: textSkew,
     to: textOutline,
     toc: textOutlineColor,
@@ -105,6 +105,8 @@ async function setSvgText({
     tsb: textShadowBlur,
     tfv: textFlipVertical = 1,
     tfh: textFlipHorizontal = 1,
+    textDir = textDirRaw === 'rtl' ? 'rtl' : 'ltr',
+    textVertical = textDirRaw === 'v'
 }) {
     const fonts = state.get("fonts");
     const { url } = fonts[selectedIndex];
@@ -117,12 +119,12 @@ async function setSvgText({
     textSkew = +textSkew;
     textOutline = +textOutline;
     textShadowOpacity = +textShadowOpacity;
-
     // selectors
     const svgAndMedia = $id("text-box-content");
     const svg = $id("text-svg");
     const svgGroup = $id("text-svg-main");
     const media = $id("text-media");
+
     const lines = [line1, line2, line3].filter((x) => x);
 
     let linesPaths = state.get("linesPaths");
@@ -152,19 +154,28 @@ async function setSvgText({
     svgGroup.innerHTML = "";
 
     // First loop : set svg to dom and do and do letter spacing manipulations
-    linesPaths.forEach((paths) => {
+    (textVertical ? [...linesPaths].reverse() : linesPaths).forEach((paths) => {
         svgGroup.innerHTML += `<g>${paths.join("")}</g>`;
         const g = svgGroup.lastChild;
+        // Set Letter transforms
+        [...g.querySelectorAll("path")].forEach((path, i) => {
+            let transform;
 
-        // Set Letter Spacing
-        if (letterSpacing) {
-            [...g.querySelectorAll("path")].forEach((path, i) =>
-                path.setAttribute(
-                    "transform",
-                    `translate(${letterSpacing * i} 0)`
-                )
-            );
-        }
+            if (textVertical) {
+                const spacing = letterSpacing ? `translate(0 ${letterSpacing * i})` : '';
+                const rect = path.getBBox();
+                const vertical = `rotate(-90,${rect.x + rect.width/2},${rect.y + rect.height/2})`;
+                transform = `${vertical}${spacing}`;
+            }
+            else {
+                transform = letterSpacing ? `translate(${letterSpacing * i} 0)` : '';
+            }
+
+            if (transform) {
+                path.setAttribute("transform", transform)
+            }
+        });
+
     });
     // Second Loop: Set Alignment and Line spacing
     // We need a second loop because we need to know the longes line width
@@ -184,7 +195,6 @@ async function setSvgText({
             `translate(${gLeft} ${(fontSize + lineSpacing) * i})`
         );
     });
-
     // Set Transforms
     const transform = [
         ["rotate", textRotation],
@@ -301,7 +311,7 @@ function loadWebFonts() {
  * @param {ConfigData['fonts']} fonts
  * @param {HTMLFormElement} form
  */
-function populateFonts() {
+function populateFontsList() {
     const fonts = state.get("fonts");
 
     fonts.forEach(({ family, defaults }, index) => {
@@ -329,7 +339,7 @@ function populateFonts() {
  * @param {ConfigData['media']} media
  * @param {HTMLFormElement} form
  */
-function populateMedia() {
+function populateMediaList() {
     const media = state.get("media");
 
     media.forEach(({ thumb, defaults, type }, index) => {
@@ -390,7 +400,7 @@ function setupTextSettings() {
 /**
  * Set form data from URLSearchParams
  */
-function setFormDefaults() {
+function setupFormDefaults() {
     const urlParams = new URLSearchParams(window.location.search);
     const elements = [...form.elements];
 
@@ -438,13 +448,13 @@ function setFormDefaults() {
  * @typedef {{
  *    fi: string, l1: string, l2: string, l3: string, mi: string,
  *    fs: string, lts: string, ls: string, tr: string, to: string, toc: string,
- *    td: 'rtl' | 'ltr', ta: 'left' | 'right' | 'center', sb: string, sbi: string,
- *    tbm: string, tas?: 'keep', ts: string, tfv: 'v', tfh: 'h'
+ *    td: 'rtl' | 'ltr' | 'v', ta: 'left' | 'right' | 'center', sb: string, sbi: string,
+ *    tbm: string, tas?: 'keep', ts: string, tfv: 'v', tfh: 'h', tv: 'v'
  *    x: string, y: string, w: string, h: string,
  *    tsc: string, tso: string, tsx: string, tsy: string, tsb: string, tss: string
  * }} MaskFormData
  */
-function handleFormSubmit() {
+function setupFormSubmit() {
     const form = document.forms[0];
     form.addEventListener("submit", async (event) => {
         event.preventDefault();
@@ -477,7 +487,7 @@ function handleFormSubmit() {
  * Stage editbox interaction logic
  * @param {HTMLElement} textBox
  */
-function handleBoxResize(textBox = $id("text-box")) {
+function setupBoxResize(textBox = $id("text-box")) {
     const handles = [...$selectAll("[data-handle]"), textBox];
 
     if (form.elements["y"].value) {
@@ -586,7 +596,6 @@ function handleBoxResize(textBox = $id("text-box")) {
 /**
  * Start here
  */
-
 const state = new Map(
     Object.entries({
         fonts: [],
@@ -603,12 +612,12 @@ async function init() {
     state.set("fonts", fonts);
     state.set("media", media);
     loadWebFonts();
-    populateFonts();
-    populateMedia();
+    populateFontsList();
+    populateMediaList();
     setupTextSettings();
-    setFormDefaults();
-    handleFormSubmit();
-    handleBoxResize();
+    setupFormDefaults();
+    setupFormSubmit();
+    setupBoxResize();
 }
 
 /**
