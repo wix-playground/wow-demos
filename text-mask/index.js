@@ -150,7 +150,9 @@ async function setSvgText({
     }
 
     //reset stuff
+    svgAndMedia.style.filter = "";
     svg.style.fillOpacity = "";
+    svg.style.stroke = "";
     svg.style.strokeWidth = 0;
     svg.style.overflow = "";
     svgGroup.innerHTML = "";
