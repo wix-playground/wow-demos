@@ -12,6 +12,8 @@ const bidi = bidiFactory();
  * TODO: Support bold, italic, multiline, variants, features
  * @param {string} text
  * @param {string} fontUrl
+ * @param {number} fontSize
+ * @param {'rtl'|'ltr'} textDir
  * @param {{kerning: boolean, hinting: boolean, features: { liga: boolean, rlig: boolean }}}
  * @returns {Promise<string[]>} svg path
  */
@@ -119,6 +121,7 @@ async function setSvgText({
     textSkew = +textSkew;
     textOutline = +textOutline;
     textShadowOpacity = +textShadowOpacity;
+
     // selectors
     const svgAndMedia = $id("text-box-content");
     const svg = $id("text-svg");
@@ -129,14 +132,13 @@ async function setSvgText({
 
     let linesPaths = state.get("linesPaths");
 
+    // Should we convert the text to vector?
     if (
         state.get("text") !== lines.join() ||
         state.get("fontUrl") !== url ||
         state.get("fontSize") !== fontSize ||
         state.get("textDir") !== textDir
     ) {
-        // convertion
-
         linesPaths = await Promise.all(
             lines.map((line) => textToPath(line, url, fontSize, textDir))
         );
@@ -153,7 +155,8 @@ async function setSvgText({
     svg.style.overflow = "";
     svgGroup.innerHTML = "";
 
-    // First loop : set svg to dom and do and do letter spacing manipulations
+    // First loop:
+    // Set svg to dom and do and do letter spacing manipulations
     (textVertical ? [...linesPaths].reverse() : linesPaths).forEach((paths) => {
         svgGroup.innerHTML += `<g>${paths.join("")}</g>`;
         const g = svgGroup.lastChild;
@@ -177,8 +180,10 @@ async function setSvgText({
         });
 
     });
-    // Second Loop: Set Alignment and Line spacing
-    // We need a second loop because we need to know the longes line width
+
+    // Second Loop:
+    // Set Alignment and Line spacing
+    // We need a second loop because we need to measure sizes per line
     [...svgGroup.querySelectorAll("g")].forEach((g, i) => {
         let gLeft = 0;
         const { width: svgGroupWidth } = svgGroup.getBBox();
@@ -195,7 +200,9 @@ async function setSvgText({
             `translate(${gLeft} ${(fontSize + lineSpacing) * i})`
         );
     });
+
     // Set Transforms
+    // Must happen after the measurements
     const transform = [
         ["rotate", textRotation],
         ["skewX", textSkew],
@@ -207,7 +214,7 @@ async function setSvgText({
 
     svgGroup.setAttribute("transform", transform);
 
-    // after all the manipulations - get the exact boundaries and resize box
+    // After all the manipulations - measure the exact boundaries and resize the box
     const { x, y, width, height } = svg.getBBox();
     svg.setAttribute("viewBox", `${x} ${y} ${width} ${height}`);
     svg.setAttribute(
@@ -220,10 +227,10 @@ async function setSvgText({
     media.style.WebkitMaskImage = serialized;
     media.style.maskImage = serialized;
 
-    // blend mode, both mask and outline
+    // Blend mode, both mask and outline
     svgAndMedia.style.mixBlendMode = textBlendMode;
 
-    //Apply outline and shadow to svg - Has to be AFTER serializing
+    // Apply outline and shadow to svg - Has to be AFTER serializing
     if (textOutline) {
         svg.style.fill = textOutlineColor;
         //svg.style.fillOpacity = 1;
