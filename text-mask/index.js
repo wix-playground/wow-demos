@@ -1,9 +1,9 @@
-import { $id, $select, $selectAll, clamp, hex2rgba } from "./utils.js";
-import webfontloader from "https://cdn.skypack.dev/webfontloader";
-import opentypeJs from "https://cdn.skypack.dev/opentype.js";
-import bidiFactory from "https://cdn.skypack.dev/bidi-js";
+import { $id, $select, $selectAll, clamp, hex2rgba } from './utils.js';
+import webfontloader from 'https://cdn.skypack.dev/webfontloader';
+import opentypeJs from 'https://cdn.skypack.dev/opentype.js';
+import bidiFactory from 'https://cdn.skypack.dev/bidi-js';
 // polyfill for form.requestSubmit in Safari, should be removed when the feature is enabled https://bugs.webkit.org/show_bug.cgi?id=197958
-import formRequestSubmitPolyfill from "https://cdn.skypack.dev/pin/form-request-submit-polyfill@v2.0.0-szOipIemxchOslzcqvLN/mode=imports,min/optimized/form-request-submit-polyfill.js";
+import formRequestSubmitPolyfill from 'https://cdn.skypack.dev/pin/form-request-submit-polyfill@v2.0.0-szOipIemxchOslzcqvLN/mode=imports,min/optimized/form-request-submit-polyfill.js';
 
 const bidi = bidiFactory();
 
@@ -46,7 +46,7 @@ async function textToPath(
  * @returns {Promise<ConfigData>}
  */
 async function getConfig() {
-    const response = await fetch("./data.json");
+    const response = await fetch('./data.json');
     return await response.json();
 }
 
@@ -73,8 +73,8 @@ function encodeSVG(data) {
     // Use single quotes instead of double to avoid encoding.
     const escaped = data
         .replace(/"/g, "'")
-        .replace(/>\s{1,}</g, "><")
-        .replace(/\s{2,}/g, " ")
+        .replace(/>\s{1,}</g, '><')
+        .replace(/\s{2,}/g, ' ')
         .replace(symbols, encodeURIComponent);
 
     return `url("data:image/svg+xml,${escaped}")`;
@@ -108,9 +108,9 @@ async function setSvgText({
     tfv: textFlipVertical = 1,
     tfh: textFlipHorizontal = 1,
     textDir = textDirRaw === 'rtl' ? 'rtl' : 'ltr',
-    textVertical = textDirRaw === 'v'
+    textVertical = textDirRaw === 'v',
 }) {
-    const fonts = state.get("fonts");
+    const fonts = state.get('fonts');
     const { url } = fonts[selectedIndex];
 
     // string to number
@@ -123,82 +123,86 @@ async function setSvgText({
     textShadowOpacity = +textShadowOpacity;
 
     // selectors
-    const svgAndMedia = $id("text-box-content");
-    const svg = $id("text-svg");
-    const svgGroup = $id("text-svg-main");
-    const media = $id("text-media");
+    const svgAndMedia = $id('text-box-content');
+    const svg = $id('text-svg');
+    const svgGroup = $id('text-svg-main');
+    const media = $id('text-media');
 
     const lines = [line1, line2, line3].filter((x) => x);
 
-    let linesPaths = state.get("linesPaths");
+    let linesPaths = state.get('linesPaths');
 
     // Should we convert the text to vector?
     if (
-        state.get("text") !== lines.join() ||
-        state.get("fontUrl") !== url ||
-        state.get("fontSize") !== fontSize ||
-        state.get("textDir") !== textDir
+        state.get('text') !== lines.join() ||
+        state.get('fontUrl') !== url ||
+        state.get('fontSize') !== fontSize ||
+        state.get('textDir') !== textDir
     ) {
         linesPaths = await Promise.all(
             lines.map((line) => textToPath(line, url, fontSize, textDir))
         );
-        state.set("linesPaths", linesPaths);
-        state.set("text", lines.join());
-        state.set("fontUrl", url);
-        state.set("fontSize", fontSize);
-        state.set("textDir", textDir);
+        state.set('linesPaths', linesPaths);
+        state.set('text', lines.join());
+        state.set('fontUrl', url);
+        state.set('fontSize', fontSize);
+        state.set('textDir', textDir);
     }
 
     //reset stuff
-    svgAndMedia.style.filter = "";
-    svg.style.fillOpacity = "";
-    svg.style.stroke = "";
+    svgAndMedia.style.filter = '';
+    svg.style.fillOpacity = '';
+    svg.style.stroke = '';
     svg.style.strokeWidth = 0;
-    svg.style.overflow = "";
-    svgGroup.innerHTML = "";
+    svg.style.overflow = '';
+    svgGroup.innerHTML = '';
 
     // First loop:
     // Set svg to dom and do and do letter spacing manipulations
     (textVertical ? [...linesPaths].reverse() : linesPaths).forEach((paths) => {
-        svgGroup.innerHTML += `<g>${paths.join("")}</g>`;
+        svgGroup.innerHTML += `<g>${paths.join('')}</g>`;
         const g = svgGroup.lastChild;
         // Set Letter transforms
-        [...g.querySelectorAll("path")].forEach((path, i) => {
+        [...g.querySelectorAll('path')].forEach((path, i) => {
             let transform;
 
             if (textVertical) {
-                const spacing = letterSpacing ? `translate(0 ${letterSpacing * i})` : '';
+                const spacing = letterSpacing
+                    ? `translate(0 ${letterSpacing * i})`
+                    : '';
                 const rect = path.getBBox();
-                const vertical = `rotate(-90,${rect.x + rect.width/2},${rect.y + rect.height/2})`;
+                const vertical = `rotate(-90,${rect.x + rect.width / 2},${
+                    rect.y + rect.height / 2
+                })`;
                 transform = `${vertical}${spacing}`;
-            }
-            else {
-                transform = letterSpacing ? `translate(${letterSpacing * i} 0)` : '';
+            } else {
+                transform = letterSpacing
+                    ? `translate(${letterSpacing * i} 0)`
+                    : '';
             }
 
             if (transform) {
-                path.setAttribute("transform", transform)
+                path.setAttribute('transform', transform);
             }
         });
-
     });
 
     // Second Loop:
     // Set Alignment and Line spacing
     // We need a second loop because we need to measure sizes per line
-    [...svgGroup.querySelectorAll("g")].forEach((g, i) => {
+    [...svgGroup.querySelectorAll('g')].forEach((g, i) => {
         let gLeft = 0;
         const { width: svgGroupWidth } = svgGroup.getBBox();
         const { width: gWidth } = g.getBBox();
 
-        if (textAlign === "center") {
+        if (textAlign === 'center') {
             gLeft = (svgGroupWidth - gWidth) / 2;
-        } else if (textAlign === "right") {
+        } else if (textAlign === 'right') {
             gLeft = svgGroupWidth - gWidth;
         }
 
         g.setAttribute(
-            "transform",
+            'transform',
             `translate(${gLeft} ${(fontSize + lineSpacing) * i})`
         );
     });
@@ -206,22 +210,22 @@ async function setSvgText({
     // Set Transforms
     // Must happen after the measurements
     const transform = [
-        ["rotate", textRotation],
-        ["skewX", textSkew],
-        ["scale", `${textFlipHorizontal}, ${textFlipVertical}`],
+        ['rotate', textRotation],
+        ['skewX', textSkew],
+        ['scale', `${textFlipHorizontal}, ${textFlipVertical}`],
     ]
         .filter(([, value]) => value)
         .map(([key, value]) => `${key}(${value})`)
-        .join(" ");
+        .join(' ');
 
-    svgGroup.setAttribute("transform", transform);
+    svgGroup.setAttribute('transform', transform);
 
     // After all the manipulations - measure the exact boundaries and resize the box
     const { x, y, width, height } = svg.getBBox();
-    svg.setAttribute("viewBox", `${x} ${y} ${width} ${height}`);
+    svg.setAttribute('viewBox', `${x} ${y} ${width} ${height}`);
     svg.setAttribute(
-        "preserveAspectRatio",
-        textAspect === "keep" ? "xMidYMid meet" : "none"
+        'preserveAspectRatio',
+        textAspect === 'keep' ? 'xMidYMid meet' : 'none'
     );
     // Create mask
     const serialized = encodeSVG(svg.outerHTML);
@@ -238,7 +242,7 @@ async function setSvgText({
         //svg.style.fillOpacity = 1;
         svg.style.stroke = textOutlineColor;
         svg.style.strokeWidth = textOutline;
-        svg.style.overflow = "visible";
+        svg.style.overflow = 'visible';
     }
     if (textShadowOpacity) {
         svgAndMedia.style.filter = `drop-shadow(${textShadowX}px ${textShadowY}px ${textShadowBlur}px ${hex2rgba(
@@ -253,8 +257,8 @@ async function setSvgText({
  * @param {MaskFormData} data
  */
 function setDirection({ td: textDirection }) {
-    const textInputs = $id("textInputs");
-    textInputs.style.direction = textDirection === "rtl" ? textDirection : "";
+    const textInputs = $id('textInputs');
+    textInputs.style.direction = textDirection === 'rtl' ? textDirection : '';
 }
 
 /**
@@ -262,28 +266,28 @@ function setDirection({ td: textDirection }) {
  * @param {MaskFormData} data
  */
 function setMedia({ mi: selectedIndex }) {
-    const media = state.get("media");
+    const media = state.get('media');
     const { type, url } = media[selectedIndex];
 
-    const video = $id("media-video");
-    const image = $id("media-image");
+    const video = $id('media-video');
+    const image = $id('media-image');
 
     if (image.src) {
-        image.setAttribute("hidden", "hidden");
-        image.removeAttribute("src");
+        image.setAttribute('hidden', 'hidden');
+        image.removeAttribute('src');
     }
     if (video.src) {
-        video.setAttribute("hidden", "hidden");
+        video.setAttribute('hidden', 'hidden');
         video.pause();
-        video.removeAttribute("src"); // empty source
+        video.removeAttribute('src'); // empty source
         video.load();
     }
 
-    if (type === "video") {
-        video.removeAttribute("hidden");
+    if (type === 'video') {
+        video.removeAttribute('hidden');
         video.src = url;
-    } else if (type === "image") {
-        image.removeAttribute("hidden");
+    } else if (type === 'image') {
+        image.removeAttribute('hidden');
         image.src = url;
     }
 }
@@ -292,8 +296,8 @@ function setMedia({ mi: selectedIndex }) {
  * Reset on stage box size to content limits
  */
 function setupStage({ sb: stageBackground, sbi: stageBackgroundImage }) {
-    $id("result").style.backgroundColor = stageBackground;
-    $id("result").style.backgroundImage = /^https?|data|blob/.test(
+    $id('result').style.backgroundColor = stageBackground;
+    $id('result').style.backgroundImage = /^https?|data|blob/.test(
         stageBackgroundImage
     )
         ? `url(${stageBackgroundImage})`
@@ -305,7 +309,7 @@ function setupStage({ sb: stageBackground, sbi: stageBackgroundImage }) {
  * @param {ConfigData['fonts']} fonts
  */
 function loadWebFonts() {
-    const fonts = state.get("fonts");
+    const fonts = state.get('fonts');
     const families = fonts.map(
         ({ family, variant = 400 }) => `${family}:${variant}`
     );
@@ -321,13 +325,13 @@ function loadWebFonts() {
  * @param {HTMLFormElement} form
  */
 function populateFontsList() {
-    const fonts = state.get("fonts");
+    const fonts = state.get('fonts');
 
     fonts.forEach(({ family, defaults }, index) => {
         // Create font item
-        const fontItem = getTempalteItem("#font-item-template");
-        const content = fontItem.querySelector("[data-font-name]");
-        const input = fontItem.querySelector("[data-font-input]");
+        const fontItem = getTempalteItem('#font-item-template');
+        const content = fontItem.querySelector('[data-font-name]');
+        const input = fontItem.querySelector('[data-font-input]');
 
         input.value = index;
         content.textContent = family;
@@ -339,7 +343,7 @@ function populateFontsList() {
         }
 
         // Add to document
-        $id("fontList").appendChild(fontItem);
+        $id('fontList').appendChild(fontItem);
     });
 }
 
@@ -349,30 +353,30 @@ function populateFontsList() {
  * @param {HTMLFormElement} form
  */
 function populateMediaList() {
-    const media = state.get("media");
+    const media = state.get('media');
 
     media.forEach(({ thumb, defaults, type }, index) => {
         let mediaItem;
 
         // Create image item
-        if (type === "image") {
-            mediaItem = getTempalteItem("#media-item-image-template");
+        if (type === 'image') {
+            mediaItem = getTempalteItem('#media-item-image-template');
 
-            const image = mediaItem.querySelector("[data-thumb]");
+            const image = mediaItem.querySelector('[data-thumb]');
             image.src = thumb;
         }
         // or - Create video item
-        else if (type === "video") {
-            mediaItem = getTempalteItem("#media-item-video-template");
+        else if (type === 'video') {
+            mediaItem = getTempalteItem('#media-item-video-template');
 
-            const video = mediaItem.querySelector("[data-thumb]");
+            const video = mediaItem.querySelector('[data-thumb]');
             video.src = thumb;
-            video.addEventListener("mouseenter", () => video.play());
-            video.addEventListener("mouseleave", () => video.pause());
+            video.addEventListener('mouseenter', () => video.play());
+            video.addEventListener('mouseleave', () => video.pause());
         }
 
         // Set input values
-        const input = mediaItem.querySelector("[data-media-input]");
+        const input = mediaItem.querySelector('[data-media-input]');
         input.value = index;
 
         // Set default
@@ -380,27 +384,26 @@ function populateMediaList() {
             input.setAttribute('checked', 'checked');
         }
 
-
         // Add to document
-        $id("mediaList").appendChild(mediaItem);
+        $id('mediaList').appendChild(mediaItem);
     });
 }
 
 function setupTextSettings() {
-    [...$selectAll("[data-setting-change")]?.forEach((input) =>
-        input.addEventListener("change", () => {
+    [...$selectAll('[data-setting-change')]?.forEach((input) =>
+        input.addEventListener('change', () => {
             form.requestSubmit();
         })
     );
-    [...$selectAll("[data-setting-input")]?.forEach((input) =>
-        input.addEventListener("input", () => {
+    [...$selectAll('[data-setting-input')]?.forEach((input) =>
+        input.addEventListener('input', () => {
             form.requestSubmit();
         })
     );
 
-    $id("copy-url").addEventListener("click", (event) => {
+    $id('copy-url').addEventListener('click', (event) => {
         navigator.clipboard.writeText(location.href).then(() => {
-            $id("copy-url").querySelector("span").textContent = "(Copied!)";
+            $id('copy-url').querySelector('span').textContent = '(Copied!)';
         });
         event.preventDefault();
     });
@@ -423,12 +426,12 @@ function setupFormDefaults() {
         // and they might multiple key representations in the url
         // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox#handling_multiple_checkboxes
         if (urlParams.has(element.name)) {
-            if (element.type === "checkbox" || element.type === "radio") {
+            if (element.type === 'checkbox' || element.type === 'radio') {
                 const values = urlParams.getAll(element.name);
                 element.checked = values.includes(element.value);
-            } else if (element.type === "select-multiple") {
+            } else if (element.type === 'select-multiple') {
                 const values = urlParams.getAll(element.name);
-                [...element.querySelectorAll("option")].map(
+                [...element.querySelectorAll('option')].map(
                     (option) =>
                         (option.selected = values.includes(option.value))
                 );
@@ -436,7 +439,7 @@ function setupFormDefaults() {
                 element.value = urlParams.get(element.name);
             }
         } else if (
-            (element.type === "checkbox" || element.type === "radio") &&
+            (element.type === 'checkbox' || element.type === 'radio') &&
             element.checked
         ) {
             element.checked = false;
@@ -465,7 +468,7 @@ function setupFormDefaults() {
  */
 function setupFormSubmit() {
     const form = document.forms[0];
-    form.addEventListener("submit", async (event) => {
+    form.addEventListener('submit', async (event) => {
         event.preventDefault();
 
         const formData = new FormData(form);
@@ -485,7 +488,7 @@ function setupFormSubmit() {
         if (history.pushState) {
             const url = new URL(window.location.href);
             url.search = new URLSearchParams(formData).toString();
-            window.history.pushState({ path: url.href }, "", url.href);
+            window.history.pushState({ path: url.href }, '', url.href);
         }
     });
     // Initial setup, stupidly wait 500ms for all fonts etc to load
@@ -496,20 +499,20 @@ function setupFormSubmit() {
  * Stage editbox interaction logic
  * @param {HTMLElement} textBox
  */
-function setupBoxResize(textBox = $id("text-box")) {
-    const handles = [...$selectAll("[data-handle]"), textBox];
+function setupBoxResize(textBox = $id('text-box')) {
+    const handles = [...$selectAll('[data-handle]'), textBox];
 
-    if (form.elements["y"].value) {
-        textBox.style.top = form.elements["y"].value;
-        textBox.style.left = form.elements["x"].value;
-        textBox.style.width = form.elements["w"].value;
-        textBox.style.height = form.elements["h"].value;
+    if (form.elements['y'].value) {
+        textBox.style.top = form.elements['y'].value;
+        textBox.style.left = form.elements['x'].value;
+        textBox.style.width = form.elements['w'].value;
+        textBox.style.height = form.elements['h'].value;
     }
 
     handles.forEach((handle) => {
-        handle.addEventListener("pointerdown", (event) => {
+        handle.addEventListener('pointerdown', (event) => {
             const target = event.target;
-            const container = $id("result");
+            const container = $id('result');
 
             const containerH = container.offsetHeight;
             const containerW = container.offsetWidth;
@@ -524,7 +527,7 @@ function setupBoxResize(textBox = $id("text-box")) {
             const newDim = { ...initialDim };
 
             const handleMove = ({ offsetX, offsetY }) => {
-                if (corner === "top-left") {
+                if (corner === 'top-left') {
                     newDim.top = Math.min(
                         offsetY,
                         initialDim.height + initialDim.top - 10
@@ -536,7 +539,7 @@ function setupBoxResize(textBox = $id("text-box")) {
                     newDim.width = initialDim.width + initialDim.left - offsetX;
                     newDim.height =
                         initialDim.height + initialDim.top - offsetY;
-                } else if (corner === "top-right") {
+                } else if (corner === 'top-right') {
                     newDim.top = Math.min(
                         offsetY,
                         initialDim.height + initialDim.top - 10
@@ -544,14 +547,14 @@ function setupBoxResize(textBox = $id("text-box")) {
                     newDim.width = offsetX - initialDim.left;
                     newDim.height =
                         initialDim.height + initialDim.top - offsetY;
-                } else if (corner === "bottom-left") {
+                } else if (corner === 'bottom-left') {
                     newDim.left = Math.min(
                         offsetX,
                         initialDim.width + initialDim.left - 10
                     );
                     newDim.width = initialDim.width + initialDim.left - offsetX;
                     newDim.height = offsetY - initialDim.top;
-                } else if (corner === "bottom-right") {
+                } else if (corner === 'bottom-right') {
                     newDim.width = offsetX - initialDim.left;
                     newDim.height = offsetY - initialDim.top;
                 } else if (handle === textBox) {
@@ -559,7 +562,7 @@ function setupBoxResize(textBox = $id("text-box")) {
                     newDim.left = offsetX - initialX;
                 }
 
-                container.dataset.dragging = "true";
+                container.dataset.dragging = 'true';
 
                 const top = clamp(
                     Math.min(-newDim.height, 0) + 10,
@@ -581,21 +584,21 @@ function setupBoxResize(textBox = $id("text-box")) {
             };
 
             container.setPointerCapture(event.pointerId);
-            container.addEventListener("pointermove", handleMove);
+            container.addEventListener('pointermove', handleMove);
             container.addEventListener(
-                "pointerup",
+                'pointerup',
                 function handlePointerUp(e) {
                     delete container.dataset.dragging;
 
                     // Save box dimensions
-                    form.elements["y"].value = textBox.style.top;
-                    form.elements["x"].value = textBox.style.left;
-                    form.elements["w"].value = textBox.style.width;
-                    form.elements["h"].value = textBox.style.height;
+                    form.elements['y'].value = textBox.style.top;
+                    form.elements['x'].value = textBox.style.left;
+                    form.elements['w'].value = textBox.style.width;
+                    form.elements['h'].value = textBox.style.height;
                     form.requestSubmit();
 
-                    container.removeEventListener("pointerup", handlePointerUp);
-                    container.removeEventListener("pointermove", handleMove);
+                    container.removeEventListener('pointerup', handlePointerUp);
+                    container.removeEventListener('pointermove', handleMove);
                 }
             );
         });
@@ -610,16 +613,16 @@ const state = new Map(
         fonts: [],
         media: [],
         linesPaths: [],
-        text: "",
-        fontUrl: "",
+        text: '',
+        fontUrl: '',
         fontSize: 0,
-        textDir: "",
+        textDir: '',
     })
 );
 async function init() {
     const { fonts, media } = await getConfig();
-    state.set("fonts", fonts);
-    state.set("media", media);
+    state.set('fonts', fonts);
+    state.set('media', media);
     loadWebFonts();
     populateFontsList();
     populateMediaList();
@@ -632,8 +635,8 @@ async function init() {
 /**
  * Not really necesary, but reminds me of the good ol' days.
  */
-if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init);
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
 } else {
     init();
 }
