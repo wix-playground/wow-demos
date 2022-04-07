@@ -1,0 +1,61 @@
+@import url(https://tombigel.github.io/resize-box/index.css);
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+}
+
+/*
+ * layout
+ */
+.container {
+    width: 100%;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    grid-template-rows: auto;
+    grid-auto-flow: row;
+    grid-template-areas: "controls result";
+    font-size: 0.8rem;
+}
+
+.controls {
+    grid-area: controls;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    padding: 1em;
+    background: hsl(0, 0%, 95%);
+    border-right: 1px solid hsl(0, 0%, 50%);
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.result {
+    grid-area: result;
+    overflow: hidden;
+    padding: 1em;
+    background-size: cover;
+}
+
+ul,
+li {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+fieldset{
+    margin-bottom: 0.6em;
+}
+
+legend {
+    font-weight: bold;
+}
+
+.controls h3 {
+    margin-top: 0.5em;
+    margin-bottom: 0.2em;
+    font-size: 0.9rem;
+}

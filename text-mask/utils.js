@@ -22,11 +22,12 @@ export const $selectAll = (selector) => document.querySelectorAll(selector);
 /**
  * Limit a number between 2 values, inclusive
  * @param {number} min
- * @param {number} max
+ * @param {number} [max]
  * @param {number} num
  * @returns {number}
  */
-export const clamp = (min, max, num) => Math.min(max, Math.max(min, num));
+export const clamp = (min, max = min, num = max) =>
+    Math.min(max, Math.max(min, num));
 
 /**
  * From https://stackoverflow.com/a/51564734

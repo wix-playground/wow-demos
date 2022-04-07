@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container">
+        <div class="controls">
+
+        </div>
+        <div class="result" id="result">
+            <div class="resizable-box" data-resizable id="box">
+                <div class="content">
+                    Container: BODY
+                </div>
+                <div class="resizable-box-handle" data-handle="top-left"></div>
+                <div class="resizable-box-handle" data-handle="top-right"></div>
+                <div class="resizable-box-handle" data-handle="bottom-left"></div>
+                <div class="resizable-box-handle" data-handle="bottom-right"></div>
+                <div class="resizable-box-handle" data-handle="top"></div>
+                <div class="resizable-box-handle" data-handle="right"></div>
+                <div class="resizable-box-handle" data-handle="bottom"></div>
+                <div class="resizable-box-handle" data-handle="left"></div>
+                <input form="form" type="hidden" name="x"></input>
+                <input form="form" type="hidden" name="y"></input>
+                <input form="form" type="hidden" name="w"></input>
+                <input form="form" type="hidden" name="h"></input>
+            </div>
+        </div>
+    </div>
+    <form name="form" id="form"></form>
+    <script src="./index.js" type="module"></script>
+</body>
+</html>
