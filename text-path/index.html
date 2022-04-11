@@ -10,12 +10,84 @@
 <body>
     <div class="container">
         <div class="controls">
+            <fieldset class="text">
+                <legend>Text</legend>
+                <input data-setting-change class="text-input" form="form" type="text" name="t" value="I AM TEXT">
+                <button form="form" type="submit">Apply</button>
+            </fieldset>
+            <fieldset>
+                <legend>Text Controls</legend>
+                <div class="font-list">
+                    <ul class="font-list-items" id="fontList">
+                        <template id="font-item-template">
+                            <li class="font-item">
+                                <label>
+                                    <span data-font-name class="font-name">Font Name</span>
+                                    <input form="form" data-setting-change data-font-input class="font-input" type="radio"
+                                        name="ff" value="">
+                                </label>
+                            </li>
+                        </template>
+                    </ul>
+                </div>
+                <label>
+                    <span>Size</span>
+                    <input form="form" data-setting-change type="number" name="fs" value="72">
+                </label>
+                <label>
+                    <span>Resize with Shape</span>
+                    <input form="form" data-setting-change type="checkbox" name="frs">
+                </label>
+                <label>
+                    <span>Color</span>
+                    <input form="form" data-setting-input type="color" name="tc">
+                </label>
+                <label>
+                    <span>Text Align</span>
+                    <select form="form" data-setting-change name="ta">
+                        <option value="start">Left</option>
+                        <option value="middle">Center</option>
+                        <option value="end">Right</option>
+                    </select>
+                </label>
+                <label>
+                    <span>Vertical Align</span>
+                    <select form="form" data-setting-change name="tva">
+                        <option value="auto">Top</option>
+                        <option value="central">Middle</option>
+                        <option value="hanging">Bottom</option>
+                    </select>
+                </label>
+                <label>
+                    <span>Reverse Start</span>
+                    <input form="form" data-setting-change type="checkbox" name="tsr">
+                </label>
+            </fieldset>
+            <fieldset>
+                <legend>Shape</legend>
+                Shape Dropdown
+                <br>
+                Shape Upload
+                <br>
+                Shape Orientation
+                <br>
+                Shape Aspect
+                <br>
+                Shape Visibility
+                <br>
+                Shape Color, Stroke
+            </fieldset>
 
         </div>
         <div class="result" id="result">
             <div class="resizable-box" data-resizable id="box">
                 <div class="content">
-                    Container: BODY
+                    <svg id="text-svg" viewBox="59 49 538 422" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+                        <path fill="none" stroke-width="2" transform-origin="center" stroke="#ff0000" id="text-path-path" d="m597,49c0,0 -30,169 -177,162c-147,-7 -167,140 -167,140c0,0 -31,143 -194,116"/>
+                        <text>
+                            <textPath id="text-path-text" href="#text-path-path">.</textPath>
+                        </text>
+                    </svg>
                 </div>
                 <div class="resizable-box-handle" data-handle="top-left"></div>
                 <div class="resizable-box-handle" data-handle="top-right"></div>

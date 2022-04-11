@@ -1,4 +1,4 @@
-import { $id, $select, $selectAll, clamp, hex2rgba } from './utils.js';
+import { $id, $select, $selectAll, clamp, hex2rgba, getTempalteItem } from '../utils/utils.js';
 import webfontloader from 'https://cdn.skypack.dev/webfontloader';
 import opentypeJs from 'https://cdn.skypack.dev/opentype.js';
 import bidiFactory from 'https://cdn.skypack.dev/bidi-js';
@@ -50,14 +50,6 @@ async function getConfig() {
     return await response.json();
 }
 
-/**
- * get an html template from the dom by a selector
- * @param {string} selector
- * @returns {HTMLElement}
- */
-function getTempalteItem(selector) {
-    return $select(selector).content.cloneNode(true).firstElementChild;
-}
 
 /**
  * Helper matcher for SVG encoding
