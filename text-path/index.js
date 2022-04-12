@@ -52,30 +52,43 @@ function updateText({
     tva: textVerticalAlign,
     tsr: pathReverse,
 }) {
-    const svg = $id('text-svg');
     const text = $id('text-path-text');
     const path = $id('text-path-path');
 
-    text.style.font = `${fontSize}px ${fontFamily}`;
+    if (fontResizeWithShape) {
+        text.style.font = `${fontSize}px ${fontFamily}`;
+    } else {
+        text.style.font = `calc(${fontSize}px * var(--font-scale-factor)) ${fontFamily}`;
+    }
     text.style.fill = textColor;
     text.style.dominantBaseline = textVerticalAlign;
     text.textContent = textContent;
 
-    if (pathReverse && !path.dataset.d) {
+    if (pathReverse && !path.dataset.nonReversedD) {
         const d = path.getAttribute('d');
-        path.dataset.d = d;
+        path.dataset.nonReversedD = d;
         path.setAttribute('d', reverse(normalize(d)));
-    }
-    else if (!pathReverse && path.dataset.d) {
-        path.setAttribute('d', path.dataset.d);
-        delete path.dataset.d;
+    } else if (!pathReverse && path.dataset.nonReversedD) {
+        path.setAttribute('d', path.dataset.nonReversedD);
+        delete path.dataset.nonReversedD;
     }
 
-    const xyMatcher = /scale\(([-\.\d]+),([-\.\d]+)\)/;
-    const transform = path.getAttribute('transform') || ''
-    // const [, sx = 1, sy = 1] = transform.match(xyMatcher) || [];
-    // console.log(sx, sy)
-    const pathLength = path.getTotalLength(); // * Math.sqrt((+sx) ** 2 + (+sy) ** 2);
+    setTextAlign(textAlign, path, text);
+}
+
+/**
+ *
+ * @param {string} textAlign
+ * @param {SVGPathElement} path
+ * @param {SVGTextElement} text
+ */
+function setTextAlign(textAlign, path, text) {
+    const xyMatcher = /scale\(([-\.\d]+),\s?([-\.\d]+)\)/;
+    const transform = path.getAttribute('transform') || 'scale(1,1)';
+    const [, sx = 1, sy = 1] = transform.match(xyMatcher).map(v => parseFloat(v));
+
+    // TODO: Not accurate, should we just recalc the path?
+    const pathLength = path.getTotalLength() * Math.sqrt((sx ** 2 + sy ** 2) / 2);
     const textLength = text.getComputedTextLength();
     text.setAttribute(
         'startOffset',
@@ -85,7 +98,6 @@ function updateText({
             ? (pathLength - textLength) / 2
             : 0
     );
-
 }
 /**
  * Get configuration from a json file (because we cant natively import json files just yet)
@@ -141,10 +153,13 @@ function loadWebFonts(fonts) {
 function onMove(event) {
     const svg = $id('text-svg');
     const path = $id('text-path-path');
-    const {width: w1, height: h1} = svg.getBoundingClientRect();
-    const {width: w2, height: h2} = path.getBBox();
+    const text = $id('text-path-text');
+    const textAlign = document.forms[0].elements['ta'].value;
 
-    const scale = (w1 / h1) / (w2 / h2);
+    const { width: w1, height: h1 } = svg.getBoundingClientRect();
+    const { width: w2, height: h2 } = path.getBBox();
+
+    const scale = w1 / h1 / (w2 / h2);
     const d = path.getAttribute('d');
 
     if (w1 / h1 > w2 / h2) {
@@ -154,8 +169,36 @@ function onMove(event) {
     }
 
     // After all the manipulations - measure the exact boundaries and resize the box
-    const { x, y, width, height } = path.getBBox();
+    // Hide the text for bbox calculation
+    text.style.display = 'none';
+
+    // Get the path only bbox
+    const { x, y, width, height } = svg.getBBox();
+
+    // set the viewbox to the path bbox
     svg.setAttribute('viewBox', `${x} ${y} ${width} ${height}`);
+
+    // Set the text scale factor to the ratio between the svg stage size and the viewbox size
+    svg.style.setProperty('--font-scale-factor', width / svg.clientWidth);
+
+    // Show the text
+    text.style.display = '';
+
+    // Realign text
+    setTextAlign(textAlign, path, text);
+}
+
+function setInitialSizes() {
+    const svg = $id('text-svg');
+
+    // Get the path only bbox
+    const { x, y, width, height } = svg.getBBox();
+
+    // set the viewbox to the path bbox
+    svg.setAttribute('viewBox', `${x} ${y} ${width} ${height}`);
+
+    // Set the text scale factor to the ratio between the svg stage size and the viewbox size
+    svg.style.setProperty('--font-scale-factor', width / svg.clientWidth);
 }
 
 async function init() {
@@ -165,10 +208,11 @@ async function init() {
     setResizableBoxEvents(box, {
         container: $id('result'),
         form,
-        onMove
+        onMove,
     });
     populateFontsList(fonts);
     setFormEvents(form);
+    setInitialSizes();
 }
 
 /**
