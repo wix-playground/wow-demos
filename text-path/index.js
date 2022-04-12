@@ -3,6 +3,9 @@ import formRequestSubmitPolyfill from 'https://cdn.skypack.dev/pin/form-request-
 import webfontloader from 'https://cdn.skypack.dev/webfontloader';
 import { setResizableBoxEvents } from 'https://tombigel.github.io/resize-box/index.js';
 import { normalize, reverse } from 'https://cdn.skypack.dev/svg-path-reverse';
+import serialize from 'https://cdn.skypack.dev/serialize-svg-path';
+import scale from 'https://cdn.skypack.dev/scale-svg-path';
+import parse from 'https://cdn.skypack.dev/parse-svg-path';
 
 import {
     $id,
@@ -30,7 +33,10 @@ function setFormEvents(form) {
         e.preventDefault();
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
+
         console.log(data);
+
+        updatePath(data);
         updateText(data);
     });
     form.requestSubmit();
@@ -38,7 +44,7 @@ function setFormEvents(form) {
 /**
  * @typedef {{
  *    t: string, ff: string, fs: string, frs: boolean, tc: string, ta: string, tva: string,
- *    tsr: boolean
+ *    tsr: boolean, pi: string
  * }} TextPathFormData
  * @param {data} TextPathFormData
  */
@@ -50,7 +56,6 @@ function updateText({
     tc: textColor,
     ta: textAlign,
     tva: textVerticalAlign,
-    tsr: pathReverse,
 }) {
     const text = $id('text-path-text');
     const path = $id('text-path-path');
@@ -64,31 +69,58 @@ function updateText({
     text.style.dominantBaseline = textVerticalAlign;
     text.textContent = textContent;
 
-    if (pathReverse && !path.dataset.nonReversedD) {
-        const d = path.getAttribute('d');
-        path.dataset.nonReversedD = d;
-        path.setAttribute('d', reverse(normalize(d)));
-    } else if (!pathReverse && path.dataset.nonReversedD) {
-        path.setAttribute('d', path.dataset.nonReversedD);
-        delete path.dataset.nonReversedD;
-    }
-
     setTextAlign(textAlign, path, text);
 }
 
 /**
  *
- * @param {string} textAlign
- * @param {SVGPathElement} path
- * @param {SVGTextElement} text
+ * @param {data} TextPathFormData
  */
-function setTextAlign(textAlign, path, text) {
-    const xyMatcher = /scale\(([-\.\d]+),\s?([-\.\d]+)\)/;
-    const transform = path.getAttribute('transform') || 'scale(1,1)';
-    const [, sx = 1, sy = 1] = transform.match(xyMatcher).map(v => parseFloat(v));
+function updatePath({
+    tsr: pathReverse,
+    pi: pathItem
+}) {
+    pathItem = +pathItem;
 
-    // TODO: Not accurate, should we just recalc the path?
-    const pathLength = path.getTotalLength() * Math.sqrt((sx ** 2 + sy ** 2) / 2);
+    const svg = $id('text-svg');
+    const path = $id('text-path-path');
+
+    //path.setAttribute('d', state.get('paths')[pathItem])
+
+    const w1 = svg.clientWidth;
+    const h1 = svg.clientHeight;
+    const w2 = state.get('originalWidth');
+    const h2 = state.get('originalHeight');
+
+    const factor = w1 / h1 / (w2 / h2);
+
+    // Scale the path d, !no transforms!
+    const d =
+        w1 / h1 > w2 / h2
+            ? serialize(scale(parse(state.get('original')), factor, 1))
+            : serialize(scale(parse(state.get('original')), 1, 1 / factor));
+
+    path.setAttribute('d', d);
+
+    // After all the manipulations - measure the exact boundaries and resize the box
+    setSizes();
+
+    // Reverse path if needed
+    if (pathReverse) {
+        path.setAttribute('d', reverse(normalize(path.getAttribute('d'))));
+    }
+
+}
+
+/**
+ *
+ * @param {string} textAlign
+ */
+function setTextAlign(textAlign) {
+    const path = $id('text-path-path');
+    const text = $id('text-path-text');
+
+    const pathLength = path.getTotalLength();
     const textLength = text.getComputedTextLength();
     text.setAttribute(
         'startOffset',
@@ -99,6 +131,30 @@ function setTextAlign(textAlign, path, text) {
             : 0
     );
 }
+
+/**
+ * Set text size and svg viewbox by content size
+ */
+function setSizes() {
+    const svg = $id('text-svg');
+    const text = $id('text-path-text');
+
+    // Hide the text for bbox calculation
+    text.style.display = 'none';
+
+    // Get the path only bbox
+    const { x, y, width, height } = svg.getBBox();
+
+    // set the viewbox to the path bbox
+    svg.setAttribute('viewBox', `${x} ${y} ${width} ${height}`);
+
+    // Set the text scale factor to the ratio between the svg stage size and the viewbox size
+    svg.style.setProperty('--font-scale-factor', width / svg.clientWidth);
+
+    // Show the text
+    text.style.display = '';
+}
+
 /**
  * Get configuration from a json file (because we cant natively import json files just yet)
  * @typedef {{fonts: {url: string, family: string, features?: {unicodeRanges: string[]}}[], media: {thumb: string, url: string, type: 'image'|'video'}[]}} ConfigData
@@ -112,7 +168,6 @@ async function getConfig() {
 /**
  * Get font list from configuration and build UI + form event
  * @param {ConfigData['fonts']} fonts
- * @param {HTMLFormElement} form
  */
 function populateFontsList(fonts) {
     fonts.forEach(({ family, defaults }, index) => {
@@ -136,6 +191,36 @@ function populateFontsList(fonts) {
 }
 
 /**
+ * Get font list from configuration and build UI + form event
+ * @param {ConfigData['paths']} fonts
+ */
+function populatePathsList(paths) {
+    paths.forEach(({ path, defaults }, index) => {
+        const pathItem = getTempalteItem('#path-item-template');
+        const thumb = pathItem.querySelector('[data-thumb]');
+        thumb.querySelector('path').setAttribute('d', path);
+
+
+
+        // Set input values
+        const input = pathItem.querySelector('[data-path-input]');
+        input.value = index;
+
+        // Set default
+        if (defaults) {
+            input.setAttribute('checked', 'checked');
+        }
+
+        // Add to document
+        $id('pathList').appendChild(pathItem);
+
+        // Get the path only bbox
+        const { x, y, width, height } = thumb.getBBox();
+        // set the viewbox to the path bbox
+        thumb.setAttribute('viewBox', `${x} ${y} ${width} ${height}`);
+    })
+}
+/**
  * Load web fonts from config with WebFontLoader 3rd party
  * @param {ConfigData['fonts']} fonts
  */
@@ -151,68 +236,54 @@ function loadWebFonts(fonts) {
 }
 
 function onMove(event) {
-    const svg = $id('text-svg');
-    const path = $id('text-path-path');
-    const text = $id('text-path-text');
-    const textAlign = document.forms[0].elements['ta'].value;
+    const form = document.forms[0];
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+    const textAlign = data.ta;
 
-    const { width: w1, height: h1 } = svg.getBoundingClientRect();
-    const { width: w2, height: h2 } = path.getBBox();
-
-    const scale = w1 / h1 / (w2 / h2);
-    const d = path.getAttribute('d');
-
-    if (w1 / h1 > w2 / h2) {
-        path.setAttribute('transform', `scale(${scale},1)`);
-    } else {
-        path.setAttribute('transform', `scale(1, ${1 / scale})`);
-    }
-
-    // After all the manipulations - measure the exact boundaries and resize the box
-    // Hide the text for bbox calculation
-    text.style.display = 'none';
-
-    // Get the path only bbox
-    const { x, y, width, height } = svg.getBBox();
-
-    // set the viewbox to the path bbox
-    svg.setAttribute('viewBox', `${x} ${y} ${width} ${height}`);
-
-    // Set the text scale factor to the ratio between the svg stage size and the viewbox size
-    svg.style.setProperty('--font-scale-factor', width / svg.clientWidth);
-
-    // Show the text
-    text.style.display = '';
+    // Set path size
+    updatePath(data);
 
     // Realign text
-    setTextAlign(textAlign, path, text);
+    setTextAlign(textAlign);
 }
 
-function setInitialSizes() {
-    const svg = $id('text-svg');
+function setInitialState() {
+    const path = $id('text-path-path');
+    const { width, height } = path.getBBox();
 
-    // Get the path only bbox
-    const { x, y, width, height } = svg.getBBox();
-
-    // set the viewbox to the path bbox
-    svg.setAttribute('viewBox', `${x} ${y} ${width} ${height}`);
-
-    // Set the text scale factor to the ratio between the svg stage size and the viewbox size
-    svg.style.setProperty('--font-scale-factor', width / svg.clientWidth);
+    state.set('original', path.getAttribute('d'));
+    state.set('originalWidth', width);
+    state.set('originalHeight', height);
 }
+
+/**
+ * Start here
+ */
+const state = new Map(
+    Object.entries({
+        paths: [],
+        original: '',
+        originalWidth: 0,
+        originalHeight: 0,
+    })
+);
 
 async function init() {
     const form = document.forms[0];
-    const { fonts, media } = await getConfig();
+    const { fonts, paths } = await getConfig();
+    state.set('paths', paths)
     loadWebFonts(fonts);
+    populateFontsList(fonts);
+    populatePathsList(paths);
+    setInitialState();
+    setSizes();
+    setFormEvents(form);
     setResizableBoxEvents(box, {
         container: $id('result'),
         form,
-        onMove,
+        onMove: onMove,
     });
-    populateFontsList(fonts);
-    setFormEvents(form);
-    setInitialSizes();
 }
 
 /**

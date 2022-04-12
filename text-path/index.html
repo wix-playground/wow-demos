@@ -65,7 +65,21 @@
             </fieldset>
             <fieldset>
                 <legend>Shape</legend>
-                Shape Dropdown
+                <div class="path-list">
+                    <ul class="path-list-items" id="pathList">
+                        <template id="path-item-template">
+                            <li class="path-item">
+                                <label>
+                                    <svg width="40" height="40" viewBox="0 0 800 600" data-thumb class="path-thumb" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+                                        <path fill="hsl(80 100% 50%)"/>
+                                    </svg>
+                                    <input form="form" data-setting-change data-path-input class="path-input" type="radio"
+                                        name="pi" value="">
+                                </label>
+                            </li>
+                        </template>
+                    </ul>
+                </div>
                 <br>
                 Shape Upload
                 <br>
