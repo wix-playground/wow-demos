@@ -72,9 +72,9 @@ function updateText({
 
     const xyMatcher = /scale\(([-\.\d]+),([-\.\d]+)\)/;
     const transform = path.getAttribute('transform') || ''
-    const [, sx = 1, sy = 1] = transform.match(xyMatcher) || [];
-    console.log(sx, sy)
-    const pathLength = path.getTotalLength() * Math.sqrt((+sx) ** 2 + (+sy) ** 2);
+    // const [, sx = 1, sy = 1] = transform.match(xyMatcher) || [];
+    // console.log(sx, sy)
+    const pathLength = path.getTotalLength(); // * Math.sqrt((+sx) ** 2 + (+sy) ** 2);
     const textLength = text.getComputedTextLength();
     text.setAttribute(
         'startOffset',
