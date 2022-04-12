@@ -33,6 +33,7 @@ function setFormEvents(form) {
         console.log(data);
         updateText(data);
     });
+    form.requestSubmit();
 }
 /**
  * @typedef {{
