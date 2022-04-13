@@ -91,6 +91,7 @@ function setTextAlign({
     tox: textOffsetX,
     toy: textOffsetY,
     tls: textLetterSpacing,
+    td: textDirection,
 }) {
     textOffsetX = +textOffsetX;
     textOffsetY = +textOffsetY;
@@ -113,6 +114,7 @@ function setTextAlign({
     text.style.dominantBaseline = textVerticalAlign;
     text.style.baselineShift = `${textOffsetY}`;
     text.textLength.baseVal.value = textLength;
+    text.style.direction = textDirection;
 }
 
 /**
