@@ -2,8 +2,13 @@
 import formRequestSubmitPolyfill from 'https://cdn.skypack.dev/pin/form-request-submit-polyfill@v2.0.0-szOipIemxchOslzcqvLN/mode=imports,min/optimized/form-request-submit-polyfill.js';
 import webfontloader from 'https://cdn.skypack.dev/webfontloader';
 import { setResizableBoxEvents } from 'https://tombigel.github.io/resize-box/index.js';
-import { urlToForm, formToUrl, urlToClipboard } from 'https://tombigel.github.io/form-to-url-to-form/index.js';
+import {
+    urlToForm,
+    formToUrl,
+} from 'https://tombigel.github.io/form-to-url-to-form/index.js';
 import { normalize, reverse } from 'https://cdn.skypack.dev/svg-path-reverse';
+import svgpath from 'https://cdn.skypack.dev/svgpath';
+
 import serialize from 'https://cdn.skypack.dev/serialize-svg-path';
 import scale from 'https://cdn.skypack.dev/scale-svg-path';
 import parse from 'https://cdn.skypack.dev/parse-svg-path';
@@ -102,7 +107,8 @@ function setTextAlign({
 
     const pathLength = path.getTotalLength();
     const baseTextLength = text.getComputedTextLength();
-    const textLength = baseTextLength + (pathLength - baseTextLength) * textLetterSpacing;
+    const textLength =
+        baseTextLength + (pathLength - baseTextLength) * textLetterSpacing;
     const baseOffset =
         textAlign === 'end'
             ? pathLength - textLength
@@ -130,35 +136,39 @@ function updatePath({
     ssw: shapeStrokeWidth,
     sfc: shapeFillColor,
     sfo: shapeFillOpacity,
+    rs: rotateShape,
 }) {
+    rotateShape = +rotateShape;
     pathIndex = +pathIndex;
 
     const svg = $id('text-svg');
     const path = $id('text-path-path');
+    const pathItem = state.get('paths')[pathIndex];
 
     if (state.get('selectedPath') !== pathIndex) {
-        const pathItem = state.get('paths')[pathIndex];
         path.setAttribute('d', pathItem.path);
-        updatePathState();
+        state.set('selectedPath', pathIndex)
     }
 
-    const w1 = svg.clientWidth;
-    const h1 = svg.clientHeight;
-    const w2 = state.get('originalWidth');
-    const h2 = state.get('originalHeight');
+    const boxAspect = svg.clientWidth / svg.clientHeight;
+    const pathObj = svgpath(pathItem.path);
 
-    const factor = w1 / h1 / (w2 / h2);
+
+    pathObj.rotate(rotateShape);
+    path.setAttribute('d', pathObj.toString());
+
+    const rotated = path.getBBox();
+    const pathAspect = (rotated.width / rotated.height);
+
+    const factor = boxAspect / pathAspect;
 
     // Scale the path d, !no transforms!
-    let d =
-        w1 / h1 > w2 / h2
-            ? serialize(scale(parse(state.get('original')), factor, 1))
-            : serialize(scale(parse(state.get('original')), 1, 1 / factor));
+    pathObj.scale(...(boxAspect > pathAspect ? [factor, 1] : [1, 1 / factor]));
 
     // Reverse path if needed
-    if (reversePath) {
-        d = reverse(normalize(d));
-    }
+    const d = reversePath
+        ? reverse(pathObj.abs().toString())
+        : pathObj.toString();
 
     path.setAttribute('d', d);
 
@@ -288,15 +298,6 @@ function onMove(event) {
     setTextAlign(data);
 }
 
-function updatePathState() {
-    const path = $id('text-path-path');
-    const { width, height } = path.getBBox();
-
-    state.set('original', path.getAttribute('d'));
-    state.set('originalWidth', width);
-    state.set('originalHeight', height);
-}
-
 /**
  * Start here
  */
@@ -304,9 +305,6 @@ const state = new Map(
     Object.entries({
         selectedPath: -1,
         paths: [],
-        original: '',
-        originalWidth: 0,
-        originalHeight: 0,
     })
 );
 
