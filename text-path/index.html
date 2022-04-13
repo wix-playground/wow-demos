@@ -10,10 +10,10 @@
 <body>
     <div class="container">
         <div class="controls">
-            <fieldset class="text">
+            <fieldset class="text-input">
                 <legend>Text</legend>
-                <input data-setting-change class="text-input" form="form" type="text" name="t" value="I AM TEXT">
-                <button form="form" type="submit">Apply</button>
+                <input data-setting-change class="text-input-text" form="form" type="text" name="t" value="I AM TEXT">
+                <button form="form" type="submit" class="text-input-submit">Apply</button>
             </fieldset>
             <fieldset>
                 <legend>Text Controls</legend>
@@ -22,9 +22,9 @@
                         <template id="font-item-template">
                             <li class="font-item">
                                 <label>
-                                    <span data-font-name class="font-name">Font Name</span>
                                     <input form="form" data-setting-change data-font-input class="font-input" type="radio"
                                         name="ff" value="">
+                                        <span data-font-name class="font-name">Font Name</span>
                                 </label>
                             </li>
                         </template>
@@ -39,11 +39,7 @@
                     <input form="form" data-setting-change type="checkbox" name="frs">
                 </label>
                 <label>
-                    <span>Color</span>
-                    <input form="form" data-setting-input type="color" name="tc">
-                </label>
-                <label>
-                    <span>Text Align</span>
+                    <span>Horizontal Align</span>
                     <select form="form" data-setting-change name="ta">
                         <option value="start">Left</option>
                         <option value="middle">Center</option>
@@ -59,8 +55,31 @@
                     </select>
                 </label>
                 <label>
-                    <span>Reverse Start</span>
-                    <input form="form" data-setting-change type="checkbox" name="tsr">
+                    <span>Manual Offset</span>
+                    <i>
+                        X <input form="form" data-setting-change type="number" name="tox" value="0">
+                        Y <input form="form" data-setting-change type="number" name="toy" value="0">
+                    </i>
+                </label>
+                <label>
+                    <span>Spacing</span>
+                    <input form="form" data-setting-input type="range" min="0" max="1" step="0.001" name="tls" value="0">
+                </label>
+                <label>
+                    <span>Fill Color</span>
+                    <input form="form" data-setting-input type="color" name="tfc" value="#000000">
+                </label>
+                <label>
+                    <span>Fill Opacity</span>
+                    <input form="form" data-setting-input type="range" min="0" max="1" step="0.01" name="tfo" value="1">
+                </label>
+                <label>
+                    <span>Stroke width</span>
+                    <input form="form" data-setting-change type="number" name="tsw" value="0">
+                </label>
+                <label>
+                    <span>Stroke Color</span>
+                    <input form="form" data-setting-input type="color" name="tsc" value="##ff0000">
                 </label>
             </fieldset>
             <fieldset>
@@ -70,26 +89,41 @@
                         <template id="path-item-template">
                             <li class="path-item">
                                 <label>
-                                    <svg width="40" height="40" viewBox="0 0 800 600" data-thumb class="path-thumb" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
-                                        <path fill="hsl(80 100% 50%)"/>
-                                    </svg>
+
                                     <input form="form" data-setting-change data-path-input class="path-input" type="radio"
                                         name="pi" value="">
+                                        <svg width="32" height="32" viewBox="0 0 800 600" data-thumb class="path-thumb" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+                                            <path/>
+                                        </svg>
                                 </label>
                             </li>
                         </template>
                     </ul>
                 </div>
-                <br>
-                Shape Upload
-                <br>
-                Shape Orientation
-                <br>
-                Shape Aspect
-                <br>
-                Shape Visibility
-                <br>
-                Shape Color, Stroke
+                <label>
+                    <span>Reverse Path</span>
+                    <input form="form" data-setting-change type="checkbox" name="rp">
+                </label>
+                <label>
+                    <span>Show Shape</span>
+                    <input form="form" data-setting-change type="checkbox" checked name="ss">
+                </label>
+                <label>
+                    <span>Fill Color</span>
+                    <input form="form" data-setting-input type="color" name="sfc" value="#00ff00">
+                </label>
+                <label>
+                    <span>Fill Opacity</span>
+                    <input form="form" data-setting-input type="range" min="0" max="1" step="0.01" name="sfo" value="0">
+                </label>
+                <label>
+                    <span>Stroke width</span>
+                    <input form="form" data-setting-change type="number" name="ssw" value="2">
+                </label>
+                <label>
+                    <span>Stroke Color</span>
+                    <input form="form" data-setting-input type="color" name="ssc" value="#ff0000">
+                </label>
             </fieldset>
 
         </div>
@@ -97,7 +131,7 @@
             <div class="resizable-box" data-resizable id="box">
                 <div class="content">
                     <svg id="text-svg" viewBox="59 49 538 422" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
-                        <path fill="none" stroke-width="2" vector-effect="non-scaling-stroke" stroke="#ff0000" id="text-path-path" d="m597,49c0,0 -30,169 -177,162c-147,-7 -167,140 -167,140c0,0 -31,143 -194,116"/>
+                        <path fill="none" id="text-path-path" d="m597,49c0,0 -30,169 -177,162c-147,-7 -167,140 -167,140c0,0 -31,143 -194,116"/>
                         <text>
                             <textPath id="text-path-text" href="#text-path-path">.</textPath>
                         </text>

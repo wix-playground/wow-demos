@@ -2,6 +2,7 @@
 import formRequestSubmitPolyfill from 'https://cdn.skypack.dev/pin/form-request-submit-polyfill@v2.0.0-szOipIemxchOslzcqvLN/mode=imports,min/optimized/form-request-submit-polyfill.js';
 import webfontloader from 'https://cdn.skypack.dev/webfontloader';
 import { setResizableBoxEvents } from 'https://tombigel.github.io/resize-box/index.js';
+import { urlToForm, formToUrl, urlToClipboard } from 'https://tombigel.github.io/form-to-url-to-form/index.js';
 import { normalize, reverse } from 'https://cdn.skypack.dev/svg-path-reverse';
 import serialize from 'https://cdn.skypack.dev/serialize-svg-path';
 import scale from 'https://cdn.skypack.dev/scale-svg-path';
@@ -17,6 +18,8 @@ import {
 } from '../utils/utils.js';
 
 function setFormEvents(form) {
+    urlToForm(form);
+
     [...$selectAll('[data-setting-change')]?.forEach((input) =>
         input.addEventListener('change', () => {
             form.requestSubmit();
@@ -38,38 +41,78 @@ function setFormEvents(form) {
 
         updatePath(data);
         updateText(data);
+        formToUrl(form);
     });
-    form.requestSubmit();
+
+    // Initial setup, stupidly wait 500ms for all fonts etc to load
+    setTimeout(() => form.requestSubmit(), 500);
 }
 /**
  * @typedef {{
  *    t: string, ff: string, fs: string, frs: boolean, tc: string, ta: string, tva: string,
- *    tsr: boolean, pi: string
+ *    rp: boolean, pi: string
  * }} TextPathFormData
  * @param {data} TextPathFormData
  */
-function updateText({
-    t: textContent,
-    ff: fontFamily,
-    fs: fontSize,
-    frs: fontResizeWithShape,
-    tc: textColor,
-    ta: textAlign,
-    tva: textVerticalAlign,
-}) {
+function updateText(data) {
+    const {
+        t: textContent,
+        ff: fontFamily,
+        fs: fontSize,
+        frs: fontResizeWithShape,
+        tsc: textStrokeColor,
+        tsw: textStrokeWidth,
+        tfc: textFillColor,
+        tfo: textFillOpacity,
+    } = data;
     const text = $id('text-path-text');
-    const path = $id('text-path-path');
 
-    if (fontResizeWithShape) {
-        text.style.font = `${fontSize}px ${fontFamily}`;
-    } else {
-        text.style.font = `calc(${fontSize}px * var(--font-scale-factor)) ${fontFamily}`;
-    }
-    text.style.fill = textColor;
-    text.style.dominantBaseline = textVerticalAlign;
     text.textContent = textContent;
 
-    setTextAlign(textAlign, path, text);
+    text.style.font = fontResizeWithShape
+        ? `${fontSize}px ${fontFamily}`
+        : `calc(${fontSize}px * var(--font-scale-factor)) ${fontFamily}`;
+
+    text.style.fill = textFillColor;
+    text.style.fillOpacity = textFillOpacity;
+    text.style.stroke = textStrokeColor;
+    text.style.strokeWidth = `${textStrokeWidth}px`;
+
+    setTextAlign(data);
+}
+
+/**
+ *
+ * @param {string} textAlign
+ */
+function setTextAlign({
+    ta: textAlign,
+    tva: textVerticalAlign,
+    tox: textOffsetX,
+    toy: textOffsetY,
+    tls: textLetterSpacing,
+}) {
+    textOffsetX = +textOffsetX;
+    textOffsetY = +textOffsetY;
+    textLetterSpacing = +textLetterSpacing;
+
+    const path = $id('text-path-path');
+    const text = $id('text-path-text');
+
+    const pathLength = path.getTotalLength();
+    const baseTextLength = text.getComputedTextLength();
+    const textLength = baseTextLength + (pathLength - baseTextLength) * textLetterSpacing;
+    const baseOffset =
+        textAlign === 'end'
+            ? pathLength - textLength
+            : textAlign === 'middle'
+            ? (pathLength - textLength) / 2
+            : 0;
+
+    text.setAttribute('startOffset', baseOffset + textOffsetX);
+    text.style.dominantBaseline = textVerticalAlign;
+    text.style.baselineShift = `${textOffsetY}`;
+    text.textLength.baseVal.value = textLength;
 }
 
 /**
@@ -77,15 +120,24 @@ function updateText({
  * @param {data} TextPathFormData
  */
 function updatePath({
-    tsr: pathReverse,
-    pi: pathItem
+    rp: reversePath,
+    pi: pathIndex,
+    ss: showShape,
+    ssc: shapeStrokeColor,
+    ssw: shapeStrokeWidth,
+    sfc: shapeFillColor,
+    sfo: shapeFillOpacity,
 }) {
-    pathItem = +pathItem;
+    pathIndex = +pathIndex;
 
     const svg = $id('text-svg');
     const path = $id('text-path-path');
 
-    //path.setAttribute('d', state.get('paths')[pathItem])
+    if (state.get('selectedPath') !== pathIndex) {
+        const pathItem = state.get('paths')[pathIndex];
+        path.setAttribute('d', pathItem.path);
+        updatePathState();
+    }
 
     const w1 = svg.clientWidth;
     const h1 = svg.clientHeight;
@@ -95,41 +147,30 @@ function updatePath({
     const factor = w1 / h1 / (w2 / h2);
 
     // Scale the path d, !no transforms!
-    const d =
+    let d =
         w1 / h1 > w2 / h2
             ? serialize(scale(parse(state.get('original')), factor, 1))
             : serialize(scale(parse(state.get('original')), 1, 1 / factor));
 
+    // Reverse path if needed
+    if (reversePath) {
+        d = reverse(normalize(d));
+    }
+
     path.setAttribute('d', d);
+
+    if (showShape) {
+        path.style.visibility = '';
+        path.style.fill = shapeFillColor;
+        path.style.fillOpacity = shapeFillOpacity;
+        path.style.stroke = shapeStrokeColor;
+        path.style.strokeWidth = `${shapeStrokeWidth}px`;
+    } else {
+        path.style.visibility = 'hidden';
+    }
 
     // After all the manipulations - measure the exact boundaries and resize the box
     setSizes();
-
-    // Reverse path if needed
-    if (pathReverse) {
-        path.setAttribute('d', reverse(normalize(path.getAttribute('d'))));
-    }
-
-}
-
-/**
- *
- * @param {string} textAlign
- */
-function setTextAlign(textAlign) {
-    const path = $id('text-path-path');
-    const text = $id('text-path-text');
-
-    const pathLength = path.getTotalLength();
-    const textLength = text.getComputedTextLength();
-    text.setAttribute(
-        'startOffset',
-        textAlign === 'end'
-            ? pathLength - textLength
-            : textAlign === 'middle'
-            ? (pathLength - textLength) / 2
-            : 0
-    );
 }
 
 /**
@@ -200,8 +241,6 @@ function populatePathsList(paths) {
         const thumb = pathItem.querySelector('[data-thumb]');
         thumb.querySelector('path').setAttribute('d', path);
 
-
-
         // Set input values
         const input = pathItem.querySelector('[data-path-input]');
         input.value = index;
@@ -218,7 +257,7 @@ function populatePathsList(paths) {
         const { x, y, width, height } = thumb.getBBox();
         // set the viewbox to the path bbox
         thumb.setAttribute('viewBox', `${x} ${y} ${width} ${height}`);
-    })
+    });
 }
 /**
  * Load web fonts from config with WebFontLoader 3rd party
@@ -239,16 +278,14 @@ function onMove(event) {
     const form = document.forms[0];
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
-    const textAlign = data.ta;
 
     // Set path size
     updatePath(data);
-
     // Realign text
-    setTextAlign(textAlign);
+    setTextAlign(data);
 }
 
-function setInitialState() {
+function updatePathState() {
     const path = $id('text-path-path');
     const { width, height } = path.getBBox();
 
@@ -262,6 +299,7 @@ function setInitialState() {
  */
 const state = new Map(
     Object.entries({
+        selectedPath: -1,
         paths: [],
         original: '',
         originalWidth: 0,
@@ -272,12 +310,11 @@ const state = new Map(
 async function init() {
     const form = document.forms[0];
     const { fonts, paths } = await getConfig();
-    state.set('paths', paths)
+    state.set('paths', paths);
     loadWebFonts(fonts);
     populateFontsList(fonts);
     populatePathsList(paths);
-    setInitialState();
-    setSizes();
+    //setSizes();
     setFormEvents(form);
     setResizableBoxEvents(box, {
         container: $id('result'),

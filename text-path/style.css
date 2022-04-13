@@ -63,21 +63,215 @@ label {
     padding: 1px 2px;
 }
 
+input {
+    vertical-align: middle;
+}
+
+input[type="color"] {
+    padding: 0;
+    background: none;
+    border: none;
+    margin: 0 -2px;
+    cursor: context-menu;
+}
+
+input[type="color"], input[type="number"] {
+    min-width: 3em;
+    flex-basis: 0;
+}
+
+input[type="number"] {
+    width: 3em;
+}
+
 .controls h3 {
     margin-top: 0.5em;
     margin-bottom: 0.2em;
     font-size: 0.9rem;
 }
 
+/*
+ * Text Input
+ */
+.text-input {
+    display: flex;
+    flex-direction: raw;
+    gap: .5em;
+}
+
+.text-input-text {
+    box-sizing: border-box;
+    border: 1px solid hsl(0, 0%, 80%);
+    border-radius: 3px;
+    font-size: 1em;
+    font-weight: bold;
+    padding: 3px 5px;
+    margin: 0;
+    color: hsl(0, 0%, 20%);
+    width: 100%;
+    background-color: hsl(0, 0%, 90%);
+}
+.text-input-submit {
+    align-self: flex-end;
+}
+
+/*
+ * Font list
+ */
+.font-list {
+    position: relative;
+    padding-bottom: calc(1em + 20px);
+}
+.font-list-items {
+    position: absolute;
+    width: 100%;
+    background-color: hsl(0, 0%, 90%);
+    border: 1px solid hsl(0, 0%, 80%);
+    border-radius: 3px;
+}
+.font-list-items:where(:focus-within, :hover) {
+    z-index: 1;
+}
+.font-list-items:not(:focus-within, :hover)
+    :not(:checked, :active)
+    + .font-name {
+    display: none;
+}
+
+.font-item label {
+    padding: 0;
+}
+.font-name {
+    display: block;
+    padding: 5px 10px;
+    font-size: 16px;
+    box-sizing: border-box;
+    background-color: hsl(0, 0%, 90%);
+    width: 100%;
+}
+
+.font-name:hover {
+    background: hsl(219, 100%, 80%);
+    border-color: hsl(219, 100%, 60%);
+}
+
+.font-input {
+    opacity: 0;
+    position: absolute;
+    pointer-events: none;
+}
+
+.font-input:checked + .font-name {
+    background: hsl(0, 0%, 85%);
+    border-color: hsl(0, 0%, 70%);
+}
+
+.font-list-items:hover .font-input:checked + .font-name {
+    background: hsl(219, 100%, 60%);
+    border-color: hsl(219, 100%, 40%);
+}
+
+.font-input:focus + .font-name {
+    background: hsl(219, 100%, 60%);
+    border-color: hsl(219, 100%, 40%);
+}
+
+/*
+ * Path list
+ */
+.path-list {
+    position: relative;
+    padding-bottom: 50px;
+}
+
+.path-list-items {
+    position: absolute;
+    width: 100%;
+    background-color: hsl(0, 0%, 95%);
+    border: 1px solid hsl(0, 0%, 80%);
+    border-radius: 3px;
+}
+
+.path-item label {
+    padding: 0;
+}
+
+.path-item svg {
+    overflow: visible;
+}
+
+.path-item path {
+    stroke:hsl(300, 87%, 28%);
+    stroke-width: 4px;
+    fill: none;
+    vector-effect: non-scaling-stroke;
+}
+
+.path-list-items:where(:focus-within, :hover) {
+    z-index: 1;
+}
+
+.path-list-items:not(:focus-within, :hover)
+    :not(:checked, :active)
+    + .path-thumb {
+        opacity: 0;
+        position: absolute;
+        pointer-events: none;
+}
+
+.path-thumb {
+    display: block;
+    padding: 4px;
+    opacity: 0.8;
+    width: 100%;
+    height: 40px;
+    object-fit: cover;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.path-thumb:hover {
+    background-color: hsl(219, 100%, 85%);
+    opacity: 1;
+}
+
+.path-input {
+    opacity: 0;
+    position: absolute;
+    pointer-events: none;
+}
+.path-input:checked + .path-thumb {
+    opacity: 1;
+}
+
+.path-list:hover .path-input:checked + .path-thumb {
+    background: hsl(219, 100%, 80%);
+    border-color: hsl(219, 100%, 40%);
+}
+
+.path-input:focus + .path-thumb {
+     background: hsl(219, 100%, 80%);
+    border-color: hsl(219, 100%, 40%);
+    opacity: 1;
+}
+
+
+
+
 .content {
     width: 100%;
     height: 100%;
 }
 
-.content > svg {
+.content  svg {
     --font-scale-factor: 1;
 
     width: 100%;
     height: 100%;
     overflow: visible;
 }
+
+.content :where(path, text, textPath) {
+    vector-effect: non-scaling-stroke;
+}
+
