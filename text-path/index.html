@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="./style.css">
     <title>Document</title>
 </head>
+
 <body>
     <div class="container">
         <div class="controls">
@@ -22,9 +24,9 @@
                         <template id="font-item-template">
                             <li class="font-item">
                                 <label>
-                                    <input form="form" data-setting-change data-font-input class="font-input" type="radio"
-                                        name="ff" value="">
-                                        <span data-font-name class="font-name">Font Name</span>
+                                    <input form="form" data-setting-change data-font-input class="font-input"
+                                        type="radio" name="ff" value="">
+                                    <span data-font-name class="font-name">Font Name</span>
                                 </label>
                             </li>
                         </template>
@@ -70,7 +72,8 @@
                 </label>
                 <label>
                     <span>Spacing</span>
-                    <input form="form" data-setting-input type="range" min="0" max="1" step="0.001" name="tls" value="0">
+                    <input form="form" data-setting-input type="range" min="0" max="1" step="0.001" name="tls"
+                        value="0">
                 </label>
                 <label>
                     <span>Fill Color</span>
@@ -97,11 +100,12 @@
                             <li class="path-item">
                                 <label>
 
-                                    <input form="form" data-setting-change data-path-input class="path-input" type="radio"
-                                        name="pi" value="">
-                                        <svg width="32" height="32" viewBox="0 0 800 600" data-thumb class="path-thumb" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
-                                            <path/>
-                                        </svg>
+                                    <input form="form" data-setting-change data-path-input class="path-input"
+                                        type="radio" name="pi" value="">
+                                    <svg width="32" height="32" viewBox="0 0 800 600" data-thumb class="path-thumb"
+                                        xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+                                        <path />
+                                    </svg>
                                 </label>
                             </li>
                         </template>
@@ -113,7 +117,8 @@
                 </label>
                 <label>
                     <span>Rotate</span>
-                    <input form="form" data-setting-input type="range" min="-180" max="180" step="0.5" name="rs" value="0">
+                    <input form="form" data-setting-input type="range" min="-180" max="180" step="1" name="rs"
+                        value="0">
                 </label>
                 <label>
                     <span>Show Shape</span>
@@ -141,8 +146,10 @@
         <div class="result" id="result">
             <div class="resizable-box" data-resizable id="box">
                 <div class="content">
-                    <svg id="text-svg" viewBox="59 49 538 422" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
-                        <path fill="none" id="text-path-path" d="m597,49c0,0 -30,169 -177,162c-147,-7 -167,140 -167,140c0,0 -31,143 -194,116"/>
+                    <svg id="text-svg" viewBox="59 49 538 422" xmlns="http://www.w3.org/2000/svg"
+                        preserveAspectRatio="xMidYMid meet">
+                        <path fill="none" id="text-path-path"
+                            d="m597,49c0,0 -30,169 -177,162c-147,-7 -167,140 -167,140c0,0 -31,143 -194,116" />
                         <text>
                             <textPath id="text-path-text" href="#text-path-path">.</textPath>
                         </text>
@@ -166,4 +173,5 @@
     <form name="form" id="form"></form>
     <script src="./index.js" type="module"></script>
 </body>
+
 </html>
