@@ -114,7 +114,7 @@ function setTextAlign({
     text.style.dominantBaseline = textVerticalAlign;
     text.style.baselineShift = `${textOffsetY}`;
     text.textLength.baseVal.value = textLength;
-    text.style.direction = textDirection;
+    text.style.direction = textDirection === 'rtl' ? textDirection : '';
 }
 
 /**
