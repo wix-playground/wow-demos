@@ -71,8 +71,13 @@
                     </i>
                 </label>
                 <label>
-                    <span>Spacing</span>
-                    <input form="form" data-setting-input type="range" min="0" max="1" step="0.001" name="tls"
+                    <span>Spacing (pt)</span>
+                    <input form="form" data-setting-input type="number" min="-100" max="100" step="1" name="tls"
+                        value="0">
+                </label>
+                <label>
+                    <span>Spread</span>
+                    <input form="form" data-setting-input type="range" min="0" max="1" step="0.001" name="tll"
                         value="0">
                 </label>
                 <label>
@@ -112,13 +117,16 @@
                     </ul>
                 </div>
                 <label>
-                    <span>Reverse Path</span>
+                    <span>Reverse</span>
                     <input form="form" data-setting-change type="checkbox" name="rp">
                 </label>
                 <label>
-                    <span>Rotate</span>
-                    <input form="form" data-setting-input type="range" min="-180" max="180" step="1" name="rs"
-                        value="0">
+                    <span>Flip X</span>
+                    <input form="form" data-setting-change type="checkbox" name="fxp">
+                </label>
+                <label>
+                    <span>Flip Y</span>
+                    <input form="form" data-setting-change type="checkbox" name="fyp">
                 </label>
                 <label>
                     <span>Show Shape</span>

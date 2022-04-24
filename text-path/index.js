@@ -6,12 +6,7 @@ import {
     urlToForm,
     formToUrl,
 } from 'https://tombigel.github.io/form-to-url-to-form/index.js';
-import { normalize, reverse } from 'https://cdn.skypack.dev/svg-path-reverse';
-import svgpath from 'https://cdn.skypack.dev/svgpath';
-
-import serialize from 'https://cdn.skypack.dev/serialize-svg-path';
-import scale from 'https://cdn.skypack.dev/scale-svg-path';
-import parse from 'https://cdn.skypack.dev/parse-svg-path';
+import SvgPathCommander from 'https://cdn.skypack.dev/svg-path-commander';
 
 import {
     $id,
@@ -96,19 +91,23 @@ function setTextAlign({
     tox: textOffsetX,
     toy: textOffsetY,
     tls: textLetterSpacing,
+    tll: textLetterSpread,
     td: textDirection,
 }) {
     textOffsetX = +textOffsetX;
     textOffsetY = +textOffsetY;
     textLetterSpacing = +textLetterSpacing;
+    textLetterSpread = +textLetterSpread;
 
     const path = $id('text-path-path');
     const text = $id('text-path-text');
 
+    text.style.letterSpacing =`${textLetterSpacing}pt`;
+
     const pathLength = path.getTotalLength();
     const baseTextLength = text.getComputedTextLength();
     const textLength =
-        baseTextLength + (pathLength - baseTextLength) * textLetterSpacing;
+        baseTextLength + (pathLength - baseTextLength) * textLetterSpread;
     const baseOffset =
         textAlign === 'end'
             ? pathLength - textLength
@@ -130,47 +129,53 @@ function setTextAlign({
  */
 function updatePath({
     rp: reversePath,
+    fxp: flipXPath,
+    fyp: flipYPath,
     pi: pathIndex,
     ss: showShape,
     ssc: shapeStrokeColor,
     ssw: shapeStrokeWidth,
     sfc: shapeFillColor,
     sfo: shapeFillOpacity,
-    rs: rotateShape,
 }) {
-    rotateShape = +rotateShape;
     pathIndex = +pathIndex;
 
     const svg = $id('text-svg');
     const path = $id('text-path-path');
     const pathItem = state.get('paths')[pathIndex];
 
-    if (state.get('selectedPath') !== pathIndex) {
-        path.setAttribute('d', pathItem.path);
-        state.set('selectedPath', pathIndex)
-    }
+    const instance = new SvgPathCommander(pathItem.path);
 
     const boxAspect = svg.clientWidth / svg.clientHeight;
-    const pathObj = svgpath(pathItem.path);
 
-
-    pathObj.rotate(rotateShape);
-    path.setAttribute('d', pathObj.toString());
-
-    const rotated = path.getBBox();
-    const pathAspect = (rotated.width / rotated.height);
-
+    const { width, height } = SvgPathCommander.getPathBBox(instance.segments);
+    const pathAspect = width / height;
     const factor = boxAspect / pathAspect;
 
-    // Scale the path d, !no transforms!
-    pathObj.scale(...(boxAspect > pathAspect ? [factor, 1] : [1, 1 / factor]));
+    // Scale the path
+    instance.transform({
+        scale: boxAspect > pathAspect ? [factor, 1] : [1, 1 / factor],
+        origin: [0, 0],
+    });
 
     // Reverse path if needed
-    const d = reversePath
-        ? reverse(pathObj.abs().toString())
-        : pathObj.toString();
+    if (reversePath) {
+        instance.reverse();
+    }
 
-    path.setAttribute('d', d);
+    // Reverse path if needed
+    if (flipXPath) {
+        instance.flipX();
+        // instance.transform({ rotate: [180, 0, 0], origin: [0, 0] });
+    }
+
+    // Reverse path if needed
+    if (flipYPath) {
+        instance.flipY();
+        // instance.transform({ rotate: [0, 180, 0], origin: [0, 0] });
+    }
+
+    path.setAttribute('d', instance.toString());
 
     if (showShape) {
         path.style.visibility = '';
@@ -183,15 +188,17 @@ function updatePath({
     }
 
     // After all the manipulations - measure the exact boundaries and resize the box
-    setSizes();
+    setSizes(instance.toString());
 }
 
 /**
  * Set text size and svg viewbox by content size
  */
-function setSizes() {
+function setSizes(d) {
     const svg = $id('text-svg');
+    const path = $id('text-path-path');
     const text = $id('text-path-text');
+    // const box = $id('box');
 
     // Hide the text for bbox calculation
     text.style.display = 'none';
@@ -199,8 +206,11 @@ function setSizes() {
     // Get the path only bbox
     const { x, y, width, height } = svg.getBBox();
 
-    // set the viewbox to the path bbox
     svg.setAttribute('viewBox', `${x} ${y} ${width} ${height}`);
+
+    // const pathRatio = pathBox.width / pathBox.height;
+    // const boxRatio = box.offsetWidth / box.offsetHeight;
+
 
     // Set the text scale factor to the ratio between the svg stage size and the viewbox size
     svg.style.setProperty('--font-scale-factor', width / svg.clientWidth);
