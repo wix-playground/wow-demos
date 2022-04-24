@@ -44,8 +44,8 @@ function setFormEvents(form) {
         formToUrl(form);
     });
 
-    // Initial setup, stupidly wait 500ms for all fonts etc to load
-    setTimeout(() => form.requestSubmit(), 500);
+    console.log('Initial form submit');
+    form.requestSubmit();
 }
 /**
  * @typedef {{
@@ -198,7 +198,6 @@ function setSizes(d) {
     const svg = $id('text-svg');
     const path = $id('text-path-path');
     const text = $id('text-path-text');
-    // const box = $id('box');
 
     // Hide the text for bbox calculation
     text.style.display = 'none';
@@ -207,10 +206,6 @@ function setSizes(d) {
     const { x, y, width, height } = svg.getBBox();
 
     svg.setAttribute('viewBox', `${x} ${y} ${width} ${height}`);
-
-    // const pathRatio = pathBox.width / pathBox.height;
-    // const boxRatio = box.offsetWidth / box.offsetHeight;
-
 
     // Set the text scale factor to the ratio between the svg stage size and the viewbox size
     svg.style.setProperty('--font-scale-factor', width / svg.clientWidth);
@@ -293,6 +288,11 @@ function loadWebFonts(fonts) {
     webfontloader.load({
         google: {
             families,
+        },
+        active: function() {
+            const form = document.forms[0];
+            console.log('Fonts loaded form submit');
+            form.requestSubmit();
         },
     });
 }
