@@ -67,6 +67,16 @@ input {
     vertical-align: middle;
 }
 
+i {
+    display: flex;
+    align-items: center;
+    gap: .3em;
+}
+
+i [type="radio"] {
+    margin: 3px 0 3px 3px;
+}
+
 input[type="color"] {
     padding: 0;
     background: none;

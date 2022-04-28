@@ -94,7 +94,7 @@
                 </label>
                 <label>
                     <span>Stroke Color</span>
-                    <input form="form" data-setting-input type="color" name="tsc" value="##ff0000">
+                    <input form="form" data-setting-input type="color" name="tsc" value="#ff0000">
                 </label>
             </fieldset>
             <fieldset>
@@ -149,7 +149,40 @@
                     <input form="form" data-setting-input type="color" name="ssc" value="#ff0000">
                 </label>
             </fieldset>
-
+            <fieldset>
+                <legend>Animation</legend>
+                <label>
+                    <button id="play-btn">▶ Play</button>
+                    <button id="pause-btn" hidden>🁢🁢 Pause</button>
+                </label>
+                <label>
+                    <span>Type</span>
+                    <i>
+                        <input form="form" data-setting-change type="radio" name="at" value="smil" checked> <span>SMIL</span>
+                        <input form="form" data-setting-change type="radio" name="at" value="js"> <span>Javascript</span>
+                    </i>
+                </label>
+                <label>
+                    <span>Direction</span>
+                    <select data-setting-change form="form" name="adi">
+                        <option value="f">Forward</option>
+                        <option value="b">Backward</option>
+                        <option value="fb">Alternate</option>
+                    </select>
+                </label>
+                <label>
+                    <span>Duration (ms)</span>
+                    <input data-setting-change form="form" type="number" name="ad" min="0" step="1" value="0">
+                </label>
+                <label>
+                    <span>Repeat (-1 for ∞)</span>
+                    <input data-setting-change form="form" type="number" name="ar" min="-1" step="1" value="0">
+                </label>
+                <label>
+                    <span>Seamless</span>
+                    <input data-setting-change form="form" name="as" type="checkbox">
+                </label>
+            </fieldset>
         </div>
         <div class="result" id="result">
             <div class="resizable-box" data-resizable id="box">

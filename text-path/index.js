@@ -2,20 +2,11 @@
 import formRequestSubmitPolyfill from 'https://cdn.skypack.dev/pin/form-request-submit-polyfill@v2.0.0-szOipIemxchOslzcqvLN/mode=imports,min/optimized/form-request-submit-polyfill.js';
 import webfontloader from 'https://cdn.skypack.dev/webfontloader';
 import { setResizableBoxEvents } from 'https://tombigel.github.io/resize-box/index.js';
-import {
-    urlToForm,
-    formToUrl,
-} from 'https://tombigel.github.io/form-to-url-to-form/index.js';
+import { urlToForm, formToUrl } from 'https://tombigel.github.io/form-to-url-to-form/index.js';
 import SvgPathCommander from 'https://cdn.skypack.dev/svg-path-commander';
+import gsap from 'https://cdn.skypack.dev/gsap';
 
-import {
-    $id,
-    $select,
-    $selectAll,
-    clamp,
-    hex2rgba,
-    getTempalteItem,
-} from '../utils/utils.js';
+import { $id, $select, $selectAll, clamp, hex2rgba, getTempalteItem } from '../utils/utils.js';
 
 function setFormEvents(form) {
     urlToForm(form);
@@ -41,6 +32,7 @@ function setFormEvents(form) {
 
         updatePath(data);
         updateText(data);
+        updateAnimation(data);
         formToUrl(form);
     });
 
@@ -50,9 +42,9 @@ function setFormEvents(form) {
 /**
  * @typedef {{
  *    t: string, ff: string, fs: string, frs: boolean, tc: string, ta: string, tva: string,
- *    rp: boolean, pi: string
+ *    rp: boolean, pi: string, at: 'smil' | 'js', adi: 'b' | 'f' | 'fb', ad: string, ar: string, as: boolean
  * }} TextPathFormData
- * @param {data} TextPathFormData
+ * @param {TextPathFormData} data
  */
 function updateText(data) {
     const {
@@ -102,19 +94,13 @@ function setTextAlign({
     const path = $id('text-path-path');
     const text = $id('text-path-text');
 
-    text.style.letterSpacing =`${textLetterSpacing}pt`;
+    text.style.letterSpacing = `${textLetterSpacing}pt`;
 
     const pathLength = path.getTotalLength();
     const baseTextLength = text.getComputedTextLength();
-    const textLength =
-        baseTextLength + (pathLength - baseTextLength) * textLetterSpread;
+    const textLength = baseTextLength + (pathLength - baseTextLength) * textLetterSpread;
     const baseOffset =
-        textAlign === 'end'
-            ? pathLength - textLength
-            : textAlign === 'middle'
-            ? (pathLength - textLength) / 2
-            : 0;
-
+        textAlign === 'end' ? pathLength - textLength : textAlign === 'middle' ? (pathLength - textLength) / 2 : 0;
     text.setAttribute('startOffset', baseOffset + textOffsetX);
     text.style.dominantBaseline = textVerticalAlign;
     text.style.baselineShift = `${textOffsetY}`;
@@ -124,8 +110,7 @@ function setTextAlign({
 }
 
 /**
- *
- * @param {data} TextPathFormData
+ * @param {TextPathFormData} data
  */
 function updatePath({
     rp: reversePath,
@@ -194,9 +179,9 @@ function updatePath({
 /**
  * Set text size and svg viewbox by content size
  */
-function setSizes(d) {
+function setSizes() {
     const svg = $id('text-svg');
-    const path = $id('text-path-path');
+    // const path = $id('text-path-path');
     const text = $id('text-path-text');
 
     // Hide the text for bbox calculation
@@ -214,6 +199,80 @@ function setSizes(d) {
     text.style.display = '';
 }
 
+/**
+ * @param {TextPathFormData} data
+ */
+function updateAnimation({
+    at: animationType,
+    adi: animationDirection,
+    ad: animationDuration,
+    ar: animationRepeat,
+    as: animationSeamless,
+}) {
+    animationDuration = +animationDuration;
+    animationRepeat = +animationRepeat;
+
+    const play = $id('play-btn');
+    const pause = $id('pause-btn');
+
+    const path = $id('text-path-path');
+    const text = $id('text-path-text');
+
+    let animation = $id('text-path-animation');
+
+    let startOffset = text.startOffset.baseVal.value;
+    let seemlessOffset = 0;
+    const textLength = text.textLength.baseVal.value;
+    const pathLength = path.getTotalLength();
+    const duration = animationDirection === 'fb' ? animationDuration * 2 : animationDuration;
+    const textDuplications = Math.ceil((pathLength * 2) / textLength);
+
+    if (animationSeamless) {
+        startOffset = animationDirection !== 'b' ? 0 : pathLength - textLength;
+        seemlessOffset = animationDirection !== 'b' ? pathLength : textLength;
+
+        text.textContent = [...Array(textDuplications)].fill(text.textContent).join(' ');
+        text.textLength.baseVal.value = textLength * textDuplications;
+        text.startOffset.baseVal.value = 0;
+    }
+
+    if (state.timeline) {
+        state.timeline.pause();
+        state.timeline.kill();
+        state.timeline.clear();
+        state.timeline = null;
+    }
+
+    if (animation) {
+        text.removeChild(animation);
+    }
+
+    if (animationType === 'smil') {
+        animation = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+        animation.setAttribute('id', 'text-path-animation');
+
+        const values = [];
+        if (animationDirection === 'f') {
+            values.push(startOffset - seemlessOffset);
+            values.push(pathLength - seemlessOffset);
+        } else if (animationDirection === 'b') {
+            values.push(startOffset - seemlessOffset);
+            values.push(-textLength - seemlessOffset);
+        } else {
+            values.push(startOffset - seemlessOffset);
+            values.push(pathLength - seemlessOffset);
+            values.push(startOffset - seemlessOffset);
+        }
+        animation.setAttribute('values', values.join(';'));
+        animation.setAttribute('attributeName', 'startOffset');
+        animation.setAttribute('fill', 'freeze');
+        animation.setAttribute('restart', 'always');
+        animation.setAttribute('dur', `${duration}ms`);
+        animation.setAttribute('repeatCount', animationRepeat === -1 ? 'indefinite' : animationRepeat);
+        text.appendChild(animation);
+    } else if (animationType === 'js') {
+    }
+}
 /**
  * Get configuration from a json file (because we cant natively import json files just yet)
  * @typedef {{fonts: {url: string, family: string, features?: {unicodeRanges: string[]}}[], media: {thumb: string, url: string, type: 'image'|'video'}[]}} ConfigData
@@ -282,14 +341,12 @@ function populatePathsList(paths) {
  * @param {ConfigData['fonts']} fonts
  */
 function loadWebFonts(fonts) {
-    const families = fonts.map(
-        ({ family, variant = 400 }) => `${family}:${variant}`
-    );
+    const families = fonts.map(({ family, variant = 400 }) => `${family}:${variant}`);
     webfontloader.load({
         google: {
             families,
         },
-        active: function() {
+        active: function () {
             const form = document.forms[0];
             console.log('Fonts loaded form submit');
             form.requestSubmit();
@@ -315,6 +372,7 @@ const state = new Map(
     Object.entries({
         selectedPath: -1,
         paths: [],
+        timeline: null,
     })
 );
 
