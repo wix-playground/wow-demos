@@ -27,9 +27,9 @@ export const $selectAll = (selector) => document.querySelectorAll(selector);
  * @returns {number}
  */
 export const clamp = (n1, n2 = n1, n3 = n2) => {
-    const [min, num, max] = [n1, n2, n3].sort((a, b)=>  a - b);
+    const [min, num, max] = [n1, n2, n3].sort((a, b) => a - b);
     return Math.min(max, Math.max(min, num));
-}
+};
 
 /**
  * Round with decimal precision, default round to integer
@@ -45,9 +45,7 @@ export const round = (num, precision = 0) => +num.toFixed(precision);
  * @returns {string} rgba() css color string
  */
 export const hex2rgba = (hex, alpha = 1) => {
-    const [r, g, b] = hex
-        .match(hex.length > 4 ? /\w\w/g : /\w/g)
-        .map((x) => parseInt(x, 16));
+    const [r, g, b] = hex.match(hex.length > 4 ? /\w\w/g : /\w/g).map((x) => parseInt(x, 16));
     return `rgba(${r},${g},${b},${alpha})`;
 };
 
@@ -59,3 +57,51 @@ export const hex2rgba = (hex, alpha = 1) => {
 export function getTempalteItem(selector) {
     return $select(selector).content.cloneNode(true).firstElementChild;
 }
+
+/**
+ * Delay the execution of a function until it hasen't been called a defined amount of time
+ */
+export function debounce(fn, delay = 100) {
+    let timeoutId;
+
+    return (...args) => {
+        timeoutId && clearTimeout(timeoutId);
+        timeoutId = setTimeout(function () {
+            fn(...args);
+        }, delay);
+    };
+}
+
+/**
+ * Limit the number of times a function can execute withing a defined amount of time
+ * @param {(...args: any[]) => any} fn
+ * @param {number} [wait=100]
+ * @param {{trailing: boolean, leading: boolean}} [options = {trailing:true, leading:true}]
+ * @returns
+ */
+export function throttle(fn, wait = 100, {trailing = true, leading = true} = {}) {
+    let time = leading ? 1 : null;
+    let timeoutId;
+
+    return (...args) => {
+        timeoutId && clearTimeout(timeoutId);
+
+        if (time && Date.now() > time + wait) {
+            fn(...args);
+            time = Date.now();
+        } else {
+            timeoutId = setTimeout(function () {
+                trailing && fn(...args);
+                time = leading ? Date.now() : null;
+            }, wait);
+        }
+    };
+}
+
+/**
+ * Generate a UUID, using crypto with a simple fallback.
+ * @returns {string} in a UUID format
+ */
+const S4 = () => (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+const randomUUIDDumbPolyfill = () => `${S4()}${S4()}-${S4()}-${S4()}-${S4()}-${S4()}${S4()}${S4()}`;
+export const randomId = () => crypto.randomUUID?.() || randomUUIDDumbPolyfill();

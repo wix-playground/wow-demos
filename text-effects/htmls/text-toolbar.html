@@ -1,0 +1,77 @@
+<fieldset class="text-toolbar">
+    <legend class="visually-hidden">Text Toolbar</legend>
+    <fieldset class="style-dropdown style-font-dropdown">
+        <legend class="visually-hidden">Font Family</legend>
+        <ul id="font-family-list">
+            <template id="font-family-template">
+                <li>
+                    <label>
+                        <input data-setting-change class="input" type="radio" value="Family 1" data-name="font-family" name="ff">
+                        <span class="content">Family 1</span>
+                    </label>
+                </li>
+            </template>
+        </ul>
+    </fieldset>
+    <label class="style-number style-number-3-digits">
+        <span class="visually-hidden">Font Size</span>
+        <input data-setting-change type="number" data-name="font-size" name="fs" min="6" max="300" step="1" value="48">
+    </label>
+    <label class="style-color-button">
+        <input data-setting-input type="color" data-name="font-color" name="fc">
+        <span class="visually-hidden">Color</span>
+    </label>
+    <label class="style-icon-button icon-bold">
+        <input data-setting-change type="checkbox" data-name="font-weight" name="fw">
+        <span title="Bold"></span>
+    </label>
+    <label class="style-icon-button icon-italic">
+        <input data-setting-change type="checkbox" data-name="font-style" name="fst">
+        <span title="Italic"></span>
+    </label>
+    <label class="style-icon-button icon-underline">
+        <input data-setting-change type="checkbox" data-name="font-underline" name="fu">
+        <span title="Underline"></span>
+    </label>
+    <fieldset class="style-dropdown style-icon-dropdown">
+        <legend class="visually-hidden">Align</legend>
+        <ul>
+            <li>
+                <label class="icon-align-left">
+                    <input data-setting-change type="radio" value="left" checked data-name="text-align" name="ta">
+                    <span title="Left"></span>
+                </label>
+            </li>
+            <li>
+                <label class="icon-align-center">
+                    <input data-setting-change type="radio" value="center" data-name="text-align" name="ta">
+                    <span title="Center"></span>
+                </label>
+            </li>
+            <li>
+                <label class="icon-align-right">
+                    <input data-setting-change type="radio" value="right" data-name="text-align" name="ta">
+                    <span title="Right"></span>
+                </label>
+            </li>
+        </ul>
+    </fieldset>
+    <fieldset class=" style-dropdown style-icon-dropdown">
+        <legend class="visually-hidden">Direction</legend>
+        <ul>
+            <li>
+                <label class="icon-ltr">
+                    <input data-setting-change type="radio" value="" checked data-name="text-direction" name="td">
+                    <span title="Left to Right"></span>
+                </label>
+            </li>
+            <li>
+                <label class="icon-rtl">
+                    <input data-setting-change type="radio" value="rtl" data-name="text-direction" name="td">
+                    <span title="Right to Left"></span>
+                </label>
+            </li>
+        </ul>
+    </fieldset>
+    <span class="spacer"></span>
+</fieldset>

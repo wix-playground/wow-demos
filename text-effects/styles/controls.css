@@ -1,0 +1,22 @@
+.controls {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  padding: 1em;
+  background: hsl(0deg, 0%, 95%);
+  border-right: 1px solid hsl(0deg, 0%, 50%);
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+.controls .text-input textarea {
+  width: 100%;
+  resize: none;
+  box-sizing: border-box;
+  border-color: var(--base-color-border);
+  font-family: sans-serif;
+}
+.controls .text-input textarea:focus {
+  outline: none;
+  border-color: var(--focus-color-border);
+}/*# sourceMappingURL=controls.css.map */

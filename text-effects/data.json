@@ -1,0 +1,47 @@
+{
+    "fonts": [
+        {
+            "url": "https://fonts.gstatic.com/s/abrilfatface/v18/zOL64pLDlL1D99S8g8PtiKchm-BsjOLhZBY.ttf",
+            "family": "Abril Fatface",
+            "variant": "regular",
+            "features": {}
+        },
+        {
+            "url": "https://fonts.gstatic.com/s/gorditas/v18/ll84K2aTVD26DsPEtThUIooIvAoShA1i.ttf",
+            "family": "Gorditas",
+            "variant": "700",
+            "features": {}
+        },
+        {
+            "url": "https://fonts.gstatic.com/s/inconsolata/v21/QldgNThLqRwH-OJ1UHjlKENVzkWGVkL3GZQmAwLYxYWI2qfdm7LppwU7aRr8lleY2co.ttf",
+            "family": "Inconsolata",
+            "variant": "800",
+            "features": {}
+        },
+        {
+            "url": "https://fonts.gstatic.com/s/loversquarrel/v19/Yq6N-LSKXTL-5bCy8ksBzpQ_-zAsY7pO6siz.ttf",
+            "family": "Lovers Quarrel",
+            "variant": "regular",
+            "features": {}
+        },
+        {
+            "url": "https://fonts.gstatic.com/s/tomorrow/v13/WBLhrETNbFtZCeGqgR1RXEXIBsShiVd4.ttf",
+            "family": "Tomorrow",
+            "variant": "900",
+            "features": {}
+        },
+        {
+            "url": "https://fonts.gstatic.com/s/karantina/v9/buExpo24ccnh31GVMABxTC8f-P5Oaiw4cw.ttf",
+            "family": "Karantina",
+            "variant": "700",
+            "features": {},
+            "isDefault": true
+        },
+        {
+            "url": "https://fonts.gstatic.com/s/alef/v18/FeVQS0NQpLYglo50L5la2bxii28.ttf",
+            "family": "Alef",
+            "variant": "700",
+            "features": {}
+        }
+    ]
+}

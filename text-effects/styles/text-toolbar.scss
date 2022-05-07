@@ -1,0 +1,276 @@
+.text-toolbar {
+  --icon-size-px: 14px;
+  --font-size-px: 12px;
+  --box-size-px: 24px;
+  --base-color: hsl(0 0% 100%);
+  --base-text-color: hsl(0 0% 10%);
+  --checked-color: hsl(219, 100%, 80%);
+  --hover-color: hsl(219, 100%, 70%);
+  --focus-color: hsl(219, 100%, 60%);
+  --base-color-border: hsl(0 0% 70%);
+  --checked-color-border: hsl(219, 100%, 70%);
+  --hover-color-border: hsl(219, 100%, 60%);
+  --focus-color-border: hsl(219, 100%, 50%);
+
+  display: flex;
+  height: var(--box-size-px);
+  background-color: var(--base-color);
+  border: none;
+  padding: 0;
+  margin: 0;
+
+  label,
+  span {
+    box-sizing: border-box;
+    background-color: var(--base-color);
+    color: var(--base-text-color);
+  }
+
+  ul,
+  li {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .spacer {
+    border: 1px solid var(--base-color-border);
+    flex-grow: 1;
+  }
+  .style-dropdown {
+    border: none;
+    position: relative;
+    margin: 0;
+    padding: 0;
+
+    ul {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+
+      &:where(:hover) {
+        z-index: 1;
+        box-shadow: 0px 1px 5px 0 hsl(0 0% 0% / 30%);
+      }
+
+      &:hover :checked + span {
+        background-color: var(--checked-color);
+        border-color: var(--checked-color-border);
+      }
+
+      &:not(:hover) :not(:checked, :active) + span {
+        display: none;
+      }
+    }
+
+    span {
+      display: block;
+      border: 1px solid transparent;
+      height: var(--box-size-px);
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+
+      &:hover {
+        background-color: var(--hover-color);
+        border-color: var(--hover-color-border);
+      }
+    }
+
+    input {
+      opacity: 0;
+      position: absolute;
+      pointer-events: none;
+
+      &:checked + span {
+        background-color: var(--base-color);
+        border-color: var(--base-color-border);
+      }
+
+      &:focus-visible + span {
+        background-color: var(--focus-color);
+        border-color: var(--focus-color-border);
+      }
+    }
+  }
+
+  .style-font-dropdown {
+    padding-bottom: var(--box-size-px);
+    min-width: calc(8 * var(--font-size-px));
+
+    span {
+      padding: 0 5px;
+      font-size: var(--font-size-px);
+      line-height: calc(var(--box-size-px) - 2px);
+    }
+  }
+
+  .style-icon-dropdown {
+    padding-bottom: var(--box-size-px);
+    width: var(--box-size-px);
+
+    label {
+      overflow: hidden;
+    }
+
+    span {
+      display: block;
+      width: var(--box-size-px);
+      height: var(--box-size-px);
+      border: 1px solid var(--base-color-border);
+    }
+  }
+  .style-number {
+    overflow: hidden;
+    &.style-number-3-digits {
+      width: 2.3em;
+      font-size: var(--font-size-px);
+      line-height: var(--box-size-px);
+      height: var(--box-size-px);
+
+      border-right: 1px solid var(--base-color-border);
+      position: relative;
+
+      input {
+        height: calc(var(--box-size-px) - 2px);
+        border: 1px solid var(--base-color-border);
+        position: absolute;
+        font-size: var(--font-size-px);
+
+        width: 3em;
+        line-height: 2em;
+        padding: 0 3px;
+
+        &:focus {
+          outline: none;
+          border-color: var(--focus-color-border);
+        }
+      }
+
+      &:hover,
+      &:focus-within {
+        overflow: visible;
+      }
+    }
+  }
+  .style-color-button {
+    input {
+      &[type="color"] {
+        -webkit-appearance: none;
+        padding: 0;
+        width: var(--box-size-px);
+        height: var(--box-size-px);
+        border: 1px solid var(--base-color-border);
+
+        &::-webkit-color-swatch-wrapper {
+          padding: 0;
+        }
+        &::-webkit-color-swatch {
+          border: clamp(1px, calc(var(--box-size-px) / 12), 2px) solid var(--base-color);
+        }
+      }
+      &:focus {
+        outline: none;
+        &::-webkit-color-swatch {
+          border-color: var(--focus-color-border);
+        }
+      }
+    }
+  }
+
+  .style-icon-button {
+    overflow: hidden;
+
+    span {
+      display: block;
+      width: var(--box-size-px);
+      height: var(--box-size-px);
+      border: 1px solid var(--base-color-border);
+    }
+
+    input {
+      opacity: 0;
+      position: absolute;
+      pointer-events: none;
+
+      &:checked + span {
+        background-color: var(--checked-color);
+        border-color: var(--checked-color-border);
+      }
+
+      &:where(:focus-visible, :hover) + span {
+        background-color: var(--hover-color);
+        border-color: var(--hover-color-border);
+      }
+      &:checked:where(:focus-visible, :hover) + span {
+        background-color: var(--focus-color);
+        border-color: var(--focus-color-border);
+      }
+    }
+  }
+
+  /*
+  Icons from https://github.com/Keyamoon/IcoMoon-Free
+  Url encoded by https://yoksel.github.io/url-encoder/
+  */
+  .style-icon-dropdown span,
+  .style-icon-button span {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: var(--icon-size-px);
+  }
+  .icon-bold span {
+    background-image: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23000000' d='M11.061 7.573c0.586-0.696 0.939-1.594 0.939-2.573 0-2.206-1.794-4-4-4h-5v14h6c2.206 0 4-1.794 4-4 0-1.452-0.778-2.726-1.939-3.427zM6 3h1.586c0.874 0 1.586 0.897 1.586 2s-0.711 2-1.586 2h-1.586v-4zM8.484 13h-2.484v-4h2.484c0.913 0 1.656 0.897 1.656 2s-0.743 2-1.656 2z'%3E%3C/path%3E%3C/svg%3E");
+  }
+  .icon-italic span {
+    background-image: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23000000' d='M14 1v1h-2l-5 12h2v1h-7v-1h2l5-12h-2v-1z'%3E%3C/path%3E%3C/svg%3E");
+  }
+  .icon-underline span {
+    background-image: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23000000' d='M11 1h2v6.5c0 2.485-2.239 4.5-5 4.5s-5-2.015-5-4.5v-6.5h2v6.5c0 0.628 0.285 1.23 0.802 1.695 0.577 0.519 1.357 0.805 2.198 0.805s1.621-0.286 2.198-0.805c0.517-0.466 0.802-1.068 0.802-1.695v-6.5zM3 13h10v2h-10z'%3E%3C/path%3E%3C/svg%3E");
+  }
+  .icon-align-left span {
+    background-image: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23000000' d='M0 1h16v2h-16zM0 4h10v2h-10zM0 10h10v2h-10zM0 7h16v2h-16zM0 13h16v2h-16z'%3E%3C/path%3E%3C/svg%3E");
+  }
+  .icon-align-center span {
+    background-image: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23000000' d='M0 1h16v2h-16zM3 4h10v2h-10zM3 10h10v2h-10zM0 7h16v2h-16zM0 13h16v2h-16z'%3E%3C/path%3E%3C/svg%3E%0A");
+  }
+  .icon-align-right span {
+    background-image: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23000000' d='M0 1h16v2h-16zM6 4h10v2h-10zM6 10h10v2h-10zM0 7h16v2h-16zM0 13h16v2h-16z'%3E%3C/path%3E%3C/svg%3E%0A");
+  }
+  .icon-ltr span {
+    background-image: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23000000' d='M8 0c-2.209 0-4 1.791-4 4s1.791 4 4 4v8h2v-14h2v14h2v-14h2v-2h-8zM0 11l4-4-4-4z'%3E%3C/path%3E%3C/svg%3E");
+  }
+  .icon-rtl span {
+    background-image: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23000000' d='M4 0c-2.209 0-4 1.791-4 4s1.791 4 4 4v8h2v-14h2v14h2v-14h2v-2h-8zM16 3l-4 4 4 4z'%3E%3C/path%3E%3C/svg%3E");
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  body:not(.light) .text-toolbar {
+    .icon-bold span {
+      background-image: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23ffffff' d='M11.061 7.573c0.586-0.696 0.939-1.594 0.939-2.573 0-2.206-1.794-4-4-4h-5v14h6c2.206 0 4-1.794 4-4 0-1.452-0.778-2.726-1.939-3.427zM6 3h1.586c0.874 0 1.586 0.897 1.586 2s-0.711 2-1.586 2h-1.586v-4zM8.484 13h-2.484v-4h2.484c0.913 0 1.656 0.897 1.656 2s-0.743 2-1.656 2z'%3E%3C/path%3E%3C/svg%3E");
+    }
+    .icon-italic span {
+      background-image: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23ffffff' d='M14 1v1h-2l-5 12h2v1h-7v-1h2l5-12h-2v-1z'%3E%3C/path%3E%3C/svg%3E");
+    }
+    .icon-underline span {
+      background-image: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23ffffff' d='M11 1h2v6.5c0 2.485-2.239 4.5-5 4.5s-5-2.015-5-4.5v-6.5h2v6.5c0 0.628 0.285 1.23 0.802 1.695 0.577 0.519 1.357 0.805 2.198 0.805s1.621-0.286 2.198-0.805c0.517-0.466 0.802-1.068 0.802-1.695v-6.5zM3 13h10v2h-10z'%3E%3C/path%3E%3C/svg%3E");
+    }
+    .icon-align-left span {
+      background-image: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23ffffff' d='M0 1h16v2h-16zM0 4h10v2h-10zM0 10h10v2h-10zM0 7h16v2h-16zM0 13h16v2h-16z'%3E%3C/path%3E%3C/svg%3E");
+    }
+    .icon-align-center span {
+      background-image: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23ffffff' d='M0 1h16v2h-16zM3 4h10v2h-10zM3 10h10v2h-10zM0 7h16v2h-16zM0 13h16v2h-16z'%3E%3C/path%3E%3C/svg%3E%0A");
+    }
+    .icon-align-right span {
+      background-image: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23ffffff' d='M0 1h16v2h-16zM6 4h10v2h-10zM6 10h10v2h-10zM0 7h16v2h-16zM0 13h16v2h-16z'%3E%3C/path%3E%3C/svg%3E%0A");
+    }
+    .icon-ltr span {
+      background-image: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23ffffff' d='M8 0c-2.209 0-4 1.791-4 4s1.791 4 4 4v8h2v-14h2v14h2v-14h2v-2h-8zM0 11l4-4-4-4z'%3E%3C/path%3E%3C/svg%3E");
+    }
+    .icon-rtl span {
+      background-image: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23ffffff' d='M4 0c-2.209 0-4 1.791-4 4s1.791 4 4 4v8h2v-14h2v14h2v-14h2v-2h-8zM16 3l-4 4 4 4z'%3E%3C/path%3E%3C/svg%3E");
+    }
+  }
+}

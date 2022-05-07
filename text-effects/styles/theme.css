@@ -1,0 +1,28 @@
+:root {
+  --icon-size-px: 14px;
+  --font-size-px: 12px;
+  --box-size-px: 24px;
+  --base-color: hsl(0 0% 100%);
+  --base-text-color: hsl(0 0% 10%);
+  --checked-color: hsl(219, 100%, 80%);
+  --hover-color: hsl(219, 100%, 70%);
+  --focus-color: hsl(219, 100%, 60%);
+  --base-color-border: hsl(0 0% 70%);
+  --checked-color-border: hsl(219, 100%, 70%);
+  --hover-color-border: hsl(219, 100%, 60%);
+  --focus-color-border: hsl(219, 100%, 50%);
+}
+@media (prefers-color-scheme: dark) {
+  :root body:not(.light) {
+    color-scheme: dark;
+    --base-color: hsl(0 0% 20%);
+    --base-text-color: hsl(0 0% 90%);
+    --checked-color: hsl(219, 100%, 30%);
+    --hover-color: hsl(219, 100%, 40%);
+    --focus-color: hsl(219, 100%, 50%);
+    --base-color-border: hsl(0 0% 30%);
+    --checked-color-border: hsl(219, 100%, 40%);
+    --hover-color-border: hsl(219, 100%, 50%);
+    --focus-color-border: hsl(219, 100%, 60%);
+  }
+}/*# sourceMappingURL=theme.css.map */
