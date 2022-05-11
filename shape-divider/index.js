@@ -45,31 +45,36 @@ const SHAPE_NAMES = {
 const SHAPES = {
     [SHAPE_NAMES.TRIANGLE]: ({x, invert}) => {
         if (invert) {
-            return `<svg viewBox="0 0 300 200"><g><path d="M 0,200 L 0,0 L ${300 * x / 100},200 L 300,0 L 300,200 z" /></g></svg>`;
+            // return `<svg viewBox="0 0 300 200"><g><path d="M 0,200 L 0,0 L ${300 * x / 100},200 L 300,0 L 300,200 z" /></g></svg>`;
+            return `<svg viewBox="0 0 300 200"><g><path fill-rule="evenodd" d="M0,0 h300 v200 h-300 Z M 0,200 L ${300 * x / 100},0 L 300,200 z" /></g></svg>`;
         }
         return `<svg viewBox="0 0 300 200"><g><path d="M 0,200 L ${300 * x / 100},0 L 300,200 z" /></g></svg>`;
     },
     [SHAPE_NAMES.SLOPE]: ({x, invert}) => {
         if (invert) {
-            return `<svg viewBox="0 0 300 200"><g><path d="M 0,200 L 0,0 C ${300 * x / 100},0 300,0 300,200 z" /></g></svg>`;
+            // return `<svg viewBox="0 0 300 200"><g><path d="M 0,200 L 0,0 C ${300 * x / 100},0 300,0 300,200 z" /></g></svg>`;
+            return `<svg viewBox="0 0 300 200"><g><path fill-rule="evenodd" d="M0,0 h300 v200 h-300 Z M 0,200 C ${300 * x / 100},200 300,200 300,0 L 300,200 z" /></g></svg>`;
         }
         return `<svg viewBox="0 0 300 200"><g><path d="M 0,200 C ${300 * x / 100},200 300,200 300,0 L 300,200 z" /></g></svg>`;
     },
     [SHAPE_NAMES.ELLIPSE]: ({x, invert}) => {
         if (invert) {
-            return `<svg viewBox="0 0 300 200"><g><path d="M 0,200 L 0,0 Q ${300 * x / 100},400 300,0 L 300,200 z" /></g></svg>`;
+            // return `<svg viewBox="0 0 300 200"><g><path d="M 0,200 L 0,0 Q ${300 * x / 100},400 300,0 L 300,200 z" /></g></svg>`;
+            return `<svg viewBox="0 0 300 200"><g><path fill-rule="evenodd" d="M0,0 h300 v200 h-300 Z M 0,200 Q ${300 * x / 100},-200 300,200 z" /></g></svg>`;
         }
         return `<svg viewBox="0 0 300 200"><g><path d="M 0,200 Q ${300 * x / 100},-200 300,200 z" /></g></svg>`;
     },
     [SHAPE_NAMES.CURVE]: ({x, y, invert}) => {
         if (invert) {
-            return `<svg viewBox="0 0 300 200"><g><path d="M 0,200 L 0,0 C ${300 * x / 2 / 100},${200 * y / 100} ${300 * x / 2 / 100},${200 * (1 - y / 100)} 300,200 z" /></g></svg>`;
+            // return `<svg viewBox="0 0 300 200"><g><path d="M 0,200 L 0,0 C ${300 * x / 2 / 100},${200 * y / 100} ${300 * x / 2 / 100},${200 * (1 - y / 100)} 300,200 z" /></g></svg>`;
+            return `<svg viewBox="0 0 300 200"><g><path fill-rule="evenodd" d="M0,0 h300 v200 h-300 Z M 0,200 C ${300 * x / 2 / 100},${200 * (1 - y / 100)} ${300 * x / 2 / 100},${200 * y / 100} 300,0 L 300,200 z" /></g></svg>`;
         }
         return `<svg viewBox="0 0 300 200"><g><path d="M 0,200 C ${300 * x / 2 / 100},${200 * (1 - y / 100)} ${300 * x / 2 / 100},${200 * y / 100} 300,0 L 300,200 z" /></g></svg>`;
     },
     [SHAPE_NAMES.WAVE]: ({x, invert}) => {
         if (invert) {
-            return `<svg viewBox="0 0 300 200"><g><path d="M 0,200 L 0,0 C ${300 * x / 2 / 100},0 ${300 * x / 2 / 100},200 ${300 * x / 100},200 C ${(300 * (1 + x / 100)) / 2},200 ${(300 * (1 + x / 100)) / 2},0 300,0 L 300,200 z" /></g></svg>`;
+            // return `<svg viewBox="0 0 300 200"><g><path d="M 0,200 L 0,0 C ${300 * x / 2 / 100},0 ${300 * x / 2 / 100},200 ${300 * x / 100},200 C ${(300 * (1 + x / 100)) / 2},200 ${(300 * (1 + x / 100)) / 2},0 300,0 L 300,200 z" /></g></svg>`;
+            return `<svg viewBox="0 0 300 200"><g><path fill-rule="evenodd" d="M0,0 h300 v200 h-300 Z M 0,200 C ${300 * x / 2 / 100},200 ${300 * x / 2 / 100},0 ${300 * x / 100},0 C ${(300 * (1 + x / 100)) / 2},0 ${(300 * (1 + x / 100)) / 2},200 300,200 z" /></g></svg>`;
         }
         return `<svg viewBox="0 0 300 200"><g><path d="M 0,200 C ${300 * x / 2 / 100},200 ${300 * x / 2 / 100},0 ${300 * x / 100},0 C ${(300 * (1 + x / 100)) / 2},0 ${(300 * (1 + x / 100)) / 2},200 300,200 z" /></g></svg>`;
     }
@@ -338,7 +343,7 @@ class Divider {
             </pattern>`
         }
     </defs>
-    <g transform="${this.getTransform()}">
+    <g transform="${this.getTransform()}" transform-origin="center">
         ${this.getRects(patternId, boundingBox)}
     </g>
 </svg>`;
@@ -355,10 +360,11 @@ class Divider {
 
     getTransform () {
         const isTop = this.side === 'top';
-        const isFlipped = this.config.flip;
+        const {flip, invert} = this.config;
         const [,, width, height] = this.viewBox;
+        const yFactor = (isTop ? -1 : 1) * (invert ? -1 : 1);
 
-        return `scale(${isFlipped ? -1 : 1} ${isTop ? -1 : 1}) translate(${isFlipped ? -width : 0} ${isTop ? -height : 0})`;
+        return `scale(${flip ? -1 : 1} ${yFactor})`;
     }
 
     getFilter (index, length, hue, saturation, brightness, hueLimit) {
@@ -389,6 +395,7 @@ class Divider {
             saturation,
             brightness
         } = this.config.stagger;
+
         const pinIn = pin === PIN_OPTIONS[1];
         const pinOut = pin === PIN_OPTIONS[2];
         const rectsNum = active ? clones + 1 : 1;
@@ -413,6 +420,7 @@ class Divider {
 
     getRect (i, isBrush, filter, patternId, fillOpacity, dx, dy, pinIn, pinOut, boundingBox) {
         let width, height;
+        const invert = this.config.invert;
 
         if (boundingBox) {
             width = boundingBox.width;
@@ -436,8 +444,8 @@ class Divider {
             }`;
         }
 
-        return `<rect style="filter: ${filter};" fill="url(#${patternId})" fill-opacity="${fillOpacity}" x="${dx}" y="${pinIn ? 0 : -dy}" width="${width}" height="${height + (pinOut ? dy : pinIn ? - dy : 0)}" />${
-            i && !pinOut ? `<rect width="${width}" height="${dy}" x="${dx}" y="${height - dy}" fill-opacity="${fillOpacity}" style="filter: ${filter}; fill: var(--div-bg-color)"/>` : ''
+        return `<rect style="filter: ${filter};" fill="url(#${patternId})" fill-opacity="${fillOpacity}" x="${dx}" y="${invert ? (pinOut ? 0 : dy) : (pinIn ? 0 : -dy)}" width="${width}" height="${height + (pinOut ? dy : pinIn ? - dy : 0)}" />${
+            i && !pinOut ? `<rect width="${width}" height="${dy}" x="${dx}" y="${(invert ? 0 : height - dy)}" fill-opacity="${fillOpacity}" style="filter: ${filter}; fill: var(--div-bg-color)"/>` : ''
         }`;
     }
 
