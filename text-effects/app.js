@@ -151,11 +151,11 @@ function setMaskPosition({lineHeight, fontSize}) {
 
     const { width: cw, height: ch } = content.getBoundingClientRect();
     const { width: tw, height: th } = text.getBoundingClientRect();
-    const { width: sw, height: sh } = svg.getBBox();
+    const { y: sy, width: sw, height: sh } = svg.getBBox();
 
     const scale = cw / ch < sw / sh ? cw / sw : ch / sh;
     const x = (((cw - tw) / 2) * 1) / scale;
-    const y = (((ch - th) / 2) * 1) / scale //- (lineHeight * fontSize - fontSize);
+    const y = (((ch - th) / 2) * 1) / scale - sy;
     use.setAttributeNS(null, 'transform', `scale(${scale}) translate(${x} ${y})`);
 }
 function setFormEvents(form) {
