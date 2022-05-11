@@ -1,3 +1,6 @@
+// @use "./media-list.scss";
+@import url(./media-list.css);
+
 .controls {
   width: 300px;
   display: flex;
@@ -23,63 +26,79 @@
       }
     }
   }
+
+  .with-effect:not(:checked) ~ fieldset {
+    display: none;
+  }
+
   // ul,
   // li {
   //     list-style-type: none;
   //     padding: 0;
   //     margin: 0;
   // }
-
-  // fieldset {
-  //     margin-bottom: 0.6em;
-  // }
-
-  // legend {
-  //     font-weight: bold;
-  // }
-
-  // label {
-  //     display: flex;
-  //     justify-content: space-between;
-  //     flex-direction: row;
-  //     align-items: center;
-  //     padding: 1px 2px;
-  // }
-
-  // input {
-  //     vertical-align: middle;
-  // }
-
-  // i {
-  //     display: flex;
-  //     align-items: center;
-  //     gap: 0.3em;
-  //     [type="radio"] {
-  //         margin: 3px 0 3px 3px;
-  //     }
-  // }
-
-  // input[type="color"] {
-  //     padding: 0;
-  //     background: none;
-  //     border: none;
-  //     margin: 0 -2px;
-  //     cursor: context-menu;
-  // }
-
-  // input[type="color"],
-  // input[type="number"] {
-  //     min-width: 3em;
-  //     flex-basis: 0;
-  // }
-
-  // input[type="number"] {
-  //     width: 3em;
-  // }
-
-  // h3 {
-  //     margin-top: 0.5em;
-  //     margin-bottom: 0.2em;
-  //     font-size: 0.9rem;
-  // }
 }
+.controls-section {
+  border: 1px solid var(--base-color-border);
+  margin: 0.5em 0;
+
+  legend {
+    font-weight: bold;
+  }
+  > label {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+    padding: 1px 2px;
+  }
+
+  input {
+    vertical-align: middle;
+  }
+
+  i {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.3em;
+    [type="radio"] {
+      margin: 3px 0 3px 3px;
+    }
+  }
+
+  input[type="color"] {
+    padding: 0;
+    background: none;
+    border: none;
+    margin: 0 -2px;
+    cursor: context-menu;
+  }
+
+  input[type="color"],
+  input[type="number"] {
+    min-width: 3em;
+    flex-basis: 0;
+  }
+
+  input[type="number"] {
+    width: 3em;
+  }
+}
+
+.effect-section {
+  border: 1px solid var(--base-color-border);
+  margin: 0.5em 0;
+  padding: 0.6em 0.5em 0.5em;
+  > label {
+    font-weight: bold;
+  }
+  .controls-section {
+    border-width: 1px 0 0 0;
+    padding: 0;
+  }
+}
+// h3 {
+//     margin-top: 0.5em;
+//     margin-bottom: 0.2em;
+//     font-size: 0.9rem;
+// }

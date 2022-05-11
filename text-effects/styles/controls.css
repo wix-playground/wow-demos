@@ -1,3 +1,4 @@
+@import url(./media-list.css);
 .controls {
   width: 300px;
   display: flex;
@@ -19,4 +20,61 @@
 .controls .text-input textarea:focus {
   outline: none;
   border-color: var(--focus-color-border);
+}
+.controls .with-effect:not(:checked) ~ fieldset {
+  display: none;
+}
+
+.controls-section {
+  border: 1px solid var(--base-color-border);
+  margin: 0.5em 0;
+}
+.controls-section legend {
+  font-weight: bold;
+}
+.controls-section > label {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  align-items: center;
+  padding: 1px 2px;
+}
+.controls-section input {
+  vertical-align: middle;
+}
+.controls-section i {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.3em;
+}
+.controls-section i [type=radio] {
+  margin: 3px 0 3px 3px;
+}
+.controls-section input[type=color] {
+  padding: 0;
+  background: none;
+  border: none;
+  margin: 0 -2px;
+  cursor: context-menu;
+}
+.controls-section input[type=color],
+.controls-section input[type=number] {
+  min-width: 3em;
+  flex-basis: 0;
+}
+.controls-section input[type=number] {
+  width: 3em;
+}
+
+.effect-section {
+  border: 1px solid var(--base-color-border);
+  margin: 0.5em 0;
+  padding: 0.6em 0.5em 0.5em;
+}
+.effect-section > label {
+  font-weight: bold;
+}
+.effect-section .controls-section {
+  border-width: 1px 0 0 0;
+  padding: 0;
 }/*# sourceMappingURL=controls.css.map */

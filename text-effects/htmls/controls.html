@@ -3,20 +3,151 @@
         <div class="text-input">
             <label for="text" class="visually-hidden">Text</label>
             <script> partial('./htmls/text-toolbar.html') </script>
-            <textarea data-setting-input id="text" data-name="text" name="t" rows="3">I AM TEXT</textarea>
+            <textarea data-setting-input id="text" data-name="text" name="t" rows="3" wrap="soft">I AM TEXT</textarea>
+        </div>
+        <fieldset class="controls-section">
+            <legend>Outline</legend>
+            <label>
+                <span>Size</span>
+                <input data-setting-change type="number" data-name="outline-size" name="os" step="1" min="0" max="100"
+                    value="0">
+            </label>
+            <label>
+                <span>Color</span>
+                <input data-setting-input type="color" data-name="outline-color" name="oc" value="#ff0000">
+            </label>
+        </fieldset>
+        <fieldset class="controls-section">
+            <legend>Shadow</legend>
+            <label>
+                <span>X</span>
+                <input data-setting-change type="number" data-name="shadow-x" name="sx" step="1" min="0" max="100"
+                    value="0">
+            </label>
+            <label>
+                <span>Y</span>
+                <input data-setting-change type="number" data-name="shadow-y" name="sy" step="1" min="0" max="100"
+                    value="0">
+            </label>
+            <label>
+                <span>Blur</span>
+                <input data-setting-change type="number" data-name="shadow-blur" name="sb" step="1" min="0" max="100"
+                    value="0">
+            </label>
+            <label>
+                <span>Color</span>
+                <i>
+                    <input type="range" data-setting-input data-name="shadow-opacity" name="so" step="0.01" min="0"
+                        max="1" value="0">
+                    <input data-setting-input type="color" data-name="shadow-color" name="sc" value="#ff0000">
+                </i>
+            </label>
+        </fieldset>
+        <fieldset class="controls-section">
+            <legend>Background and Effects</legend>
+            <label>
+                <span>Blend Mode</span>
+                <select data-setting-change data-name="blend-mode" name="bm">
+                    <option value="normal" selected>normal</option>
+                    <option value="multiply">multiply</option>
+                    <option value="screen">screen</option>
+                    <option value="overlay">overlay</option>
+                    <option value="darken">darken</option>
+                    <option value="lighten">lighten</option>
+                    <option value="color-dodge">color-dodge</option>
+                    <option value="color-burn">color-burn</option>
+                    <option value="hard-light">hard-light</option>
+                    <option value="soft-light">soft-light</option>
+                    <option value="difference">difference</option>
+                    <option value="exclusion">exclusion</option>
+                    <option value="hue">hue</option>
+                    <option value="saturation">saturation</option>
+                    <option value="color">color</option>
+                    <option value="luminosity">luminosity</option>
+                </select>
+            </label>
+            <label>
+                <span>BG Color</span>
+                <input type="color" data-setting-input data-name="background-color" name="bc" value="#ffffff">
+            </label>
+            <label>
+                <span>BG Image or Gradient</span>
+                <input type="text" data-setting-change data-name="background-image" name="bi" value=""
+                    placeholder="URL or Gradient">
+            </label>
+        </fieldset>
 
+        <div class="effect-section" id="mask-section">
+            <input class="with-effect" type="checkbox" data-setting-change data-name="with-mask" id="with-mask"
+                name="wm">
+            <label for="with-mask">With Mask</label>
+            <fieldset class="controls-section">
+                <legend class="visually-hidden">Mask</legend>
+                <h3>Media</h3>
+                <script> partial('./htmls/media-list.html')</script>
+                <h3>Text Transform</h3>
+                <label>
+                    <span>Rotate (deg)</span>
+                    <input type="number" data-setting-change data-name="mask-rotate" name="mr" min="-180" max="180"
+                        step="1" value="0">
+                </label>
+                <label>
+                    <span>Flip</span>
+                    <i>
+                        <input type="checkbox" data-setting-change data-name="mask-flip-h" name="mfh" value="-1"> ↑
+                        <input type="checkbox" data-setting-change data-name="mask-flip-v" name="mfv" value="-1"> ←
+                    </i>
+                </label>
+                <label>
+                    <span>Skew (px)</span>
+                    <input type="number" data-setting-change data-name="mask-skew" name="ms" min="-100" max="100"
+                        step="1" value="0">
+                </label>
+            </fieldset>
         </div>
 
-        <details>
-            <summary>Mask</summary>
-        </details>
+        <div class="effect-section" id="path-section">
+            <input class="with-effect" type="checkbox" data-setting-change data-name="with-path" id="with-path"
+                name="wp">
+            <label for="with-path"> With Path</label>
+            <fieldset>
+                <legend class="visually-hidden">Path</legend>
+                <h3>text</h3>
+                <ul>
+                    <li>resize with shape</li>
+                    <li>vertical align</li>
+                    <li>manual offset x/y</li>
+                    <li>spread</li>
+                    <li>opacity</li>
+                </ul>
+                <h3>shape</h3>
+                <ul>
+                    <li>src (dropdown)</li>
+                    <li>reverse</li>
+                    <li>flip x</li>
+                    <li>flip y</li>
+                    <li>fill color</li>
+                    <li>fill opacity</li>
+                    <li>stroke color</li>
+                    <li>stroke opacity</li>
+                </ul>
+            </fieldset>
+        </div>
 
-        <details>
-            <summary>Path</summary>
-        </details>
-
-        <details>
-            <summary>Marquee</summary>
-        </details>
+        <div class="effect-section" id="marquee-section">
+            <input class="with-effect" type="checkbox" data-setting-change data-name="with-narquee" id="with-narquee"
+                name="wmq">
+            <label for="with-marquee">With Marquee</label>
+            <fieldset>
+                <legend class="visually-hidden">Marquee</legend>
+                <ul>
+                    <li>type (smil/js)</li>
+                    <li>direction</li>
+                    <li>duration</li>
+                    <li>repeat</li>
+                    <li>seamless</li>
+                </ul>
+            </fieldset>
+        </div>
     </form>
 </div>

@@ -1,19 +1,25 @@
 .text-toolbar {
   --icon-size-px: 14px;
   --font-size-px: 12px;
-  --box-size-px: 24px;
+  --box-size-px: 22px;
+
   --base-color: hsl(0 0% 100%);
   --base-text-color: hsl(0 0% 10%);
   --checked-color: hsl(219, 100%, 80%);
   --hover-color: hsl(219, 100%, 70%);
   --focus-color: hsl(219, 100%, 60%);
+
   --base-color-border: hsl(0 0% 70%);
   --checked-color-border: hsl(219, 100%, 70%);
   --hover-color-border: hsl(219, 100%, 60%);
   --focus-color-border: hsl(219, 100%, 50%);
 
+  --fonts-closed-size: calc(6 * var(--font-size-px));
+  --fonts-open-size: calc(8 * var(--font-size-px));
+
   display: flex;
-  height: var(--box-size-px);
+  flex-wrap: wrap;
+  //height: var(--box-size-px);
   background-color: var(--base-color);
   border: none;
   padding: 0;
@@ -37,6 +43,7 @@
     border: 1px solid var(--base-color-border);
     flex-grow: 1;
   }
+
   .style-dropdown {
     border: none;
     position: relative;
@@ -68,9 +75,6 @@
       display: block;
       border: 1px solid transparent;
       height: var(--box-size-px);
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
 
       &:hover {
         background-color: var(--hover-color);
@@ -97,12 +101,19 @@
 
   .style-font-dropdown {
     padding-bottom: var(--box-size-px);
-    min-width: calc(8 * var(--font-size-px));
+    width: var(--fonts-closed-size);
+
+    ul:hover {
+      width: var(--fonts-open-size);
+    }
 
     span {
-      padding: 0 5px;
+      padding: 0 10px;
       font-size: var(--font-size-px);
       line-height: calc(var(--box-size-px) - 2px);
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
   }
 
@@ -121,60 +132,89 @@
       border: 1px solid var(--base-color-border);
     }
   }
-  .style-number {
+
+  .style-number,
+  .style-number-dropdown {
     overflow: hidden;
+    font-size: var(--font-size-px);
+    line-height: var(--box-size-px);
+    height: var(--box-size-px);
+
+    border-right: 1px solid var(--base-color-border);
+    position: relative;
+
     &.style-number-3-digits {
       width: 2.3em;
+    }
+
+    &:hover,
+    &:focus-within {
+      overflow: visible;
+    }
+
+    input {
+      height: calc(var(--box-size-px) - 2px);
+      border: 1px solid var(--base-color-border);
+      position: absolute;
       font-size: var(--font-size-px);
-      line-height: var(--box-size-px);
+
+      width: 3em;
+      line-height: 2em;
+      padding: 0 3px;
+    }
+  }
+
+  .style-number-dropdown {
+    overflow: hidden;
+
+    span {
+      display: block;
+      width: var(--box-size-px);
       height: var(--box-size-px);
+      border: 1px solid var(--base-color-border);
 
-      border-right: 1px solid var(--base-color-border);
-      position: relative;
-
-      input {
-        height: calc(var(--box-size-px) - 2px);
-        border: 1px solid var(--base-color-border);
-        position: absolute;
-        font-size: var(--font-size-px);
-
-        width: 3em;
-        line-height: 2em;
-        padding: 0 3px;
-
-        &:focus {
-          outline: none;
-          border-color: var(--focus-color-border);
-        }
+      &:hover {
+        background-color: var(--hover-color);
+        border-color: var(--hover-color-border);
       }
+    }
 
-      &:hover,
-      &:focus-within {
-        overflow: visible;
+    input {
+      opacity: 0;
+      position: absolute;
+      pointer-events: none;
+    }
+
+    &:where(:hover, :focus-within) {
+      input {
+        top: var(--box-size-px);
+        opacity: initial;
+        pointer-events: initial;
       }
     }
   }
   .style-color-button {
-    input {
-      &[type="color"] {
-        -webkit-appearance: none;
-        padding: 0;
-        width: var(--box-size-px);
-        height: var(--box-size-px);
-        border: 1px solid var(--base-color-border);
+    height: var(--box-size-px);
 
-        &::-webkit-color-swatch-wrapper {
-          padding: 0;
-        }
-        &::-webkit-color-swatch {
-          border: clamp(1px, calc(var(--box-size-px) / 12), 2px) solid var(--base-color);
-        }
+    input[type="color"] {
+      appearance: none;
+      padding: 0;
+      width: var(--box-size-px);
+      height: var(--box-size-px);
+      border: 1px solid var(--base-color-border);
+
+      &:hover {
+        border-color: var(--hover-color-border);
       }
-      &:focus {
-        outline: none;
-        &::-webkit-color-swatch {
-          border-color: var(--focus-color-border);
-        }
+    }
+    input[type="color"]::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+    input[type="color"]::-webkit-color-swatch {
+      border: clamp(1px, calc(var(--box-size-px) / 12), 2px) solid var(--base-color);
+
+      &:hover {
+        border-color: var(--hover-color-border);
       }
     }
   }
@@ -210,12 +250,24 @@
     }
   }
 
+  /* https://www.a11yproject.com/posts/how-to-hide-content/ */
+  .visually-hidden {
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
+
   /*
-  Icons from https://github.com/Keyamoon/IcoMoon-Free
-  Url encoded by https://yoksel.github.io/url-encoder/
-  */
+Icons from https://github.com/Keyamoon/IcoMoon-Free
+Url encoded by https://yoksel.github.io/url-encoder/
+*/
   .style-icon-dropdown span,
-  .style-icon-button span {
+  .style-icon-button span,
+  .style-number-dropdown span {
     background-position: center;
     background-repeat: no-repeat;
     background-size: var(--icon-size-px);
@@ -244,10 +296,27 @@
   .icon-rtl span {
     background-image: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23000000' d='M4 0c-2.209 0-4 1.791-4 4s1.791 4 4 4v8h2v-14h2v14h2v-14h2v-2h-8zM16 3l-4 4 4 4z'%3E%3C/path%3E%3C/svg%3E");
   }
+  .icon-letter-spacing span {
+    background-image: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23000000' d='M4,14L4,16L1,13.5L4,11L4,13L12,13L12,11L15,13.5L12,16L12,14L4,14Z M0.825,1.06L2.472,1.06L4.741,8.22L4.766,8.22L7.085,1.06L8.695,1.06L5.603,10.109L3.841,10.109L0.825,1.06Z M9.924,1.06L11.61,1.06L15.095,10.109L13.397,10.109L12.548,7.713L8.936,7.713L8.087,10.109L6.452,10.109L9.924,1.06ZM9.367,6.509L12.13,6.509L10.773,2.618L10.735,2.618L9.367,6.509Z'/%3E%3C/svg%3E%0A");
+  }
+  .icon-line-height span {
+    background-image: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23000000' d='M6,13L16,13L16,15L6,15L6,13ZM1.934,3.912L1.934,12.088L-0.038,12.088L2.723,14.848L5.483,12.088L3.511,12.088L3.511,3.912L5.483,3.912L2.723,1.152L-0.038,3.912L1.934,3.912ZM6,10L16,10L16,12L6,12L6,10ZM6,7L16,7L16,9L6,9L6,7ZM6,4L16,4L16,6L6,6L6,4ZM6,1L16,1L16,3L6,3L6,1Z'/%3E%3C/svg%3E%0A");
+  }
 }
 
 @media (prefers-color-scheme: dark) {
   body:not(.light) .text-toolbar {
+    color-scheme: dark;
+    --base-color: hsl(0 0% 20%);
+    --base-text-color: hsl(0 0% 90%);
+    --checked-color: hsl(219, 100%, 30%);
+    --hover-color: hsl(219, 100%, 40%);
+    --focus-color: hsl(219, 100%, 50%);
+    --base-color-border: hsl(0 0% 30%);
+    --checked-color-border: hsl(219, 100%, 40%);
+    --hover-color-border: hsl(219, 100%, 50%);
+    --focus-color-border: hsl(219, 100%, 60%);
+
     .icon-bold span {
       background-image: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23ffffff' d='M11.061 7.573c0.586-0.696 0.939-1.594 0.939-2.573 0-2.206-1.794-4-4-4h-5v14h6c2.206 0 4-1.794 4-4 0-1.452-0.778-2.726-1.939-3.427zM6 3h1.586c0.874 0 1.586 0.897 1.586 2s-0.711 2-1.586 2h-1.586v-4zM8.484 13h-2.484v-4h2.484c0.913 0 1.656 0.897 1.656 2s-0.743 2-1.656 2z'%3E%3C/path%3E%3C/svg%3E");
     }
@@ -271,6 +340,12 @@
     }
     .icon-rtl span {
       background-image: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23ffffff' d='M4 0c-2.209 0-4 1.791-4 4s1.791 4 4 4v8h2v-14h2v14h2v-14h2v-2h-8zM16 3l-4 4 4 4z'%3E%3C/path%3E%3C/svg%3E");
+    }
+    .icon-letter-spacing span {
+      background-image: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23ffffff' d='M4,14L4,16L1,13.5L4,11L4,13L12,13L12,11L15,13.5L12,16L12,14L4,14Z M0.825,1.06L2.472,1.06L4.741,8.22L4.766,8.22L7.085,1.06L8.695,1.06L5.603,10.109L3.841,10.109L0.825,1.06Z M9.924,1.06L11.61,1.06L15.095,10.109L13.397,10.109L12.548,7.713L8.936,7.713L8.087,10.109L6.452,10.109L9.924,1.06ZM9.367,6.509L12.13,6.509L10.773,2.618L10.735,2.618L9.367,6.509Z'/%3E%3C/svg%3E%0A");
+    }
+    .icon-line-height span {
+      background-image: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23ffffff' d='M6,13L16,13L16,15L6,15L6,13ZM1.934,3.912L1.934,12.088L-0.038,12.088L2.723,14.848L5.483,12.088L3.511,12.088L3.511,3.912L5.483,3.912L2.723,1.152L-0.038,3.912L1.934,3.912ZM6,10L16,10L16,12L6,12L6,10ZM6,7L16,7L16,9L6,9L6,7ZM6,4L16,4L16,6L6,6L6,4ZM6,1L16,1L16,3L6,3L6,1Z'/%3E%3C/svg%3E%0A");
     }
   }
 }
