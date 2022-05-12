@@ -79,7 +79,7 @@ export function debounce(fn, delay = 100) {
  * @param {{trailing: boolean, leading: boolean}} [options = {trailing:true, leading:true}]
  * @returns
  */
-export function throttle(fn, wait = 100, {trailing = true, leading = true} = {}) {
+export function throttle(fn, wait = 100, { trailing = true, leading = true } = {}) {
     let time = leading ? 1 : null;
     let timeoutId;
 
@@ -105,3 +105,23 @@ export function throttle(fn, wait = 100, {trailing = true, leading = true} = {})
 const S4 = () => (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
 const randomUUIDDumbPolyfill = () => `${S4()}${S4()}-${S4()}-${S4()}-${S4()}-${S4()}${S4()}${S4()}`;
 export const randomId = () => crypto.randomUUID?.() || randomUUIDDumbPolyfill();
+
+/**
+ * @param {number} angleInDeg
+ * @returns
+ */
+export const deg2rad = (angleInDeg) => (angleInDeg * Math.PI) / 180;
+/**
+ * Calculate the scale needed for a rotated element to cover its old bounds
+ * @param {number} width
+ * @param {number} height
+ * @param {number} angleInDeg
+ * @returns
+ */
+export function getRotatedBoundingRectScale(width, height, angleInDeg) {
+    const angleInRad = deg2rad(angleInDeg);
+    const newHeight = width * Math.abs(Math.sin(angleInRad)) + height * Math.abs(Math.cos(angleInRad));
+    const newWidth = width * Math.abs(Math.cos(angleInRad)) + height * Math.abs(Math.sin(angleInRad));
+
+    return Math.max(newHeight / height, newWidth / width);
+}
