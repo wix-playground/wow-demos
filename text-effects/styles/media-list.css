@@ -67,6 +67,19 @@
 .media-item label {
   padding: 0;
 }
+.media-item svg {
+  padding: 7px;
+  overflow: visible;
+}
+.media-item path {
+  fill-opacity: 0;
+  stroke-width: 2px;
+  stroke: purple;
+  vector-effect: non-scaling-stroke;
+}
+.media-item path.reversed {
+  display: none;
+}
 .media-item input {
   opacity: 0;
   position: absolute;

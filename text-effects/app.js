@@ -225,7 +225,7 @@ function setFormEvents(form) {
  * @param {HTMLFormElement} form
  */
 function setMediaList(media) {
-    media.forEach(({ url, thumb, isDefault, type }, index) => {
+    media.forEach(({ url, thumb, selected, type }, index) => {
         let mediaItem;
 
         // Create image item
@@ -250,12 +250,42 @@ function setMediaList(media) {
         input.value = [url, type].join('|');
 
         // Set default
-        if (isDefault) {
+        if (selected) {
             input.setAttribute('checked', 'checked');
         }
 
         // Add to document
         $id('media-list').appendChild(mediaItem);
+    });
+}
+
+/**
+ * Get paths list from configuration and build UI + form event
+ * @param {ConfigData['paths']} media
+ */
+function setPathsList(paths) {
+    paths.forEach(({ path, htap, selected }, index) => {
+        const item = getTempalteItem('#media-item-path-template');
+        const svg = item.querySelector('svg');
+        const normal = item.querySelector('path.normal');
+        const reversed = item.querySelector('path.reversed');
+        const input = item.querySelector('input');
+        normal.setAttributeNS(null, 'd', path);
+        reversed.setAttributeNS(null, 'd', htap);
+        normal.id = `path-${index}`;
+        input.value = index;
+
+        // Set default
+        if (selected) {
+            input.setAttribute('checked', 'checked');
+        }
+
+        // Add to document
+        $id('path-list').appendChild(item);
+
+        // set the viewbox to the path bbox
+        const { x, y, width, height } = normal.getBBox();
+        svg.setAttributeNS(null, 'viewBox', `${x} ${y} ${width} ${height}`);
     });
 }
 /**
@@ -298,10 +328,11 @@ async function getConfig() {
 
 async function init() {
     const form = document.forms[0];
-    const { media, fonts } = await getConfig();
+    const { paths, media, fonts } = await getConfig();
     loadWebFonts(fonts);
     setTextToolbarFontList(fonts);
     setMediaList(media);
+    setPathsList(paths);
     setFormEvents(form);
     createDocumentWireframe('.comp').forEach((wire) =>
         makeWireframeElementResizable(wire, {

@@ -28,7 +28,9 @@
   }
 
   .with-effect:not(:checked) ~ fieldset {
-    display: none;
+    opacity: 0;
+    position: absolute;
+    pointer-events: none;
   }
 
   // ul,

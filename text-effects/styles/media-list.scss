@@ -41,6 +41,20 @@
   label {
     padding: 0;
   }
+  svg {
+    padding: 7px;
+    overflow: visible;
+  }
+  path {
+    fill-opacity: 0;
+    stroke-width: 2px;
+    stroke: purple;
+    vector-effect: non-scaling-stroke;
+
+    &.reversed {
+      display: none;
+    }
+  }
 
   input {
     opacity: 0;
