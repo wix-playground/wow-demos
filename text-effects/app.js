@@ -15,6 +15,12 @@ const alignToAnchor = {
     right: 'end',
 };
 
+const alignToAnchorRtl = {
+    left: 'end',
+    center: 'middle',
+    right: 'start',
+};
+
 function resetStuff() {
     const comp = $id('comp-1');
     const content = comp.querySelector('.content');
@@ -91,7 +97,7 @@ function updateText({
     text.style.fontStyle = style ? 'italic' : 'normal';
     text.style.fontWeight = weight ? 'bold' : 'normal';
     text.style.textDecoration = under ? 'underline' : 'none';
-    text.style.textAnchor = alignToAnchor[align];
+    text.style.textAnchor = (dir === 'rtl' ? alignToAnchorRtl : alignToAnchor)[align];
     text.style.direction = dir;
     text.style.letterSpacing = `${spacing}px`;
     text.style.lineHeight = lineHeight;
