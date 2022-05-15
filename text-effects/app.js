@@ -34,6 +34,14 @@ function resetStuff() {
     media.hidden = 'hidden';
 }
 
+function updateBox({ x, y, w, h }) {
+    const comp = $id('comp-1');
+    comp.style.top = `${y}px`;
+    comp.style.left = `${x}px`;
+    comp.style.width = `${w}px`;
+    comp.style.height = `${h}px`;
+}
+
 function updateText({
     fc: color,
     ff: family,
@@ -331,6 +339,7 @@ function setFormEvents(form) {
         console.log(data);
 
         resetStuff();
+        updateBox(data);
         updateText(data);
         effect === 'mask' && updateMask(data);
         effect === 'path' && updatePath(data);
@@ -440,6 +449,19 @@ function onMove(event) {
     if (data.we === 'path') {
         setPathSize(data);
     }
+
+    const comp = $id('comp-1');
+    const {top, left, width, height} = comp.style;
+
+    form.x.value = parseInt(left, 10);
+    form.y.value = parseInt(top, 10);
+    form.w.value = parseInt(width, 10);
+    form.h.value = parseInt(height, 10);
+}
+
+function onEnd() {
+    const form = document.forms[0];
+    form.requestSubmit();
 }
 
 /**
@@ -464,6 +486,7 @@ async function init() {
         makeWireframeElementResizable(wire, {
             container: 'stage',
             onMove: onMove,
+            onEnd: onEnd,
         })
     );
 }
