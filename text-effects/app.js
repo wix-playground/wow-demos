@@ -461,7 +461,7 @@ function onMove(event) {
 
 function onEnd() {
     const form = document.forms[0];
-    form.requestSubmit();
+    formToUrl(form, { replace: true });
 }
 
 /**
