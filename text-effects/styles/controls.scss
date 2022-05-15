@@ -20,7 +20,7 @@
       border-color: var(--base-color-border);
       font-family: sans-serif;
       line-height: 1.2;
-      padding: .5em;
+      padding: 0.5em;
 
       &:focus {
         outline: none;
@@ -98,14 +98,21 @@
   }
   .controls-section {
     border-width: 1px 0 0 0;
-    padding: .5em 0 0;
+    padding: 0.5em 0 0;
   }
 }
 
-.box-dimensions{
+.box-dimensions {
   input[type="number"] {
     font-size: 0.9em;
     width: 3.5em;
+    &:not(:hover, :focus) {
+      &::-webkit-inner-spin-button,
+      &::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+    }
   }
 }
 // h3 {

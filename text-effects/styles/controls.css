@@ -86,4 +86,8 @@
 .box-dimensions input[type=number] {
   font-size: 0.9em;
   width: 3.5em;
+}
+.box-dimensions input[type=number]:not(:hover, :focus)::-webkit-inner-spin-button, .box-dimensions input[type=number]:not(:hover, :focus)::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }/*# sourceMappingURL=controls.css.map */
