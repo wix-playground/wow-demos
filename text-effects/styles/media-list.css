@@ -11,19 +11,21 @@
   --checked-color-border: hsl(219, 100%, 70%);
   --hover-color-border: hsl(219, 100%, 60%);
   --focus-color-border: hsl(219, 100%, 50%);
+  --accent-color: hsl(219, 100%, 50%);
 }
 @media (prefers-color-scheme: dark) {
   :root body:not(.light) {
     color-scheme: dark;
     --base-color: hsl(0 0% 20%);
-    --base-text-color: hsl(0 0% 90%);
+    --base-text-color: hsl(0 0% 80%);
     --checked-color: hsl(219, 100%, 30%);
-    --hover-color: hsl(219, 100%, 40%);
+    --hover-color: rgb(0, 71, 204);
     --focus-color: hsl(219, 100%, 50%);
     --base-color-border: hsl(0 0% 30%);
     --checked-color-border: hsl(219, 100%, 40%);
     --hover-color-border: hsl(219, 100%, 50%);
     --focus-color-border: hsl(219, 100%, 60%);
+    --accent-color: hsl(219, 100%, 60%);
   }
 }
 
@@ -74,7 +76,7 @@
 .media-item path {
   fill-opacity: 0;
   stroke-width: 2px;
-  stroke: purple;
+  stroke: var(--accent-color);
   vector-effect: non-scaling-stroke;
 }
 .media-item path.reversed {

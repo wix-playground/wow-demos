@@ -38,7 +38,9 @@
 
 .wireframe-layer {
   opacity: 0;
+  transition: opacity 0.15s 0.3s ease-out;
 }
-.wireframe-layer:hover {
+.wireframe-layer:hover, [data-dragging-within] .wireframe-layer {
   opacity: 1;
+  transition: opacity 0.25s ease-in;
 }/*# sourceMappingURL=stage.css.map */

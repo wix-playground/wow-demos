@@ -48,7 +48,7 @@
   path {
     fill-opacity: 0;
     stroke-width: 2px;
-    stroke: purple;
+    stroke: var(--accent-color);
     vector-effect: non-scaling-stroke;
 
     &.reversed {

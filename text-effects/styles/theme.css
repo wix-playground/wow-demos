@@ -11,6 +11,7 @@
   --checked-color-border: hsl(219, 100%, 70%);
   --hover-color-border: hsl(219, 100%, 60%);
   --focus-color-border: hsl(219, 100%, 50%);
+  --accent-color: hsl(219, 100%, 50%);
 }
 @media (prefers-color-scheme: dark) {
   :root body:not(.light) {
@@ -24,5 +25,6 @@
     --checked-color-border: hsl(219, 100%, 40%);
     --hover-color-border: hsl(219, 100%, 50%);
     --focus-color-border: hsl(219, 100%, 60%);
+    --accent-color: hsl(219, 100%, 60%);
   }
 }/*# sourceMappingURL=theme.css.map */

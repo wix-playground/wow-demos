@@ -38,11 +38,15 @@
   &:hover + .wireframe-layer {
     opacity: 1;
   }
+
 }
 .wireframe-layer{
   opacity: 0;
+  transition: opacity 0.15s 0.3s ease-out;
 
-  &:hover {
+  &:hover,
+  [data-dragging-within] & {
     opacity: 1;
+    transition: opacity 0.25s ease-in;
   }
 }

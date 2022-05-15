@@ -10,6 +10,7 @@
   border-right: 1px solid hsl(0deg, 0%, 50%);
   overflow-y: scroll;
   overflow-x: hidden;
+  accent-color: var(--accent-color);
 }
 .controls .text-input textarea {
   width: 100%;
