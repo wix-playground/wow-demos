@@ -28,6 +28,17 @@
 }
 .comp .content svg path,
 .comp .content svg text,
-.comp .content svg textPath {
+.comp .content svg textPath,
+.comp .content svg tspan {
   vector-effect: non-scaling-stroke;
+}
+.comp:hover + .wireframe-layer {
+  opacity: 1;
+}
+
+.wireframe-layer {
+  opacity: 0;
+}
+.wireframe-layer:hover {
+  opacity: 1;
 }/*# sourceMappingURL=stage.css.map */

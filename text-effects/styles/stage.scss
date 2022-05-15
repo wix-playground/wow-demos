@@ -28,9 +28,21 @@
 
       path,
       text,
-      textPath {
+      textPath,
+      tspan {
         vector-effect: non-scaling-stroke;
       }
     }
+  }
+
+  &:hover + .wireframe-layer {
+    opacity: 1;
+  }
+}
+.wireframe-layer{
+  opacity: 0;
+
+  &:hover {
+    opacity: 1;
   }
 }
