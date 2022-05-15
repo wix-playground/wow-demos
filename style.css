@@ -26,3 +26,7 @@ li {
 li:hover {
     background: hsl(60, 0%, 90%);
 }
+
+.deprecated {
+    text-decoration: line-through;
+}
