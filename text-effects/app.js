@@ -3,24 +3,37 @@ import formRequestSubmitPolyfill from 'https://cdn.skypack.dev/pin/form-request-
 import webfontloader from 'https://cdn.skypack.dev/webfontloader';
 import { createDocumentWireframe, makeWireframeElementResizable } from 'https://tombigel.github.io/resize-box/index.js';
 import { urlToForm, formToUrl } from 'https://tombigel.github.io/form-to-url-to-form/index.js';
-import SvgPathCommander from 'https://cdn.skypack.dev/svg-path-commander';
+import { scalePath } from './scripts/path-utils.js';
 import { setTextToolbarFontList } from './scripts/text-toolbar.js';
-import {
-    $id,
-    $select,
-    $selectAll,
-    getTempalteItem,
-    hex2rgba,
-    getRotatedBoundingRectScale,
-    throttle,
-} from '../utils/utils.js';
+import { $id, $selectAll, getTempalteItem, hex2rgba, getRotatedBoundingRectScale, throttle, clamp } from '../utils/utils.js';
 
 const ns = 'http://www.w3.org/2000/svg';
+
 const alignToAnchor = {
     left: 'start',
     center: 'middle',
     right: 'end',
 };
+
+function resetStuff() {
+    const comp = $id('comp-1');
+    const content = comp.querySelector('.content');
+    const media = content.querySelector('.media');
+    const svg = content.querySelector('.main-svg');
+    const text = svg.querySelector('text');
+    const textPath = svg.querySelector('textPath');
+    const path = svg.querySelector('path');
+
+    svg.style.setProperty('--font-scale-factor', 1);
+    text.style.dominantBaseline = '';
+    text.style.baselineShift = '';
+    textPath?.removeAttributeNS(null, 'startOffset');
+    textPath?.removeAttributeNS(null, 'textLength');
+    path.setAttributeNS(null, 'd', '');
+    media.style.clipPath = '';
+    media.hidden = 'hidden';
+}
+
 function updateText({
     fc: color,
     ff: family,
@@ -44,13 +57,15 @@ function updateText({
     bc: bgColor,
     bi: bgImage = '',
 }) {
+    shadowOpacity = +shadowOpacity;
+
     const stage = $id('stage');
     const comp = $id('comp-1');
     const content = comp.querySelector('.content');
     const textarea = $id('text');
-    const media = content.querySelector('.media');
-    const svg = content.querySelector('svg');
+    const svg = content.querySelector('.main-svg');
     const text = svg.querySelector('text');
+
     text.id = `text-${comp.id}`;
     text.replaceChildren(
         ...inputText.split(/\n/g).map((line) => {
@@ -64,7 +79,7 @@ function updateText({
 
     text.style.fill = color;
     text.style.fontFamily = family;
-    text.style.fontSize = `${size}px`;
+    text.style.fontSize = `calc(${size}px * var(--font-scale-factor))`;
     text.style.fontStyle = style ? 'italic' : 'normal';
     text.style.fontWeight = weight ? 'bold' : 'normal';
     text.style.textDecoration = under ? 'underline' : 'none';
@@ -83,10 +98,9 @@ function updateText({
 
     textarea.style.textAlign = align;
     textarea.style.direction = dir;
-    textarea.style.letterSpacing = `${+spacing / 10}pt`;
-    textarea.style.lineHeight = lineHeight;
+    // textarea.style.letterSpacing = `${+spacing / 10}pt`;
+    // textarea.style.lineHeight = lineHeight;
 
-    shadowOpacity = +shadowOpacity;
     content.style.filter =
         shadowOpacity > 0
             ? `drop-shadow(${shadowX}px ${shadowY}px ${shadowBlur}px ${hex2rgba(shadowColor, shadowOpacity)})`
@@ -98,44 +112,90 @@ function updateText({
 function updateMask({
     lh: lineHeight,
     fs: fontSize,
-    wm: maskOn,
     mi: mediaItem,
     mr: maskRotate,
     mfh: maskFlipH,
     mfv: maskFlipV,
 }) {
+    maskRotate = +maskRotate;
     const comp = $id('comp-1');
     const content = comp.querySelector('.content');
-    const svg = content.querySelector('svg');
+    const svg = content.querySelector('.main-svg');
     const text = svg.querySelector('text');
     const media = content.querySelector('.media');
+    const clipPath = svg.querySelector('clipPath');
+    const use = clipPath.querySelector('use');
 
-    if (maskOn) {
-        setMedia(content, ...mediaItem.split('|'));
+    media.hidden = '';
+    setMedia(content, ...mediaItem.split('|'));
 
-        const clipPath = svg.querySelector('clipPath');
-        const use = clipPath.querySelector('use');
+    use.setAttributeNS(null, 'href', `#${text.id}`);
+    clipPath.id = `clip-${comp.id}`;
+    clipPath.appendChild(use);
+    svg.appendChild(clipPath);
 
-        use.setAttributeNS(null, 'href', `#${text.id}`);
-        clipPath.id = `clip-${comp.id}`;
-        clipPath.appendChild(use);
-        svg.appendChild(clipPath);
+    media.style.clipPath = `url(#${clipPath.id})`;
+    text.style.fill = 'none';
 
-        media.style.clipPath = `url(#${clipPath.id})`;
-        text.style.fill = 'none';
+    const scale = maskRotate ? getRotatedBoundingRectScale(content.offsetWidth, content.offsetHeight, maskRotate) : 1;
 
-        maskRotate = +maskRotate;
-        const scale = maskRotate
-            ? getRotatedBoundingRectScale(content.offsetWidth, content.offsetHeight, maskRotate)
-            : 1;
+    const mediaTransforms = `rotate(${maskRotate}deg) scaleX(${(maskFlipV ? -1 : 1) * scale}) scaleY(${
+        (maskFlipH ? -1 : 1) * scale
+    })`;
+    [...media.children].forEach((el) => (el.style.transform = mediaTransforms));
 
-        const mediaTransforms = `rotate(${maskRotate}deg) scaleX(${(maskFlipV ? -1 : 1) * scale}) scaleY(${
-            (maskFlipH ? -1 : 1) * scale
-        })`;
-        [...media.children].forEach((el) => (el.style.transform = mediaTransforms));
+    setMaskPosition({ lineHeight, fontSize });
+}
 
-        setMaskPosition({ lineHeight, fontSize });
-    }
+function updatePath({
+    pi: pathIndex,
+    pfs: flipSide,
+    t: inputText = '',
+    ta: align,
+    td: dir,
+    psw: strokeWidth,
+    psc: strokeColor,
+    pso: strokeOpacity,
+    pfc: fillColor,
+    pfo: fillOpacity,
+    par: aspectRatio,
+    pts: keepTextSize,
+    pva: pathVerticalAlign,
+    ps: pathTextSpread,
+    mox: manualOffsetX,
+    moy: manualOffsetY,
+}) {
+    const comp = $id('comp-1');
+    const content = comp.querySelector('.content');
+    const text = content.querySelector('.main-svg text');
+    const path = content.querySelector('.main-svg path');
+    const textPath = document.createElementNS(ns, 'textPath');
+
+    path.id = `path-${comp.id}`;
+
+    textPath.textContent = inputText;
+    textPath.setAttributeNS(null, 'href', `#${path.id}`);
+
+    text.replaceChildren(textPath);
+
+    path.style.strokeWidth = `${strokeWidth}px`;
+    path.style.stroke = strokeColor;
+    path.style.strokeOpacity = strokeOpacity;
+    path.style.fill = fillColor;
+    path.style.fillOpacity = fillOpacity;
+
+    setPathSize({
+        par: aspectRatio,
+        pts: keepTextSize,
+        pi: pathIndex,
+        pfs: flipSide,
+        pva: pathVerticalAlign,
+        ps: pathTextSpread,
+        mox: manualOffsetX,
+        moy: manualOffsetY,
+        ta: align,
+        td: dir,
+    });
 }
 
 /**
@@ -175,7 +235,7 @@ function setMedia(content, url, type) {
 function setMaskPosition() {
     const comp = $id('comp-1');
     const content = comp.querySelector('.content');
-    const svg = content.querySelector('svg');
+    const svg = content.querySelector('.main-svg');
     const text = svg.querySelector('text');
     const use = svg.querySelector('use');
 
@@ -187,6 +247,63 @@ function setMaskPosition() {
     const x = (((cw - tw) / 2) * 1) / scale - sx;
     const y = (((ch - th) / 2) * 1) / scale - sy;
     use.setAttributeNS(null, 'transform', `scale(${scale}) translate(${x} ${y})`);
+}
+
+function setPathSize({
+    par: aspectRatio,
+    pts: keepTextSize,
+    pi: pathIndex,
+    pfs: flipSide,
+    pva: pathVerticalAlign,
+    ps: pathTextSpread,
+    mox: manualOffsetX,
+    moy: manualOffsetY,
+    ta: align,
+    td: dir,
+}) {
+    manualOffsetX = +manualOffsetX
+    manualOffsetY = +manualOffsetY
+    pathTextSpread = +pathTextSpread
+
+    const d = $id(`${flipSide ? 'htap' : 'path'}-${pathIndex}`).getAttributeNS(null, 'd');
+
+    const comp = $id('comp-1');
+    const content = comp.querySelector('.content');
+    const svg = content.querySelector('.main-svg');
+    const path = svg.querySelector('path');
+    const text = svg.querySelector('text');
+    const textPath = svg.querySelector('textPath');
+
+    path.setAttributeNS(null, 'd', d);
+
+    const { width, height } = path.getBBox();
+    const pathAspect = width / height;
+    const contentAspect = content.offsetWidth / content.offsetHeight;
+    const scaleX = contentAspect > pathAspect;
+    const scale = scaleX ? contentAspect / pathAspect : pathAspect / contentAspect;
+
+    const fontScaleBySide = scaleX ? height / svg.clientHeight : width / svg.clientWidth;
+    const fontScaleFactor = keepTextSize ? fontScaleBySide : 1;
+
+    svg.style.setProperty('--font-scale-factor', fontScaleFactor);
+
+    path.setAttributeNS(null, 'd', aspectRatio ? d : scalePath(d, scaleX ? scale : 1, scaleX ? 1 : scale));
+
+    // Override viewBox
+    const { x, y, width: w, height: h } = path.getBBox();
+    svg.setAttributeNS(null, 'viewBox', `${x} ${y} ${w} ${h}`);
+
+    // Text aligmnets
+    const pathLength = path.getTotalLength();
+    const baseTextLength = text.getComputedTextLength();
+    const textLength = baseTextLength + (pathLength - baseTextLength) * pathTextSpread;
+    const baseOffset =
+        align === 'right' ? pathLength - textLength : align === 'center' ? (pathLength - textLength) / 2 : 0;
+        textPath.setAttribute('startOffset', baseOffset + manualOffsetX);
+        textPath.textLength.baseVal.value = textLength;
+        text.style.dominantBaseline = pathVerticalAlign;
+        text.style.baselineShift = manualOffsetY;
+        text.style.textAnchor = dir === 'rtl' ? 'end' : 'start';
 }
 
 function setFormEvents(form) {
@@ -209,10 +326,14 @@ function setFormEvents(form) {
         e.preventDefault();
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
+        const effect = data.we;
 
         console.log(data);
+
+        resetStuff();
         updateText(data);
-        updateMask(data);
+        effect === 'mask' && updateMask(data);
+        effect === 'path' && updatePath(data);
         formToUrl(form, { replace: true });
     });
 
@@ -273,6 +394,7 @@ function setPathsList(paths) {
         normal.setAttributeNS(null, 'd', path);
         reversed.setAttributeNS(null, 'd', htap);
         normal.id = `path-${index}`;
+        reversed.id = `htap-${index}`;
         input.value = index;
 
         // Set default
@@ -311,8 +433,12 @@ function onMove(event) {
     const data = Object.fromEntries(formData.entries());
 
     // Resize clipPath for mask
-    if (data.wm) {
-        setMaskPosition({ fontSize: data.fs, lineHeight: data.lh });
+    if (data.we === 'mask') {
+        setMaskPosition();
+    }
+
+    if (data.we === 'path') {
+        setPathSize(data);
     }
 }
 

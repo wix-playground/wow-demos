@@ -25,6 +25,12 @@
 
     svg {
       overflow: visible;
+
+      path,
+      text,
+      textPath {
+        vector-effect: non-scaling-stroke;
+      }
     }
   }
 }

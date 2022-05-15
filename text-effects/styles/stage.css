@@ -25,4 +25,9 @@
 }
 .comp .content svg {
   overflow: visible;
+}
+.comp .content svg path,
+.comp .content svg text,
+.comp .content svg textPath {
+  vector-effect: non-scaling-stroke;
 }/*# sourceMappingURL=stage.css.map */

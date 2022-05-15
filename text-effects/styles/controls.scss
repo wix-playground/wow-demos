@@ -19,6 +19,8 @@
       box-sizing: border-box;
       border-color: var(--base-color-border);
       font-family: sans-serif;
+      line-height: 1.2;
+      padding: .5em;
 
       &:focus {
         outline: none;
@@ -96,7 +98,7 @@
   }
   .controls-section {
     border-width: 1px 0 0 0;
-    padding: 0;
+    padding: .5em 0 0;
   }
 }
 // h3 {

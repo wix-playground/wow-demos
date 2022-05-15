@@ -6,6 +6,12 @@
             <textarea data-setting-input id="text" data-name="text" name="t" rows="3" wrap="soft">I AM TEXT</textarea>
         </div>
         <fieldset class="controls-section">
+            <label>
+                <span>Font Color</span>
+                <input data-setting-input type="color" data-name="font-color" name="fc" value="#000000">
+            </label>
+        </fieldset>
+        <fieldset class="controls-section">
             <legend>Outline</legend>
             <label>
                 <span>Size</span>
@@ -76,10 +82,14 @@
                     placeholder="URL or Gradient">
             </label>
         </fieldset>
-
+        <div class="effect-section" id="none-section">
+            <input class="with-effect" type="radio" data-setting-change data-name="with-none" id="with-none" name="we"
+                value="none">
+            <label for="with-none">None</label>
+        </div>
         <div class="effect-section" id="mask-section">
-            <input class="with-effect" type="checkbox" data-setting-change data-name="with-mask" id="with-mask"
-                name="wm">
+            <input class="with-effect" type="radio" data-setting-change data-name="with-mask" id="with-mask" name="we"
+                value="mask">
             <label for="with-mask">Mask Media</label>
             <fieldset class="controls-section">
                 <legend class="visually-hidden">Mask</legend>
@@ -100,30 +110,71 @@
         </div>
 
         <div class="effect-section" id="path-section">
-            <input class="with-effect" type="checkbox" data-setting-change data-name="with-path" id="with-path"
-                name="wp">
+            <input class="with-effect" type="radio" data-setting-change data-name="with-path" id="with-path" name="we"
+                value="path">
             <label for="with-path">Text on Path</label>
             <fieldset class="controls-section">
                 <legend class="visually-hidden">Path</legend>
                 <script> partial('./htmls/path-list.html')</script>
-                <ul>
-                    <li>vertical align</li>
-                    <li>path direction</li>
-                    <li>manual offset x/y</li>
-                    <li>spread</li>
 
-                    <li>resize with shape</li>
+                <label>
+                    <span>Keep Aspect Ratio</span>
+                    <input type="checkbox" data-setting-change data-name="path-aspect-ratio" name="par">
+                </label>
 
-                    <li>- Show shape</li>
+                <label>
+                    <span>Keep Text Size</span>
+                    <input type="checkbox" data-setting-change data-name="path-text-size" checked name="pts">
+                </label>
 
-                    <li>shape color</li>
-                    <li>shape opacity</li>
-                    <li>stroke width</li>
-                    <li>stroke color</li>
-                    <li>stroke opacity</li>
-                </ul>
+                <label>
+                    <span>Flip Side</span>
+                    <input type="checkbox" data-setting-change data-name="path-flip-side" name="pfs">
+                </label>
+                <label>
+                    <span>Vertical Align</span>
+                    <select data-setting-change data-name="path-vertical-alignment" name="pva">
+                        <option value="auto">Top</option>
+                        <option value="central">Middle</option>
+                        <option value="hanging">Bottom</option>
+                    </select>
+                </label>
+                <label>
+                    <span>Spread Text</span>
+                    <input type="range" data-setting-input data-name="path-spread" name="ps" min="0" max="1" step="0.001"
+                        value="0">
+                </label>
+                <label>
+                    <span>Manual Offset</span>
+                    <i>
+                        <input type="number" data-setting-change data-name="manual-offset-x" name="mox" value="0"> ←
+                        <input type="number" data-setting-change data-name="manual-offset-y" name="moy" value="0"> ↑
+                    </i>
+                </label>
+                </fieldset>
 
-
+                <fieldset class="controls-section">
+                <label>
+                    <span>Stroke width</span>
+                    <input data-setting-change type="number" data-name="path-stroke-width" name="psw" step="1" min="0"
+                        max="100" value="0">
+                </label>
+                <label>
+                    <span>Stroke Color</span>
+                    <i>
+                        <input type="range" data-setting-input data-name="path-stroke-opacity" name="pso" step="0.01"
+                            min="0" max="1" value="0">
+                        <input data-setting-input type="color" data-name="path-stroke-color" name="psc" value="#ff0000">
+                    </i>
+                </label>
+                <label>
+                    <span>Fill Color</span>
+                    <i>
+                        <input type="range" data-setting-input data-name="path-fill-opacity" name="pfo" step="0.01"
+                            min="0" max="1" value="0">
+                        <input data-setting-input type="color" data-name="path-fill-color" name="pfc" value="#00ff00">
+                    </i>
+                </label>
             </fieldset>
         </div>
 
