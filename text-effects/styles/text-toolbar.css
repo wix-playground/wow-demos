@@ -2,6 +2,8 @@
   --icon-size-px: 16px;
   --font-size-px: 12px;
   --box-size-px: 24px;
+  --fonts-closed-size: calc(5 * var(--font-size-px));
+  --fonts-open-size: calc(8 * var(--font-size-px));
   --base-color: hsl(0 0% 100%);
   --base-text-color: hsl(0 0% 10%);
   --checked-color: hsl(219, 100%, 80%);
@@ -11,8 +13,6 @@
   --checked-color-border: hsl(219, 100%, 70%);
   --hover-color-border: hsl(219, 100%, 60%);
   --focus-color-border: hsl(219, 100%, 50%);
-  --fonts-closed-size: calc(6 * var(--font-size-px));
-  --fonts-open-size: calc(8 * var(--font-size-px));
   display: flex;
   flex-wrap: wrap;
   background-color: var(--base-color);
@@ -262,6 +262,9 @@
 .text-toolbar .icon-line-height span {
   background-image: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23000000' d='M6,13L16,13L16,15L6,15L6,13ZM1.934,3.912L1.934,12.088L-0.038,12.088L2.723,14.848L5.483,12.088L3.511,12.088L3.511,3.912L5.483,3.912L2.723,1.152L-0.038,3.912L1.934,3.912ZM6,10L16,10L16,12L6,12L6,10ZM6,7L16,7L16,9L6,9L6,7ZM6,4L16,4L16,6L6,6L6,4ZM6,1L16,1L16,3L6,3L6,1Z'/%3E%3C/svg%3E%0A");
 }
+.text-toolbar .icon-word-spacing span {
+  background-image: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23000000' d='M4 13.98V16L1 13.5L4 11v1.98h8L12 11l3 2.5L12 16v-2.02H4zM3 1.03h2l0 9H3l0 -9zM7 1h2l0 9H7L7 1zM11 1.03h2l0 9h-2l0 -9z'/%3E%3C/svg%3E%0A");
+}
 
 @media (prefers-color-scheme: dark) {
   body:not(.light) .text-toolbar {
@@ -305,5 +308,8 @@
   }
   body:not(.light) .text-toolbar .icon-line-height span {
     background-image: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23ffffff' d='M6,13L16,13L16,15L6,15L6,13ZM1.934,3.912L1.934,12.088L-0.038,12.088L2.723,14.848L5.483,12.088L3.511,12.088L3.511,3.912L5.483,3.912L2.723,1.152L-0.038,3.912L1.934,3.912ZM6,10L16,10L16,12L6,12L6,10ZM6,7L16,7L16,9L6,9L6,7ZM6,4L16,4L16,6L6,6L6,4ZM6,1L16,1L16,3L6,3L6,1Z'/%3E%3C/svg%3E%0A");
+  }
+  body:not(.light) .text-toolbar .icon-word-spacing span {
+    background-image: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23ffffff' d='M4 13.98V16L1 13.5L4 11v1.98h8L12 11l3 2.5L12 16v-2.02H4zM3 1.03h2l0 9H3l0 -9zM7 1h2l0 9H7L7 1zM11 1.03h2l0 9h-2l0 -9z'/%3E%3C/svg%3E%0A");
   }
 }/*# sourceMappingURL=text-toolbar.css.map */

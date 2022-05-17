@@ -58,7 +58,8 @@ function updateText({
     ta: align,
     td: dir,
     t: inputText = '',
-    ls: spacing,
+    ls: letterSpacing,
+    ws: wordSpacing,
     lh: lineHeight,
     oc: outlineColor,
     os: outlineSize,
@@ -99,7 +100,9 @@ function updateText({
     text.style.textDecoration = under ? 'underline' : 'none';
     text.style.textAnchor = (dir === 'rtl' ? alignToAnchorRtl : alignToAnchor)[align];
     text.style.direction = dir;
-    text.style.letterSpacing = `${spacing}px`;
+    text.style.whiteSpace = 'pre-wrap';
+    text.style.letterSpacing = `${letterSpacing}px`;
+    text.style.wordSpacing = `${wordSpacing}px`;
     text.style.lineHeight = lineHeight;
     text.style.stroke = outlineColor;
     text.style.strokeWidth = outlineSize;
