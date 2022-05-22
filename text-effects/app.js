@@ -51,6 +51,7 @@ function updateBox({ x, y, w, h }) {
 function updateText({
     fc: color,
     ff: family,
+    fv: variant,
     fs: size,
     fst: style,
     fu: under,
@@ -73,7 +74,7 @@ function updateText({
     bi: bgImage = '',
 }) {
     shadowOpacity = +shadowOpacity;
-
+    variant = +variant;
     const stage = $id('stage');
     const comp = $id('comp-1');
     const content = comp.querySelector('.content');
@@ -96,7 +97,7 @@ function updateText({
     text.style.fontFamily = family;
     text.style.fontSize = `calc(${size}px * var(--font-scale-factor))`;
     text.style.fontStyle = style ? 'italic' : 'normal';
-    text.style.fontWeight = weight ? 'bold' : 'normal';
+    text.style.fontWeight = weight && variant < 700 ? 'bold' : variant;
     text.style.textDecoration = under ? 'underline' : 'none';
     text.style.textAnchor = (dir === 'rtl' ? alignToAnchorRtl : alignToAnchor)[align];
     text.style.direction = dir;
@@ -433,7 +434,7 @@ function setPathsList(paths) {
  * @param {ConfigData['fonts']} fonts
  */
 function loadWebFonts(fonts) {
-    const families = fonts.map(({ family, variant = 400 }) => `${family}:${variant}`);
+    const families = fonts.map(({ family, variants = ["400"] }) => `${family}:${variants}`);
     webfontloader.load({
         google: {
             families,
