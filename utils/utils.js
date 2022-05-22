@@ -125,3 +125,5 @@ export function getRotatedBoundingRectScale(width, height, angleInDeg) {
 
     return Math.max(newHeight / height, newWidth / width);
 }
+
+
