@@ -51,7 +51,7 @@ function updateBox({ x, y, w, h }) {
 function updateText({
     fc: color,
     ff: family,
-    fv: variant,
+    fv: variant = 400,
     fs: size,
     fst: style,
     fu: under,
@@ -131,6 +131,7 @@ function updateMask({
     lh: lineHeight,
     fs: fontSize,
     mi: mediaItem,
+    mo: mediaOther,
     mr: maskRotate,
     mfh: maskFlipH,
     mfv: maskFlipV,
@@ -145,7 +146,15 @@ function updateMask({
     const use = clipPath.querySelector('use');
 
     media.hidden = '';
-    setMedia(content, ...mediaItem.split('|'));
+
+    if (mediaItem === '@other') {
+        const mediaSuffix = mediaOther.split('.').pop();
+        const mediaType = mediaSuffix === 'mp4' ? 'video' : 'image'
+        setMedia(content, mediaOther, mediaType);
+    } else {
+        setMedia(content, ...mediaItem.split('|'));
+
+    }
 
     use.setAttributeNS(null, 'href', `#${text.id}`);
     clipPath.id = `clip-${comp.id}`;
