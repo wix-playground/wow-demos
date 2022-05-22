@@ -1,46 +1,79 @@
 {
     "fonts": [
         {
-            "url": "https://fonts.gstatic.com/s/abrilfatface/v18/zOL64pLDlL1D99S8g8PtiKchm-BsjOLhZBY.ttf",
+            "family": "Playfair",
+            "variants": ["400", "900"],
+            "features": {}
+        },
+        {
+            "family": "Montserrat",
+            "variants": ["300"],
+            "features": {}
+        },
+        {
+            "family": "Poppins",
+            "variants": ["200", "300"],
+            "features": {}
+        },
+        {
+            "family": "Barlow",
+            "variants": ["300"],
+            "features": {}
+        },
+        {
+            "family": "Archivo",
+            "variants": ["900"],
+            "features": {}
+        },
+        {
+            "family": "Syne",
+            "variants": ["700", "800"],
+            "features": {}
+        },
+        {
+            "family": "PT Sans Narrow",
+            "variants": ["700"],
+            "features": {}
+        },
+        {
+            "family": "Caveat",
+            "variants": ["400"],
+            "features": {}
+        },
+        {
             "family": "Abril Fatface",
-            "variant": "regular",
+            "variants": ["400"],
             "features": {}
         },
         {
-            "url": "https://fonts.gstatic.com/s/gorditas/v18/ll84K2aTVD26DsPEtThUIooIvAoShA1i.ttf",
             "family": "Gorditas",
-            "variant": "700",
+            "variants": ["700"],
             "features": {}
         },
         {
-            "url": "https://fonts.gstatic.com/s/inconsolata/v21/QldgNThLqRwH-OJ1UHjlKENVzkWGVkL3GZQmAwLYxYWI2qfdm7LppwU7aRr8lleY2co.ttf",
             "family": "Inconsolata",
-            "variant": "800",
+            "variants": ["800"],
             "features": {}
         },
         {
-            "url": "https://fonts.gstatic.com/s/loversquarrel/v19/Yq6N-LSKXTL-5bCy8ksBzpQ_-zAsY7pO6siz.ttf",
             "family": "Lovers Quarrel",
-            "variant": "regular",
+            "variants": ["400"],
             "features": {}
         },
         {
-            "url": "https://fonts.gstatic.com/s/tomorrow/v13/WBLhrETNbFtZCeGqgR1RXEXIBsShiVd4.ttf",
             "family": "Tomorrow",
-            "variant": "900",
+            "variants": ["900"],
             "features": {}
         },
         {
-            "url": "https://fonts.gstatic.com/s/karantina/v9/buExpo24ccnh31GVMABxTC8f-P5Oaiw4cw.ttf",
             "family": "Karantina",
-            "variant": "700",
+            "variants": ["700"],
             "features": {},
             "selected": true
         },
         {
-            "url": "https://fonts.gstatic.com/s/alef/v18/FeVQS0NQpLYglo50L5la2bxii28.ttf",
             "family": "Alef",
-            "variant": "700",
+            "variants": ["400", "700"],
             "features": {}
         }
     ],
@@ -90,7 +123,6 @@
             "path": "M98.8 0.5a100 100 0 1 0 1.7 0z",
             "htap": "M100.5 0.5A100 100 0 1 1 98.8 0.5Z"
         },
-
         {
             "path": "M0 0h200v200H0z",
             "htap": "M0 200H200V0H0Z"
