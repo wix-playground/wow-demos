@@ -126,4 +126,15 @@ export function getRotatedBoundingRectScale(width, height, angleInDeg) {
     return Math.max(newHeight / height, newWidth / width);
 }
 
-
+/**
+ * Map a value from one range 'a' to different range 'b'
+ * @param {number} a1
+ * @param {number} a2
+ * @param {number} b1
+ * @param {number} b2
+ * @param {number} num
+ * @returns number
+ */
+export function mapRange(a1, a2, b1, b2, num) {
+    return ((num - a1) * (b2 - b1)) / (a2 - a1) + b1;
+}

@@ -250,6 +250,9 @@
 .text-toolbar .icon-align-right span {
   background-image: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23000000' d='M0 1h16v2h-16zM6 4h10v2h-10zM6 10h10v2h-10zM0 7h16v2h-16zM0 13h16v2h-16z'%3E%3C/path%3E%3C/svg%3E%0A");
 }
+.text-toolbar .icon-align-justify span {
+  background-image: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23000000' d='M0 1h16v2h-16zM0 4h16v2h-16zM0 10h16v2h-16zM0 7h16v2h-16zM0 13h16v2h-16z'%3E%3C/path%3E%3C/svg%3E%0A");
+}
 .text-toolbar .icon-ltr span {
   background-image: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23000000' d='M8 0c-2.209 0-4 1.791-4 4s1.791 4 4 4v8h2v-14h2v14h2v-14h2v-2h-8zM0 11l4-4-4-4z'%3E%3C/path%3E%3C/svg%3E");
 }
@@ -296,6 +299,9 @@
   }
   body:not(.light) .text-toolbar .icon-align-right span {
     background-image: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23ffffff' d='M0 1h16v2h-16zM6 4h10v2h-10zM6 10h10v2h-10zM0 7h16v2h-16zM0 13h16v2h-16z'%3E%3C/path%3E%3C/svg%3E%0A");
+  }
+  body:not(.light) .text-toolbar .icon-align-justify span {
+    background-image: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23ffffff' d='M0 1h16v2h-16zM0 4h16v2h-16zM0 10h16v2h-16zM0 7h16v2h-16zM0 13h16v2h-16z'%3E%3C/path%3E%3C/svg%3E%0A");
   }
   body:not(.light) .text-toolbar .icon-ltr span {
     background-image: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23ffffff' d='M8 0c-2.209 0-4 1.791-4 4s1.791 4 4 4v8h2v-14h2v14h2v-14h2v-2h-8zM0 11l4-4-4-4z'%3E%3C/path%3E%3C/svg%3E");

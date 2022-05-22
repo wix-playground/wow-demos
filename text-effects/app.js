@@ -5,18 +5,20 @@ import { createDocumentWireframe, makeWireframeElementResizable } from 'https://
 import { urlToForm, formToUrl } from 'https://tombigel.github.io/form-to-url-to-form/index.js';
 import { scalePath } from './scripts/path-utils.js';
 import { setTextToolbarFontList } from './scripts/text-toolbar.js';
-import { $id, $selectAll, getTempalteItem, hex2rgba, getRotatedBoundingRectScale, throttle, clamp } from '../utils/utils.js';
+import { $id, $selectAll, getTempalteItem, hex2rgba, getRotatedBoundingRectScale, throttle, mapRange, $select } from '../utils/utils.js';
 
 const ns = 'http://www.w3.org/2000/svg';
 
 const alignToAnchor = {
     left: 'start',
+    justify: 'start',
     center: 'middle',
     right: 'end',
 };
 
 const alignToAnchorRtl = {
     left: 'end',
+    justify: 'end',
     center: 'middle',
     right: 'start',
 };
@@ -33,6 +35,8 @@ function resetStuff() {
     svg.style.setProperty('--font-scale-factor', 1);
     text.style.dominantBaseline = '';
     text.style.baselineShift = '';
+    text.style.letterSpacing = '';
+    text.style.wordSpacing = '';
     textPath?.removeAttributeNS(null, 'startOffset');
     textPath?.removeAttributeNS(null, 'textLength');
     path.setAttributeNS(null, 'd', '');
@@ -57,6 +61,7 @@ function updateText({
     fu: under,
     fw: weight,
     ta: align,
+    tj: justify,
     td: dir,
     t: inputText = '',
     ls: letterSpacing,
@@ -93,6 +98,7 @@ function updateText({
         })
     );
 
+    text.style.dominantBaseline = "hanging";
     text.style.fill = color;
     text.style.fontFamily = family;
     text.style.fontSize = `calc(${size}px * var(--font-scale-factor))`;
@@ -102,15 +108,21 @@ function updateText({
     text.style.textAnchor = (dir === 'rtl' ? alignToAnchorRtl : alignToAnchor)[align];
     text.style.direction = dir;
     text.style.whiteSpace = 'pre-wrap';
-    text.style.letterSpacing = `${letterSpacing}px`;
-    text.style.wordSpacing = `${wordSpacing}px`;
+
     text.style.lineHeight = lineHeight;
     text.style.stroke = outlineColor;
     text.style.strokeWidth = outlineSize;
     text.style.overflow = 'visible';
 
-    const { x, y, width, height } = text.getBBox();
-    svg.setAttributeNS(null, 'viewBox', `${x} ${y} ${width} ${height}`);
+    if (align === 'justify') {
+        setJustifyText({tj: justify, fs: size, lh: lineHeight})
+    } else {
+        text.style.letterSpacing = `${letterSpacing}px`;
+        text.style.wordSpacing = `${wordSpacing}px`;
+        const { x, y, width, height } = text.getBBox();
+        svg.setAttributeNS(null, 'viewBox', `${x} ${y} ${width} ${height}`);
+    }
+
 
     comp.style.mixBlendMode = blendMode;
 
@@ -125,6 +137,35 @@ function updateText({
             : '';
     stage.style.backgroundColor = bgColor;
     stage.style.backgroundImage = /^https?|data|blob/.test(bgImage) ? `url(${bgImage})` : bgImage;
+}
+
+function setJustifyText({tj: justify, fs: size, lh: lineHeight}) {
+    const comp = $id('comp-1');
+    const content = comp.querySelector('.content');
+    const svg = content.querySelector('.main-svg');
+    const text = svg.querySelector('text');
+    const spans = [...text.querySelectorAll('tspan')];
+
+    const width = Math.max(...spans.map((s) => s.getComputedTextLength()));
+
+    spans.forEach((s, index, list) => {
+        s.setAttributeNS(null, "textLength", width);
+
+        const ratio = mapRange(0, 1, 1, width / s.getComputedTextLength(), justify);
+
+        const fontSize = size * (ratio);
+
+        if (index === 0) {
+          list[0].setAttributeNS(null, "dy", fontSize * lineHeight);
+        }
+
+        list[index + 1]?.setAttributeNS(null, "dy", fontSize * lineHeight);
+
+        s.setAttributeNS(null, "font-size", fontSize);
+    });
+
+    const { x, y, height } = text.getBBox();
+    svg.setAttributeNS(null, 'viewBox', `${x} ${y} ${width} ${height}`);
 }
 
 function updateMask({
@@ -354,7 +395,7 @@ function setFormEvents(form) {
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
         const effect = data.we;
-
+        const align = data.ta;
         console.log(data);
 
         resetStuff();
@@ -362,6 +403,15 @@ function setFormEvents(form) {
         updateText(data);
         effect === 'mask' && updateMask(data);
         effect === 'path' && updatePath(data);
+        if (align === 'justify') {
+            $id('justify-section').hidden = '';
+            $select('[data-name="letter-spacing').disabled = 'disabled';
+            $select('[data-name="word-spacing').disabled = 'disabled';
+        } else {
+            $id('justify-section').hidden = 'hidden';
+            $select('[data-name="letter-spacing').disabled = '';
+            $select('[data-name="word-spacing').disabled = '';
+        }
         formToUrl(form, { replace: true });
     });
 
