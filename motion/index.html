@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta name='viewport' content='width=device-width,initial-scale=1'>
+    <link rel="stylesheet" href="./index.css">
+    <title>Motion Playground</title>
+</head>
+<body>
+    <div id="top-wrapper">
+        <main>
+            <pre><code id="controls-output-content">
+
+            </code></pre>
+        </main>
+        <aside>
+            <form name="controls" id="controls" action="">
+                <fieldset>
+                    <legend>Rotation</legend>
+                    <label for="rotation">Rotation: <input name="rotation" id="rotation" type="number" value="0" step="1" min="0" max="360"></label>
+                </fieldset>
+                <fieldset>
+                    <legend>ScreenIn Animations</legend>
+
+                    <fieldset>
+                        <legend><label><input name="screen-in-mode" type="radio" value="desktop" checked> Desktop</label></legend>
+
+                        <label for="screen-in-arc"><input name="screen-in-name" id="screen-in-arc" type="radio" value="arc"> Arc</label>
+                        <fieldset>
+                            <legend>Params:</legend>
+                            <label for="screen-in-arc-right"><input name="screen-in-arc-side" id="screen-in-arc-right" type="radio" value="right" checked> Right</label>
+                            <label for="screen-in-arc-left"><input name="screen-in-arc-side" id="screen-in-arc-left" type="radio" value="left"> Left</label>
+                        </fieldset>
+
+                        <label for="screen-in-bounce"><input name="screen-in-name" id="screen-in-bounce" type="radio" value="bounce"> Bounce</label>
+                        <fieldset>
+                            <legend>Params:</legend>
+                            <label>Power: <select name="screen-in-bounce-power" id="screen-in-bounce-power">
+                                <option value="1.2" selected>Soft</option>
+                                <option value="3.6">Medium</option>
+                                <option value="6">Hard</option>
+                            </select></label>
+                            <label>Direction: <select name="screen-in-bounce-dir" id="screen-in-bounce-dir">
+                                <option value="-1.1|-1.1" selected>Top left</option>
+                                <option value="-1.1|1.1">Top right</option>
+                                <option value="0|0">center</option>
+                                <option value="1.1|-1.1">Bottom left</option>
+                                <option value="1.1|1.1">Bottom right</option>
+                            </select></label>
+                        </fieldset>
+
+                        <label for="screen-in-drop"><input name="screen-in-name" id="screen-in-drop" type="radio" value="drop"> Drop</label>
+                        <fieldset>
+                            <legend>Params:</legend>
+                            <label>Power: <select name="screen-in-drop-power" id="screen-in-drop-power">
+                                <option value="1.2" selected>Soft</option>
+                                <option value="3.6">Medium</option>
+                                <option value="6">Hard</option>
+                            </select></label>
+                        </fieldset>
+
+                        <label for="screen-in-expand"><input name="screen-in-name" id="screen-in-expand" type="radio" value="expand"> Expand</label>
+                        <fieldset>
+                            <legend>Params:</legend>
+                            <label>Power: <select name="screen-in-expand-power" id="screen-in-expand-power">
+                                <option value="0.85" selected>Soft</option>
+                                <option value="0.4">Medium</option>
+                                <option value="0">Hard</option>
+                            </select></label>
+                        </fieldset>
+
+                        <label for="screen-in-fade"><input name="screen-in-name" id="screen-in-fade" type="radio" value="fade"> Fade</label>
+                        <fieldset>
+                            <legend>Params:</legend>
+                        </fieldset>
+
+                        <label for="screen-in-flip"><input name="screen-in-name" id="screen-in-flip" type="radio" value="flip"> Flip</label>
+                        <fieldset>
+                            <legend>Params:</legend>
+                            <label>Direction: <select name="screen-in-flip-dir" id="screen-in-flip-dir">
+                                <option value="-1|0">Top</option>
+                                <option value="0|-1" selected>Left</option>
+                                <option value="1|0">Bottom</option>
+                                <option value="0|1">Right</option>
+                            </select></label>
+                        </fieldset>
+
+                        <label for="screen-in-float"><input name="screen-in-name" id="screen-in-float" type="radio" value="float"> Float</label>
+                        <fieldset>
+                            <legend>Params:</legend>
+                            <label>Direction: <select name="screen-in-float-dir" id="screen-in-float-dir">
+                                <option value="0|90">Top</option>
+                                <option value="-90|0" selected>Left</option>
+                                <option value="0|-90">Bottom</option>
+                                <option value="90|0">Right</option>
+                            </select></label>
+                        </fieldset>
+
+                        <label for="screen-in-fly"><input name="screen-in-name" id="screen-in-fly" type="radio" value="fly"> Fly</label>
+                        <fieldset>
+                            <legend>Params:</legend>
+                            <label>Direction: <select name="screen-in-fly-dir" id="screen-in-fly-dir">
+                                <option value="-1|0">Top</option>
+                                <option value="-1|-1">Top left</option>
+                                <option value="-1|1">Top right</option>
+                                <option value="0|-1" selected>Left</option>
+                                <option value="1|0">Bottom</option>
+                                <option value="1|-1">Bottom left</option>
+                                <option value="1|1">Bottom right</option>
+                                <option value="0|1">Right</option>
+                            </select></label>
+                        </fieldset>
+
+                        <label for="screen-in-fold"><input name="screen-in-name" id="screen-in-fold" type="radio" value="fold"> Fold</label>
+                        <fieldset>
+                            <legend>Params:</legend>
+                            <label>Direction: <select name="screen-in-fold-dir" id="screen-in-fold-dir">
+                                <option value="-90|0|50|0">Top</option>
+                                <option value="0|90|0|50" selected>Left</option>
+                                <option value="90|0|50|100">Bottom</option>
+                                <option value="0|-90|100|50">Right</option>
+                            </select></label>
+                        </fieldset>
+
+                        <label for="screen-in-glide"><input name="screen-in-name" id="screen-in-glide" type="radio" value="glide"> Glide</label>
+                        <fieldset>
+                            <legend>Params:</legend>
+                            <label>Direction: <input name="screen-in-glide-dir" id="screen-in-glide-dir" type="number" step="1" min="0" max="360" value="270"></label>
+                            <label>Distance: <input name="screen-in-glide-dist" id="screen-in-glide-dist" type="number" step="1" min="0" max="300" value="150"></label>
+                        </fieldset>
+
+                        <label for="screen-in-reveal"><input name="screen-in-name" id="screen-in-reveal" type="radio" value="reveal"> Reveal</label>
+                        <fieldset>
+                            <legend>Params:</legend>
+                            <label>Direction: <select name="screen-in-reveal-dir" id="screen-in-reveal-dir">
+                                <option value="top">Top</option>
+                                <option value="left" selected>Left</option>
+                                <option value="bottom">Bottom</option>
+                                <option value="right">Right</option>
+                            </select></label>
+                        </fieldset>
+
+                        <label for="screen-in-slide"><input name="screen-in-name" id="screen-in-slide" type="radio" value="slide"> Slide</label>
+                        <fieldset>
+                            <legend>Params:</legend>
+                            <label>Direction: <select name="screen-in-slide-dir" id="screen-in-slide-dir">
+                                <option value="cw" selected>Clockwise</option>
+                                <option value="ccw">Counter clockwise</option>
+                            </select></label>
+                            <label>Power: <select name="screen-in-slide-power" id="screen-in-slide-power">
+                                <option value="70" selected>Soft</option>
+                                <option value="35">Medium</option>
+                                <option value="0">Hard</option>
+                            </select></label>
+                        </fieldset>
+
+                        <label for="screen-in-spin"><input name="screen-in-name" id="screen-in-spin" type="radio" value="spin"> Spin</label>
+                        <fieldset>
+                            <legend>Params:</legend>
+                            <label>Spins: <input name="screen-in-spin-spins" id="screen-in-spin-spins" type="number" step="0.25" min="0.25" max="15" value="2"></label>
+                            <label>Direction: <select name="screen-in-spin-dir" id="screen-in-spin-dir">
+                                <option value="cw" selected>Clockwise</option>
+                                <option value="ccw">Counter clockwise</option>
+                            </select></label>
+                            <label>Power: <select name="screen-in-spin-power" id="screen-in-spin-power">
+                                <option value="0.8" selected>Soft</option>
+                                <option value="0.5">Medium</option>
+                                <option value="0">Hard</option>
+                            </select></label>
+                        </fieldset>
+
+                        <label for="screen-in-turn"><input name="screen-in-name" id="screen-in-turn" type="radio" value="turn"> Turn</label>
+                        <fieldset>
+                            <legend>Params:</legend>
+                            <label for="screen-in-turn-right"><input name="screen-in-turn-side" id="screen-in-turn-right" type="radio" value="right" checked> Right</label>
+                            <label for="screen-in-turn-left"><input name="screen-in-turn-side" id="screen-in-turn-left" type="radio" value="left"> Left</label>
+                        </fieldset>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend><label><input name="screen-in-mode" type="radio" value="mobile"> Mobile</label></legend>
+
+                        <label for="screen-in-mobile-arc"><input name="screen-in-mobile-name" id="screen-in-mobile-arc" type="radio" value="arc"> Arc</label>
+                        <fieldset>
+                            <legend>Params:</legend>
+                            <label for="screen-in-mobile-arc-right"><input name="screen-in-mobile-arc-side" id="screen-in-mobile-arc-right" type="radio" value="right" checked> Right</label>
+                            <label for="screen-in-mobile-arc-left"><input name="screen-in-mobile-arc-side" id="screen-in-mobile-arc-left" type="radio" value="left"> Left</label>
+                        </fieldset>
+
+                        <label for="screen-in-mobile-bounce"><input name="screen-in-mobile-name" id="screen-in-mobile-bounce" type="radio" value="bounce"> Bounce</label>
+                        <fieldset>
+                            <legend>Params:</legend>
+                            <label>Power: <select name="screen-in-mobile-bounce-power" id="screen-in-mobile-bounce-power">
+                                <option value="1.2" selected>Soft</option>
+                                <option value="3.6">Medium</option>
+                                <option value="6">Hard</option>
+                            </select></label>
+                            <label>Direction: <select name="screen-in-mobile-bounce-dir" id="screen-in-mobile-bounce-dir">
+                                <option value="-1.1|-1.1" selected>Top left</option>
+                                <option value="-1.1|1.1">Top right</option>
+                                <option value="0|0">center</option>
+                                <option value="1.1|-1.1">Bottom left</option>
+                                <option value="1.1|1.1">Bottom right</option>
+                            </select></label>
+                        </fieldset>
+
+                        <label for="screen-in-mobile-drop"><input name="screen-in-mobile-name" id="screen-in-mobile-drop" type="radio" value="drop"> Drop</label>
+                        <fieldset>
+                            <legend>Params:</legend>
+                            <label>Power: <select name="screen-in-mobile-drop-power" id="screen-in-mobile-drop-power">
+                                <option value="1.2" selected>Soft</option>
+                                <option value="3.6">Medium</option>
+                                <option value="6">Hard</option>
+                            </select></label>
+                        </fieldset>
+
+                        <label for="screen-in-mobile-expand"><input name="screen-in-mobile-name" id="screen-in-mobile-expand" type="radio" value="expand"> Expand</label>
+                        <fieldset>
+                            <legend>Params:</legend>
+                            <label>Power: <select name="screen-in-mobile-expand-power" id="screen-in-mobile-expand-power">
+                                <option value="0.85" selected>Soft</option>
+                                <option value="0.4">Medium</option>
+                                <option value="0">Hard</option>
+                            </select></label>
+                        </fieldset>
+
+                        <label for="screen-in-mobile-fade"><input name="screen-in-mobile-name" id="screen-in-mobile-fade" type="radio" value="fade"> Fade</label>
+                        <fieldset>
+                            <legend>Params:</legend>
+                        </fieldset>
+
+                        <label for="screen-in-mobile-flip"><input name="screen-in-mobile-name" id="screen-in-mobile-flip" type="radio" value="flip"> Flip</label>
+                        <fieldset>
+                            <legend>Params:</legend>
+                            <label>Direction: <select name="screen-in-mobile-flip-dir" id="screen-in-mobile-flip-dir">
+                                <option value="-1|0">Top</option>
+                                <option value="0|-1" selected>Left</option>
+                                <option value="1|0">Bottom</option>
+                                <option value="0|1">Right</option>
+                            </select></label>
+                        </fieldset>
+
+                        <label for="screen-in-mobile-float"><input name="screen-in-mobile-name" id="screen-in-mobile-float" type="radio" value="float"> Float</label>
+                        <fieldset>
+                            <legend>Params:</legend>
+                            <label>Direction: <select name="screen-in-mobile-float-dir" id="screen-in-mobile-float-dir">
+                                <option value="0|90">Top</option>
+                                <option value="-90|0" selected>Left</option>
+                                <option value="0|-90">Bottom</option>
+                                <option value="90|0">Right</option>
+                            </select></label>
+                        </fieldset>
+
+                        <label for="screen-in-mobile-fly"><input name="screen-in-mobile-name" id="screen-in-mobile-fly" type="radio" value="fly"> Fly</label>
+                        <fieldset>
+                            <legend>Params:</legend>
+                            <label>Direction: <select name="screen-in-mobile-fly-dir" id="screen-in-mobile-fly-dir">
+                                <option value="-1|0">Top</option>
+                                <option value="-1|-1">Top left</option>
+                                <option value="-1|1">Top right</option>
+                                <option value="0|-1" selected>Left</option>
+                                <option value="1|0">Bottom</option>
+                                <option value="1|-1">Bottom left</option>
+                                <option value="1|1">Bottom right</option>
+                                <option value="0|1">Right</option>
+                            </select></label>
+                        </fieldset>
+
+                        <label for="screen-in-mobile-fold"><input name="screen-in-mobile-name" id="screen-in-mobile-fold" type="radio" value="fold"> Fold</label>
+                        <fieldset>
+                            <legend>Params:</legend>
+                            <label>Direction: <select name="screen-in-mobile-fold-dir" id="screen-in-mobile-fold-dir">
+                                <option value="top" selected>Top</option>
+                                <option value="left">Left</option>
+                                <option value="bottom">Bottom</option>
+                                <option value="right">Right</option>
+                            </select></label>
+                        </fieldset>
+
+                        <label for="screen-in-mobile-glide"><input name="screen-in-mobile-name" id="screen-in-mobile-glide" type="radio" value="glide"> Glide</label>
+                        <fieldset>
+                            <legend>Params:</legend>
+                            <label>Direction: <input name="screen-in-mobile-glide-dir" id="screen-in-mobile-glide-dir" type="number" step="1" min="0" max="360" value="270"></label>
+                            <label>Distance: <input name="screen-in-mobile-glide-dist" id="screen-in-mobile-glide-dist" type="number" step="1" min="0" max="300" value="150"></label>
+                        </fieldset>
+
+                        <label for="screen-in-mobile-reveal"><input name="screen-in-mobile-name" id="screen-in-mobile-reveal" type="radio" value="reveal"> Reveal</label>
+                        <fieldset>
+                            <legend>Params:</legend>
+                        </fieldset>
+
+                        <label for="screen-in-mobile-slide"><input name="screen-in-mobile-name" id="screen-in-mobile-slide" type="radio" value="slide"> Slide</label>
+                        <fieldset>
+                            <legend>Params:</legend>
+                            <label>Direction: <select name="screen-in-mobile-slide-dir" id="screen-in-mobile-slide-dir">
+                                <option value="cw" selected>Clockwise</option>
+                                <option value="ccw">Counter clockwise</option>
+                            </select></label>
+                            <label>Power: <select name="screen-in-mobile-slide-power" id="screen-in-mobile-slide-power">
+                                <option value="70" selected>Soft</option>
+                                <option value="35">Medium</option>
+                                <option value="0">Hard</option>
+                            </select></label>
+                        </fieldset>
+
+                        <label for="screen-in-mobile-spin"><input name="screen-in-mobile-name" id="screen-in-mobile-spin" type="radio" value="spin"> Spin</label>
+                        <fieldset>
+                            <legend>Params:</legend>
+                            <label>Spins: <input name="screen-in-mobile-spin-spins" id="screen-in-mobile-spin-spins" type="number" step="0.25" min="0.25" max="15" value="2"></label>
+                            <label>Direction: <select name="screen-in-mobile-spin-dir" id="screen-in-mobile-spin-dir">
+                                <option value="cw" selected>Clockwise</option>
+                                <option value="ccw">Counter clockwise</option>
+                            </select></label>
+                            <label>Power: <select name="screen-in-mobile-spin-power" id="screen-in-mobile-spin-power">
+                                <option value="0.8" selected>Soft</option>
+                                <option value="0.5">Medium</option>
+                                <option value="0">Hard</option>
+                            </select></label>
+                        </fieldset>
+
+                        <label for="screen-in-mobile-turn"><input name="screen-in-mobile-name" id="screen-in-mobile-turn" type="radio" value="turn"> Turn</label>
+                        <fieldset>
+                            <legend>Params:</legend>
+                            <label for="screen-in-mobile-turn-right"><input name="screen-in-mobile-turn-side" id="screen-in-mobile-turn-right" type="radio" value="right" checked> Right</label>
+                            <label for="screen-in-mobile-turn-left"><input name="screen-in-mobile-turn-side" id="screen-in-mobile-turn-left" type="radio" value="left"> Left</label>
+                        </fieldset>
+                    </fieldset>
+                </fieldset>
+            </form>
+        </aside>
+    </div>
+    <script type="module" src="./index.js"></script>
+</body>
+</html>
