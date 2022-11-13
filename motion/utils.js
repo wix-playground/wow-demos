@@ -1,13 +1,13 @@
 const CLIP_PARAMS = {
     initial: (top, bottom, left, right) =>  `${left}% ${top}%, ${right}% ${top}%, ${right}% ${bottom}%, ${left}% ${bottom}%`,
-    top: (top, bottom, left, right) => `${left}% ${top}%, ${right}% ${top}%, ${right}% ${top}%, ${left}% ${top}%`,
-    right: (top, bottom, left, right) => `${right}% ${top}%, ${right}% ${top}%, ${right}% ${bottom}%, ${right}% ${bottom}%`,
-    center: (top, bottom, left, right, centerX, centerY) => `${centerX / 2}% ${centerY / 2}%, ${centerX / 2}% ${centerY / 2}%, ${centerX / 2}% ${centerY / 2}%, ${centerX / 2}% ${centerY / 2}%`,
-    bottom: (top, bottom, left, right) => `${left}% ${bottom}%, ${right}% ${bottom}%, ${right}% ${bottom}%, ${left}% ${bottom}%`,
-    left: (top, bottom, left) => `${left}% ${top}%, ${left}% ${top}%, ${left}% ${bottom}%, ${left}% ${bottom}%`
+    top: (top, bottom, left, right, minimum) => `${left}% ${top}%, ${right}% ${top}%, ${right}% ${top + minimum}%, ${left}% ${top + minimum}%`,
+    right: (top, bottom, left, right, minimum) => `${right - minimum}% ${top}%, ${right}% ${top}%, ${right}% ${bottom}%, ${right - minimum}% ${bottom}%`,
+    center: (top, bottom, left, right, minimum, centerX, centerY) => `${centerX - minimum / 2}% ${centerY - minimum / 2}%, ${centerX + minimum / 2}% ${centerY - minimum / 2}%, ${centerX + minimum / 2}% ${centerY + minimum / 2}%, ${centerX - minimum / 2}% ${centerY + minimum / 2}%`,
+    bottom: (top, bottom, left, right, minimum) => `${left}% ${bottom - minimum}%, ${right}% ${bottom - minimum}%, ${right}% ${bottom}%, ${left}% ${bottom}%`,
+    left: (top, bottom, left, minimum) => `${left}% ${top}%, ${left + minimum}% ${top}%, ${left + minimum}% ${bottom}%, ${left}% ${bottom}%`
 };
 
-export function getClipPolygonParams (compRect, direction) {
+export function getClipPolygonParams (compRect, direction, minimum = 0) {
     const top = 0;
     const left = 0;
     const right = 100;
@@ -15,7 +15,14 @@ export function getClipPolygonParams (compRect, direction) {
     const centerX = 50;
     const centerY = 50;
 
-    return CLIP_PARAMS[direction](top, bottom, left, right, centerX, centerY);
+    return CLIP_PARAMS[direction](top, bottom, left, right, minimum, centerX, centerY);
+}
+
+export function getTranslations(rect, originDirection, scale = 1) {
+    const x = originDirection.dx * rect.width * scale;
+    const y = originDirection.dy * rect.height * scale;
+
+    return { x, y };
 }
 
 export function getClipPolygonParamsExtended (

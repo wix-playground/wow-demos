@@ -1,4 +1,4 @@
-import { getAdjustedDirection, getClipPolygonParams } from './utils.js';
+import { getAdjustedDirection, getClipPolygonParams, getTranslations } from './utils.js';
 
 function getCssCode (rotation, name, data) {
     const { parent, animations } = data;
@@ -54,7 +54,8 @@ const EASINGS = {
     sineOut: 'cubic-bezier(0.61, 1, 0.88, 1)',
     cubicIn: 'cubic-bezier(0.32, 0, 0.67, 0)',
     cubicInOut: 'cubic-bezier(0.65, 0, 0.35, 1)',
-    quintIn: 'cubic-bezier(0.64, 0, 0.78, 0)'
+    quintIn: 'cubic-bezier(0.64, 0, 0.78, 0)',
+    expoIn: 'cubic-bezier(0.7, 0, 0.84, 0)'
 };
 
 const propertiesGenerators = {
@@ -80,48 +81,70 @@ const propertiesGenerators = {
         const power = +data['screen-in-bounce-power'];
         const [y, x] = data['screen-in-bounce-dir'].split('|').map(a => +a);
 
-        return { from: `opacity: 0.01;
-                        transform:
+        return {
+            animations: [{
+                frames: {
+                    from: `opacity: 0.01;`
+                },
+                easing: EASINGS.cubicIn,
+                duration: '0.3s'
+            }, {
+                frames: {
+                    from: `transform:
                             translateX(${x ? `calc(50% * ${x})` : x})
                             translateY(${y ? `calc(50% * ${y})` : y})
                             scale(0)
                             rotate(var(--rotation));`,
-                '30%': `opacity: 1;
-                        transform:
+                    to  : `transform:
+                            translateX(${x ? `calc(33% * ${x})` : x})
+                            translateY(${y ? `calc(33% * ${y})` : y})
+                            scale(0.3)
+                            rotate(var(--rotation));`
+                },
+                easing: EASINGS.expoIn,
+                duration: '0.3s'
+            }, {
+                frames: {
+                    from: `transform:
                             translateX(${x ? `calc(33% * ${x})` : x})
                             translateY(${y ? `calc(33% * ${y})` : y})
                             scale(0.3)
                             rotate(var(--rotation));`,
-                '41%': `transform:
+                    '16%': `transform:
+                            translateX(${x ? `calc(33% * ${x})` : x})
+                            translateY(${y ? `calc(33% * ${y})` : y})
+                            scale(0.3)
+                            rotate(var(--rotation));`,
+                    '28%': `transform:
                             translateX(${x ? `calc(33% * ${x} * -0.32)` : x})
                             translateY(${y ? `calc(33% * ${y} * -0.32)` : y})
                             scale(1.32)
                             rotate(var(--rotation));`,
-                '50%': `transform:
+                    '44%': `transform:
                             translateX(${x ? `calc(33% * ${x} * 0.13)` : x})
                             translateY(${y ? `calc(33% * ${y} * 0.13)` : y})
                             scale(0.87)
                             rotate(var(--rotation));`,
-                '61%': `transform:
+                    '59%': `transform:
                             translateX(${x ? `calc(33% * ${x} * -0.05)` : x})
                             translateY(${y ? `calc(33% * ${y} * -0.05)` : y})
                             scale(1.05)
                             rotate(var(--rotation));`,
-                '71%': `transform:
+                    '73%': `transform:
                             translateX(${x ? `calc(33% * ${x} * 0.02)` : x})
                             translateY(${y ? `calc(33% * ${y} * 0.02)` : y})
                             scale(0.98)
                             rotate(var(--rotation));`,
-                '81%': `transform:
+                    '88%': `transform:
                             translateX(${x ? `calc(33% * ${x} * -0.01)` : x})
                             translateY(${y ? `calc(33% * ${y} * -0.01)` : y})
                             scale(1.01)
-                            rotate(var(--rotation));`,
-                '92%': `transform:
-                            translateX(${x ? `calc(33% * ${x} * 0.002)` : x})
-                            translateY(${y ? `calc(33% * ${y} * 0.002)` : y})
-                            scale(1)
                             rotate(var(--rotation));`
+                },
+                easing: EASINGS.linear,
+                duration: '0.7s',
+                delay: '0.3s'
+            }]
         };
     },
     drop: () => {
@@ -314,14 +337,41 @@ const propertiesGenerators = {
         };
     },
     slide: () => {
+        const directions = {
+            top: { dx: 0, dy: -1, idx: 0 },
+            right: { dx: 1, dy: 0, idx: 1 },
+            bottom: { dx: 0, dy: 1, idx: 2 },
+            left: { dx: -1, dy: 0, idx: 3 }
+        };
         const direction = data['screen-in-slide-dir'];
-        const power = data['screen-in-slide-power'];
+        const power = +data['screen-in-slide-power'];
 
-        return { from: `opacity: 0;
-                        clip-path: polygon(...);
-                        transform:
-                            translateX(...);`,
-                '25%': 'opacity: 1;'
+        const { x, y } = getTranslations({ width: rectWidth, height: rectHeight }, directions[direction], (100 - power) / 100);
+        const clipDirection = getAdjustedDirection(directions, direction, data.rotation);
+        const clipPathPolygon = getClipPolygonParams({
+            top: rectTop,
+            bottom: rectBottom,
+            left: rectLeft,
+            right: rectRight
+        }, clipDirection, power);
+
+        return {
+            animations: [{
+                frames: {
+                    from: `opacity: 0;`
+                },
+                easing: EASINGS.cubicInOut,
+                duration: '0.25s'
+            }, {
+                frames: {
+                    from: `clip-path: polygon(${clipPathPolygon});
+                            transform:
+                            translateX(${x}px)
+                            translateY(${y}px)
+                            rotate(var(--rotation));`
+                },
+                easing: EASINGS.cubicInOut
+            }]
         };
     },
     spin: () => {
