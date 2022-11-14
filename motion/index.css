@@ -1,14 +1,29 @@
-#top-wrapper {
+main {
     display: grid;
-    grid-template: "controls stage" 100vh / 30% 70%;
+    grid-template: "controls text stage" 100vh / 30% 30% 40%;
 }
 
-main {
+#csstext {
+    grid-area: text;
+}
+
+#stage {
     grid-area: stage;
+}
+
+iframe {
+    width: 100%;
+    aspect-ratio: 16 / 9;
 }
 
 aside {
     grid-area: controls;
+}
+
+#controls-output-content {
+    display: inline-block;
+    width: 100%;
+    text-align: left;
 }
 
 label {

@@ -9,12 +9,15 @@
     <title>Motion Playground</title>
 </head>
 <body>
-    <div id="top-wrapper">
-        <main>
+    <main>
+        <section id="csstext">
             <pre><code id="controls-output-content">
 
             </code></pre>
-        </main>
+        </section>
+        <section id="stage">
+            <iframe src="stage.html"></iframe>
+        </section>
         <aside>
             <form name="controls" id="controls" action="">
                 <fieldset>
@@ -38,16 +41,16 @@
                         <fieldset>
                             <legend>Params:</legend>
                             <label>Power: <select name="screen-in-bounce-power" id="screen-in-bounce-power">
-                                <option value="1.2" selected>Soft</option>
-                                <option value="3.6">Medium</option>
-                                <option value="6">Hard</option>
+                                <option value="soft" selected>Soft</option>
+                                <option value="medium">Medium</option>
+                                <option value="hard">Hard</option>
                             </select></label>
                             <label>Direction: <select name="screen-in-bounce-dir" id="screen-in-bounce-dir">
-                                <option value="-1.1|-1.1" selected>Top left</option>
-                                <option value="-1.1|1.1">Top right</option>
-                                <option value="0|0">center</option>
-                                <option value="1.1|-1.1">Bottom left</option>
-                                <option value="1.1|1.1">Bottom right</option>
+                                <option value="topLeft" selected>Top left</option>
+                                <option value="topRight">Top right</option>
+                                <option value="center">center</option>
+                                <option value="bottomLeft">Bottom left</option>
+                                <option value="bottomRight">Bottom right</option>
                             </select></label>
                         </fieldset>
 
@@ -55,9 +58,9 @@
                         <fieldset>
                             <legend>Params:</legend>
                             <label>Power: <select name="screen-in-drop-power" id="screen-in-drop-power">
-                                <option value="1.2" selected>Soft</option>
-                                <option value="3.6">Medium</option>
-                                <option value="6">Hard</option>
+                                <option value="soft" selected>Soft</option>
+                                <option value="medium">Medium</option>
+                                <option value="hard">Hard</option>
                             </select></label>
                         </fieldset>
 
@@ -65,9 +68,9 @@
                         <fieldset>
                             <legend>Params:</legend>
                             <label>Power: <select name="screen-in-expand-power" id="screen-in-expand-power">
-                                <option value="0.85" selected>Soft</option>
-                                <option value="0.4">Medium</option>
-                                <option value="0">Hard</option>
+                                <option value="soft" selected>Soft</option>
+                                <option value="medium">Medium</option>
+                                <option value="hard">Hard</option>
                             </select></label>
                         </fieldset>
 
@@ -80,10 +83,10 @@
                         <fieldset>
                             <legend>Params:</legend>
                             <label>Direction: <select name="screen-in-flip-dir" id="screen-in-flip-dir">
-                                <option value="-1|0">Top</option>
-                                <option value="0|-1" selected>Left</option>
-                                <option value="1|0">Bottom</option>
-                                <option value="0|1">Right</option>
+                                <option value="top">Top</option>
+                                <option value="left" selected>Left</option>
+                                <option value="bottom">Bottom</option>
+                                <option value="right">Right</option>
                             </select></label>
                         </fieldset>
 
@@ -152,9 +155,9 @@
                                 <option value="bottom">Bottom</option>
                             </select></label>
                             <label>Power: <select name="screen-in-slide-power" id="screen-in-slide-power">
-                                <option value="70" selected>Soft</option>
-                                <option value="35">Medium</option>
-                                <option value="0">Hard</option>
+                                <option value="soft" selected>Soft</option>
+                                <option value="medium">Medium</option>
+                                <option value="hard">Hard</option>
                             </select></label>
                         </fieldset>
 
@@ -167,9 +170,9 @@
                                 <option value="ccw">Counter clockwise</option>
                             </select></label>
                             <label>Power: <select name="screen-in-spin-power" id="screen-in-spin-power">
-                                <option value="0.8" selected>Soft</option>
-                                <option value="0.5">Medium</option>
-                                <option value="0">Hard</option>
+                                <option value="soft" selected>Soft</option>
+                                <option value="medium">Medium</option>
+                                <option value="hard">Hard</option>
                             </select></label>
                         </fieldset>
 
@@ -195,16 +198,16 @@
                         <fieldset>
                             <legend>Params:</legend>
                             <label>Power: <select name="screen-in-mobile-bounce-power" id="screen-in-mobile-bounce-power">
-                                <option value="1.2" selected>Soft</option>
-                                <option value="3.6">Medium</option>
-                                <option value="6">Hard</option>
+                                <option value="soft" selected>Soft</option>
+                                <option value="medium">Medium</option>
+                                <option value="hard">Hard</option>
                             </select></label>
                             <label>Direction: <select name="screen-in-mobile-bounce-dir" id="screen-in-mobile-bounce-dir">
-                                <option value="-1.1|-1.1" selected>Top left</option>
-                                <option value="-1.1|1.1">Top right</option>
-                                <option value="0|0">center</option>
-                                <option value="1.1|-1.1">Bottom left</option>
-                                <option value="1.1|1.1">Bottom right</option>
+                                <option value="topLeft" selected>Top left</option>
+                                <option value="topRight">Top right</option>
+                                <option value="center">center</option>
+                                <option value="bottomLeft">Bottom left</option>
+                                <option value="bottomRight">Bottom right</option>
                             </select></label>
                         </fieldset>
 
@@ -212,9 +215,9 @@
                         <fieldset>
                             <legend>Params:</legend>
                             <label>Power: <select name="screen-in-mobile-drop-power" id="screen-in-mobile-drop-power">
-                                <option value="1.2" selected>Soft</option>
-                                <option value="3.6">Medium</option>
-                                <option value="6">Hard</option>
+                                <option value="soft" selected>Soft</option>
+                                <option value="medium">Medium</option>
+                                <option value="hard">Hard</option>
                             </select></label>
                         </fieldset>
 
@@ -222,9 +225,9 @@
                         <fieldset>
                             <legend>Params:</legend>
                             <label>Power: <select name="screen-in-mobile-expand-power" id="screen-in-mobile-expand-power">
-                                <option value="0.85" selected>Soft</option>
-                                <option value="0.4">Medium</option>
-                                <option value="0">Hard</option>
+                                <option value="soft" selected>Soft</option>
+                                <option value="medium">Medium</option>
+                                <option value="hard">Hard</option>
                             </select></label>
                         </fieldset>
 
@@ -237,10 +240,10 @@
                         <fieldset>
                             <legend>Params:</legend>
                             <label>Direction: <select name="screen-in-mobile-flip-dir" id="screen-in-mobile-flip-dir">
-                                <option value="-1|0">Top</option>
-                                <option value="0|-1" selected>Left</option>
-                                <option value="1|0">Bottom</option>
-                                <option value="0|1">Right</option>
+                                <option value="top">Top</option>
+                                <option value="left" selected>Left</option>
+                                <option value="bottom">Bottom</option>
+                                <option value="right">Right</option>
                             </select></label>
                         </fieldset>
 
@@ -248,10 +251,10 @@
                         <fieldset>
                             <legend>Params:</legend>
                             <label>Direction: <select name="screen-in-mobile-float-dir" id="screen-in-mobile-float-dir">
-                                <option value="0|90">Top</option>
-                                <option value="-90|0" selected>Left</option>
-                                <option value="0|-90">Bottom</option>
-                                <option value="90|0">Right</option>
+                                <option value="top">Top</option>
+                                <option value="left" selected>Left</option>
+                                <option value="bottom">Bottom</option>
+                                <option value="right">Right</option>
                             </select></label>
                         </fieldset>
 
@@ -259,14 +262,14 @@
                         <fieldset>
                             <legend>Params:</legend>
                             <label>Direction: <select name="screen-in-mobile-fly-dir" id="screen-in-mobile-fly-dir">
-                                <option value="-1|0">Top</option>
-                                <option value="-1|-1">Top left</option>
-                                <option value="-1|1">Top right</option>
-                                <option value="0|-1" selected>Left</option>
-                                <option value="1|0">Bottom</option>
-                                <option value="1|-1">Bottom left</option>
-                                <option value="1|1">Bottom right</option>
-                                <option value="0|1">Right</option>
+                                <option value="top">Top</option>
+                                <option value="topLeft">Top left</option>
+                                <option value="topRight">Top right</option>
+                                <option value="left" selected>Left</option>
+                                <option value="bottom">Bottom</option>
+                                <option value="bottomLeft">Bottom left</option>
+                                <option value="bottomRight">Bottom right</option>
+                                <option value="right">Right</option>
                             </select></label>
                         </fieldset>
 
@@ -316,9 +319,9 @@
                                 <option value="ccw">Counter clockwise</option>
                             </select></label>
                             <label>Power: <select name="screen-in-mobile-spin-power" id="screen-in-mobile-spin-power">
-                                <option value="0.8" selected>Soft</option>
-                                <option value="0.5">Medium</option>
-                                <option value="0">Hard</option>
+                                <option value="soft" selected>Soft</option>
+                                <option value="medium">Medium</option>
+                                <option value="hard">Hard</option>
                             </select></label>
                         </fieldset>
 
@@ -332,7 +335,7 @@
                 </fieldset>
             </form>
         </aside>
-    </div>
+    </main>
     <script type="module" src="./index.js"></script>
 </body>
 </html>

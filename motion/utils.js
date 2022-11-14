@@ -4,10 +4,10 @@ const CLIP_PARAMS = {
     right: (top, bottom, left, right, minimum) => `${right - minimum}% ${top}%, ${right}% ${top}%, ${right}% ${bottom}%, ${right - minimum}% ${bottom}%`,
     center: (top, bottom, left, right, minimum, centerX, centerY) => `${centerX - minimum / 2}% ${centerY - minimum / 2}%, ${centerX + minimum / 2}% ${centerY - minimum / 2}%, ${centerX + minimum / 2}% ${centerY + minimum / 2}%, ${centerX - minimum / 2}% ${centerY + minimum / 2}%`,
     bottom: (top, bottom, left, right, minimum) => `${left}% ${bottom - minimum}%, ${right}% ${bottom - minimum}%, ${right}% ${bottom}%, ${left}% ${bottom}%`,
-    left: (top, bottom, left, minimum) => `${left}% ${top}%, ${left + minimum}% ${top}%, ${left + minimum}% ${bottom}%, ${left}% ${bottom}%`
+    left: (top, bottom, left, right, minimum) => `${left}% ${top}%, ${left + minimum}% ${top}%, ${left + minimum}% ${bottom}%, ${left}% ${bottom}%`
 };
 
-export function getClipPolygonParams (compRect, direction, minimum = 0) {
+export function getClipPolygonParams (direction = 'initial', minimum = 0) {
     const top = 0;
     const left = 0;
     const right = 100;

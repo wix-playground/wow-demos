@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name='viewport' content='width=device-width,initial-scale=1'>
+    <title>Motion Stage</title>
+    <style>
+        #component {
+            width: 25vw;
+            aspect-ratio: 4 / 3;
+            background-image: linear-gradient(45deg, lightgoldenrodyellow, lightcoral, cornflowerblue, darkseagreen);
+            margin: 30vh auto;
+        }
+        #rerun {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+    <style id="effectStyle"></style>
+</head>
+<body>
+    <main>
+        <div id="comp-wrapper">
+            <section id="component"></section>
+        </div>
+    </main>
+    <button id="rerun">Run</button>
+    <script>
+        const runButton = document.getElementById('rerun');
+        const effectStyle = document.getElementById('effectStyle');
+        runButton.addEventListener('click', e => {
+            const text = effectStyle.textContent;
+            effectStyle.textContent = '';
+            requestAnimationFrame(() => {
+                effectStyle.textContent = text;
+            });
+        });
+    </script>
+</body>
+</html>
