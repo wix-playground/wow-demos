@@ -223,12 +223,12 @@ const propertiesGenerators = {
     fade: () => ({ animations: [{ frames: { from: `opacity: 0;` }, easing: EASINGS.cubicIn }] }),
     flip: () => {
         const DIRECTIONS = {
-            top: [-1, 0],
+            top: [1, 0],
             left: [0, -1],
-            bottom: [1, 0],
+            bottom: [-1, 0],
             right: [0, 1]
         };
-        const [angleY, angleX] = DIRECTIONS[data['screen-in-flip-dir']];
+        const [angleX, angleY] = DIRECTIONS[data['screen-in-flip-dir']];
 
         return {
             animations: [{
@@ -252,19 +252,18 @@ const propertiesGenerators = {
                 rotate(var(--rotation));`
                 },
                 easing: EASINGS.quintIn,
-                duration: '0.75s',
-                delay: '0.25s'
+                duration: '0.75s'
             }]
         };
     },
     float: () => {
         const DIRECTIONS = {
-            top: [0, 90],
-            left: [-90, 0],
-            bottom: [0, -90],
-            right: [90, 0]
+            top: [0, -1],
+            left: [-1, 0],
+            bottom: [0, 1],
+            right: [1, 0]
         };
-        const [dy, dx] = DIRECTIONS[data['screen-in-float-dir']];
+        const [dx, dy] = DIRECTIONS[data['screen-in-float-dir']];
 
         return {
             animations: [{
@@ -277,13 +276,17 @@ const propertiesGenerators = {
                     from: `transform:
                 translateX(
                     ${dx > 0
-            ? `max(0, min(calc(100vw - var(--rectRight)), 120px))`
-            : `${dx ? `calc(-1 * max(0, min(var(--rectLeft), 120px)))` : '0'}`
+            ? `max(0px, min(calc(100vw - var(--rectRight)), 120px))`
+            : `${dx ? `calc(-1 * max(0px, min(var(--rectLeft), 120px)))` : '0'}`
         }
                 )
                 translateY(
                     ${dy ? `${dy === -1 ? '-' : ''}60px` : '0'}
                 )
+                rotate(var(--rotation));`,
+                    to: `transform:
+                translateX(0)
+                translateY(0)
                 rotate(var(--rotation));`
                 },
                 easing: EASINGS.sineOut
