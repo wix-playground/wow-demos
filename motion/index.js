@@ -347,6 +347,7 @@ const propertiesGenerators = {
         const [rotateX, rotateY, originX, originY] = DIRECTIONS[data['screen-in-fold-dir']];
 
         return {
+            parent: `perspective: 800px;`,
             animations: [{
                 frames: {
                     from: `opacity: 0.01;`
@@ -355,9 +356,18 @@ const propertiesGenerators = {
                 duration: '0.25s'
             }, {
                 frames: {
-                    from: ``
+                    from: `transform-origin: ${originX}% ${originY}%;
+            transform:
+                rotateX(${rotateX}deg)
+                rotateY(${rotateY}deg)
+                rotate(var(--rotation));`,
+                    to: `transform-origin: ${originX}% ${originY}%;
+            transform:
+                rotateX(0)
+                rotateY(0)
+                rotate(var(--rotation));`
                 },
-                easing: EASINGS,
+                easing: EASINGS.cubicInOut,
                 duration: '1s'
             }]
         };
@@ -530,7 +540,7 @@ const data = {
     'screen-in-flip-dir': 'left',
     'screen-in-float-dir': 'left',
     'screen-in-fly-dir': 'left',
-    'screen-in-fold-dir': '0|90|0|50',
+    'screen-in-fold-dir': 'left',
     'screen-in-glide-dir': 270,
     'screen-in-glide-dist': 150,
     'screen-in-reveal-dir': 'left',
