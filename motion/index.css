@@ -11,6 +11,13 @@ main {
     grid-area: stage;
 }
 
+.maximize-stage #stage {
+    grid-area: 1 / 1 / -1 / -1;
+    z-index: 1;
+    position: relative;
+    background-color: white;
+}
+
 iframe {
     width: 100%;
     aspect-ratio: 16 / 9;
@@ -24,6 +31,12 @@ aside {
     display: inline-block;
     width: 100%;
     text-align: left;
+}
+
+#stage-controls {
+    position: fixed;
+    top: 10px;
+    right: 2px;
 }
 
 label {

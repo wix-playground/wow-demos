@@ -1,5 +1,8 @@
 import { getAdjustedDirection, getClipPolygonParams, getTranslations } from './utils.js';
 
+/*
+ * CSS text generator
+ */
 function getCssCode (rotation, name, data) {
     const { parent, animations } = data;
 
@@ -46,8 +49,11 @@ function getCssCode (rotation, name, data) {
     }` : ''}`;
 }
 
+const main = document.querySelector('main');
 const controls = document.querySelector('#controls');
 const output = document.querySelector('#controls-output-content');
+const stageResize = document.querySelector('#stageResize');
+const stageDebug = document.querySelector('#stageDebug');
 
 const EASINGS = {
     linear: 'linear',
@@ -61,6 +67,9 @@ const EASINGS = {
     expoIn: 'cubic-bezier(0.7, 0, 0.84, 0)'
 };
 
+/*
+ * ScreenIn animation generators
+ */
 const propertiesGenerators = {
     arc: () => {
         const isRight = data['screen-in-arc-side'] === 'right';
@@ -414,7 +423,7 @@ const propertiesGenerators = {
         const power = POWERS[data['screen-in-slide-power']];
 
         const { x, y } = getTranslations({ width: rectWidth, height: rectHeight }, DIRECTIONS[direction], (100 - power) / 100);
-        const clipDirection = getAdjustedDirection(DIRECTIONS, direction, data.rotation);
+        const clipDirection = getAdjustedDirection(DIRECTIONS, direction, data.rotation + 180);
         const clipPathPolygon = getClipPolygonParams(clipDirection, power);
 
         return {
@@ -487,7 +496,7 @@ const propertiesGenerators = {
                     min(-1.5 * 100%, max(-300px, calc(-5.5 * 100%)))
                 )
                 rotate(
-                    calc(90deg + ${isRight ? 1 : -1} * var(--rotation))
+                    calc(${isRight ? '' : '-'}90deg + var(--rotation))
                 );`,
                     to: `transform:
                 translateY(0)
@@ -498,8 +507,9 @@ const propertiesGenerators = {
                 frames: {
                     from: `transform:
                 translateX(
-                    ${!isRight ? `100vw - var(--rectRight)` : `var(--rectLeft)`}
-                );`
+                    ${isRight ? `calc(100vw - var(--rectRight))` : `calc(-1 * var(--rectLeft))`}
+                );`,
+                    to: `transform: translateX(0);`
                 },
                 easing: EASINGS.circOut,
                 part: '#comp-wrapper'
@@ -508,14 +518,9 @@ const propertiesGenerators = {
     }
 };
 
-let rectWidth;
-let rectHeight;
-let rectTop;
-let rectBottom;
-let rectRight;
-let rectLeft;
-let sizing = false;
-
+/*
+ * App state
+ */
 const data = {
     'screen-in-arc-side': 'right',
     'screen-in-bounce-power': 'soft',
@@ -537,12 +542,31 @@ const data = {
     'screen-in-turn-side': 'right',
 };
 
+/*
+ * Stage initialization and update
+ */
+let rectWidth;
+let rectHeight;
+let rectTop;
+let rectBottom;
+let rectRight;
+let rectLeft;
+let sizing = false;
+
 function updateRect () {
-    // TODO: implement
-    rectHeight = 225;
-    rectWidth = 400;
-    rectTop = 100;
-    rectLeft = 100;
+    rectHeight = component.offsetHeight;
+    rectWidth = component.offsetWidth;
+    rectTop = 0;
+    rectLeft = 0;
+
+    let el = component;
+
+    while (el && el !== el.ownerDocument.body) {
+        rectTop += el.offsetTop;
+        rectLeft += el.offsetLeft;
+        el = el.offsetParent;
+    }
+
     rectBottom = rectTop + rectHeight;
     rectRight = rectLeft + rectWidth;
 }
@@ -563,22 +587,23 @@ window.addEventListener('resize', tick);
 
 let stageDocument = window.frames[0].document;
 let effectStyle = stageDocument?.querySelector('#effectStyle');
+let component = stageDocument?.querySelector('#component');
 
-window.frames[0].addEventListener('load', e => {
-    stageDocument = e.target.document;
-    effectStyle = stageDocument.querySelector('#effectStyle');
-});
+if (stageDocument) {
+    tick();
+} else {
+    window.frames[0].addEventListener('load', e => {
+        stageDocument = e.target.document;
+        effectStyle = stageDocument?.querySelector('#effectStyle');
+        component = stageDocument?.querySelector('#component');
 
-function generateAnimationName () {
-    const name = data['screen-in-name'];
-    const prefix = `screen-in-${name}-`;
-
-    return `${name}-${Object.entries(data)
-        .filter(([key]) => key.startsWith(prefix))
-        .map(([key, value]) => value.toString().replace('.', '_'))
-        .join('-')}`;
+        tick();
+    });
 }
 
+/*
+ * Preset library controls
+ */
 controls.addEventListener('input', e => {
     const formData = new FormData(e.target.form);
     Object.assign(data, Object.fromEntries(formData.entries()));
@@ -592,4 +617,23 @@ controls.addEventListener('input', e => {
     effectStyle.textContent = cssText;
 });
 
-tick();
+function generateAnimationName () {
+    const name = data['screen-in-name'];
+    const prefix = `screen-in-${name}-`;
+
+    return `${name}-${Object.entries(data)
+        .filter(([key]) => key.startsWith(prefix))
+        .map(([key, value]) => value.toString().replace('.', '_'))
+        .join('-')}`;
+}
+
+/*
+ * Stage control buttons
+ */
+stageResize.addEventListener('click', e => {
+    main.classList.toggle('maximize-stage');
+});
+
+stageDebug.addEventListener('click', e => {
+    stageDocument.body.firstElementChild.classList.toggle('debug-stage');
+});

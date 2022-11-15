@@ -5,16 +5,32 @@
     <meta name='viewport' content='width=device-width,initial-scale=1'>
     <title>Motion Stage</title>
     <style>
-        #component {
+        body {
+            margin: 0;
+        }
+
+        #comp-wrapper {
             width: 25vw;
-            aspect-ratio: 4 / 3;
-            background-image: linear-gradient(45deg, lightgoldenrodyellow, lightcoral, cornflowerblue, darkseagreen);
             margin: 30vh auto;
         }
+
+        #component {
+            aspect-ratio: 4 / 3;
+            background-image: linear-gradient(45deg, lightgoldenrodyellow, lightcoral, cornflowerblue, darkseagreen);
+        }
+
         #rerun {
             position: fixed;
             bottom: 0;
-            left: 0;
+            right: 0;
+        }
+
+        .debug-stage #component {
+            border: 1px dashed magenta;
+        }
+
+        .debug-stage #comp-wrapper {
+            border: 1px dashed navy;
         }
     </style>
     <style id="effectStyle"></style>
