@@ -7,7 +7,8 @@ function getCssCode (rotation, name, data) {
     const { parent, animations } = data;
 
     return `
-    :root {
+    /* Component variables */
+    #component {
         --rectTop: ${rectTop}px;
         --rectBottom: ${rectBottom}px;
         --rectLeft: ${rectLeft}px;
@@ -43,7 +44,6 @@ function getCssCode (rotation, name, data) {
 
     `)}
     ${parent ? `
-
     #comp-wrapper {
         ${parent}
     }` : ''}`;
