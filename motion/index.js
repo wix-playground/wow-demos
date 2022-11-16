@@ -52,6 +52,7 @@ function getCssCode (rotation, name, data) {
 const main = document.querySelector('main');
 const controls = document.querySelector('#controls');
 const output = document.querySelector('#controls-output-content');
+const stageRun = document.querySelector('#stageRun');
 const stageResize = document.querySelector('#stageResize');
 const stageDebug = document.querySelector('#stageDebug');
 
@@ -595,20 +596,33 @@ function tick () {
 
 window.addEventListener('resize', tick);
 
-let stageDocument = window.frames[0].document;
+let stageFrame = window.frames[0];
+let stageDocument = stageFrame.document;
 let effectStyle = stageDocument?.querySelector('#effectStyle');
 let component = stageDocument?.querySelector('#component');
+
+stageFrame.addEventListener('resize', tick);
 
 if (stageDocument) {
     tick();
 } else {
-    window.frames[0].addEventListener('load', e => {
+    stageFrame.addEventListener('load', e => {
         stageDocument = e.target.document;
         effectStyle = stageDocument?.querySelector('#effectStyle');
         component = stageDocument?.querySelector('#component');
 
         tick();
     });
+}
+
+function run () {
+    const animationName = generateAnimationName();
+
+    const cssText = getCssCode(data.rotation, animationName, propertiesGenerators[data['screen-in-name']]());
+
+    output.textContent = cssText;
+
+    effectStyle.textContent = cssText;
 }
 
 /*
@@ -618,13 +632,7 @@ controls.addEventListener('input', e => {
     const formData = new FormData(e.target.form);
     Object.assign(data, Object.fromEntries(formData.entries()));
 
-    const animationName = generateAnimationName();
-
-    const cssText = getCssCode(data.rotation, animationName, propertiesGenerators[data['screen-in-name']]());
-
-    output.textContent = cssText;
-
-    effectStyle.textContent = cssText;
+    run();
 });
 
 function generateAnimationName () {
@@ -640,8 +648,16 @@ function generateAnimationName () {
 /*
  * Stage control buttons
  */
+stageRun.addEventListener('click', e => {
+    effectStyle.textContent = '';
+    requestAnimationFrame(run);
+});
+
 stageResize.addEventListener('click', e => {
     main.classList.toggle('maximize-stage');
+    effectStyle.textContent = '';
+    tick();
+    requestAnimationFrame(run);
 });
 
 stageDebug.addEventListener('click', e => {

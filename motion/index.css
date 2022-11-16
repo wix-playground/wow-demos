@@ -18,6 +18,12 @@ main {
     background-color: white;
 }
 
+.maximize-stage #csstext {
+    grid-area: 1 / 1 / 2 / 3;
+    z-index: 2;
+    position: relative;
+}
+
 iframe {
     width: 100%;
     aspect-ratio: 16 / 9;

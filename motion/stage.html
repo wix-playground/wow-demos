@@ -19,12 +19,6 @@
             background-image: linear-gradient(45deg, lightgoldenrodyellow, lightcoral, cornflowerblue, darkseagreen);
         }
 
-        #rerun {
-            position: fixed;
-            bottom: 0;
-            right: 0;
-        }
-
         .debug-stage #component {
             border: 1px dashed magenta;
         }
@@ -41,17 +35,5 @@
             <section id="component"></section>
         </div>
     </main>
-    <button id="rerun">Run</button>
-    <script>
-        const runButton = document.getElementById('rerun');
-        const effectStyle = document.getElementById('effectStyle');
-        runButton.addEventListener('click', e => {
-            const text = effectStyle.textContent;
-            effectStyle.textContent = '';
-            requestAnimationFrame(() => {
-                effectStyle.textContent = text;
-            });
-        });
-    </script>
 </body>
 </html>
