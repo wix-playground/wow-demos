@@ -8,7 +8,7 @@ function getCssCode (rotation, name, data) {
 
     return `
     /* Component variables */
-    #component {
+    #comp-wrapper {
         --rectTop: ${rectTop}px;
         --rectBottom: ${rectBottom}px;
         --rectLeft: ${rectLeft}px;
