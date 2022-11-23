@@ -18,9 +18,17 @@ export function getClipPolygonParams (direction = 'initial', minimum = 0) {
     return CLIP_PARAMS[direction](top, bottom, left, right, minimum, centerX, centerY);
 }
 
-export function getTranslations(rect, originDirection, scale = 1) {
-    const x = originDirection.dx * rect.width * scale;
-    const y = originDirection.dy * rect.height * scale;
+export function getTranslations(rect, originDirection, angle, scale = 1) {
+    const width = rect.width * scale;
+    const height = rect.height * scale;
+    const angleInRad = angle * Math.PI / 180;
+
+    const x =
+        originDirection.dy * height * Math.sin(-angleInRad) +
+        originDirection.dx * width * Math.cos(angleInRad);
+    const y =
+        originDirection.dy * height * Math.cos(-angleInRad) +
+        originDirection.dx * width * Math.sin(angleInRad);
 
     return { x, y };
 }

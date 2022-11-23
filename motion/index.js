@@ -348,7 +348,6 @@ const propertiesGenerators = {
         const [rotateX, rotateY, originX, originY] = DIRECTIONS[data['screen-in-fold-dir']];
 
         return {
-            parent: `perspective: 800px;`,
             animations: [{
                 frames: {
                     from: `opacity: 0.01;`
@@ -359,17 +358,18 @@ const propertiesGenerators = {
                 frames: {
                     from: `transform-origin: ${originX}% ${originY}%;
             transform:
+                perspective(800px)
                 rotateX(${rotateX}deg)
-                rotateY(${rotateY}deg)
-                rotate(var(--rotation));`,
+                rotateY(${rotateY}deg);`,
                     to: `transform-origin: ${originX}% ${originY}%;
             transform:
+                perspective(800px)
                 rotateX(0)
-                rotateY(0)
-                rotate(var(--rotation));`
+                rotateY(0);`
                 },
                 easing: EASINGS.cubicInOut,
-                duration: '1s'
+                duration: '1s',
+                part: '#comp-wrapper'
             }]
         };
     },
@@ -433,8 +433,9 @@ const propertiesGenerators = {
         const direction = data['screen-in-slide-dir'];
         const power = POWERS[data['screen-in-slide-power']];
 
-        const { x, y } = getTranslations({ width: rectWidth, height: rectHeight }, DIRECTIONS[direction], (100 - power) / 100);
+        const translateDirection = getAdjustedDirection(DIRECTIONS, direction, data.rotation);
         const clipDirection = getAdjustedDirection(DIRECTIONS, direction, data.rotation + 180);
+        const { x, y } = getTranslations({ width: rectWidth, height: rectHeight }, DIRECTIONS[translateDirection], data.rotation, (100 - power) / 100);
         const clipPathPolygon = getClipPolygonParams(clipDirection, power);
 
         return {
@@ -616,9 +617,13 @@ if (stageDocument) {
 }
 
 function run () {
+    const name = data['screen-in-name'];
+
+    if (!name) return;
+
     const animationName = generateAnimationName();
 
-    const cssText = getCssCode(data.rotation, animationName, propertiesGenerators[data['screen-in-name']]());
+    const cssText = getCssCode(data.rotation, animationName, propertiesGenerators[name]());
 
     output.textContent = cssText;
 
@@ -631,6 +636,10 @@ function run () {
 controls.addEventListener('input', e => {
     const formData = new FormData(e.target.form);
     Object.assign(data, Object.fromEntries(formData.entries()));
+
+    /* fix rotation */
+    const rotation = data.rotation % 360;
+    data.rotation = (rotation < 0 ? 360 : 0) + rotation;
 
     run();
 });
