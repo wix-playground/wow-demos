@@ -1,0 +1,172 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    padding: 2em;
+    background-color: #000;
+    color: #fff;
+    line-height: 1.6;
+}
+
+.txtBtn {
+    font-size: 1em;
+    font-family: inherit;
+    border: none;
+    background: none;
+    color: #777;
+    transition: color 0.3s;
+
+    &:hover {
+        color: aquamarine;
+    }
+}
+
+.bigBtn {
+    border: 1px solid #ccc;
+    color: #000;
+    font-size: 1em;
+    font-family: inherit;
+    padding: 0.25em 2em;
+    background-image: linear-gradient(#aaa, #eee, #aaa);
+    background-position-y: 100%;
+    background-size: 100% 200%;
+    transition: background-position-y 0.25s;
+    
+    &:hover {
+        background-position-y: 50%;
+    }
+    &:active {
+        background-position-y: 0%;
+    }
+}
+
+fieldset {
+    border: none;
+}
+
+select, input[type="text"], input[type="number"] {
+    font-size: 1em;
+    padding: 0.25em;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+.icon {
+    font-size: 1em;
+    border: none;
+    background: none;
+
+    & svg {
+        width: 1m; height: 1em;
+        fill: #777;
+    }
+
+    &:hover & svg {
+        fill: aquamarine;
+    }
+}
+
+.perspectiveWrapper {
+    display: none;
+    padding: 1em 0.25em;
+    border-bottom: 1px solid #777;
+    margin-bottom: 1em;
+
+    &.show {
+        display: revert;
+    }
+}
+
+.animationName {
+    display: inline-block;
+    padding-inline: 0.25em;
+
+    &::after {
+        content: " {";
+    }
+}
+
+.animationDataline {
+    padding-inline-start: 2em;
+    margin-bottom: 0.5em;
+}
+
+.animationWrapper {
+    &::after {
+        content: " }"
+    }
+}
+
+.keyframesWrapper {
+    padding-inline-start: 2em;
+}
+
+.keyframeWrapper {
+    border: none;
+
+    &::after {
+        content: " }";
+        display: block;
+    }
+}
+
+.keyframeKey {
+    display: inline-block;
+    padding-inline: 0.25em;
+
+    &::after {
+        content: "% {";
+    }
+}
+
+.propertiesWrapper {
+    padding-inline-start: 2em;
+}
+
+// live
+
+.liveWrapper {
+    display: grid;
+    place-items: center;
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-color: #000e;
+    opacity: 0;
+    transition: opacity 0.5s;
+
+    & * {
+        transform-style: preserve-3d;
+    }
+
+    &.show {
+        opacity: 1;
+        pointer-events: revert;
+    }
+}
+
+.liveOutline {
+    position: absolute;
+    left: 50%; top: 50%;
+    width: 420px; height: 320px;
+    transform: translate(-50%, -50%);
+    border: 1px dashed #777
+}
+
+.liveBtns {
+    position: fixed;
+    right: 24px; top: 24px;
+}
+
+.liveAnimationComponent {
+    width: 420px; height: 320px;
+    background-color: #fff;
+}
