@@ -92,9 +92,16 @@ input[type=file] {
 .animationDataline input, .animationDataline select {
   background: none;
   color: #ccf;
-  width: 100px;
   border: none;
   border-bottom: 1px solid;
+}
+.animationDataline input {
+  width: 100px;
+}
+
+.keyframeInput::after {
+  display: inline-block;
+  content: "sdfsd";
 }
 
 .animationWrapper::after {
