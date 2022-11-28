@@ -96,10 +96,18 @@ input[type="file"] {
     input, select {
         background: none;
         color: #ccf;
-        width: 100px;
         border: none;
         border-bottom: 1px solid;
     }
+    
+    input {
+        width: 100px;
+    }
+}
+
+.keyframeInput::after {
+    display: inline-block;
+    content: 'sdfsd';
 }
 
 .animationWrapper {

@@ -14,30 +14,67 @@ let data = JSON.parse(localStorage.getItem('animationsData')) || {
 perspectiveInput.value = data.perspective;
 let usePerspective = false;
 
-const selectProperyElement = (animationIx, keyframeIx, propertyIx, selectedProperty) => {
+const getSelectProperyElement = (animationIx, keyframeIx, propertyIx, selectedProperty) => {
 
     const availableProperties = [
         "opacity",
-        "translateX",
-        "translateY",
-        "translateZ",
-        "rotateX",
-        "rotateY",
-        "rotateZ",
-        "scaleX",
-        "scaleY",
-        "scaleZ",
-        "skewX",
-        "skewY"
+        "transform",
+        // "clip-path"
     ];
 
     return `
         <select onchange="setPropertyName(${animationIx}, ${keyframeIx}, ${propertyIx}, this);">
-            <option selected="${selectedProperty ? 'true' : 'false'}" disabled="disabled">Select property</option>
+            <option selected="${selectedProperty ? 'false' : 'true'}" disabled="disabled">Select property</option>
             ${availableProperties.map(property => {
                 return `<option value="${property}" ${property == selectedProperty ? 'selected' : ''}>${property}</option>`
             })}
         </select>`;
+};
+
+const getPropertyFunctionElement = (animationIx, keyframeIx, propertyIx, selectedProperty, selectedFunction) => {
+
+    const availableFunctions = {
+        "transform": [
+            "translateX",
+            "translateY",
+            "translateZ",
+            "rotateX",
+            "rotateY",
+            "rotateZ",
+            "scaleX",
+            "scaleY",
+            "scaleZ",
+            "skewX",
+            "skewY"
+        ],
+        "clip-path": [
+            "inset",
+            "circle",
+            "ellipse",
+            "polygon",
+            "path"
+        ]
+
+    }
+
+    console.log(selectedProperty);
+
+    switch (selectedProperty) {
+        case 'transform':
+        case 'clip-path':
+            return `
+                <select onchange="setPropertyFunction(${animationIx}, ${keyframeIx}, ${propertyIx}, this);">
+                    <option selected="${selectedFunction ? 'false' : 'true'}" disabled="disabled">Select function</option>
+                    ${availableFunctions[selectedProperty]?.map(f => {
+                        return `<option value="${f}" ${f == selectedFunction ? 'selected' : ''}>${f}</option>`
+                    })}
+                </select>`;
+    
+        default:
+            return '';
+    }
+
+
 };
 
 const trashIcon = (animationIx, keyframeIx, propertyIx) =>`
@@ -51,14 +88,33 @@ const selectEasingElement = (animationIx, selectedEase) => {
 
     const allEasing = {
         linear: 'linear',
-        circOut: 'cubic-bezier(0, 0.55, 0.45, 1)',
-        sineIn: 'cubic-bezier(0.12, 0, 0.39, 0)',
-        sineInOut: 'cubic-bezier(0.37, 0, 0.63, 1)',
-        sineOut: 'cubic-bezier(0.61, 1, 0.88, 1)',
-        cubicIn: 'cubic-bezier(0.32, 0, 0.67, 0)',
-        cubicInOut: 'cubic-bezier(0.65, 0, 0.35, 1)',
-        quintIn: 'cubic-bezier(0.64, 0, 0.78, 0)',
-        expoIn: 'cubic-bezier(0.7, 0, 0.84, 0)'
+
+        easeInSine: "cubic-bezier(0.12, 0, 0.39, 0)",
+        easeInQuad: "cubic-bezier(0.11, 0, 0.5, 0)",
+        easeInCubic: "cubic-bezier(0.32, 0, 0.67, 0)",
+        easeInQuart: "cubic-bezier(0.5, 0, 0.75, 0)",
+        easeInQuint: "cubic-bezier(0.64, 0, 0.78, 0);",
+        easeInExpo: "cubic-bezier(0.7, 0, 0.84, 0)",
+        easeInCirc: "cubic-bezier(0.55, 0, 1, 0.45)",
+        easeInBack: "cubic-bezier(0.36, 0, 0.66, -0.56)",
+
+        easeOutSine: "cubic-bezier(0.61, 1, 0.88, 1)",
+        easeOutQuad: "cubic-bezier(0.5, 1, 0.89, 1)",
+        easeOutCubic: "cubic-bezier(0.33, 1, 0.68, 1)",
+        easeOutQuart: "cubic-bezier(0.25, 1, 0.5, 1)",
+        easeOutQuint: "cubic-bezier(0.22, 1, 0.36, 1)",
+        easeOutExpo: "cubic-bezier(0.16, 1, 0.3, 1)",
+        easeOutCirc: "cubic-bezier(0, 0.55, 0.45, 1)",
+        easeOutBack: "cubic-bezier(0.34, 1.56, 0.64, 1)",
+
+        easeInOutSine: "cubic-bezier(0.37, 0, 0.63, 1)",
+        easeInOutQuad: "cubic-bezier(0.45, 0, 0.55, 1)",
+        easeInOutCubic: "cubic-bezier(0.65, 0, 0.35, 1)",
+        easeInOutQuart: "cubic-bezier(0.76, 0, 0.24, 1)",
+        easeInOutQuint: "cubic-bezier(0.83, 0, 0.17, 1)",
+        easeInOutExpo: "cubic-bezier(0.87, 0, 0.13, 1)",
+        easeInOutCirc: "cubic-bezier(0.85, 0, 0.15, 1)",
+        easeInOutBack: "cubic-bezier(0.68, -0.6, 0.32, 1.6)",
     };
 
     return `
@@ -160,7 +216,6 @@ function renderForm() {
 
     let animationHTML = ``;
 
-    // console.log(animation);
     data.animations.forEach((animation, animationIx) => {
         
         let keyframesHTML = ``;        
@@ -170,17 +225,20 @@ function renderForm() {
 
             keyframe.properties.forEach((property, propertyIx) => {
                 
-                const {propertyName, value} = property;
+                const {propertyName, propertyFunction, value} = property;
                 
                 propertiesHTML += `
                     <fieldset class="propertyWrapper" name="property${propertyIx}">
-                        ${selectProperyElement(animationIx, keyframeIx, propertyIx, propertyName)}
-                        <input
-                            type="text"
-                            class="keyframeInput"
-                            value="${value}"
-                            onchange="setPropertyValue(${animationIx}, ${keyframeIx}, ${propertyIx}, this);"
-                            />
+                        ${getSelectProperyElement(animationIx, keyframeIx, propertyIx, propertyName)}
+                        ${getPropertyFunctionElement(animationIx, keyframeIx, propertyIx, propertyName, propertyFunction)}
+                        ${propertyName ?
+                            `<input
+                                type="text"
+                                class="keyframeInput"
+                                value="${value}"
+                                placeholder="value"
+                                onchange="setPropertyValue(${animationIx}, ${keyframeIx}, ${propertyIx}, this);"
+                                />` : ''}
                         ${trashIcon(animationIx, keyframeIx, propertyIx)}
                     </fieldset>
                 `;
@@ -255,8 +313,6 @@ function renderForm() {
 
 function setPerspective(v) {
     data.perspective = v;
-    console.log(data);
-
     localStorage.setItem('animationsData', JSON.stringify(data));
 }
 
@@ -296,6 +352,14 @@ function setPropertyName(animationIx, keyframeIx, propertyIx, e) {
     renderForm();
 }
 
+function setPropertyFunction(animationIx, keyframeIx, propertyIx, e) {
+    data.animations[animationIx].keyframes[keyframeIx].properties[propertyIx].propertyFunction = e.options[e.selectedIndex].value;
+    localStorage.setItem('animationsData', JSON.stringify(data));
+    console.log(e);
+    console.log(e.options[e.selectedIndex].value);
+    renderForm();
+}
+
 function setPropertyValue(animationIx, keyframeIx, propertyIx, e) {
     data.animations[animationIx].keyframes[keyframeIx].properties[propertyIx].value = e.value;
     localStorage.setItem('animationsData', JSON.stringify(data));
@@ -307,29 +371,37 @@ function runAnimation() {
     const keyframes = data.animations.map(animation => {
                 
         const keys = animation.keyframes.map(keyframe => {
+            
+            const thisKey = {
+                "opacity": '',
+                "transform": [],
+                "clip-path": []
+            }
 
-            let opacity = '';
-            const transforms = [];
-
-            keyframe.properties.forEach(({propertyName, value}) => {
+            keyframe.properties.forEach(({propertyName, propertyFunction, value}) => {
                 if (propertyName === 'opacity') {
-                    opacity = value;
+                    thisKey.opacity = value;
                 } else {
-                    transforms.push(`${propertyName}(${value})`);
+                    thisKey[propertyName]?.push(`${propertyFunction}(${value})`);
                 }
             });
 
             // sort transforms:
-            const newTransforms = transforms.map(p => {
-                return p.replace('translate', 'A_translate').replace('rotate', 'B_rotate').replace('scale', 'C_scale');
+            const newTransforms = thisKey.transform.map(p => {
+                return p.replace('translate', 'A_translate').replace('rotate', 'B_rotate').replace('scale', 'C_scale').replace('skew', 'D_skew');
             }).sort().map(p => {
-                return p.replace('A_', '').replace('B_', '').replace('C_', '');
+                return p.replace('A_', '').replace('B_', '').replace('C_', '').replace('D_', '');
             });
+
+            const newClip = thisKey['clip-path']?.map(p => {
+                return ``
+            })
 
             return `
                 ${keyframe.key}% {
-                    ${opacity !== '' ? `opacity: ${opacity};` : ''}
+                    ${thisKey.opacity !== '' ? `opacity: ${thisKey.opacity};` : ''}
                     ${newTransforms.length > 0 ? `transform: ${newTransforms.join(' ')};` : ''}
+                    ${thisKey['clip-path'].length > 0 ? `clip-path: ${thisKey['clip-path'].join(' ')};` : ''}
                 }`;
         });
 
@@ -337,10 +409,10 @@ function runAnimation() {
         wrapper.classList.add(divs ? 'liveAnimationWrapper' : 'liveAnimationComponent');
 
         const thisAnimation = `${animation.name} ${animation.duration}s ${animation.delay}s ${animation.iterations === '0' ? 'infinite' : animation.iterations} ${animation.timingFunction} both paused`;
+        console.log(thisAnimation);
+
         wrapper.style.animation = thisAnimation;
         wrapper.dataset.animation = thisAnimation;
-        console.log(animation);
-        console.log(thisAnimation);
         
         if (divs) {
              wrapper.appendChild(divs);
@@ -353,6 +425,7 @@ function runAnimation() {
     });
 
     const style = keyframes.join('');
+
     console.log(style);
 
     generatedKeyframes.innerHTML = keyframes.join('');
