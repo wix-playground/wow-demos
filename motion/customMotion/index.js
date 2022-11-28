@@ -4,14 +4,14 @@ const animationsContainer = document.querySelector('.animationsContainer');
 const liveWrapper = document.querySelector('.liveWrapper');
 const generatedKeyframes = document.querySelector('#generatedKeyframes');
 
-const perspectiveValue = document.querySelector('.perspectiveValue');
+const perspectiveInput = document.querySelector('.perspectiveInput');
 
 let data = JSON.parse(localStorage.getItem('animationsData')) || {
     animations: [],
     perspective: ''
 };
 
-perspectiveValue.value = data.perspective;
+perspectiveInput.value = data.perspective;
 let usePerspective = false;
 
 const selectProperyElement = (animationIx, keyframeIx, propertyIx, selectedProperty) => {
@@ -27,6 +27,8 @@ const selectProperyElement = (animationIx, keyframeIx, propertyIx, selectedPrope
         "scaleX",
         "scaleY",
         "scaleZ",
+        "skewX",
+        "skewY"
     ];
 
     return `
@@ -69,8 +71,8 @@ const selectEasingElement = (animationIx, selectedEase) => {
 
 function clearData() {
     data.animations.splice(0, data.animations.length);
-    data.perspective = '';
-    perspectiveValue.value = '';
+    data.perspective = '800px';
+    perspectiveInput.value = '800px';
     localStorage.clear();
     addAnimation();
 }
@@ -111,9 +113,10 @@ function addAnimation() {
     const animationIx = data.animations.length;
     const thisData = {
         name: `Animation${animationIx}`,
-        duration: 0,
+        duration: 3,
         delay: 0,
         timingFunction: 'linear',
+        iterations: 1,
         keyframes: [{
             key: '0',
             properties: [{ propertyName: undefined, value: '' }]
@@ -174,7 +177,7 @@ function renderForm() {
                         ${selectProperyElement(animationIx, keyframeIx, propertyIx, propertyName)}
                         <input
                             type="text"
-                            class="keyframeValue"
+                            class="keyframeInput"
                             value="${value}"
                             onchange="setPropertyValue(${animationIx}, ${keyframeIx}, ${propertyIx}, this);"
                             />
@@ -202,7 +205,7 @@ function renderForm() {
                     Duration:
                     <input
                         type="number"
-                        class="durationValue"
+                        class="durationInput"
                         value="${animation.duration}"
                         onchange="setDuration(${animationIx}, this.value);"
                         /> (seconds)
@@ -211,7 +214,7 @@ function renderForm() {
                     Delay:
                     <input
                         type="number"
-                        class="delayValue"
+                        class="delayInput"
                         value="${animation.delay}"
                         onchange="setDelay(${animationIx}, this.value);"
                         /> (seconds)
@@ -219,6 +222,15 @@ function renderForm() {
                 <div class="animationDataline">
                     Timing function:
                     ${selectEasingElement(animationIx, animation.timingFunction)}
+                </div>
+                <div class="animationDataline">
+                    Iterations:
+                    <input
+                        type="number"
+                        class="iterationInput"
+                        value="${animation.iterations}"
+                        onchange="setIterations(${animationIx}, this.value);"
+                        /> (set to 0 for looping)
                 </div>
                 <div class="keyframesWrapper">
                     ${keyframesHTML}
@@ -238,11 +250,7 @@ function renderForm() {
         .propertyWrapper option[value="scaleZ"][selected]
     `).length > 0;
 
-    if (usePerspective) {
-        document.querySelector('.perspectiveWrapper').classList.add('show');
-    } else {
-        document.querySelector('.perspectiveWrapper').classList.remove('show');
-    }
+    perspectiveInput.disabled = !usePerspective;
 }
 
 function setPerspective(v) {
@@ -264,6 +272,11 @@ function setDuration(animationIx, v) {
 
 function setDelay(animationIx, v) {
     data.animations[animationIx].delay = v;
+    localStorage.setItem('animationsData', JSON.stringify(data));
+}
+
+function setIterations(animationIx, v) {
+    data.animations[animationIx].iterations = v;
     localStorage.setItem('animationsData', JSON.stringify(data));
 }
 
@@ -323,9 +336,11 @@ function runAnimation() {
         const wrapper = document.createElement('div');
         wrapper.classList.add(divs ? 'liveAnimationWrapper' : 'liveAnimationComponent');
 
-        const thisAnimation = `${animation.name} ${animation.duration}s ${animation.delay}s ${animation.timingFunction} both paused`;
+        const thisAnimation = `${animation.name} ${animation.duration}s ${animation.delay}s ${animation.iterations === '0' ? 'infinite' : animation.iterations} ${animation.timingFunction} both paused`;
         wrapper.style.animation = thisAnimation;
         wrapper.dataset.animation = thisAnimation;
+        console.log(animation);
+        console.log(thisAnimation);
         
         if (divs) {
              wrapper.appendChild(divs);
@@ -345,7 +360,7 @@ function runAnimation() {
     liveWrapper.appendChild(divs);
     
     if (usePerspective) {
-        liveWrapper.style.perspective = document.querySelector('.perspectiveValue').value;
+        liveWrapper.style.perspective = document.querySelector('.perspectiveInput').value;
     }
 
     setTimeout(() => {
@@ -360,7 +375,8 @@ function runAnimation() {
 function editAnimation() {
     liveWrapper.classList.remove('show');
     setTimeout(() => {
-        liveWrapper.querySelector(':scope > .liveAnimationWrapper').remove();
+        liveWrapper.querySelector(':scope > .liveAnimationWrapper')?.remove();
+        liveWrapper.querySelector(':scope > .liveAnimationComponent')?.remove();
         liveWrapper.style.perspective = null;
     }, 500);
 }
@@ -368,7 +384,6 @@ function editAnimation() {
 function rerunAnimation() {
 
     document.querySelectorAll('[data-animation]').forEach(e => {
-        console.log(e.dataset.animation);
         e.style.animation = null;
     })
     

@@ -19,7 +19,7 @@ body {
     font-family: inherit;
     border: none;
     background: none;
-    color: #777;
+    color: #787;
     transition: color 0.3s;
 
     &:hover {
@@ -75,14 +75,9 @@ input[type="file"] {
 }
 
 .perspectiveWrapper {
-    display: none;
     padding: 1em 0.25em;
     border-bottom: 1px solid #777;
     margin-bottom: 1em;
-
-    &.show {
-        display: revert;
-    }
 }
 
 .animationName {
@@ -97,6 +92,14 @@ input[type="file"] {
 .animationDataline {
     padding-inline-start: 2em;
     margin-bottom: 0.5em;
+
+    input, select {
+        background: none;
+        color: #ccf;
+        width: 100px;
+        border: none;
+        border-bottom: 1px solid;
+    }
 }
 
 .animationWrapper {
@@ -168,5 +171,15 @@ input[type="file"] {
 
 .liveAnimationComponent {
     width: 420px; height: 320px;
-    background-color: #fff;
+    border: 1px solid #fff;
+    background-image: url('https://picsum.photos/420/320');
+
+    &::after {
+        content: 'TEXT';
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        font-size: 120px;
+    }
 }
