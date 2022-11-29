@@ -19,7 +19,8 @@ const getSelectProperyElement = (animationIx, keyframeIx, propertyIx, selectedPr
     const availableProperties = [
         "opacity",
         "transform",
-        // "clip-path"
+        "clip-path",
+        "filter"
     ];
 
     return `
@@ -51,30 +52,34 @@ const getPropertyFunctionElement = (animationIx, keyframeIx, propertyIx, selecte
             "inset",
             "circle",
             "ellipse",
-            "polygon",
-            "path"
+            // "polygon",
+            // "path"
+        ],
+        "filter": [
+            // "blur",
+            "brightness",
+            "contrast",
+            // "drop-shadow",
+            "grayscale",
+            "hue-rotate",
+            "invert",
+            // "opacity",
+            "saturate",
+            "sepia"
         ]
-
     }
 
-    console.log(selectedProperty);
-
-    switch (selectedProperty) {
-        case 'transform':
-        case 'clip-path':
-            return `
-                <select onchange="setPropertyFunction(${animationIx}, ${keyframeIx}, ${propertyIx}, this);">
-                    <option selected="${selectedFunction ? 'false' : 'true'}" disabled="disabled">Select function</option>
-                    ${availableFunctions[selectedProperty]?.map(f => {
-                        return `<option value="${f}" ${f == selectedFunction ? 'selected' : ''}>${f}</option>`
-                    })}
-                </select>`;
-    
-        default:
-            return '';
+    if (selectedProperty in availableFunctions) {
+        return `
+            <select onchange="setPropertyFunction(${animationIx}, ${keyframeIx}, ${propertyIx}, this);">
+                <option selected="${selectedFunction ? 'false' : 'true'}" disabled="disabled">Select function</option>
+                ${availableFunctions[selectedProperty]?.map(f => {
+                    return `<option value="${f}" ${f == selectedFunction ? 'selected' : ''}>${f}</option>`
+                })}
+            </select>`;
+    } else {
+        return '';
     }
-
-
 };
 
 const trashIcon = (animationIx, keyframeIx, propertyIx) =>`
@@ -375,7 +380,8 @@ function runAnimation() {
             const thisKey = {
                 "opacity": '',
                 "transform": [],
-                "clip-path": []
+                "clip-path": [],
+                "filter": []
             }
 
             keyframe.properties.forEach(({propertyName, propertyFunction, value}) => {
@@ -393,15 +399,12 @@ function runAnimation() {
                 return p.replace('A_', '').replace('B_', '').replace('C_', '').replace('D_', '');
             });
 
-            const newClip = thisKey['clip-path']?.map(p => {
-                return ``
-            })
-
             return `
                 ${keyframe.key}% {
                     ${thisKey.opacity !== '' ? `opacity: ${thisKey.opacity};` : ''}
                     ${newTransforms.length > 0 ? `transform: ${newTransforms.join(' ')};` : ''}
                     ${thisKey['clip-path'].length > 0 ? `clip-path: ${thisKey['clip-path'].join(' ')};` : ''}
+                    ${thisKey['filter'].length > 0 ? `filter: ${thisKey['filter'].join(' ')};` : ''}
                 }`;
         });
 
