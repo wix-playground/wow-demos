@@ -60,16 +60,19 @@ input[type="file"] {
 }
 
 .icon {
-    font-size: 1em;
+    font-size: 1.4em;
     border: none;
     background: none;
+    vertical-align: middle;
+    cursor: pointer;
 
     & svg {
         width: 1m; height: 1em;
         fill: #777;
+        transition: fill 0.3s;
     }
 
-    &:hover & svg {
+    &:hover svg {
         fill: aquamarine;
     }
 }
@@ -189,5 +192,33 @@ input[type="file"] {
         display: grid;
         place-items: center;
         font-size: 120px;
+    }
+}
+
+.dialog {
+    position: fixed;
+    inset: 0;
+    background-color: #000e;
+    display: grid;
+    place-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s;
+
+    &_text {
+        width: 90%;
+        max-width: 520px;
+        padding: 1em;
+        background-color: #fff;
+        color: #000;
+    }
+
+    &.show {
+        opacity: 1;
+        pointer-events: all;
+    }
+
+    & p {
+        margin-bottom: 1em;
     }
 }

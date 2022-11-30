@@ -1,6 +1,5 @@
 const animationsContainer = document.querySelector('.animationsContainer');
 
-// const component = document.querySelector('.component');
 const liveWrapper = document.querySelector('.liveWrapper');
 const generatedKeyframes = document.querySelector('#generatedKeyframes');
 
@@ -19,7 +18,7 @@ const getSelectProperyElement = (animationIx, keyframeIx, propertyIx, selectedPr
     const availableProperties = [
         "opacity",
         "transform",
-        "clip-path",
+        // "clip-path",
         "filter"
     ];
 
@@ -42,6 +41,7 @@ const getPropertyFunctionElement = (animationIx, keyframeIx, propertyIx, selecte
             "rotateX",
             "rotateY",
             "rotateZ",
+            "scale",
             "scaleX",
             "scaleY",
             "scaleZ",
@@ -56,7 +56,7 @@ const getPropertyFunctionElement = (animationIx, keyframeIx, propertyIx, selecte
             // "path"
         ],
         "filter": [
-            // "blur",
+            "blur",
             "brightness",
             "contrast",
             // "drop-shadow",
@@ -82,12 +82,28 @@ const getPropertyFunctionElement = (animationIx, keyframeIx, propertyIx, selecte
     }
 };
 
-const trashIcon = (animationIx, keyframeIx, propertyIx) =>`
-    <button class="icon" type="button" onclick="deleteProperty(${animationIx}, ${keyframeIx}, ${propertyIx})">
-        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 64 64" xml:space="preserve">
-            <path d="M54,8H43V5c0-2.8-2.2-5-5-5H26c-2.8,0-5,2.2-5,5v3H10c-2.2,0-4,1.8-4,4v8h4.1l2.6,38.4c0.2,3.1,2.8,5.6,6,5.6h26.5    c3.1,0,5.8-2.5,6-5.6L53.9,20H58v-8C58,9.8,56.2,8,54,8z M21,52.1l-2-26l4-0.2l2,26L21,52.1z M34,52h-4V26h4V52z M37,8H27V6h10V8z     M43,52.1l-4-0.2l2-26l4,0.2L43,52.1z"/>
-        </svg>
-    </button>`;
+const trashIcon = (animationIx, keyframeIx, propertyIx) => {
+    return `
+        <button class="icon" type="button" onclick="deleteProperty(${animationIx}, ${keyframeIx}, ${propertyIx})">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 64 64" xml:space="preserve">
+                <path d="M54,8H43V5c0-2.8-2.2-5-5-5H26c-2.8,0-5,2.2-5,5v3H10c-2.2,0-4,1.8-4,4v8h4.1l2.6,38.4c0.2,3.1,2.8,5.6,6,5.6h26.5    c3.1,0,5.8-2.5,6-5.6L53.9,20H58v-8C58,9.8,56.2,8,54,8z M21,52.1l-2-26l4-0.2l2,26L21,52.1z M34,52h-4V26h4V52z M37,8H27V6h10V8z     M43,52.1l-4-0.2l2-26l4,0.2L43,52.1z"/>
+            </svg>
+        </button>`;
+};
+
+const iIcon = (propertyName, propertyFunction) => {
+
+    if (!propertyName) { return ''; }
+
+    return `
+        <button class="icon" type="button" onclick="showInfo('${propertyName}', '${propertyFunction}')">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 160 160" xml:space="preserve">
+                <path d="m80 15c-35.88 0-65 29.12-65 65s29.12 65 65 65 65-29.12 65-65-29.12-65-65-65zm0 10c30.36 0 55 24.64 55 55s-24.64 55-55 55-55-24.64-55-55 24.64-55 55-55z"/>
+                <path d="m57.373 18.231a9.3834 9.1153 0 1 1 -18.767 0 9.3834 9.1153 0 1 1 18.767 0z" transform="matrix(1.1989 0 0 1.2342 21.214 28.75)"/>
+                <path d="m90.665 110.96c-0.069 2.73 1.211 3.5 4.327 3.82l5.008 0.1v5.12h-39.073v-5.12l5.503-0.1c3.291-0.1 4.082-1.38 4.327-3.82v-30.813c0.035-4.879-6.296-4.113-10.757-3.968v-5.074l30.665-1.105"/>
+            </svg>
+        </button>`;
+};
 
 const selectEasingElement = (animationIx, selectedEase) => {
 
@@ -126,6 +142,23 @@ const selectEasingElement = (animationIx, selectedEase) => {
         <select onchange="setTimingFunction(${animationIx}, this);">
             ${Object.entries(allEasing).map(([name, value]) => {
                 return `<option value="${value}" ${selectedEase === value ? 'selected' : ''}>${name}</option>`
+            })}
+        </select>`;
+};
+
+function selectDirectionElement(animationIx, selectedDirection) {
+
+    const directions = [
+        'normal',
+        'reverse',
+        'alternate',
+        'alternate-reverse'
+
+    ]
+    return `
+        <select onchange="setDirection(${animationIx}, this);">
+            ${directions.map((d) => {
+                return `<option value="${d}" ${selectedDirection === d ? 'selected' : ''}>${cap(d)}</option>`
             })}
         </select>`;
 }
@@ -174,10 +207,11 @@ function addAnimation() {
     const animationIx = data.animations.length;
     const thisData = {
         name: `Animation${animationIx}`,
-        duration: 3,
+        duration: 1,
         delay: 0,
         timingFunction: 'linear',
         iterations: 1,
+        direction: 'normal',
         keyframes: [{
             key: '0',
             properties: [{ propertyName: undefined, value: '' }]
@@ -231,19 +265,22 @@ function renderForm() {
             keyframe.properties.forEach((property, propertyIx) => {
                 
                 const {propertyName, propertyFunction, value} = property;
+
+                const showValue = (propertyName === 'opacity') || (propertyFunction);
                 
                 propertiesHTML += `
                     <fieldset class="propertyWrapper" name="property${propertyIx}">
                         ${getSelectProperyElement(animationIx, keyframeIx, propertyIx, propertyName)}
                         ${getPropertyFunctionElement(animationIx, keyframeIx, propertyIx, propertyName, propertyFunction)}
-                        ${propertyName ?
+                        ${showValue ?
                             `<input
                                 type="text"
                                 class="keyframeInput"
                                 value="${value}"
                                 placeholder="value"
                                 onchange="setPropertyValue(${animationIx}, ${keyframeIx}, ${propertyIx}, this);"
-                                />` : ''}
+                                />
+                            ${iIcon(propertyName, propertyFunction)}` : ''}
                         ${trashIcon(animationIx, keyframeIx, propertyIx)}
                     </fieldset>
                 `;
@@ -285,6 +322,10 @@ function renderForm() {
                 <div class="animationDataline">
                     Timing function:
                     ${selectEasingElement(animationIx, animation.timingFunction)}
+                </div>
+                <div class="animationDataline">
+                    Direction:
+                    ${selectDirectionElement(animationIx, animation.direction)}
                 </div>
                 <div class="animationDataline">
                     Iterations:
@@ -346,6 +387,11 @@ function setTimingFunction(animationIx, e) {
     localStorage.setItem('animationsData', JSON.stringify(data));
 }
 
+function setDirection(animationIx, e) {
+    data.animations[animationIx].direction = e.options[e.selectedIndex].value;
+    localStorage.setItem('animationsData', JSON.stringify(data));
+}
+
 function setKey(animationIx, keyframeIx, v) {
     data.animations[animationIx].keyframes[keyframeIx].key = v;
     localStorage.setItem('animationsData', JSON.stringify(data));
@@ -353,6 +399,7 @@ function setKey(animationIx, keyframeIx, v) {
 
 function setPropertyName(animationIx, keyframeIx, propertyIx, e) {
     data.animations[animationIx].keyframes[keyframeIx].properties[propertyIx].propertyName = e.options[e.selectedIndex].value;
+    data.animations[animationIx].keyframes[keyframeIx].properties[propertyIx].propertyFunction = null;
     localStorage.setItem('animationsData', JSON.stringify(data));
     renderForm();
 }
@@ -360,8 +407,6 @@ function setPropertyName(animationIx, keyframeIx, propertyIx, e) {
 function setPropertyFunction(animationIx, keyframeIx, propertyIx, e) {
     data.animations[animationIx].keyframes[keyframeIx].properties[propertyIx].propertyFunction = e.options[e.selectedIndex].value;
     localStorage.setItem('animationsData', JSON.stringify(data));
-    console.log(e);
-    console.log(e.options[e.selectedIndex].value);
     renderForm();
 }
 
@@ -411,7 +456,7 @@ function runAnimation() {
         const wrapper = document.createElement('div');
         wrapper.classList.add(divs ? 'liveAnimationWrapper' : 'liveAnimationComponent');
 
-        const thisAnimation = `${animation.name} ${animation.duration}s ${animation.delay}s ${animation.iterations === '0' ? 'infinite' : animation.iterations} ${animation.timingFunction} both paused`;
+        const thisAnimation = `${animation.name} ${animation.duration}s ${animation.delay}s ${animation.iterations === '0' ? 'infinite' : animation.iterations} ${animation.direction || ''} ${animation.timingFunction || ''} both paused`;
         console.log(thisAnimation);
 
         wrapper.style.animation = thisAnimation;
@@ -471,5 +516,81 @@ function rerunAnimation() {
     });
 }
 
+function cap(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
 
+function showInfo(propertyName, propertyFunction) {
 
+    const dialogText = {
+        "opacity": {
+            "null": `
+                <p>Sets the opacity of an element</p>
+                <p>Values: a <b>number</b> in the range 0.0 to 1.0, or a <b>percentage</b> in the range 0% to 100%, representing the opacity of the channel</p>`
+        },
+        "transform" : {
+            "translate": `
+                <p>Repositions an element on the defined axis</p>
+                <p>Values: a <b>length</b> (px) or <b>percentage</b> (%) representing the distance of the translating vector. A percentage value refers to the width of the reference box defined by the transform-box property</p>`,
+            "rotate": `
+                <p>Rotates an element around a fixed point on a defined axis</p>
+                <p>Values: an <b>angle</b> (deg) representing the angle of the rotation</p>
+                <p>* The fixed point that the element rotates around (also known as the transform origin) defaults to the center of the element, but you can set your own custom transform origin</p>`,
+            "scale": `
+                <p>Scale (resize) an element on a defined axis</p>
+                <p>Values: a <b>number</b> or <b>percentage</b> specifying a scale factor</p>
+                <p>* The element scales around a fixed point (also known as the transform origin) defaults to the center of the element, but you can set your own custom transform origin</p>`,
+            "skew": `
+                <p>Skews an element on a defined axis (2D only)</p>
+                <p>Values: an <b>angle</b> (deg) representing the angle to use to distort the element</p>`
+        },
+        "filter": {
+            "blur": `
+                <p>Applies a Gaussian blur to the element<p>
+                <p>The value (px) defines the standard deviation to the Gaussian function, or how many pixels on the screen blend into each other, so a larger value will create more blur. (does not accept percentage)</p>`,
+            "brightness": `
+                <p>Applies a linear multiplier to the element, making it appear more or less bright<p>
+                <p>Values: a <b>number</b> or <b>percentage</b></p>
+                <p>A value of 0% will create an image that is completely black. A value of 100% leaves the element unchanged. Other values are linear multipliers on the effect. Values of an amount over 100% are allowed, providing brighter results. No value under 0%</p>`,
+            "contrast": `
+                <p>Adjusts the contrast of the element<p>
+                <p>Values: a <b>number</b> or <b>percentage</b></p>
+                <p>A value of 0% will create an image that is completely gray. A value of 100% leaves the element unchanged. Values of an amount over 100% are allowed, providing results with more contrast. No value under 0%</p>`,
+            "grayscale": `
+                <p>Converts the element to grayscale<p>
+                <p>Values: a <b>number</b> in the range 0.0 to 1.0, or a <b>percentage</b> in the range 0% to 100%, defines the proportion of the conversion</p>`,
+            "hue-rotate": `
+                <p>Applies a hue rotation on the element<p>
+                <p>Values: an <b>angle</b> (deg) that defines the number of degrees to rotate around the color circle. Though there is no maximum value; the effect of values above 360deg wraps around</p>`,
+            "invert": `
+                <p>Inverts the samples in the element<p>
+                <p>Values: a <b>number</b> in the range 0.0 to 1.0, or a <b>percentage</b> in the range 0% to 100%, defines the proportion of the conversion</p>`,
+            "saturate": `
+                <p>Saturates the colors of an element<p>
+                <p>Values: a <b>number</b> or <b>percentage</b></p>
+                <p>A value of 0% is completely un-saturated. A value of 100% leaves the input unchanged. Other values are linear multipliers on the effect. Values of amount over 100% are allowed, providing super-saturated results. No value under 0%</p>`,
+            "sepia": `
+                <p>Converts the element to sepia<p>
+                <p>Values: a <b>number</b> in the range 0.0 to 1.0, or a <b>percentage</b> in the range 0% to 100%, defines the proportion of the conversion</p>`,
+            }
+    }
+
+    const dialogLinks = {
+        "opacity": "https://developer.mozilla.org/en-US/docs/Web/CSS/opacity",
+        "transform" : "https://developer.mozilla.org/en-US/docs/Web/CSS/transform",
+        "clip-path": "https://developer.mozilla.org/en-US/docs/Web/CSS/clip-path",
+        "filter": "https://developer.mozilla.org/en-US/docs/Web/CSS/filter",
+    }
+
+    if (propertyName === 'transform') {
+        propertyFunction = propertyFunction.replace('X', '').replace('Y', '').replace('Z', '');
+    }
+    
+    document.querySelector('.dialog_text').innerHTML = `
+        <h2>${cap(propertyName) + (propertyFunction !== 'null' ? `- ${propertyFunction}` : '')}</h2>
+        ${dialogText[propertyName]?.[propertyFunction]}
+        <a href="${dialogLinks[propertyName]}">More info on MDN</a> 
+    `;
+    
+    document.querySelector('.dialog').classList.add('show');
+}

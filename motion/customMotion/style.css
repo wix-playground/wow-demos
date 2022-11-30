@@ -57,16 +57,19 @@ input[type=file] {
 }
 
 .icon {
-  font-size: 1em;
+  font-size: 1.4em;
   border: none;
   background: none;
+  vertical-align: middle;
+  cursor: pointer;
 }
 .icon svg {
   width: 1m;
   height: 1em;
   fill: #777;
+  transition: fill 0.3s;
 }
-.icon:hover .icon svg {
+.icon:hover svg {
   fill: aquamarine;
 }
 
@@ -181,4 +184,29 @@ input[type=file] {
   display: grid;
   place-items: center;
   font-size: 120px;
+}
+
+.dialog {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.9333333333);
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s;
+}
+.dialog_text {
+  width: 90%;
+  max-width: 520px;
+  padding: 1em;
+  background-color: #fff;
+  color: #000;
+}
+.dialog.show {
+  opacity: 1;
+  pointer-events: all;
+}
+.dialog p {
+  margin-bottom: 1em;
 }/*# sourceMappingURL=style.css.map */
