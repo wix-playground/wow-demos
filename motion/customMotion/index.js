@@ -4,13 +4,16 @@ const liveWrapper = document.querySelector('.liveWrapper');
 const generatedKeyframes = document.querySelector('#generatedKeyframes');
 
 const perspectiveInput = document.querySelector('.perspectiveInput');
+const transformOriginInput = document.querySelector('.transformOriginInput');
 
 let data = JSON.parse(localStorage.getItem('animationsData')) || {
     animations: [],
-    perspective: ''
+    perspective: '800px',
+    transformOrigin: ''
 };
 
 perspectiveInput.value = data.perspective;
+transformOriginInput.value = data.transformOrigin;
 let usePerspective = false;
 
 const getSelectProperyElement = (animationIx, keyframeIx, propertyIx, selectedProperty) => {
@@ -108,6 +111,7 @@ const iIcon = (propertyName, propertyFunction) => {
 const selectEasingElement = (animationIx, selectedEase) => {
 
     const allEasing = {
+        custom: 'custom',
         linear: 'linear',
 
         easeInSine: "cubic-bezier(0.12, 0, 0.39, 0)",
@@ -166,7 +170,9 @@ function selectDirectionElement(animationIx, selectedDirection) {
 function clearData() {
     data.animations.splice(0, data.animations.length);
     data.perspective = '800px';
+    data.transformOrigin = '';
     perspectiveInput.value = '800px';
+    transformOriginInput.value = '';
     localStorage.clear();
     addAnimation();
 }
@@ -210,6 +216,7 @@ function addAnimation() {
         duration: 1,
         delay: 0,
         timingFunction: 'linear',
+        customTiming: '',
         iterations: 1,
         direction: 'normal',
         keyframes: [{
@@ -322,6 +329,14 @@ function renderForm() {
                 <div class="animationDataline">
                     Timing function:
                     ${selectEasingElement(animationIx, animation.timingFunction)}
+                    ${animation.timingFunction === 'custom' ? `
+                        <input
+                            type="text"
+                            class="customTimingInput"
+                            value="${animation.customTiming}"
+                            placeholder="cubic-bezier(...)"
+                            onchange="setCustomTiming(${animationIx}, this.value);">
+                    ` : ''}
                 </div>
                 <div class="animationDataline">
                     Direction:
@@ -362,6 +377,11 @@ function setPerspective(v) {
     localStorage.setItem('animationsData', JSON.stringify(data));
 }
 
+function setTransformOrigin(v) {
+    data.transformOrigin = v;
+    localStorage.setItem('animationsData', JSON.stringify(data));
+}
+
 function setAnimationName(animationIx, v) {
     data.animations[animationIx].name = v;
     localStorage.setItem('animationsData', JSON.stringify(data));
@@ -384,6 +404,12 @@ function setIterations(animationIx, v) {
 
 function setTimingFunction(animationIx, e) {
     data.animations[animationIx].timingFunction = e.options[e.selectedIndex].value;
+    renderForm();
+    // localStorage.setItem('animationsData', JSON.stringify(data));
+}
+
+function setCustomTiming(animationIx, v) {
+    data.animations[animationIx].customTiming = v;
     localStorage.setItem('animationsData', JSON.stringify(data));
 }
 
@@ -456,7 +482,7 @@ function runAnimation() {
         const wrapper = document.createElement('div');
         wrapper.classList.add(divs ? 'liveAnimationWrapper' : 'liveAnimationComponent');
 
-        const thisAnimation = `${animation.name} ${animation.duration}s ${animation.delay}s ${animation.iterations === '0' ? 'infinite' : animation.iterations} ${animation.direction || ''} ${animation.timingFunction || ''} both paused`;
+        const thisAnimation = `${animation.name} ${animation.duration}s ${animation.delay}s ${animation.iterations === '0' ? 'infinite' : animation.iterations} ${animation.direction || ''} ${animation.timingFunction  === 'custom' ? animation.customTiming : animation.timingFunction} both paused`;
         console.log(thisAnimation);
 
         wrapper.style.animation = thisAnimation;
@@ -481,7 +507,7 @@ function runAnimation() {
     liveWrapper.appendChild(divs);
     
     if (usePerspective) {
-        liveWrapper.style.perspective = document.querySelector('.perspectiveInput').value;
+        liveWrapper.style.perspective = perspectiveInput.value;
     }
 
     setTimeout(() => {
@@ -591,6 +617,6 @@ function showInfo(propertyName, propertyFunction) {
         ${dialogText[propertyName]?.[propertyFunction]}
         <a href="${dialogLinks[propertyName]}">More info on MDN</a> 
     `;
-    
+
     document.querySelector('.dialog').classList.add('show');
 }

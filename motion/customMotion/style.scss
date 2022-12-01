@@ -81,6 +81,23 @@ input[type="file"] {
     padding: 1em 0.25em;
     border-bottom: 1px solid #777;
     margin-bottom: 1em;
+
+    label {
+        display: block;
+        padding-inline-start: 2em;
+        margin-bottom: 0.5em;    
+    }
+
+    input {
+        background: none;
+        color: #ccf;
+        border: none;
+        border-bottom: 1px solid;
+
+        &:disabled {
+            color: #336;
+        }
+    }
 }
 
 .animationName {
@@ -105,6 +122,10 @@ input[type="file"] {
     
     input {
         width: 100px;
+    }
+
+    .customTimingInput {
+        width: 240px
     }
 }
 
