@@ -78,6 +78,21 @@ input[type=file] {
   border-bottom: 1px solid #777;
   margin-bottom: 1em;
 }
+.perspectiveWrapper label {
+  display: block;
+  -webkit-padding-start: 2em;
+          padding-inline-start: 2em;
+  margin-bottom: 0.5em;
+}
+.perspectiveWrapper input {
+  background: none;
+  color: #ccf;
+  border: none;
+  border-bottom: 1px solid;
+}
+.perspectiveWrapper input:disabled {
+  color: #336;
+}
 
 .animationName {
   display: inline-block;
@@ -100,6 +115,9 @@ input[type=file] {
 }
 .animationDataline input {
   width: 100px;
+}
+.animationDataline .customTimingInput {
+  width: 240px;
 }
 
 .keyframeInput::after {
