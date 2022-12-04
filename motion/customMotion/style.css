@@ -120,11 +120,6 @@ input[type=file] {
   width: 240px;
 }
 
-.keyframeInput::after {
-  display: inline-block;
-  content: "sdfsd";
-}
-
 .animationWrapper::after {
   content: " }";
 }
@@ -153,6 +148,24 @@ input[type=file] {
 .propertiesWrapper {
   -webkit-padding-start: 2em;
           padding-inline-start: 2em;
+}
+
+.subInput {
+  width: 100px;
+}
+
+.multiValuesBtn {
+  width: 1em;
+  background: none;
+  border: none;
+  fill: var(--fill, #777);
+  transition: fill 0.3s;
+}
+.multiValuesBtn.on {
+  --fill: lightcoral;
+}
+.multiValuesBtn:hover {
+  --fill: aquamarine;
 }
 
 .liveWrapper {

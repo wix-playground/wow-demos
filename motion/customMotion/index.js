@@ -9,7 +9,7 @@ const transformOriginInput = document.querySelector('.transformOriginInput');
 let data = JSON.parse(localStorage.getItem('animationsData')) || {
     animations: [],
     perspective: '800px',
-    transformOrigin: ''
+    transformOrigin: 'center'
 };
 
 perspectiveInput.value = data.perspective;
@@ -21,7 +21,7 @@ const getSelectProperyElement = (animationIx, keyframeIx, propertyIx, selectedPr
     const availableProperties = [
         "opacity",
         "transform",
-        // "clip-path",
+        "clip-path",
         "filter"
     ];
 
@@ -170,9 +170,9 @@ function selectDirectionElement(animationIx, selectedDirection) {
 function clearData() {
     data.animations.splice(0, data.animations.length);
     data.perspective = '800px';
-    data.transformOrigin = '';
-    perspectiveInput.value = '800px';
-    transformOriginInput.value = '';
+    data.transformOrigin = 'center';
+    perspectiveInput.value = data.perspective;
+    transformOriginInput.value = data.transformOrigin;
     localStorage.clear();
     addAnimation();
 }
@@ -274,20 +274,92 @@ function renderForm() {
                 const {propertyName, propertyFunction, value} = property;
 
                 const showValue = (propertyName === 'opacity') || (propertyFunction);
+                let valueInput = '';
+                let multiValues = '';
+
+                switch (propertyFunction) {
+                    
+                    case 'inset':
+                        multiValues = value.split("~");
+                        if (multiValues.length > 1) {
+                            ['top', 'right', 'bottom', 'left'].forEach((v, ix) => {
+                                valueInput += `
+                                    <input
+                                        type="text"
+                                        class="subInput"
+                                        value="${multiValues[ix]}"
+                                        placeholder="${v}"
+                                        onchange="setSubValue(${animationIx}, ${keyframeIx}, ${propertyIx}, this);"
+                                        />`;
+                            });
+                        } else {
+                            valueInput = `
+                                <input
+                                    type="text"
+                                    value="${value}"
+                                    placeholder="value"
+                                    onchange="setPropertyValue(${animationIx}, ${keyframeIx}, ${propertyIx}, this);"
+                                    />`;
+                        }
+                        valueInput += `
+                            <button type="button" class="${multiValues.length > 1 ? 'on' : ''} multiValuesBtn" onclick="setmMultiValues(${animationIx}, ${keyframeIx}, ${propertyIx})">
+                                <svg class="${multiValues.length > 1 ? 'on' : ''}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 64 64">
+                                    <circle cx="0" cy="0" r="24" />
+                                    <circle cx="64" cy="0" r="24" />
+                                    <circle cx="0" cy="64" r="24" />
+                                    <circle cx="64" cy="64" r="24" />
+                                </svg>            
+                            </button>
+                            ${iIcon(propertyName, propertyFunction)}`;
+                        break;
+                        
+                    case 'circle':                        
+                        multiValues = value.split("~");
+                        ['size', 'left', 'top'].forEach((v, ix) => {
+                            valueInput += `
+                                <input
+                                    type="text"
+                                    class="subInput"
+                                    value="${multiValues[ix] || (ix > 0 ? 'center' : '')}"
+                                    placeholder="${v}"
+                                    onchange="setSubValue(${animationIx}, ${keyframeIx}, ${propertyIx}, this);"
+                                    />`;
+                        });
+                        valueInput += `${iIcon(propertyName, propertyFunction)}`;
+                        break;
+
+                    case 'ellipse':                        
+                        multiValues = value.split("~");
+                        ['width', 'height', 'left', 'top'].forEach((v, ix) => {
+                            valueInput += `
+                                <input
+                                    type="text"
+                                    class="subInput"
+                                    value="${multiValues[ix] || (ix > 1 ? 'center' : '')}"
+                                    placeholder="${v}"
+                                    onchange="setSubValue(${animationIx}, ${keyframeIx}, ${propertyIx}, this);"
+                                    />`;
+                        });
+                        valueInput += `${iIcon(propertyName, propertyFunction)}`;
+                        break;
+
+                    default:
+                        valueInput = `
+                            <input
+                                type="text"
+                                value="${value}"
+                                placeholder="value"
+                                onchange="setPropertyValue(${animationIx}, ${keyframeIx}, ${propertyIx}, this);"
+                                />
+                            ${iIcon(propertyName, propertyFunction)}`;
+                        break;
+                }
                 
                 propertiesHTML += `
                     <fieldset class="propertyWrapper" name="property${propertyIx}">
                         ${getSelectProperyElement(animationIx, keyframeIx, propertyIx, propertyName)}
                         ${getPropertyFunctionElement(animationIx, keyframeIx, propertyIx, propertyName, propertyFunction)}
-                        ${showValue ?
-                            `<input
-                                type="text"
-                                class="keyframeInput"
-                                value="${value}"
-                                placeholder="value"
-                                onchange="setPropertyValue(${animationIx}, ${keyframeIx}, ${propertyIx}, this);"
-                                />
-                            ${iIcon(propertyName, propertyFunction)}` : ''}
+                        ${showValue ? valueInput : ''}
                         ${trashIcon(animationIx, keyframeIx, propertyIx)}
                     </fieldset>
                 `;
@@ -432,6 +504,7 @@ function setPropertyName(animationIx, keyframeIx, propertyIx, e) {
 
 function setPropertyFunction(animationIx, keyframeIx, propertyIx, e) {
     data.animations[animationIx].keyframes[keyframeIx].properties[propertyIx].propertyFunction = e.options[e.selectedIndex].value;
+    data.animations[animationIx].keyframes[keyframeIx].properties[propertyIx].value = '';
     localStorage.setItem('animationsData', JSON.stringify(data));
     renderForm();
 }
@@ -439,6 +512,23 @@ function setPropertyFunction(animationIx, keyframeIx, propertyIx, e) {
 function setPropertyValue(animationIx, keyframeIx, propertyIx, e) {
     data.animations[animationIx].keyframes[keyframeIx].properties[propertyIx].value = e.value;
     localStorage.setItem('animationsData', JSON.stringify(data));
+}
+
+function setSubValue(animationIx, keyframeIx, propertyIx, e) {
+    data.animations[animationIx].keyframes[keyframeIx].properties[propertyIx].value = [...e.parentElement.querySelectorAll('input.subInput')].map(i => i.value).join('~');
+    localStorage.setItem('animationsData', JSON.stringify(data));
+}
+
+function setmMultiValues(animationIx, keyframeIx, propertyIx) {
+
+    const multiValues = data.animations[animationIx].keyframes[keyframeIx].properties[propertyIx].value.split("~");
+
+    if (multiValues.length > 1) {
+        data.animations[animationIx].keyframes[keyframeIx].properties[propertyIx].value = multiValues[0];
+    } else {
+        data.animations[animationIx].keyframes[keyframeIx].properties[propertyIx].value = multiValues + '~~~';
+    }
+    renderForm();
 }
 
 function runAnimation() {
@@ -456,10 +546,22 @@ function runAnimation() {
             }
 
             keyframe.properties.forEach(({propertyName, propertyFunction, value}) => {
+                
                 if (propertyName === 'opacity') {
                     thisKey.opacity = value;
+                    
+                } else if ((propertyFunction === 'circle') || (propertyFunction === 'ellipse')) {
+                    const newValue = value.split('~').map(v => {return v === '' ? '0' : v; });
+                    newValue.splice(-2, 0, "at");
+
+                    thisKey[propertyName]?.push(`${propertyFunction}(${
+                        newValue.join(' ')
+                    })`);
+
                 } else {
-                    thisKey[propertyName]?.push(`${propertyFunction}(${value})`);
+                    thisKey[propertyName]?.push(`${propertyFunction}(${
+                        value.split('~').map(v => {return v === '' ? '0' : v; }).join(' ')
+                    })`);
                 }
             });
 
@@ -489,7 +591,9 @@ function runAnimation() {
         wrapper.dataset.animation = thisAnimation;
         
         if (divs) {
-             wrapper.appendChild(divs);
+            wrapper.appendChild(divs);
+        } else {
+            wrapper.style.transformOrigin = data.transformOrigin;   
         }
         divs = wrapper;
 
@@ -570,6 +674,18 @@ function showInfo(propertyName, propertyFunction) {
                 <p>Skews an element on a defined axis (2D only)</p>
                 <p>Values: an <b>angle</b> (deg) representing the angle to use to distort the element</p>`
         },
+        "clip-path": {
+            "inset": `
+                <p>defines an inset rectangle</p>
+                <p>Values: a <b>length</b> (px) or <b>percentage</b> (%) defines the offset from the reference box inward</p>
+                <p>When all of the four arguments are supplied they represent the individual positions of the edges of the inset rectangle</p>`,
+            "circle": `
+                <p>defines an inset circle</p>
+                <p>Values: a <b>length</b> (px) or <b>percentage</b> (%) defines the size of the circle. Percentage are relative to the reference box inward</p>`,
+            "ellipse": `
+                <p>defines an inset ellipse</p>
+                <p>Values: a <b>length</b> (px) or <b>percentage</b> (%) defines the size of the circle. Percentage are relative to the reference box inward</p>`,
+        },
         "filter": {
             "blur": `
                 <p>Applies a Gaussian blur to the element<p>
@@ -613,7 +729,7 @@ function showInfo(propertyName, propertyFunction) {
     }
     
     document.querySelector('.dialog_text').innerHTML = `
-        <h2>${cap(propertyName) + (propertyFunction !== 'null' ? `- ${propertyFunction}` : '')}</h2>
+        <h2>${cap(propertyName) + (propertyFunction !== 'null' ? ` - ${propertyFunction}` : '')}</h2>
         ${dialogText[propertyName]?.[propertyFunction]}
         <a href="${dialogLinks[propertyName]}">More info on MDN</a> 
     `;

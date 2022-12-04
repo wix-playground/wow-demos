@@ -129,11 +129,6 @@ input[type="file"] {
     }
 }
 
-.keyframeInput::after {
-    display: inline-block;
-    content: 'sdfsd';
-}
-
 .animationWrapper {
     &::after {
         content: " }"
@@ -164,6 +159,25 @@ input[type="file"] {
 
 .propertiesWrapper {
     padding-inline-start: 2em;
+}
+
+.subInput {
+    width: 100px;
+}
+
+.multiValuesBtn {
+    width: 1em;
+    background: none;
+    border: none;
+    fill: var(--fill, #777);
+    transition: fill 0.3s;
+
+    &.on {
+        --fill: lightcoral;
+    }
+    &:hover {
+        --fill: aquamarine;
+    }
 }
 
 // live
