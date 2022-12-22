@@ -206,7 +206,7 @@ input[type=file] {
   width: 420px;
   height: 320px;
   border: 1px solid #fff;
-  background-image: url("./wix-motion.jpg");
+  background-image: url("./wix-motion-bg.jpeg");
 }
 .liveAnimationComponent::after {
   content: "TEXT";

@@ -37,7 +37,7 @@ body {
     background-position-y: 100%;
     background-size: 100% 200%;
     transition: background-position-y 0.25s;
-    
+
     &:hover {
         background-position-y: 50%;
     }
@@ -85,7 +85,7 @@ input[type="file"] {
     label {
         display: block;
         padding-inline-start: 2em;
-        margin-bottom: 0.5em;    
+        margin-bottom: 0.5em;
     }
 
     input {
@@ -119,7 +119,7 @@ input[type="file"] {
         border: none;
         border-bottom: 1px solid;
     }
-    
+
     input {
         width: 100px;
     }
@@ -218,7 +218,7 @@ input[type="file"] {
 .liveAnimationComponent {
     width: 420px; height: 320px;
     border: 1px solid #fff;
-    background-image: url('https://picsum.photos/420/320');
+    background-image: url('./wix-motion-bg.jpeg');
 
     &::after {
         content: 'TEXT';
