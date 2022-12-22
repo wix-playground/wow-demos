@@ -214,6 +214,8 @@ input[type=file] {
   inset: 0;
   display: grid;
   place-items: center;
+  font-family: "Playfair Display", serif;
+  color: #FFEE15;
   font-size: 4.5rem;
 }
 
