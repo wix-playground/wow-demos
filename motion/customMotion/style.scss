@@ -221,12 +221,12 @@ input[type="file"] {
     background-image: url('./wix-motion-bg.jpeg');
 
     &::after {
-        content: 'TEXT';
+        content: 'Wix Motion';
         position: absolute;
         inset: 0;
         display: grid;
         place-items: center;
-        font-size: 120px;
+        font-size: 4.5rem;
     }
 }
 
