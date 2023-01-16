@@ -1,4 +1,4 @@
-import { $id, $select, $selectAll, clamp, hex2rgba, getTempalteItem } from '../utils/utils.js';
+import { $id, $select, $selectAll, clamp, hex2rgba, getTemplateItem } from '../utils/utils.js';
 import webfontloader from 'https://cdn.skypack.dev/webfontloader';
 import opentypeJs from 'https://cdn.skypack.dev/opentype.js';
 import bidiFactory from 'https://cdn.skypack.dev/bidi-js';
@@ -321,7 +321,7 @@ function populateFontsList() {
 
     fonts.forEach(({ family, defaults }, index) => {
         // Create font item
-        const fontItem = getTempalteItem('#font-item-template');
+        const fontItem = getTemplateItem('#font-item-template');
         const content = fontItem.querySelector('[data-font-name]');
         const input = fontItem.querySelector('[data-font-input]');
 
@@ -352,14 +352,14 @@ function populateMediaList() {
 
         // Create image item
         if (type === 'image') {
-            mediaItem = getTempalteItem('#media-item-image-template');
+            mediaItem = getTemplateItem('#media-item-image-template');
 
             const image = mediaItem.querySelector('[data-thumb]');
             image.src = thumb;
         }
         // or - Create video item
         else if (type === 'video') {
-            mediaItem = getTempalteItem('#media-item-video-template');
+            mediaItem = getTemplateItem('#media-item-video-template');
 
             const video = mediaItem.querySelector('[data-thumb]');
             video.src = thumb;

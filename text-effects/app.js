@@ -5,7 +5,7 @@ import { createDocumentWireframe, makeWireframeElementResizable } from 'https://
 import { urlToForm, formToUrl } from 'https://tombigel.github.io/form-to-url-to-form/index.js';
 import { scalePath } from './scripts/path-utils.js';
 import { setTextToolbarFontList } from './scripts/text-toolbar.js';
-import { $id, $selectAll, getTempalteItem, hex2rgba, getRotatedBoundingRectScale, throttle, mapRange, $select } from '../utils/utils.js';
+import { $id, $selectAll, getTemplateItem, hex2rgba, getRotatedBoundingRectScale, throttle, mapRange, $select } from '../utils/utils.js';
 
 const ns = 'http://www.w3.org/2000/svg';
 
@@ -429,14 +429,14 @@ function setMediaList(media) {
 
         // Create image item
         if (type === 'image') {
-            mediaItem = getTempalteItem('#media-item-image-template');
+            mediaItem = getTemplateItem('#media-item-image-template');
 
             const image = mediaItem.querySelector('img');
             image.src = thumb;
         }
         // or - Create video item
         else if (type === 'video') {
-            mediaItem = getTempalteItem('#media-item-video-template');
+            mediaItem = getTemplateItem('#media-item-video-template');
 
             const video = mediaItem.querySelector('video');
             video.src = thumb;
@@ -464,7 +464,7 @@ function setMediaList(media) {
  */
 function setPathsList(paths) {
     paths.forEach(({ path, htap, selected }, index) => {
-        const item = getTempalteItem('#media-item-path-template');
+        const item = getTemplateItem('#media-item-path-template');
         const svg = item.querySelector('svg');
         const normal = item.querySelector('path.normal');
         const reversed = item.querySelector('path.reversed');

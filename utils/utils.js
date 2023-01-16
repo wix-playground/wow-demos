@@ -7,14 +7,14 @@ export const $id = (id) => document.getElementById(id);
 
 /**
  * Shorthand to document.querySelector
- * @param {string} id
+ * @param {string} selector
  * @returns {Element | null}
  */
 export const $select = (selector) => document.querySelector(selector);
 
 /**
  * Shorthand to document.querySelectorAll
- * @param {string} id
+ * @param {string} selector
  * @returns {Element[] | null}
  */
 export const $selectAll = (selector) => document.querySelectorAll(selector);
@@ -54,7 +54,7 @@ export const hex2rgba = (hex, alpha = 1) => {
  * @param {string} selector
  * @returns {HTMLElement}
  */
-export function getTempalteItem(selector) {
+export function getTemplateItem(selector) {
     return $select(selector).content.cloneNode(true).firstElementChild;
 }
 

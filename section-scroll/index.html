@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="cache-control" content="no-cache" />
+    <title>Playground for Scroll Effects with Sections as Source</title>
+    <style>
+        * {
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: grid;
+            grid-template: 'stage' 1fr / 1fr;
+            perspective: 1000px;
+            perspective-origin: top center;
+        }
+
+        main {
+            grid-area: stage;
+        }
+
+        section {
+            position: relative;
+            height: var(--strip-height, 100vh);
+            overflow: hidden;
+            background-color: var(--bg-color, transparent);
+        }
+
+        section .bg {
+            position: absolute;
+            z-index: 1;
+            inset: 0;
+        }
+
+        section .bg img {
+            width: 100%;
+            object-fit: cover;
+        }
+
+        section .content {
+            position: absolute;
+            z-index: 3;
+            inset: 0;
+            grid-area: 1 / 1 / 4 / 2;
+            display: grid;
+            grid-template: 'header    header' 3rem
+                           'paragraph figure'  auto
+                           'paragraph figure'  auto / 600px auto;
+            gap: 1.5rem;
+            padding: 3em;
+            font-size: 22px;
+        }
+
+        .content header {
+            grid-area: header;
+            font: 3rem sans-serif;
+            mix-blend-mode: difference;
+        }
+
+        .content .text {
+            grid-area: paragraph;
+            mix-blend-mode: difference;
+        }
+
+        .content .text p {
+            margin-bottom: 1.5rem;
+        }
+
+        .content figure {
+            grid-area: figure;
+        }
+
+        .dg.ac {
+            z-index: 10 !important;
+        }
+    </style>
+</head>
+<body>
+<div id="wrapper">
+    <main>
+        <section id="strip-1">
+            <div class="bg">
+                <img src="https://picsum.photos/1920/1066?random=1" crossorigin="anonymous"/>
+            </div>
+            <div class="content">
+
+            </div>
+        </section>
+        <section id="strip-2">
+            <div class="bg">
+                <img src="https://picsum.photos/1920/1066?random=2" crossorigin="anonymous"/>
+            </div>
+            <div class="content">
+
+            </div>
+        </section>
+        <section id="strip-3">
+            <div class="bg">
+                <img src="https://picsum.photos/1920/1066?random=3" crossorigin="anonymous"/>
+            </div>
+            <div class="content">
+
+            </div>
+        </section>
+        <section id="strip-4">
+            <div class="bg">
+                <img src="https://picsum.photos/1920/1066?random=4" crossorigin="anonymous"/>
+            </div>
+            <div class="content">
+
+            </div>
+        </section>
+        <section id="strip-5">
+            <div class="bg">
+                <img src="https://picsum.photos/1920/1066?random=5" crossorigin="anonymous"/>
+            </div>
+            <div class="content">
+
+            </div>
+        </section>
+    </main>
+</div>
+<script src="dat.gui.js"></script>
+<script src="index.js"></script>
+</body>
+</html>

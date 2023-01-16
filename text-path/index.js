@@ -6,7 +6,7 @@ import { urlToForm, formToUrl } from 'https://tombigel.github.io/form-to-url-to-
 import SvgPathCommander from 'https://cdn.skypack.dev/svg-path-commander';
 import gsap from 'https://cdn.skypack.dev/gsap';
 
-import { $id, $select, $selectAll, clamp, hex2rgba, getTempalteItem } from '../utils/utils.js';
+import { $id, $select, $selectAll, clamp, hex2rgba, getTemplateItem } from '../utils/utils.js';
 
 function setFormEvents(form) {
     urlToForm(form);
@@ -290,7 +290,7 @@ async function getConfig() {
 function populateFontsList(fonts) {
     fonts.forEach(({ family, defaults }, index) => {
         // Create font item
-        const fontItem = getTempalteItem('#font-item-template');
+        const fontItem = getTemplateItem('#font-item-template');
         const content = fontItem.querySelector('[data-font-name]');
         const input = fontItem.querySelector('[data-font-input]');
 
@@ -314,7 +314,7 @@ function populateFontsList(fonts) {
  */
 function populatePathsList(paths) {
     paths.forEach(({ path, defaults }, index) => {
-        const pathItem = getTempalteItem('#path-item-template');
+        const pathItem = getTemplateItem('#path-item-template');
         const thumb = pathItem.querySelector('[data-thumb]');
         thumb.querySelector('path').setAttribute('d', path);
 
