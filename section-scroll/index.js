@@ -14,14 +14,14 @@ const TEXT = 'text';
 const EFFECTS_CONFIG = {
     TRANSLATE_X: {
         LABEL: 'Translate X',
-        MIN: -(window.innerWidth / 2 + 250),
-        MAX: window.innerWidth / 2 + 250,
+        MIN: -window.innerWidth,
+        MAX: window.innerWidth,
         STEP: 5
     },
     TRANSLATE_Y: {
         LABEL: 'Translate Y',
-        MIN: -(window.innerHeight / 2 + 200),
-        MAX: window.innerHeight / 2 + 200,
+        MIN: -window.innerHeight,
+        MAX: window.innerHeight,
         STEP: 5
     },
     ROTATE: {
@@ -36,6 +36,12 @@ const EFFECTS_CONFIG = {
         MAX: 2,
         STEP: .1
     },
+    OPACITY: {
+        LABEL: 'Opacity',
+        MIN: 0,
+        MAX: 1,
+        STEP: .1
+    },
 };
 
 
@@ -46,6 +52,7 @@ const config = {
             [EFFECTS_CONFIG.TRANSLATE_Y.LABEL]: 0,
             [EFFECTS_CONFIG.ROTATE.LABEL]: 0,
             [EFFECTS_CONFIG.SCALE.LABEL]: 1,
+            [EFFECTS_CONFIG.OPACITY.LABEL]: 1,
         }
     }
 };
@@ -123,6 +130,14 @@ function createSection1Folder() {
             const toFrame = sections[0].querySelector('.to-frame');
             photo.style.setProperty('--scale', val - 1);
             toFrame.style.setProperty('--scale', val - 1);
+            init();
+        })
+    photo1.add(config[SECTION_1][PHOTO], ...Object.values(EFFECTS_CONFIG.OPACITY))
+        .onChange(val => {
+            const photo = sections[0].querySelector('.photo');
+            const toFrame = sections[0].querySelector('.to-frame');
+            photo.style.setProperty('--opacity', val - 1);
+            toFrame.style.setProperty('--opacity', val - 1);
             init();
         })
 }

@@ -61,6 +61,7 @@
         }
 
         #strip-1 .photo {
+            opacity: calc(1 + var(--pos, 0) * var(--opacity, 0));
             transform: 
                 translateX(calc(var(--pos, 0) * var(--x-trans, 0)))
                 translateY(calc(var(--pos, 0) * var(--y-trans, 0)))
