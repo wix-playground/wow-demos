@@ -8,6 +8,7 @@
     <style>
         * {
             margin: 0;
+            padding: 0;
             box-sizing: border-box;
         }
 
@@ -28,114 +29,80 @@
             height: var(--strip-height, 100vh);
             overflow: hidden;
             background-color: var(--bg-color, transparent);
+            display: grid;
+            justify-content: center;
+            align-items: center;
+            
         }
 
-        /* section .bg {
-            position: absolute;
-            z-index: 1;
-            inset: 0;
-        } */
         section:nth-child(2n) {
-            background-color: aquamarine;
+            background-image: linear-gradient(lightsalmon, lightpink, lightblue);
+            margin: 5px 0;
         }
         section:nth-child(2n + 1) {
-            background-color: lightpink;
-        }
-
-        section img {
-            width: 100%;
-            /* object-fit: cover; */
+            background-image: linear-gradient(lightblue, lightskyblue, lightsalmon);
         }
 
         section .content {
-            position: absolute;
-            z-index: 3;
-            inset: 0;
-            grid-area: 1 / 1 / 4 / 2;
             display: grid;
-            grid-template: 'header    header' 3rem
-                           'paragraph figure'  auto
-                           'paragraph figure'  auto / 600px auto;
-            gap: 1.5rem;
-            padding: 3em;
+            grid-template: 1fr/1fr;
+            grid-template-areas: 'content';
+            place-items: center;
             font-size: 22px;
         }
 
-        .content header {
-            grid-area: header;
-            font: 3rem sans-serif;
-            mix-blend-mode: difference;
-        }
-
-        .content .text {
-            grid-area: paragraph;
-            mix-blend-mode: difference;
-        }
-
-        .content .text p {
-            margin-bottom: 1.5rem;
-        }
-
-        .content .photo {
-            margin-top: 50%;
+        #strip-1 .content > * {
+            grid-area: content;
         }
 
         .dg.ac {
             z-index: 10 !important;
+            position: sticky;
         }
 
-        /* return a * (1 - t) + b * t; */
-        /* a - at + bt */
-        /* t(b - a) + a */
-        /* v0 + vt */
         #strip-1 .photo {
-            transform: translateY(
-                calc(
-                    var(--yMin, 0) * (1 -  var(--p, 0)) + var(--yMax, 0) * var(--p, 0)
-                )
-            );
+            transform: 
+                translateX(calc(var(--pos, 0) * var(--x-trans, 0)))
+                translateY(calc(var(--pos, 0) * var(--y-trans, 0)))
+                rotate(calc(var(--pos, 0) * var(--rotate, 0)))
         }
+        #strip-1 .to-frame {
+            width: 500px;
+            height: 400px;
+            outline: 1px dotted grey;
+            transform: 
+                translateX(var(--x-trans, 0))
+                translateY(var(--y-trans, 0))
+                rotate(var(--rotate, 0))
+        }
+
     </style>
 </head>
 <body>
 <div id="wrapper">
     <main>
         <section id="strip-1">
-            <div class="bg">
-                <!-- <img src="https://picsum.photos/1920/1066?random=1" crossorigin="anonymous"/> -->
-            </div>
             <div class="content">
                 <img class="photo" src="https://picsum.photos/500/400?random=1" alt="">
+                <div class="to-frame"></div>
             </div>
         </section>
         <section id="strip-2">
-            <div class="bg">
-                <!-- <img src="https://picsum.photos/1920/1066?random=2" crossorigin="anonymous"/> -->
-            </div>
             <div class="content">
 
             </div>
         </section>
         <section id="strip-3">
-            <div class="bg">
-                <!-- <img src="https://picsum.photos/1920/1066?random=3" crossorigin="anonymous"/> -->
-            </div>
             <div class="content">
 
             </div>
         </section>
         <section id="strip-4">
-            <div class="bg">
-                <!-- <img src="https://picsum.photos/1920/1066?random=4" crossorigin="anonymous"/> -->
-            </div>
             <div class="content">
 
             </div>
         </section>
         <section id="strip-5">
-            <div class="bg">
-                <!-- <img src="https://picsum.photos/1920/1066?random=5" crossorigin="anonymous"/> -->
-            </div>
             <div class="content">
 
             </div>
