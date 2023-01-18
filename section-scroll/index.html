@@ -14,25 +14,31 @@
 
         body {
             min-height: 100vh;
-            display: grid;
+            /* display: grid;
             grid-template: 'stage' 1fr / 1fr;
             perspective: 1000px;
-            perspective-origin: top center;
+            perspective-origin: top center; */
         }
 
-        main {
+        /* main {
             grid-area: stage;
-        }
+        } */
 
         section {
             position: relative;
             height: var(--strip-height, 100vh);
             overflow: hidden;
-            background-color: var(--bg-color, transparent);
+            /* background-color: var(--bg-color, transparent); */
             display: grid;
             justify-content: center;
             align-items: center;
-            
+        }
+
+        h1 {
+            width: 100%;
+            text-align: center;
+            font-family: sans-serif;
+            font-size: 50px;
         }
 
         section:nth-child(2n) {
@@ -60,7 +66,7 @@
             position: sticky;
         }
 
-        #strip-1 .photo {
+        #strip-1 .element {
             opacity: calc(1 + var(--pos, 0) * var(--opacity, 0));
             transform: 
                 translateX(calc(var(--pos, 0) * var(--x-trans, 0)))
@@ -70,7 +76,7 @@
         }
         #strip-1 .ghost {
             opacity: var(--no-ghost, 0.1);
-            outline: 1px dotted black;
+            /* outline: 1px dotted black; */
             transform: 
                 translateX(var(--x-trans, 0))
                 translateY(var(--y-trans, 0))
@@ -85,8 +91,17 @@
     <main>
         <section id="strip-1">
             <div class="content">
-                <img class="photo" src="https://picsum.photos/500/400?random=1" alt="">
+                <h1 class="element">Out animations</h1>
+                <h1 class="ghost">Out animations</h1>
+            </div>
+            <div class="content">
+                <img class="element" src="https://picsum.photos/500/400?random=1" alt="">
                 <img class="ghost" src="https://picsum.photos/500/400?random=1" alt="">
+                <!-- <div class="ghost"></div> -->
+            </div>
+            <div class="content">
+                <!-- <img class="element" src="https://picsum.photos/500/400?random=1" alt="">
+                <img class="ghost" src="https://picsum.photos/500/400?random=1" alt=""> -->
                 <!-- <div class="ghost"></div> -->
             </div>
         </section>
