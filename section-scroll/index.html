@@ -68,10 +68,9 @@
                 rotate(calc(var(--pos, 0) * var(--rotate, 0)))
                 scale(calc(1 + var(--pos, 0) * var(--scale, 0)))
         }
-        #strip-1 .to-frame {
-            width: 500px;
-            height: 400px;
-            outline: 1px dotted grey;
+        #strip-1 .ghost {
+            opacity: var(--no-ghost, 0.1);
+            outline: 1px dotted black;
             transform: 
                 translateX(var(--x-trans, 0))
                 translateY(var(--y-trans, 0))
@@ -87,7 +86,8 @@
         <section id="strip-1">
             <div class="content">
                 <img class="photo" src="https://picsum.photos/500/400?random=1" alt="">
-                <div class="to-frame"></div>
+                <img class="ghost" src="https://picsum.photos/500/400?random=1" alt="">
+                <!-- <div class="ghost"></div> -->
             </div>
         </section>
         <section id="strip-2">
