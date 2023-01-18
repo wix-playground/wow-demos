@@ -29,8 +29,13 @@ const EFFECTS_CONFIG = {
         MIN: -360,
         MAX: 360,
         STEP: 5
-    }
-    
+    },
+    SCALE: {
+        LABEL: 'Scale',
+        MIN: 0,
+        MAX: 2,
+        STEP: .1
+    },
 };
 
 
@@ -40,6 +45,7 @@ const config = {
             [EFFECTS_CONFIG.TRANSLATE_X.LABEL]: 0,
             [EFFECTS_CONFIG.TRANSLATE_Y.LABEL]: 0,
             [EFFECTS_CONFIG.ROTATE.LABEL]: 0,
+            [EFFECTS_CONFIG.SCALE.LABEL]: 1,
         }
     }
 };
@@ -109,6 +115,14 @@ function createSection1Folder() {
             const toFrame = sections[0].querySelector('.to-frame');
             photo.style.setProperty('--rotate', `${val}deg`);
             toFrame.style.setProperty('--rotate', `${val}deg`);
+            init();
+        })
+    photo1.add(config[SECTION_1][PHOTO], ...Object.values(EFFECTS_CONFIG.SCALE))
+        .onChange(val => {
+            const photo = sections[0].querySelector('.photo');
+            const toFrame = sections[0].querySelector('.to-frame');
+            photo.style.setProperty('--scale', val - 1);
+            toFrame.style.setProperty('--scale', val - 1);
             init();
         })
 }

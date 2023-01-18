@@ -65,6 +65,7 @@
                 translateX(calc(var(--pos, 0) * var(--x-trans, 0)))
                 translateY(calc(var(--pos, 0) * var(--y-trans, 0)))
                 rotate(calc(var(--pos, 0) * var(--rotate, 0)))
+                scale(calc(1 + var(--pos, 0) * var(--scale, 0)))
         }
         #strip-1 .to-frame {
             width: 500px;
@@ -74,6 +75,7 @@
                 translateX(var(--x-trans, 0))
                 translateY(var(--y-trans, 0))
                 rotate(var(--rotate, 0))
+                scale(calc(1 + var(--scale, 0)))
         }
 
     </style>
