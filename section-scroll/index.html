@@ -49,16 +49,16 @@
             background-image: linear-gradient(lightblue, lightskyblue, lightsalmon);
         }
 
-        section .content {
+        section .element {
             display: grid;
             grid-template: 1fr/1fr;
-            grid-template-areas: 'content';
+            grid-template-areas: 'element';
             place-items: center;
             font-size: 22px;
         }
 
-        #strip-1 .content > * {
-            grid-area: content;
+        #strip-1 .element > * {
+            grid-area: element;
         }
 
         .dg.ac {
@@ -66,7 +66,7 @@
             position: sticky;
         }
 
-        #strip-1 .element {
+        #strip-1 .actual {
             opacity: calc(1 + var(--pos, 0) * var(--opacity, 0));
             transform: 
                 translateX(calc(var(--pos, 0) * var(--x-trans, 0)))
@@ -90,12 +90,12 @@
 <div id="wrapper">
     <main>
         <section id="strip-1">
-            <div class="content">
-                <h1 class="element">Out animations</h1>
+            <div class="element">
+                <h1 class="actual">Out animations</h1>
                 <h1 class="ghost">Out animations</h1>
             </div>
-            <div class="content">
-                <img class="element" src="https://picsum.photos/500/400?random=1" alt="">
+            <div class="element">
+                <img class="actual" src="https://picsum.photos/500/400?random=1" alt="">
                 <img class="ghost" src="https://picsum.photos/500/400?random=1" alt="">
                 <!-- <div class="ghost"></div> -->
             </div>

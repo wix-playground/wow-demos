@@ -85,7 +85,7 @@ function init () {
             {
                 start: rects[0].top,
                 duration: viewHeight,
-                target: [...sections[0].querySelectorAll('.element')],
+                target: [...sections[0].querySelectorAll('.actual')],
                 effect: function (scene, pos) {
                     scene.target.forEach(e => e.style.setProperty('--pos', pos));
                 }
@@ -93,7 +93,7 @@ function init () {
             {
                 start: rects[1].top,
                 duration: viewHeight,
-                target: [...sections[1].querySelectorAll('.element')],
+                target: [...sections[1].querySelectorAll('.actual')],
                 effect: function (scene, pos) {
                     scene.target.forEach(e => e.style.setProperty('--pos', pos));
                 }
@@ -115,45 +115,6 @@ function createSection1Folder() {
     addScrollEffects(photo1, PHOTO, 'img', 0)
     const text1 = folder1.addFolder(TEXT);
     addScrollEffects(text1, TEXT, 'h1', 0)
-
-
-    // photo1.add(config[SECTION_1][PHOTO], ...Object.values(EFFECTS_CONFIG.TRANSLATE_X))
-    //     .onChange(val => {
-    //         const elements = [...sections[0].querySelectorAll('img')];
-    //         elements.forEach(e => e.style.setProperty('--x-trans', `${val}px`));
-    //         init();
-    //     })
-    // photo1.add(config[SECTION_1][PHOTO], ...Object.values(EFFECTS_CONFIG.TRANSLATE_Y))
-    //     .onChange(val => {
-    //         const elements = [...sections[0].querySelectorAll('img')];
-    //         elements.forEach(e => e.style.setProperty('--y-trans', `${val}px`));
-    //         init();
-    //     })
-    // photo1.add(config[SECTION_1][PHOTO], ...Object.values(EFFECTS_CONFIG.ROTATE))
-    //     .onChange(val => {
-    //         const elements = [...sections[0].querySelectorAll('img')];
-    //         elements.forEach(e => e.style.setProperty('--rotate', `${val}deg`));
-    //         init();
-    //     })
-    // photo1.add(config[SECTION_1][PHOTO], ...Object.values(EFFECTS_CONFIG.SCALE))
-    //     .onChange(val => {
-    //         const elements = [...sections[0].querySelectorAll('img')];
-    //         elements.forEach(e => e.style.setProperty('--scale', val - 1));
-    //         init();
-    //     })
-    // photo1.add(config[SECTION_1][PHOTO], ...Object.values(EFFECTS_CONFIG.OPACITY))
-    //     .onChange(val => {
-    //         const elements = [...sections[0].querySelectorAll('img')];
-    //         elements.forEach(e => e.style.setProperty('--opacity', val - 1));
-    //         init();
-    //     })
-    // photo1.add(config[SECTION_1][PHOTO], ...Object.values(EFFECTS_CONFIG.GHOST))
-    //     .onChange(showGhost => {
-    //         const elements = [...sections[0].querySelectorAll('img')];
-    //         elements.forEach(e => e.style.setProperty('--no-ghost', showGhost ? .1 : 0));
-    //         init();
-    //     })
-    
 }
 
 function addScrollEffects (element, name, type, index) {
