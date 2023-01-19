@@ -68,119 +68,93 @@ const EFFECTS_CONFIG = {
         STEP: .1,
     }
 };
-
-const defaultSettings = {
-    [EFFECTS_CONFIG.TRANSLATE_X.LABEL]: 0,
-    [EFFECTS_CONFIG.TRANSLATE_Y.LABEL]: 0,
-    [EFFECTS_CONFIG.ROTATE.LABEL]: 0,
-    [EFFECTS_CONFIG.FOLD.LABEL]: 0,
-    [EFFECTS_CONFIG.SCALE.LABEL]: 1,
-    [EFFECTS_CONFIG.OPACITY.LABEL]: 1,
-    [EFFECTS_CONFIG.GHOST.LABEL]: true,
-}
-
-const speedSettings = {
-    [EFFECTS_CONFIG.SPEED.LABEL]: 0
-}
-const offsetSettings = {
-    [EFFECTS_CONFIG.OFFSET.LABEL]: 0
+const guiSettings = {
+    transformations: {
+        [EFFECTS_CONFIG.TRANSLATE_X.LABEL]: 0,
+        [EFFECTS_CONFIG.TRANSLATE_Y.LABEL]: 0,
+        [EFFECTS_CONFIG.ROTATE.LABEL]: 0,
+        [EFFECTS_CONFIG.FOLD.LABEL]: 0,
+        [EFFECTS_CONFIG.SCALE.LABEL]: 1,
+        [EFFECTS_CONFIG.OPACITY.LABEL]: 1,
+        [EFFECTS_CONFIG.GHOST.LABEL]: true,
+    },
+    speed: {
+        [EFFECTS_CONFIG.SPEED.LABEL]: 0
+    },
+    offset: {
+        [EFFECTS_CONFIG.OFFSET.LABEL]: 0
+    }
 }
 const config = {
     [SECTION_1]: {
-        [SPEED]: speedSettings,
-        [OFFSET]: offsetSettings,
-        [PHOTO]: defaultSettings,
-        [TEXT]: defaultSettings,
+        [SPEED]: guiSettings.speed,
+        [OFFSET]: guiSettings.offset,
+        [PHOTO]: guiSettings.transformations,
+        [TEXT]: guiSettings.transformations,
     },
     [SECTION_2]: {
-        [SPEED]: speedSettings,
-        [OFFSET]: offsetSettings,
-        [PHOTO]: defaultSettings,
-        [TEXT]: defaultSettings,
-        [SVG]: defaultSettings,
+        [SPEED]: guiSettings.speed,
+        [OFFSET]: guiSettings.offset,
+        [PHOTO]: guiSettings.transformations,
+        [TEXT]: guiSettings.transformations,
+        [SVG]: guiSettings.transformations,
     }
 };
-
-
 const sections = [, ...document.querySelectorAll('section')];
-const rects = getSectionsRecs();
-console.log(rects);
+const sectionOffsets = [...sections.map(sec => sec.offsetTop)];
 const effectDuration = {
-    [SECTION_1]: window.innerHeight,
-    [SECTION_2]: window.innerHeight,
-    [SECTION_3]: window.innerHeight,
-}
-const effectDefaultOffset = {
-    [SECTION_1]: rects[1],
-    [SECTION_2]: rects[2],
-    [SECTION_3]: rects[3],
+    [SECTION_1]: Number.MAX_VALUE,
+    [SECTION_2]: Number.MAX_VALUE,
+    [SECTION_3]: Number.MAX_VALUE,
 }
 const effectStartOffset = {
-    [SECTION_1]: rects[1],
-    [SECTION_2]: rects[2],
-    [SECTION_3]: rects[3],
+    [SECTION_1]: {
+        default: sectionOffsets[1],
+        current: sectionOffsets[1],
+    },
+    [SECTION_2]: {
+        default: sectionOffsets[2],
+        current: sectionOffsets[2],
+    },
+    [SECTION_3]: {
+        default: sectionOffsets[3],
+        current: sectionOffsets[3],
+    },
+}
+
+const initStyles = {
+    '--opacity': 0,
+    '--x-trans': '0px',
+    '--y-trans': '0px',
+    '--rotate': '0deg',
+    '--rotate-y': '0deg',
+    '--scale': 0,
+    '--pos': '0',
 }
 
 const root = document.documentElement;
-
-root.style.setProperty('--opacity', 0);
-root.style.setProperty('--x-trans', '0px');
-root.style.setProperty('--y-trans', '0px');
-root.style.setProperty('--rotate', '0deg');
-root.style.setProperty('--rotate-y', '0deg');
-root.style.setProperty('--scale', 0);
-root.style.setProperty('--pos', '0');
+Object.entries(initStyles).forEach(([property, value]) => {
+    root.style.setProperty(property, value);
+});
 
 gui.remember(config);
 createSectionFolders();
 init();
 
-function getSectionsRecs () {
-    return [...sections.map(section => {
-       return section.offsetTop
-    })];
+function createScenes () {
+    return [SECTION_1, SECTION_2, SECTION_3].map((section, index) => ({
+        start: effectStartOffset[section].current,
+        duration: effectDuration[section],
+        target: [...sections[index + 1].querySelectorAll('.actual')],
+        effect: function (scene, pos) {
+            scene.target.forEach(e => e.style.setProperty('--pos', pos));
+        }
+    }))
 }
-
-// function createScenes () {
-//     [SECTION_1, SECTION_2, SECTION_3].map((section, index) => ({
-//         start: effectStartOffset[section],
-//         duration: effectDuration[section],
-//         target: [...sections[index+1].querySelectorAll('.actual')],
-//         effect: function (scene, pos) {
-//             scene.target.forEach(e => e.style.setProperty('--pos', pos));
-//         }
-//     }))
-// }
 
 function init () {
     const scroll = new Scroll({
-        scenes: 
-        [
-            {
-                start: effectStartOffset[SECTION_1],
-                duration: effectDuration[SECTION_1],
-                target: [...sections[1].querySelectorAll('.actual')],
-                effect: function (scene, pos) {
-                    scene.target.forEach(e => e.style.setProperty('--pos', pos));
-                }
-            },
-            {
-                start: effectStartOffset[SECTION_2],
-                duration: effectDuration[SECTION_2],
-                target: [...sections[2].querySelectorAll('.actual')],
-                effect: function (scene, pos) {
-                    scene.target.forEach(e => e.style.setProperty('--pos', pos));
-                }
-            },
-            {
-                start: effectStartOffset[SECTION_3],
-                duration: effectDuration[SECTION_3],
-                target: [...sections[3].querySelectorAll('.actual')],
-                effect: function (scene, pos) {
-                    scene.target.forEach(e => e.style.setProperty('--pos', pos));
-                }
-            },
-        ]
+        scenes: createScenes()
     });
 
     scroll.on();
@@ -189,16 +163,16 @@ function init () {
 function createSectionFolders() {
     const section1Folder = gui.addFolder(SECTION_1)
     const section2Folder = gui.addFolder(SECTION_2)
+    section1Folder.open();
 
-    addScrollSpeed(section1Folder, SECTION_1);
-    addScrollSpeed(section2Folder, SECTION_2);
+    addSpeedAndOffset(section1Folder, SECTION_1);
+    addSpeedAndOffset(section2Folder, SECTION_2);
 
 
     const photo1 = section1Folder.addFolder(PHOTO);
     addScrollEffects(photo1, PHOTO, 'img', 1, SECTION_1)
     const text1 = section1Folder.addFolder(TEXT);
     addScrollEffects(text1, TEXT, 'h1', 1, SECTION_1)
-    section1Folder.open();
 
     const photo2 = section2Folder.addFolder(PHOTO);
     addScrollEffects(photo2, PHOTO, 'img', 2, SECTION_2)
@@ -253,7 +227,7 @@ function addScrollEffects (element, name, type, index, section) {
         })
 }
 
-function addScrollSpeed (sectionFolder, sectionName) {
+function addSpeedAndOffset (sectionFolder, sectionName) {
     sectionFolder.add(config[sectionName][SPEED], ...Object.values(EFFECTS_CONFIG.SPEED))
     .onChange(val => {
         effectDuration[sectionName] = window.innerHeight / val
@@ -261,7 +235,7 @@ function addScrollSpeed (sectionFolder, sectionName) {
     })
     sectionFolder.add(config[sectionName][OFFSET], ...Object.values(EFFECTS_CONFIG.OFFSET))
     .onChange(val => {
-        effectStartOffset[sectionName] = effectDefaultOffset[sectionName] + window.innerHeight * val
+        effectStartOffset[sectionName].current = effectStartOffset[sectionName].default + window.innerHeight * val
         init();
     })
 }
