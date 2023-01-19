@@ -55,6 +55,10 @@ const EFFECTS_CONFIG = {
         LABEL: 'Ghost',
         VALUE: true,
     },
+    IN_ANIMATION: {
+        LABEL: 'In Animation',
+        VALUE: false,
+    },
     SPEED: {
         LABEL: 'Speed',
         MIN: 0,
@@ -77,6 +81,7 @@ const guiSettings = {
         [EFFECTS_CONFIG.SCALE.LABEL]: 1,
         [EFFECTS_CONFIG.OPACITY.LABEL]: 1,
         [EFFECTS_CONFIG.GHOST.LABEL]: true,
+        [EFFECTS_CONFIG.IN_ANIMATION.LABEL]: false,
         [EFFECTS_CONFIG.SPEED.LABEL]: 0,
         [EFFECTS_CONFIG.OFFSET.LABEL]: 0,
     }
@@ -84,6 +89,7 @@ const guiSettings = {
 const config = {};
 const effectDuration = {}
 const effectStartOffset = {}
+const effectsIsInAnimation = {}
 const sections = [...document.querySelectorAll('section')];
 const sectionOffsets = sections.map(sec => sec.offsetTop);
 const root = document.documentElement;
@@ -97,10 +103,7 @@ const initStyles = {
     '--pos': '0',
 }
 //======================== main ========================
-
-Object.entries(initStyles).forEach(([property, value]) => {
-    root.style.setProperty(property, value);
-});
+resetStyles(root)
 
 start();
 gui.remember(config);
@@ -119,6 +122,7 @@ function start () {
             config[sectionName] = {...config[sectionName], ...{[elemName]: guiSettings.transformations}};
             effectStartOffset[sectionName] = {...effectStartOffset[sectionName], ...{[elemName]: {default: sectionOffsets[index], current: sectionOffsets[index]}}};
             effectDuration[sectionName] = {...effectDuration[sectionName], ...{[elemName]: Number.MAX_VALUE}};
+            effectsIsInAnimation[sectionName] = {...effectsIsInAnimation[sectionName], ...{[elemName]: false}};
             addScrollEffects(element, sectionName, elemFolder, elemName);
             addGhost(element)
         })
@@ -137,11 +141,12 @@ function createScenes () {
         const sectionElements = [...section.querySelectorAll('.actual')]
         sectionElements.forEach((element, i) => { 
             const elemName = `${element.tagName}-${i}`;
+            const isInAnimation = effectsIsInAnimation[sectionName][elemName];
             scenes.push({
                 start: effectStartOffset[sectionName][elemName].current,
                 duration: effectDuration[sectionName][elemName],
                 target: element,
-                effect: (scene, pos) => scene.target.style.setProperty('--pos', pos)
+                effect: (scene, pos) => scene.target.style.setProperty('--pos', isInAnimation ? 1 - pos : pos)
             })
         })
     })
@@ -158,32 +163,37 @@ function init () {
 function addScrollEffects (element, sectionName, elemFolder, elemName) {
     elemFolder.add(config[sectionName][elemName], ...Object.values(EFFECTS_CONFIG.TRANSLATE_X))
     .onChange(val => {
+        const isInAnimation = effectsIsInAnimation[sectionName][elemName];
         element.style.setProperty('--x-trans', `${val}px`);
-        element.nextElementSibling.style.setProperty('--x-trans', `${val}px`);
+        if (!isInAnimation) element.nextElementSibling.style.setProperty('--x-trans', `${val}px`);
         init();
     })
     elemFolder.add(config[sectionName][elemName], ...Object.values(EFFECTS_CONFIG.TRANSLATE_Y))
     .onChange(val => {
+        const isInAnimation = effectsIsInAnimation[sectionName][elemName];
         element.style.setProperty('--y-trans', `${val}px`);
-        element.nextElementSibling.style.setProperty('--y-trans', `${val}px`);
+        if (!isInAnimation) element.nextElementSibling.style.setProperty('--y-trans', `${val}px`);
         init();
     })
     elemFolder.add(config[sectionName][elemName], ...Object.values(EFFECTS_CONFIG.ROTATE))
     .onChange(val => {
+        const isInAnimation = effectsIsInAnimation[sectionName][elemName];
         element.style.setProperty('--rotate', `${val}deg`);
-        element.nextElementSibling.style.setProperty('--rotate', `${val}deg`);
+        if (!isInAnimation) element.nextElementSibling.style.setProperty('--rotate', `${val}deg`);
         init();
     })
     elemFolder.add(config[sectionName][elemName], ...Object.values(EFFECTS_CONFIG.FOLD))
     .onChange(val => {
+        const isInAnimation = effectsIsInAnimation[sectionName][elemName];
         element.style.setProperty('--rotate-y', `${val}deg`);
-        element.nextElementSibling.style.setProperty('--rotate-y', `${val}deg`);
+        if (!isInAnimation) element.nextElementSibling.style.setProperty('--rotate-y', `${val}deg`);
         init();
     })
     elemFolder.add(config[sectionName][elemName], ...Object.values(EFFECTS_CONFIG.SCALE))
     .onChange(val => {
+        const isInAnimation = effectsIsInAnimation[sectionName][elemName];
         element.style.setProperty('--scale', val - 1);
-        element.nextElementSibling.style.setProperty('--scale', val - 1);
+        if (!isInAnimation) element.nextElementSibling.style.setProperty('--scale', val - 1);
         init();
     })
     elemFolder.add(config[sectionName][elemName], ...Object.values(EFFECTS_CONFIG.OPACITY))
@@ -197,14 +207,26 @@ function addScrollEffects (element, sectionName, elemFolder, elemName) {
         element.nextElementSibling.style.setProperty('--no-ghost', showGhost? .1 : 0);
         init();
     })
+    elemFolder.add(config[sectionName][elemName], ...Object.values(EFFECTS_CONFIG.IN_ANIMATION))
+    .onChange(isInAnimation => {
+        effectsIsInAnimation[sectionName][elemName] = isInAnimation;
+        if (isInAnimation) resetStyles(element.nextElementSibling)
+        init();
+    })
     elemFolder.add(config[sectionName][elemName], ...Object.values(EFFECTS_CONFIG.SPEED))
     .onChange(val => {
-        effectDuration[sectionName][elemName] = window.innerHeight / val
+        effectDuration[sectionName][elemName] = window.innerHeight / val;
         init();
     })
     elemFolder.add(config[sectionName][elemName], ...Object.values(EFFECTS_CONFIG.OFFSET))
     .onChange(val => {
-        effectStartOffset[sectionName][elemName].current = effectStartOffset[sectionName][elemName].default + window.innerHeight * val
+        effectStartOffset[sectionName][elemName].current = effectStartOffset[sectionName][elemName].default + window.innerHeight * val;
         init();
     })
+}
+
+function resetStyles (element) {
+    Object.entries(initStyles).forEach(([property, value]) => {
+        element.style.setProperty(property, value);
+    });
 }
