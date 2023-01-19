@@ -67,8 +67,8 @@ const EFFECTS_CONFIG = {
     },
     OFFSET: {
         LABEL: 'Offset',
-        MIN: -0.8,
-        MAX: 0.8,
+        MIN: -1,
+        MAX: 1,
         STEP: .1,
     }
 };
@@ -104,7 +104,6 @@ const initStyles = {
 }
 //======================== main ========================
 resetStyles(root)
-
 start();
 gui.remember(config);
 init();
