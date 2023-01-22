@@ -230,9 +230,14 @@ function addScrollEffects (element, sectionName, elemFolder, elemName) {
     })
     elemFolder.add(config[sectionName][elemName], ...Object.values(EFFECTS_CONFIG.GUIDE))
     .onChange(showGuide => {
-        [...document.querySelectorAll('.guide')].forEach(e => e.style.setProperty('--visible', 'hidden'));
-        guide.style.setProperty('--visible', showGuide ? 'visible' : 'hidden');
-        element.style.setProperty('--z-index', showGuide ? 4 : 0)
+        [...document.querySelectorAll('.guide')].forEach(e => {
+            e.style.setProperty('--visible', 'hidden')
+            e.style.setProperty('--z-index', 0);
+        });
+        if (showGuide) {
+            guide.style.setProperty('--visible', 'visible');
+            element.style.setProperty('--z-index', 4)
+        }
         init();
     })
     elemFolder.add(config[sectionName][elemName], ...Object.values(EFFECTS_CONFIG.MODE))

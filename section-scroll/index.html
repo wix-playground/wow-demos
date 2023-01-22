@@ -97,11 +97,11 @@
                 top: var(--offset-top, 0);
                 border-top: 2px solid red ;
                 border-bottom: 2px solid red;
-                background-color: blue;
-                background-repeat: repeat;
+                background-color: #4f4e4e;
                 opacity: 0.5;
                 visibility: var(--visible, hidden);
                 z-index: 3;
+                animation: flicker 1.5s ease-in-out infinite;
             }
 
             .guide::before {
@@ -115,7 +115,12 @@
                 border: 2px solid red;
                 background: white;
             }
-            
+
+            @keyframes flicker {
+                0% { background-color: #4f4e4e; }
+                50% { background-color: #161616; }
+                100% { background-color: #4f4e4e; }
+            }            
             /* ==================== strip 1 ================= */
             /* ==================== strip 2 ================= */
             #strip-2 h6 {
