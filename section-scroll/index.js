@@ -43,8 +43,8 @@ const EFFECTS_CONFIG = {
         LABEL: 'Ghost',
         VALUE: true,
     },
-    GUIDE: {
-        LABEL: 'Guide',
+    HINT: {
+        LABEL: 'Hint',
         VALUE: false,
     },
     IN_ANIMATION: {
@@ -76,13 +76,15 @@ const guiSettings = {
         [EFFECTS_CONFIG.FOLD.LABEL]: 0,
         [EFFECTS_CONFIG.SCALE.LABEL]: 1,
         [EFFECTS_CONFIG.OPACITY.LABEL]: 1,
+    },
+    modifications: {
         [EFFECTS_CONFIG.IN_ANIMATION.LABEL]: false,
         [EFFECTS_CONFIG.GHOST.LABEL]: true,
-        [EFFECTS_CONFIG.GUIDE.LABEL]: false,
+        [EFFECTS_CONFIG.HINT.LABEL]: false,
         [EFFECTS_CONFIG.MODE.LABEL]: true,
         [EFFECTS_CONFIG.SPEED.LABEL]: 1,
         [EFFECTS_CONFIG.OFFSET.LABEL]: 0,
-    },
+    }
 }
 const config = {};
 const effectDuration = {}
@@ -123,10 +125,12 @@ function start () {
         sectionElements.forEach((element, i) => {
             const elemName = `${element.tagName}-${i}`;
             const elemFolder = sectionFolder.addFolder(elemName);
+            const effectsFolder = elemFolder.addFolder('Effects');
+            const modificationsFolder = elemFolder.addFolder('Modifications');
             const elemDistFromTop = element.getBoundingClientRect().top + window.scrollY;
             const elementDuration = element.offsetHeight + (elemDistFromTop < window.innerHeight ? elemDistFromTop : window.innerHeight);
             const elementOffset = elemDistFromTop < window.innerHeight ? 0 : elemDistFromTop - window.innerHeight;
-            config[sectionName] = {...config[sectionName], ...{[elemName]: guiSettings.effects}};
+            config[sectionName] = {...config[sectionName], ...{[elemName]: {effects: guiSettings.effects, modifications: guiSettings.modifications}}};
             effectStartOffset[sectionName] = {
                 ...effectStartOffset[sectionName], ...{
                     [elemName]: {modeSection: {default: sectionOffset, current: sectionOffset}, modeSelf: {default: elementOffset, current: elementOffset}}
@@ -138,8 +142,9 @@ function start () {
                 }
             };
             effectsIsInAnimation[sectionName] = {...effectsIsInAnimation[sectionName], ...{[elemName]: false}};
-            addOffsetGuide(elemName, elementOffset, elementDuration);
-            addScrollEffects(element, sectionName, elemFolder, elemName);
+            addHint(elemName, elementOffset, elementDuration);
+            addScrollEffects(element, sectionName, effectsFolder, elemName);
+            addScrollModifications(element, sectionName, modificationsFolder, elemName);
             addGhost(element)
         })
     })
@@ -150,13 +155,13 @@ function addGhost (element) {
     element.insertAdjacentElement("afterend", clone);
 }
 
-function addOffsetGuide (elemName, startOffset, duration) {
-    const guide = document.createElement('div')
-    guide.classList.add("guide", `guide-${elemName}`);
-    guide.style.setProperty('--offset-top', `${startOffset}px`);
-    guide.style.setProperty('--duration', `${duration}px`);
-    guide.dataset["name"] = elemName;
-    document.body.appendChild(guide);
+function addHint (elemName, startOffset, duration) {
+    const hint = document.createElement('div')
+    hint.classList.add("hint", `hint-${elemName}`);
+    hint.style.setProperty('--offset-top', `${startOffset}px`);
+    hint.style.setProperty('--duration', `${duration}px`);
+    hint.dataset["name"] = elemName;
+    document.body.appendChild(hint);
 }
 
 function createScenes () {
@@ -185,90 +190,93 @@ function init () {
     scroll.on();
 }
 
-function addScrollEffects (element, sectionName, elemFolder, elemName) {
-    const guide = document.querySelector(`.guide-${elemName}`);
-    elemFolder.add(config[sectionName][elemName], ...Object.values(EFFECTS_CONFIG.TRANSLATE_X))
+function addScrollEffects (element, sectionName, folder, elemName) {
+    folder.add(config[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.TRANSLATE_X))
     .onChange(val => {
         const isInAnimation = effectsIsInAnimation[sectionName][elemName];
         element.style.setProperty('--x-trans', `${val}px`);
         if (!isInAnimation) element.nextElementSibling.style.setProperty('--x-trans', `${val}px`);
         init();
     })
-    elemFolder.add(config[sectionName][elemName], ...Object.values(EFFECTS_CONFIG.TRANSLATE_Y))
+    folder.add(config[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.TRANSLATE_Y))
     .onChange(val => {
         const isInAnimation = effectsIsInAnimation[sectionName][elemName];
         element.style.setProperty('--y-trans', `${val}px`);
         if (!isInAnimation) element.nextElementSibling.style.setProperty('--y-trans', `${val}px`);
         init();
     })
-    elemFolder.add(config[sectionName][elemName], ...Object.values(EFFECTS_CONFIG.ROTATE))
+    folder.add(config[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.ROTATE))
     .onChange(val => {
         const isInAnimation = effectsIsInAnimation[sectionName][elemName];
         element.style.setProperty('--rotate', `${val}deg`);
         if (!isInAnimation) element.nextElementSibling.style.setProperty('--rotate', `${val}deg`);
         init();
     })
-    elemFolder.add(config[sectionName][elemName], ...Object.values(EFFECTS_CONFIG.FOLD))
+    folder.add(config[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.FOLD))
     .onChange(val => {
         const isInAnimation = effectsIsInAnimation[sectionName][elemName];
         element.style.setProperty('--rotate-y', `${val}deg`);
         if (!isInAnimation) element.nextElementSibling.style.setProperty('--rotate-y', `${val}deg`);
         init();
     })
-    elemFolder.add(config[sectionName][elemName], ...Object.values(EFFECTS_CONFIG.SCALE))
+    folder.add(config[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.SCALE))
     .onChange(val => {
         const isInAnimation = effectsIsInAnimation[sectionName][elemName];
         element.style.setProperty('--scale', val - 1);
         if (!isInAnimation) element.nextElementSibling.style.setProperty('--scale', val - 1);
         init();
     })
-    elemFolder.add(config[sectionName][elemName], ...Object.values(EFFECTS_CONFIG.OPACITY))
+    folder.add(config[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.OPACITY))
     .onChange(val => {
         element.style.setProperty('--opacity', val - 1);
         element.nextElementSibling.style.setProperty('--opacity', val - 1);
         init();
     })
-    elemFolder.add(config[sectionName][elemName], ...Object.values(EFFECTS_CONFIG.GHOST))
+}
+
+function addScrollModifications (element, sectionName, folder, elemName) {
+    const hint = document.querySelector(`.hint-${elemName}`);
+    folder.add(config[sectionName][elemName].modifications, ...Object.values(EFFECTS_CONFIG.GHOST))
     .onChange(showGhost => {
         element.nextElementSibling.style.setProperty('--no-ghost', showGhost ? .1 : 0);
         init();
     })
-    elemFolder.add(config[sectionName][elemName], ...Object.values(EFFECTS_CONFIG.GUIDE))
+    folder.add(config[sectionName][elemName].modifications, ...Object.values(EFFECTS_CONFIG.HINT))
     .onChange(showGuide => {
-        [...document.querySelectorAll('.guide')].forEach(e => {
+        [...document.querySelectorAll('.hint')].forEach(e => {
             e.style.setProperty('--visible', 'hidden')
             e.style.setProperty('--z-index', 0);
         });
         if (showGuide) {
-            guide.style.setProperty('--visible', 'visible');
+            hint.style.setProperty('--visible', 'visible');
             element.style.setProperty('--z-index', 4)
         }
         init();
     })
-    elemFolder.add(config[sectionName][elemName], ...Object.values(EFFECTS_CONFIG.MODE))
+    folder.add(config[sectionName][elemName].modifications, ...Object.values(EFFECTS_CONFIG.MODE))
     .onChange(isRelativeToSelf => {
         animationTrigger = isRelativeToSelf ? 'modeSelf' : 'modeSection';
-        guide.style.setProperty('--offset-top',  `${effectStartOffset[sectionName][elemName][animationTrigger].current}px`);
-        guide.style.setProperty('--duration', `${effectDuration[sectionName][elemName][animationTrigger].current}px`);
+        hint.style.setProperty('--offset-top',  `${effectStartOffset[sectionName][elemName][animationTrigger].current}px`);
+        hint.style.setProperty('--duration', `${effectDuration[sectionName][elemName][animationTrigger].current}px`);
         init();
     })
-    elemFolder.add(config[sectionName][elemName], ...Object.values(EFFECTS_CONFIG.IN_ANIMATION))
+    folder.add(config[sectionName][elemName].modifications, ...Object.values(EFFECTS_CONFIG.IN_ANIMATION))
     .onChange(isInAnimation => {
         effectsIsInAnimation[sectionName][elemName] = isInAnimation;
         if (isInAnimation) resetStyles(element.nextElementSibling)
         else (copyCSSProperties(element, element.nextElementSibling)) 
         init();
     })
-    elemFolder.add(config[sectionName][elemName], ...Object.values(EFFECTS_CONFIG.SPEED))
+    folder.add(config[sectionName][elemName].modifications, ...Object.values(EFFECTS_CONFIG.SPEED))
     .onChange(val => {
         effectDuration[sectionName][elemName][animationTrigger].current = effectDuration[sectionName][elemName][animationTrigger].default/val;
-        guide.style.setProperty('--duration', `${effectDuration[sectionName][elemName][animationTrigger].current}px`);
+        hint.style.setProperty('--duration', `${effectDuration[sectionName][elemName][animationTrigger].current}px`);
         init();
     })
-    elemFolder.add(config[sectionName][elemName], ...Object.values(EFFECTS_CONFIG.OFFSET))
+    folder.add(config[sectionName][elemName].modifications, ...Object.values(EFFECTS_CONFIG.OFFSET))
     .onChange(val => {
         effectStartOffset[sectionName][elemName][animationTrigger].current = effectStartOffset[sectionName][elemName][animationTrigger].default + window.innerHeight * val;
-        guide.style.setProperty('--offset-top',  `${effectStartOffset[sectionName][elemName][animationTrigger].current}px`);
+        hint.style.setProperty('--offset-top',  `${effectStartOffset[sectionName][elemName][animationTrigger].current}px`);
         init();
     })
 }
