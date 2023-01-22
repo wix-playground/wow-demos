@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta http-equiv="cache-control" content="no-cache" />
         <title>Playground for Scroll Effects with Sections as Source</title>
         <style>
@@ -18,11 +18,11 @@
                 right: 0;
                 margin: 10px;
                 opacity: 0.5;
-                transition: opacity .15s ease-in-out;
+                transition: opacity 0.15s ease-in-out;
             }
 
             .dg.ac:hover {
-                opacity: 1
+                opacity: 1;
             }
 
             section {
@@ -35,17 +35,18 @@
             }
 
             section:nth-child(2n) {
-                background-image: linear-gradient(lightsalmon, lightpink, lightblue);
+                background-color: lightgray;
                 margin: 5px 0;
             }
             section:nth-child(2n + 1) {
-                background-image: linear-gradient(lightblue, lightskyblue, lightsalmon);
+                /* background-image: linear-gradient(lightblue, lightskyblue, lightsalmon); */
+                background-image: linear-gradient(black, rgb(36, 36, 36), rgb(58, 58, 58));
             }
 
             section .element {
                 display: grid;
                 grid-template: 1fr/1fr;
-                grid-template-areas: 'element';
+                grid-template-areas: "element";
                 place-items: center;
                 font-size: 22px;
             }
@@ -53,41 +54,34 @@
             section .element > * {
                 grid-area: element;
             }
-            
-            h1, h6 {
+
+            h1,
+            h6 {
                 width: 100%;
                 text-align: center;
                 font-family: sans-serif;
             }
-            
+
             h1 {
-                font-size: 50px;
+                font-size: 80px;
             }
-            
+
             h6 {
                 font-size: 16px;
             }
-            
-            
+
             .actual {
                 opacity: calc(1 + var(--pos, 0) * var(--opacity, 0));
                 z-index: var(--z-index, 0);
-                transform: 
-                    translateX(calc(var(--pos, 0) * var(--x-trans, 0)))
-                    translateY(calc(var(--pos, 0) * var(--y-trans, 0)))
-                    rotateZ(calc(var(--pos, 0) * var(--rotate, 0)))
-                    rotateY(calc(var(--pos, 0) * var(--rotate-y, 0)))
-                    scale(calc(1 + var(--pos, 0) * var(--scale, 0)))
+                transform: translateX(calc(var(--pos, 0) * var(--x-trans, 0)))
+                    translateY(calc(var(--pos, 0) * var(--y-trans, 0))) rotateZ(calc(var(--pos, 0) * var(--rotate, 0)))
+                    rotateY(calc(var(--pos, 0) * var(--rotate-y, 0))) scale(calc(1 + var(--pos, 0) * var(--scale, 0)));
             }
             .ghost {
                 opacity: var(--no-ghost, 0.1);
                 z-index: var(--z-index, 0);
-                transform: 
-                    translateX(var(--x-trans, 0))
-                    translateY(var(--y-trans, 0))
-                    rotateZ(var(--rotate, 0))
-                    rotateY(var(--rotate-y, 0))
-                    scale(calc(1 + var(--scale, 0)))
+                transform: translateX(var(--x-trans, 0)) translateY(var(--y-trans, 0)) rotateZ(var(--rotate, 0))
+                    rotateY(var(--rotate-y, 0)) scale(calc(1 + var(--scale, 0)));
             }
             .hint {
                 position: absolute;
@@ -95,9 +89,9 @@
                 left: 0;
                 height: var(--duration, 0);
                 top: var(--offset-top, 0);
-                border-top: 2px solid red ;
+                border-top: 2px solid red;
                 border-bottom: 2px solid red;
-                background-color: #4f4e4e;
+                background-color: white;
                 opacity: 0.5;
                 visibility: var(--visible, hidden);
                 z-index: 3;
@@ -109,103 +103,263 @@
                 top: 0;
                 left: 0;
                 content: attr(data-name);
-                color:red;
+                color: red;
                 z-index: 5;
                 font-weight: bold;
                 border: 2px solid red;
-                background: white;
+                background: grey;
             }
 
             @keyframes flicker {
-                0% { background-color: #4f4e4e; }
-                50% { background-color: #161616; }
-                100% { background-color: #4f4e4e; }
-            }            
-            /* ==================== strip 1 ================= */
-            /* ==================== strip 2 ================= */
-            #strip-2 h6 {
-                width: 40%;
-                justify-self: start;
-                text-align: start;
-                margin: 30px;
-                line-height: 1.5em;
-            }
-            #strip-2 img {
-                justify-self: end;
-                margin: 30px 45px;
+                0% {
+                    background-color: grey;
+                }
+                50% {
+                    background-color: rgb(26, 26, 26);
+                }
+                100% {
+                    background-color: grey;
+                }
             }
 
+            .row {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 20px;
+            }
+            /* ==================== strip 1 ================= */
+
+            #strip-1 .headline div:nth-child(2n) {
+                color: palevioletred;
+            }
+            #strip-1 .headline div:nth-child(2n + 1) {
+                color: orange;
+            }
+            #strip-1 .headline h1 {
+                background: rgb(255, 233, 209);
+                padding: 0 6px;
+                border-radius: 5px;
+                box-shadow: 1px 1px 3px white(162, 162, 162);
+            }
+            /* ==================== strip 2 ================= */
+            #strip-2 .card {
+                width: 80%;
+                display: grid;
+                grid-template-columns: 300px 1fr;
+                column-gap: 10px;
+                align-items: flex-start;
+                justify-content: space-between;
+                overflow: hidden;
+                border-radius: 8px;
+                text-overflow: ellipsis;
+                background: white;
+                box-shadow: 1px 1px 3px grey;
+                max-height: 230px;
+            }
+            #strip-2 .middle {
+                grid-template-columns: 1fr 300px;
+            }
+            #strip-2 .card img {
+                box-shadow: 1px 1px 3px grey;
+                /* height: 120%; */
+            }
+            #strip-2 h3 {
+                overflow: hidden;
+                padding: 10px;
+                text-overflow: ellipsis;
+                font-size: 16px;
+                font-family: sans-serif;
+                font-weight: 100;
+                margin: 0px;
+                line-height: 1.5em;
+            }
+            #b1, #b2, #b3, #b4, #b5, #b6{
+                position: absolute;
+            }
+            #b1 img, #b2 img, #b4 img ,#b5 img {
+                position: absolute;
+                height: 200px;
+                width: 200px;
+                /* top: 0; */
+            }
+            
+            #b3 img, #b6 img {
+                position: absolute;
+                height: 100px;
+                width: 100px;
+            }
+            #strip-2 .bubble .actual {
+                opacity: 0.5;
+            }
+            #b1 {
+                top: 5vh;
+                left: 15vw;
+            }
+            #b2 {
+                top: 30vh;
+                left: 70vw;
+            }
+            #b3 {
+                top: 70vh;
+                left: 50vw;
+            }
+            #b4 {
+                top: 95vh;
+                left: 20vw;
+            }
+            #b5 {
+                top: 90vh;
+                left: 85vw;
+            }
+            #b6 {
+                top: 40vh;
+                left: 100px;
+            }
+            /* #strip-2 .bubble .actual:nth-child(2) {
+                top: 15vh;
+                left: 50vw;
+            }
+           
+            #strip-2 .bubble .actual:nth-child(3) {
+                top: 55vh;
+                left: 70vw;
+            }
+            #strip-2 .bubble .actual:nth-child(4) {
+                top: 70vh;
+                left: 30vw;
+            } */
         </style>
     </head>
     <body>
         <div id="wrapper">
             <main>
                 <section id="strip-1">
-                    <div class="element">
-                        <h1 class="actual">Out animations</h1>
+                    <div class="row headline">
+                        <div class="element">
+                            <h1 class="actual">P</h1>
+                        </div>
+                        <div class="element">
+                            <h1 class="actual">L</h1>
+                        </div>
+                        <div class="element">
+                            <h1 class="actual">A</h1>
+                        </div>
+                        <div class="element">
+                            <h1 class="actual">Y</h1>
+                        </div>
+                        <div class="element">
+                            <h1 class="actual">G</h1>
+                        </div>
+                        <div class="element">
+                            <h1 class="actual">R</h1>
+                        </div>
+                        <div class="element">
+                            <h1 class="actual">O</h1>
+                        </div>
+                        <div class="element">
+                            <h1 class="actual">U</h1>
+                        </div>
+                        <div class="element">
+                            <h1 class="actual">N</h1>
+                        </div>
+                        <div class="element">
+                            <h1 class="actual">D</h1>
+                        </div>
+                    </div>
+                </section>
+                <section id="strip-2">
+                    <div class="element bubble" id="b1">
+                        <img class="actual" src="https://freesvg.org/img/food-blue-bubble.png"/>
+                    </div>
+                    <div class="element bubble" id="b2">
+                        <img class="actual " src="https://freesvg.org/img/food-blue-bubble.png"/>
+                    </div>
+                    <div class="element bubble" id="b3">
+                        <img class="actual" src="https://freesvg.org/img/food-blue-bubble.png"/>
+                    </div>
+                    <div class="element bubble" id="b4">
+                        <img class="actual" src="https://freesvg.org/img/food-blue-bubble.png"/>
+                    </div>
+                    <div class="element bubble" id="b5">
+                        <img class="actual" src="https://freesvg.org/img/food-blue-bubble.png"/>
+                    </div>
+                    <div class="element bubble" id="b6">
+                        <img class="actual" src="https://freesvg.org/img/food-blue-bubble.png"/>
                     </div>
                     <div class="element">
-                        <img class="actual" src="https://picsum.photos/500/400?random=1" alt="">
+                        <div class="card actual">
+                            <div class="element">
+                                <img class="actual" src="https://picsum.photos/300/240?random=1" alt="" />
+                            </div>
+                            <div class="element">
+                                <h3 class="actual">
+                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit praesentium
+                                    corporis ratione fugit libero debitis? Quia dicta placeat est nobis, voluptas ea
+                                    veritatis porro, iure ab minus at! Ad, iste. Est inventore accusantium optio sint
+                                    molestias vero consequuntur quas quos asperiores ab possimus perspiciatis maiores,
+                                    exercitationem labore atque eum rerum minus architecto repudiandae! Sequi maiores
+                                    explicabo vero aspernatur, totam officia! Sed vero laudantium quidem fuga tempore
+                                    quam, magni atque voluptas quaerat assumenda obcaecati totam officia reiciendis
+                                    ipsam itaque cumque iste magnam earum maxime quos autem! Rerum nisi eius aliquam
+                                    iure? Assumenda iure quae saepe qui ex quis labore harum, sint nobis reprehenderit?
+                                    Nulla, aut et deleniti aliquam delectus, odit laboriosam provident quisquam
+                                    consectetur, tempore magni distinctio dolor non tenetur maxime.
+                                </h3>
+                            </div>
+                        </div>
                     </div>
-                    </section>
-                    <section id="strip-2">
-                        <div class="element">
-                            <h6 class="actual">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo aliquam eveniet ipsam quae consequatur, doloremque at harum quisquam accusantium necessitatibus adipisci suscipit amet itaque eum, voluptates nihil tenetur dolorem cupiditate!
-                                Officia, omnis veritatis. Magni assumenda quisquam ex cum obcaecati explicabo dolores consequuntur iusto commodi ut alias officiis aspernatur vero temporibus nisi doloremque recusandae deserunt atque dignissimos, laudantium aliquid pariatur! Iste.
-                                Architecto, aliquid rem, nostrum hic cumque suscipit enim quaerat aspernatur accusamus laboriosam incidunt id vel vero atque temporibus! Debitis quae reiciendis perferendis est, necessitatibus nisi optio tempore illo dolor incidunt. Lorem ipsum dolor sit amet consectetur adipisicing elit. Est libero odio ipsam quibusdam eligendi nam amet aspernatur quia praesentium? Omnis modi soluta minima animi corporis non amet assumenda nostrum doloremque!
-                                Atque corrupti totam quasi modi, numquam nesciunt doloribus eveniet magni expedita error odit assumenda reprehenderit, molestiae facilis quis at eligendi quaerat eius iste omnis quo dolore porro! Assumenda, aliquid odit!
-                            </h6>
+                    <div class="element">
+                        <div class="card actual middle">
+                            <div class="element">
+                                <h3 class="actual">
+                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit praesentium
+                                    corporis ratione fugit libero debitis? Quia dicta placeat est nobis, voluptas ea
+                                    veritatis porro, iure ab minus at! Ad, iste. Est inventore accusantium optio sint
+                                    molestias vero consequuntur quas quos asperiores ab possimus perspiciatis maiores,
+                                    exercitationem labore atque eum rerum minus architecto repudiandae! Sequi maiores
+                                    explicabo vero aspernatur, totam officia! Sed vero laudantium quidem fuga tempore
+                                    quam, magni atque voluptas quaerat assumenda obcaecati totam officia reiciendis
+                                    ipsam itaque cumque iste magnam earum maxime quos autem! Rerum nisi eius aliquam
+                                    iure? Assumenda iure quae saepe qui ex quis labore harum, sint nobis reprehenderit?
+                                    Nulla, aut et deleniti aliquam delectus, odit laboriosam provident quisquam
+                                    consectetur, tempore magni distinctio dolor non tenetur maxime.
+                                </h3>
+                            </div>
+                            <div class="element">
+                                <img class="actual" src="https://picsum.photos/300/240?random=2" alt="" />
+                            </div>
                         </div>
-                        <div class="element">
-                            <svg class="actual" width="100" height="100">
-                                <rect width="100" height="100" style="fill:rgb(255,0,0);stroke-width:3;stroke:rgb(0,0,0)" />
-                            </svg>
+                    </div>
+                    <div class="element">
+                        <div class="card actual">
+                            <div class="element">
+                                <img class="actual" src="https://picsum.photos/300/240?random=3" alt="" />
+                            </div>
+                            <div class="element">
+                                <h3 class="actual">
+                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit praesentium
+                                    corporis ratione fugit libero debitis? Quia dicta placeat est nobis, voluptas ea
+                                    veritatis porro, iure ab minus at! Ad, iste. Est inventore accusantium optio sint
+                                    molestias vero consequuntur quas quos asperiores ab possimus perspiciatis maiores,
+                                    exercitationem labore atque eum rerum minus architecto repudiandae! Sequi maiores
+                                    explicabo vero aspernatur, totam officia! Sed vero laudantium quidem fuga tempore
+                                    quam, magni atque voluptas quaerat assumenda obcaecati totam officia reiciendis
+                                    ipsam itaque cumque iste magnam earum maxime quos autem! Rerum nisi eius aliquam
+                                    iure? Assumenda iure quae saepe qui ex quis labore harum, sint nobis reprehenderit?
+                                    Nulla, aut et deleniti aliquam delectus, odit laboriosam provident quisquam
+                                    consectetur, tempore magni distinctio dolor non tenetur maxime.
+                                </h3>
+                            </div>
                         </div>
-                        <div class="element">
-                            <img class="actual" src="https://picsum.photos/750/600?random=1" alt="">
-                        </div>
+                    </div>
                 </section>
                 <section id="strip-3">
-                    <div class="element">
-
-                    </div>
+                    <div class="element"></div>
                 </section>
-                <section id="strip-4">
-                    <div class="element">
-                        <h1 class="actual">P</h1>
-                    </div>
-                    <div class="element">
-                        <h1 class="actual">L</h1>
-                    </div>
-                    <div class="element">
-                        <h1 class="actual">A</h1>
-                    </div>
-                    <div class="element">
-                        <h1 class="actual">Y</h1>
-                    </div>
-                    <div class="element">
-                        <h1 class="actual">G</h1>
-                    </div>
-                    <div class="element">
-                        <h1 class="actual">R</h1>
-                    </div>
-                    <div class="element">
-                        <h1 class="actual">O</h1>
-                    </div>
-                    <div class="element">
-                        <h1 class="actual">U</h1>
-                    </div>
-                    <div class="element">
-                        <h1 class="actual">N</h1>
-                    </div>
-                    <div class="element">
-                        <h1 class="actual">D</h1>
-                    </div>
-                </section>
+                <section id="strip-4"></section>
                 <section id="strip-5">
-                    <div class="element">
-
-                    </div>
+                    <div class="element"></div>
                 </section>
             </main>
         </div>
@@ -213,4 +367,3 @@
         <script src="index.js" type="module"></script>
     </body>
 </html>
-

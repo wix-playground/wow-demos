@@ -66,7 +66,13 @@ const EFFECTS_CONFIG = {
     MODE: {
         LABEL: 'Self Relative?',
         VALUE: true,
-    }
+    },
+    SECTION_HEIGHT: {
+        LABEL: 'Section Height',
+        MIN: 25,
+        MAX: 500,
+        STEP: 10,
+    },
 };
 const guiSettings = {
     effects: {
@@ -76,14 +82,17 @@ const guiSettings = {
         [EFFECTS_CONFIG.FOLD.LABEL]: 0,
         [EFFECTS_CONFIG.SCALE.LABEL]: 1,
         [EFFECTS_CONFIG.OPACITY.LABEL]: 1,
+        [EFFECTS_CONFIG.GHOST.LABEL]: true,
     },
     modifications: {
         [EFFECTS_CONFIG.IN_ANIMATION.LABEL]: false,
-        [EFFECTS_CONFIG.GHOST.LABEL]: true,
         [EFFECTS_CONFIG.HINT.LABEL]: false,
         [EFFECTS_CONFIG.MODE.LABEL]: true,
         [EFFECTS_CONFIG.SPEED.LABEL]: 1,
         [EFFECTS_CONFIG.OFFSET.LABEL]: 0,
+    },
+    sectionHeight: {
+        [EFFECTS_CONFIG.SECTION_HEIGHT.LABEL]: 100,
     }
 }
 const config = {};
@@ -121,6 +130,8 @@ function start () {
         const isFirstOrLastSection = (index === 0 || index === sections.length - 1)
         const sectionDuration = isFirstOrLastSection ? section.offsetHeight : section.offsetHeight + window.innerHeight
         const sectionOffset = index === 0 ? 0 : section.offsetTop - window.innerHeight
+        config[sectionName] = {...config[sectionName], ...{height: guiSettings.sectionHeight}}
+        makeDynamic(section, sectionFolder, sectionName)
 
         sectionElements.forEach((element, i) => {
             const elemName = `${element.tagName}-${i}`;
@@ -151,7 +162,12 @@ function start () {
 }
 function addGhost (element) {
     let clone = element.cloneNode(true);
-    clone.setAttribute("class", "ghost");
+    clone.classList.add("ghost");
+    clone.classList.remove("actual");
+    [...clone.querySelectorAll('.actual')].forEach(child => {
+        child.classList.add("ghost");
+        child.classList.remove("actual")
+    })
     element.insertAdjacentElement("afterend", clone);
 }
 
@@ -188,6 +204,14 @@ function init () {
         scenes: createScenes()
     });
     scroll.on();
+}
+
+function makeDynamic (section, sectionFolder, sectionName) {
+    sectionFolder.add(config[sectionName].height, ...Object.values(EFFECTS_CONFIG.SECTION_HEIGHT))
+    .onChange(val => {
+        section.style.setProperty('--strip-height', `${val}vh`);
+         // need to set the .default and .current of all section elements
+    })
 }
 
 function addScrollEffects (element, sectionName, folder, elemName) {
@@ -232,15 +256,15 @@ function addScrollEffects (element, sectionName, folder, elemName) {
         element.nextElementSibling.style.setProperty('--opacity', val - 1);
         init();
     })
-}
-
-function addScrollModifications (element, sectionName, folder, elemName) {
-    const hint = document.querySelector(`.hint-${elemName}`);
-    folder.add(config[sectionName][elemName].modifications, ...Object.values(EFFECTS_CONFIG.GHOST))
+    folder.add(config[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.GHOST))
     .onChange(showGhost => {
         element.nextElementSibling.style.setProperty('--no-ghost', showGhost ? .1 : 0);
         init();
     })
+}
+
+function addScrollModifications (element, sectionName, folder, elemName) {
+    const hint = document.querySelector(`.hint-${elemName}`);
     folder.add(config[sectionName][elemName].modifications, ...Object.values(EFFECTS_CONFIG.HINT))
     .onChange(showGuide => {
         [...document.querySelectorAll('.hint')].forEach(e => {
