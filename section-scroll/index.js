@@ -2,18 +2,6 @@ import { Scroll } from './two.5.js';
 
 const gui = new dat.gui.GUI();
 
-const SECTION_1 = 'section 1';
-const SECTION_2 = 'section 2';
-const SECTION_3 = 'section 3';
-const SECTION_4 = 'section 4';
-const SECTION_5 = 'section 5';
-
-const PHOTO = 'photo';
-const TEXT = 'text';
-const SVG = 'svg';
-const SPEED = 'speed';
-const OFFSET = 'offset';
-
 const EFFECTS_CONFIG = {
     TRANSLATE_X: {
         LABEL: 'Translate X',
@@ -55,6 +43,10 @@ const EFFECTS_CONFIG = {
         LABEL: 'Ghost',
         VALUE: true,
     },
+    GUIDE: {
+        LABEL: 'Guide',
+        VALUE: false,
+    },
     IN_ANIMATION: {
         LABEL: 'In Animation',
         VALUE: false,
@@ -70,6 +62,10 @@ const EFFECTS_CONFIG = {
         MIN: -1,
         MAX: 1,
         STEP: .1,
+    },
+    MODE: {
+        LABEL: 'Relative To Self?',
+        VALUE: false,
     }
 };
 const guiSettings = {
@@ -80,9 +76,11 @@ const guiSettings = {
         [EFFECTS_CONFIG.FOLD.LABEL]: 0,
         [EFFECTS_CONFIG.SCALE.LABEL]: 1,
         [EFFECTS_CONFIG.OPACITY.LABEL]: 1,
-        [EFFECTS_CONFIG.GHOST.LABEL]: true,
         [EFFECTS_CONFIG.IN_ANIMATION.LABEL]: false,
-        [EFFECTS_CONFIG.SPEED.LABEL]: 0,
+        [EFFECTS_CONFIG.GHOST.LABEL]: true,
+        [EFFECTS_CONFIG.GUIDE.LABEL]: false,
+        [EFFECTS_CONFIG.MODE.LABEL]: false,
+        [EFFECTS_CONFIG.SPEED.LABEL]: 1,
         [EFFECTS_CONFIG.OFFSET.LABEL]: 0,
     }
 }
@@ -91,7 +89,6 @@ const effectDuration = {}
 const effectStartOffset = {}
 const effectsIsInAnimation = {}
 const sections = [...document.querySelectorAll('section')];
-const sectionOffsets = sections.map(sec => sec.offsetTop);
 const root = document.documentElement;
 const initStyles = {
     '--opacity': 0,
@@ -102,11 +99,15 @@ const initStyles = {
     '--scale': 0,
     '--pos': '0',
 }
+let animationTrigger = 'section';
 //======================== main ========================
-resetStyles(root)
-start();
-gui.remember(config);
-init();
+
+window.addEventListener("load", () => {
+    resetStyles(root)
+    start();
+    gui.remember(config);
+    init();
+})
 
 //====================== main-end ======================
 
@@ -115,14 +116,25 @@ function start () {
         const sectionName = `Section-${index+1}`;
         const sectionFolder = gui.addFolder(sectionName);
         const sectionElements = [...section.querySelectorAll('.actual')]
+        const isFirstOrLastSection = (index === 0 || index === sections.length - 1)
         sectionElements.forEach((element, i) => {
             const elemName = `${element.tagName}-${i}`;
             const elemFolder = sectionFolder.addFolder(elemName);
+            const elemDistFromTop = element.getBoundingClientRect().top + window.scrollY;
+            const startOffset = 
+                animationTrigger === 'section' 
+                ? index === 0 ? 0 : section.offsetTop - window.innerHeight
+                : elemDistFromTop < window.innerHeight ? 0 : elemDistFromTop - window.innerHeight;
+            const duration = 
+                animationTrigger === 'section' 
+                ? isFirstOrLastSection ? section.offsetHeight : section.offsetHeight + window.innerHeight
+                : element.offsetHeight + window.innerHeight;
             config[sectionName] = {...config[sectionName], ...{[elemName]: guiSettings.transformations}};
-            effectStartOffset[sectionName] = {...effectStartOffset[sectionName], ...{[elemName]: {default: sectionOffsets[index], current: sectionOffsets[index]}}};
-            effectDuration[sectionName] = {...effectDuration[sectionName], ...{[elemName]: Number.MAX_VALUE}};
+            effectStartOffset[sectionName] = {...effectStartOffset[sectionName], ...{[elemName]: {default: startOffset, current: startOffset}}};
+            effectDuration[sectionName] = {...effectDuration[sectionName], ...{[elemName]: duration}};
             effectsIsInAnimation[sectionName] = {...effectsIsInAnimation[sectionName], ...{[elemName]: false}};
-            addScrollEffects(element, sectionName, elemFolder, elemName);
+            addOffsetGuide(elemName, startOffset, duration);
+            setTimeout(() => addScrollEffects(element, sectionName, elemFolder, elemName), 0);
             addGhost(element)
         })
     })
@@ -131,6 +143,15 @@ function addGhost (element) {
     let clone = element.cloneNode(true);
     clone.setAttribute("class", "ghost");
     element.insertAdjacentElement("afterend", clone);
+}
+
+function addOffsetGuide (elemName, startOffset, duration) {
+    const guide = document.createElement('div')
+    guide.classList.add("guide", `guide-${elemName}`);
+    guide.style.setProperty('--offset-top', `${startOffset}px`);
+    guide.style.setProperty('--duration', `${duration}px`);
+    guide.dataset["name"] = elemName;
+    document.body.appendChild(guide);
 }
 
 function createScenes () {
@@ -160,6 +181,7 @@ function init () {
 }
 
 function addScrollEffects (element, sectionName, elemFolder, elemName) {
+    const guide = document.querySelector(`.guide-${elemName}`);
     elemFolder.add(config[sectionName][elemName], ...Object.values(EFFECTS_CONFIG.TRANSLATE_X))
     .onChange(val => {
         const isInAnimation = effectsIsInAnimation[sectionName][elemName];
@@ -203,23 +225,38 @@ function addScrollEffects (element, sectionName, elemFolder, elemName) {
     })
     elemFolder.add(config[sectionName][elemName], ...Object.values(EFFECTS_CONFIG.GHOST))
     .onChange(showGhost => {
-        element.nextElementSibling.style.setProperty('--no-ghost', showGhost? .1 : 0);
+        element.nextElementSibling.style.setProperty('--no-ghost', showGhost ? .1 : 0);
+        init();
+    })
+    elemFolder.add(config[sectionName][elemName], ...Object.values(EFFECTS_CONFIG.GUIDE))
+    .onChange(showGuide => {
+        [...document.querySelectorAll('.guide')].forEach(e => e.style.setProperty('--visible', 'hidden'));
+        guide.style.setProperty('--visible', showGuide ? 'visible' : 'hidden');
+        element.style.setProperty('--z-index', showGuide ? 4 : 0)
+        init();
+    })
+    elemFolder.add(config[sectionName][elemName], ...Object.values(EFFECTS_CONFIG.MODE))
+    .onChange(isRelativeToSelf => {
+        isRelativeToSelf ? animationTrigger = 'element' : 'section';
         init();
     })
     elemFolder.add(config[sectionName][elemName], ...Object.values(EFFECTS_CONFIG.IN_ANIMATION))
     .onChange(isInAnimation => {
         effectsIsInAnimation[sectionName][elemName] = isInAnimation;
         if (isInAnimation) resetStyles(element.nextElementSibling)
+        else (copyCSSProperties(element, element.nextElementSibling)) 
         init();
     })
     elemFolder.add(config[sectionName][elemName], ...Object.values(EFFECTS_CONFIG.SPEED))
     .onChange(val => {
         effectDuration[sectionName][elemName] = window.innerHeight / val;
+        guide.style.setProperty('--duration', `${effectDuration[sectionName][elemName]}px`);
         init();
     })
     elemFolder.add(config[sectionName][elemName], ...Object.values(EFFECTS_CONFIG.OFFSET))
     .onChange(val => {
         effectStartOffset[sectionName][elemName].current = effectStartOffset[sectionName][elemName].default + window.innerHeight * val;
+        guide.style.setProperty('--offset-top',  `${effectStartOffset[sectionName][elemName].current}px`);
         init();
     })
 }
@@ -227,5 +264,22 @@ function addScrollEffects (element, sectionName, elemFolder, elemName) {
 function resetStyles (element) {
     Object.entries(initStyles).forEach(([property, value]) => {
         element.style.setProperty(property, value);
-    });
+    });   
 }
+
+function copyCSSProperties(elemToCopyFrom, elemToPasteTo) {
+    const element1CSS = {
+        'xTrans': window.getComputedStyle(elemToCopyFrom).getPropertyValue('--x-trans'),
+        'yTrans': window.getComputedStyle(elemToCopyFrom).getPropertyValue('--y-trans'),
+        'rotate': window.getComputedStyle(elemToCopyFrom).getPropertyValue('--rotate'),
+        'rotateY': window.getComputedStyle(elemToCopyFrom).getPropertyValue('--rotate-y'),
+        'scale': window.getComputedStyle(elemToCopyFrom).getPropertyValue('--scale')
+    };
+
+    elemToPasteTo.style.setProperty('--x-trans', element1CSS.xTrans);
+    elemToPasteTo.style.setProperty('--y-trans', element1CSS.yTrans);
+    elemToPasteTo.style.setProperty('--rotate', element1CSS.rotate);
+    elemToPasteTo.style.setProperty('--rotate-y', element1CSS.rotateY);
+    elemToPasteTo.style.setProperty('--scale', element1CSS.scale);
+}
+

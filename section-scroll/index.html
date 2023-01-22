@@ -71,6 +71,7 @@
             
             .actual {
                 opacity: calc(1 + var(--pos, 0) * var(--opacity, 0));
+                z-index: var(--z-index, 0);
                 transform: 
                     translateX(calc(var(--pos, 0) * var(--x-trans, 0)))
                     translateY(calc(var(--pos, 0) * var(--y-trans, 0)))
@@ -80,12 +81,39 @@
             }
             .ghost {
                 opacity: var(--no-ghost, 0.1);
+                z-index: var(--z-index, 0);
                 transform: 
                     translateX(var(--x-trans, 0))
                     translateY(var(--y-trans, 0))
                     rotateZ(var(--rotate, 0))
                     rotateY(var(--rotate-y, 0))
                     scale(calc(1 + var(--scale, 0)))
+            }
+            .guide {
+                position: absolute;
+                width: 100%;
+                left: 0;
+                height: var(--duration, 0);
+                top: var(--offset-top, 0);
+                border-top: 2px solid red ;
+                border-bottom: 2px solid red;
+                background-color: blue;
+                background-repeat: repeat;
+                opacity: 0.5;
+                visibility: var(--visible, hidden);
+                z-index: 3;
+            }
+
+            .guide::before {
+                position: sticky;
+                top: 0;
+                left: 0;
+                content: attr(data-name);
+                color:red;
+                z-index: 5;
+                font-weight: bold;
+                border: 2px solid red;
+                background: white;
             }
             
             /* ==================== strip 1 ================= */
@@ -114,11 +142,6 @@
                     <div class="element">
                         <img class="actual" src="https://picsum.photos/500/400?random=1" alt="">
                     </div>
-                    <div class="element">
-                        <!-- <img class="element" src="https://picsum.photos/500/400?random=1" alt="">
-                            <img class="ghost" src="https://picsum.photos/500/400?random=1" alt=""> -->
-                            <!-- <div class="ghost"></div> -->
-                        </div>
                     </section>
                     <section id="strip-2">
                         <div class="element">
@@ -144,7 +167,34 @@
                 </section>
                 <section id="strip-4">
                     <div class="element">
-
+                        <h1 class="actual">P</h1>
+                    </div>
+                    <div class="element">
+                        <h1 class="actual">L</h1>
+                    </div>
+                    <div class="element">
+                        <h1 class="actual">A</h1>
+                    </div>
+                    <div class="element">
+                        <h1 class="actual">Y</h1>
+                    </div>
+                    <div class="element">
+                        <h1 class="actual">G</h1>
+                    </div>
+                    <div class="element">
+                        <h1 class="actual">R</h1>
+                    </div>
+                    <div class="element">
+                        <h1 class="actual">O</h1>
+                    </div>
+                    <div class="element">
+                        <h1 class="actual">U</h1>
+                    </div>
+                    <div class="element">
+                        <h1 class="actual">N</h1>
+                    </div>
+                    <div class="element">
+                        <h1 class="actual">D</h1>
                     </div>
                 </section>
                 <section id="strip-5">
