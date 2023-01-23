@@ -69,9 +69,9 @@ const EFFECTS_CONFIG = {
         MAX: 1,
         STEP: .1,
     },
-    MODE: {
-        LABEL: 'Self Relative?',
-        VALUE: true,
+    TRIGGER: {
+        LABEL: 'Trigger',
+        VALUE: 'self',
     },
     SECTION_HEIGHT: {
         LABEL: 'Section Height',
@@ -86,6 +86,12 @@ const EFFECTS_CONFIG = {
         STEP: .1,
     },
 };
+
+const ANIMATION_TRIGGER = {
+    self: 'modeSelf',
+    section: 'modeSection'
+}
+
 const guiSettings = {
     effects: {
         [EFFECTS_CONFIG.TRANSLATE_X.LABEL]: 0,
@@ -100,7 +106,7 @@ const guiSettings = {
     travelSettings: {
         [EFFECTS_CONFIG.IN_ANIMATION.LABEL]: false,
         [EFFECTS_CONFIG.HINT.LABEL]: false,
-        [EFFECTS_CONFIG.MODE.LABEL]: true,
+        [EFFECTS_CONFIG.TRIGGER.LABEL]: ANIMATION_TRIGGER.self,
         [EFFECTS_CONFIG.SPEED.LABEL]: 1,
         [EFFECTS_CONFIG.OFFSET.LABEL]: 0,
     },
@@ -111,10 +117,16 @@ const guiSettings = {
         [EFFECTS_CONFIG.ANIMATION_FRICTION.LABEL]: .5,
     }
 }
+
+const TRIGGER_OPTIONS = {
+    modeSelf: 'modeSelf',
+    modeSection: 'modeSection'
+}
 const config = {};
 const effectDuration = {}
 const effectStartOffset = {}
 const effectsIsInAnimation = {}
+const animationTriggers = {}
 const sections = [...document.querySelectorAll('section')];
 const root = document.documentElement;
 const initStyles = {
@@ -127,7 +139,6 @@ const initStyles = {
     '--scale': 0,
     '--pos': '0',
 }
-let animationTrigger = 'modeSelf';
 let animationFriction = .9;
 let scroll;
 //======================== main ========================
@@ -169,7 +180,16 @@ function start (firstTime = true) {
             config[sectionName] = {...config[sectionName], ...{[elemName]: {effects: guiSettings.effects, travelSettings: guiSettings.travelSettings}}};
             effectStartOffset[sectionName] = {
                 ...effectStartOffset[sectionName], ...{
-                    [elemName]: {modeSection: {default: sectionOffset, current: sectionOffset}, modeSelf: {default: elementOffset, current: elementOffset}}
+                    [elemName]: {
+                        modeSection: {
+                            default: sectionOffset, 
+                            current: sectionOffset
+                        }, 
+                        modeSelf: {
+                            default: elementOffset, 
+                            current: elementOffset
+                        }
+                    }
                 }
             };
             effectDuration[sectionName] = {
@@ -179,6 +199,7 @@ function start (firstTime = true) {
             };
             effectsIsInAnimation[sectionName] = {...effectsIsInAnimation[sectionName], ...{[elemName]: false}};
             if (firstTime){
+                animationTriggers[elemName] = TRIGGER_OPTIONS.modeSelf;
                 addHint(elemName, elementOffset, elementDuration);
                 addScrollEffects(element, sectionName, effectsFolder, elemName);
                 addScrollModifications(element, sectionName, modificationsFolder, elemName);
@@ -186,7 +207,7 @@ function start (firstTime = true) {
             }
             else {
                 const hintParams = 
-                    animationTrigger === 'modeSelf' 
+                    animationTriggers[elemName] === TRIGGER_OPTIONS.modeSelf
                     ? [elementOffset, elementDuration] 
                     : [sectionOffset, sectionDuration];
 
@@ -229,6 +250,7 @@ function createScenes () {
         sectionElements.forEach((element, i) => { 
             const elemName = `${element.tagName}-${i}`;
             const isInAnimation = effectsIsInAnimation[sectionName][elemName];
+            const animationTrigger = animationTriggers[elemName];
             scenes.push({
                 start: effectStartOffset[sectionName][elemName][animationTrigger].current,
                 duration: effectDuration[sectionName][elemName][animationTrigger].current,
@@ -336,9 +358,9 @@ function addScrollModifications (element, sectionName, folder, elemName) {
         }
         init();
     })
-    folder.add(config[sectionName][elemName].travelSettings, ...Object.values(EFFECTS_CONFIG.MODE))
-    .onChange(isRelativeToSelf => {
-        animationTrigger = isRelativeToSelf ? 'modeSelf' : 'modeSection';
+    folder.add(config[sectionName][elemName].travelSettings, EFFECTS_CONFIG.TRIGGER.LABEL, ANIMATION_TRIGGER)
+    .onChange(animationTrigger => {
+        animationTriggers[elemName] = animationTrigger;
         hint.style.setProperty('--offset-top',  `${effectStartOffset[sectionName][elemName][animationTrigger].current}px`);
         hint.style.setProperty('--duration', `${effectDuration[sectionName][elemName][animationTrigger].current}px`);
         init();
