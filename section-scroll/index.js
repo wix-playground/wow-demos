@@ -97,7 +97,7 @@ const guiSettings = {
         [EFFECTS_CONFIG.OPACITY.LABEL]: 1,
         [EFFECTS_CONFIG.GHOST.LABEL]: true,
     },
-    modifications: {
+    travelSettings: {
         [EFFECTS_CONFIG.IN_ANIMATION.LABEL]: false,
         [EFFECTS_CONFIG.HINT.LABEL]: false,
         [EFFECTS_CONFIG.MODE.LABEL]: true,
@@ -162,11 +162,11 @@ function start (firstTime = true) {
             const elemName = `${element.tagName}-${i}`;
             const elemFolder = firstTime && sectionFolder.addFolder(elemName);
             const effectsFolder = firstTime && elemFolder.addFolder('Effects');
-            const modificationsFolder = firstTime && elemFolder.addFolder('Modifications');
+            const modificationsFolder = firstTime && elemFolder.addFolder('Travel Settings');
             const elemDistFromTop = element.getBoundingClientRect().top + window.scrollY;
             const elementDuration = element.offsetHeight + (elemDistFromTop < window.innerHeight ? elemDistFromTop : window.innerHeight);
             const elementOffset = elemDistFromTop < window.innerHeight ? 0 : elemDistFromTop - window.innerHeight;
-            config[sectionName] = {...config[sectionName], ...{[elemName]: {effects: guiSettings.effects, modifications: guiSettings.modifications}}};
+            config[sectionName] = {...config[sectionName], ...{[elemName]: {effects: guiSettings.effects, travelSettings: guiSettings.travelSettings}}};
             effectStartOffset[sectionName] = {
                 ...effectStartOffset[sectionName], ...{
                     [elemName]: {modeSection: {default: sectionOffset, current: sectionOffset}, modeSelf: {default: elementOffset, current: elementOffset}}
@@ -324,7 +324,7 @@ function addScrollEffects (element, sectionName, folder, elemName) {
 
 function addScrollModifications (element, sectionName, folder, elemName) {
     const hint = document.querySelector(`.hint-${elemName}`);
-    folder.add(config[sectionName][elemName].modifications, ...Object.values(EFFECTS_CONFIG.HINT))
+    folder.add(config[sectionName][elemName].travelSettings, ...Object.values(EFFECTS_CONFIG.HINT))
     .onChange(showGuide => {
         [...document.querySelectorAll('.hint')].forEach(e => {
             e.style.setProperty('--visible', 'hidden')
@@ -336,27 +336,27 @@ function addScrollModifications (element, sectionName, folder, elemName) {
         }
         init();
     })
-    folder.add(config[sectionName][elemName].modifications, ...Object.values(EFFECTS_CONFIG.MODE))
+    folder.add(config[sectionName][elemName].travelSettings, ...Object.values(EFFECTS_CONFIG.MODE))
     .onChange(isRelativeToSelf => {
         animationTrigger = isRelativeToSelf ? 'modeSelf' : 'modeSection';
         hint.style.setProperty('--offset-top',  `${effectStartOffset[sectionName][elemName][animationTrigger].current}px`);
         hint.style.setProperty('--duration', `${effectDuration[sectionName][elemName][animationTrigger].current}px`);
         init();
     })
-    folder.add(config[sectionName][elemName].modifications, ...Object.values(EFFECTS_CONFIG.IN_ANIMATION))
+    folder.add(config[sectionName][elemName].travelSettings, ...Object.values(EFFECTS_CONFIG.IN_ANIMATION))
     .onChange(isInAnimation => {
         effectsIsInAnimation[sectionName][elemName] = isInAnimation;
         if (isInAnimation) resetStyles(element.nextElementSibling)
         else (copyCSSProperties(element, element.nextElementSibling)) 
         init();
     })
-    folder.add(config[sectionName][elemName].modifications, ...Object.values(EFFECTS_CONFIG.SPEED))
+    folder.add(config[sectionName][elemName].travelSettings, ...Object.values(EFFECTS_CONFIG.SPEED))
     .onChange(val => {
         effectDuration[sectionName][elemName][animationTrigger].current = effectDuration[sectionName][elemName][animationTrigger].default/val;
         hint.style.setProperty('--duration', `${effectDuration[sectionName][elemName][animationTrigger].current}px`);
         init();
     })
-    folder.add(config[sectionName][elemName].modifications, ...Object.values(EFFECTS_CONFIG.OFFSET))
+    folder.add(config[sectionName][elemName].travelSettings, ...Object.values(EFFECTS_CONFIG.OFFSET))
     .onChange(val => {
         effectStartOffset[sectionName][elemName][animationTrigger].current = effectStartOffset[sectionName][elemName][animationTrigger].default + window.innerHeight * val;
         hint.style.setProperty('--offset-top',  `${effectStartOffset[sectionName][elemName][animationTrigger].current}px`);
