@@ -53,9 +53,9 @@ const EFFECTS_CONFIG = {
         LABEL: 'Hint',
         VALUE: false,
     },
-    IN_ANIMATION: {
-        LABEL: 'In Animation',
-        VALUE: false,
+    ANIMATION_DIR: {
+        LABEL: 'Direction',
+        VALUE: 'in',
     },
     SPEED: {
         LABEL: 'Speed',
@@ -91,6 +91,10 @@ const ANIMATION_TRIGGER = {
     self: 'modeSelf',
     section: 'modeSection'
 }
+const ANIMATION_DIRECTION = {
+    in: 'inAnimation',
+    out: 'outAnimation'
+}
 
 const guiSettings = {
     effects: {
@@ -104,7 +108,7 @@ const guiSettings = {
         [EFFECTS_CONFIG.GHOST.LABEL]: true,
     },
     travelSettings: {
-        [EFFECTS_CONFIG.IN_ANIMATION.LABEL]: false,
+        [EFFECTS_CONFIG.ANIMATION_DIR.LABEL]: ANIMATION_DIRECTION.out,
         [EFFECTS_CONFIG.HINT.LABEL]: false,
         [EFFECTS_CONFIG.TRIGGER.LABEL]: ANIMATION_TRIGGER.self,
         [EFFECTS_CONFIG.SPEED.LABEL]: 1,
@@ -118,14 +122,10 @@ const guiSettings = {
     }
 }
 
-const TRIGGER_OPTIONS = {
-    modeSelf: 'modeSelf',
-    modeSection: 'modeSection'
-}
 const config = {};
 const effectDuration = {}
 const effectStartOffset = {}
-const effectsIsInAnimation = {}
+const animationDirections = {}
 const animationTriggers = {}
 const sections = [...document.querySelectorAll('section')];
 const root = document.documentElement;
@@ -197,9 +197,9 @@ function start (firstTime = true) {
                     [elemName]: {modeSection: {default: sectionDuration, current: sectionDuration}, modeSelf: {default: elementDuration, current: elementDuration}}
                 }
             };
-            effectsIsInAnimation[sectionName] = {...effectsIsInAnimation[sectionName], ...{[elemName]: false}};
+            animationDirections[sectionName] = {...animationDirections[sectionName], ...{[elemName]: ANIMATION_DIRECTION.out}};
             if (firstTime){
-                animationTriggers[elemName] = TRIGGER_OPTIONS.modeSelf;
+                animationTriggers[elemName] = ANIMATION_TRIGGER.self;
                 addHint(elemName, elementOffset, elementDuration);
                 addScrollEffects(element, sectionName, effectsFolder, elemName);
                 addScrollModifications(element, sectionName, modificationsFolder, elemName);
@@ -207,7 +207,7 @@ function start (firstTime = true) {
             }
             else {
                 const hintParams = 
-                    animationTriggers[elemName] === TRIGGER_OPTIONS.modeSelf
+                    animationTriggers[elemName] === ANIMATION_TRIGGER.self
                     ? [elementOffset, elementDuration] 
                     : [sectionOffset, sectionDuration];
 
@@ -216,6 +216,7 @@ function start (firstTime = true) {
         })
     })
 }
+
 function addGhost (element) {
     let clone = element.cloneNode(true);
     clone.classList.add("ghost");
@@ -249,13 +250,13 @@ function createScenes () {
         const sectionElements = [...section.querySelectorAll('.actual')]
         sectionElements.forEach((element, i) => { 
             const elemName = `${element.tagName}-${i}`;
-            const isInAnimation = effectsIsInAnimation[sectionName][elemName];
+            const animationDirection = animationDirections[sectionName][elemName];
             const animationTrigger = animationTriggers[elemName];
             scenes.push({
                 start: effectStartOffset[sectionName][elemName][animationTrigger].current,
                 duration: effectDuration[sectionName][elemName][animationTrigger].current,
                 target: element,
-                effect: (scene, pos) => scene.target.style.setProperty('--pos', isInAnimation ? 1 - pos : pos)
+                effect: (scene, pos) => scene.target.style.setProperty('--pos', animationDirection === ANIMATION_DIRECTION.in ? 1 - pos : pos)
             })
         })
     })
@@ -284,49 +285,49 @@ function makeDynamic (section, sectionFolder, sectionName) {
 function addScrollEffects (element, sectionName, folder, elemName) {
     folder.add(config[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.TRANSLATE_X))
     .onChange(val => {
-        const isInAnimation = effectsIsInAnimation[sectionName][elemName];
+        const animationDirection = animationDirections[sectionName][elemName];
         element.style.setProperty('--x-trans', `${val}px`);
-        if (!isInAnimation) element.nextElementSibling.style.setProperty('--x-trans', `${val}px`);
+        if (animationDirection === ANIMATION_DIRECTION.out) element.nextElementSibling.style.setProperty('--x-trans', `${val}px`);
         resetChildrenStyle(element)
         init();
     })
     folder.add(config[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.TRANSLATE_Y))
     .onChange(val => {
-        const isInAnimation = effectsIsInAnimation[sectionName][elemName];
+        const animationDirection = animationDirections[sectionName][elemName];
         element.style.setProperty('--y-trans', `${val}px`);
-        if (!isInAnimation) element.nextElementSibling.style.setProperty('--y-trans', `${val}px`);
+        if (animationDirection === ANIMATION_DIRECTION.out) element.nextElementSibling.style.setProperty('--y-trans', `${val}px`);
         resetChildrenStyle(element)
         init();
     })
     folder.add(config[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.ROTATE))
     .onChange(val => {
-        const isInAnimation = effectsIsInAnimation[sectionName][elemName];
+        const animationDirection = animationDirections[sectionName][elemName];
         element.style.setProperty('--rotate', `${val}deg`);
-        if (!isInAnimation) element.nextElementSibling.style.setProperty('--rotate', `${val}deg`);
+        if (animationDirection === ANIMATION_DIRECTION.out) element.nextElementSibling.style.setProperty('--rotate', `${val}deg`);
         resetChildrenStyle(element)
         init();
     })
     folder.add(config[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.ROTATE_Y))
     .onChange(val => {
-        const isInAnimation = effectsIsInAnimation[sectionName][elemName];
+        const animationDirection = animationDirections[sectionName][elemName];
         element.style.setProperty('--rotate-y', `${val}deg`);
-        if (!isInAnimation) element.nextElementSibling.style.setProperty('--rotate-y', `${val}deg`);
+        if (animationDirection === ANIMATION_DIRECTION.out) element.nextElementSibling.style.setProperty('--rotate-y', `${val}deg`);
         resetChildrenStyle(element)
         init();
     })
     folder.add(config[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.ROTATE_X))
     .onChange(val => {
-        const isInAnimation = effectsIsInAnimation[sectionName][elemName];
+        const animationDirection = animationDirections[sectionName][elemName];
         element.style.setProperty('--rotate-x', `${val}deg`);
-        if (!isInAnimation) element.nextElementSibling.style.setProperty('--rotate-x', `${val}deg`);
+        if (animationDirection === ANIMATION_DIRECTION.out) element.nextElementSibling.style.setProperty('--rotate-x', `${val}deg`);
         resetChildrenStyle(element)
         init();
     })
     folder.add(config[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.SCALE))
     .onChange(val => {
-        const isInAnimation = effectsIsInAnimation[sectionName][elemName];
+        const animationDirection = animationDirections[sectionName][elemName];
         element.style.setProperty('--scale', val - 1);
-        if (!isInAnimation) element.nextElementSibling.style.setProperty('--scale', val - 1);
+        if (animationDirection === ANIMATION_DIRECTION.out) element.nextElementSibling.style.setProperty('--scale', val - 1);
         resetChildrenStyle(element)
         init();
     })
@@ -365,10 +366,10 @@ function addScrollModifications (element, sectionName, folder, elemName) {
         hint.style.setProperty('--duration', `${effectDuration[sectionName][elemName][animationTrigger].current}px`);
         init();
     })
-    folder.add(config[sectionName][elemName].travelSettings, ...Object.values(EFFECTS_CONFIG.IN_ANIMATION))
-    .onChange(isInAnimation => {
-        effectsIsInAnimation[sectionName][elemName] = isInAnimation;
-        if (isInAnimation) resetStyles(element.nextElementSibling)
+    folder.add(config[sectionName][elemName].travelSettings, EFFECTS_CONFIG.ANIMATION_DIR.LABEL, ANIMATION_DIRECTION)
+    .onChange(animationDir => {
+        animationDirections[sectionName][elemName] = animationDir;
+        if (animationDir === ANIMATION_DIRECTION.in) resetStyles(element.nextElementSibling)
         else (copyCSSProperties(element, element.nextElementSibling)) 
         init();
     })
