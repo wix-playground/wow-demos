@@ -73,6 +73,12 @@ const EFFECTS_CONFIG = {
         MAX: 500,
         STEP: 10,
     },
+    ANIMATION_FRICTION: {
+        LABEL: 'Animation Friction',
+        MIN: 0,
+        MAX: .9,
+        STEP: .1,
+    },
 };
 const guiSettings = {
     effects: {
@@ -111,6 +117,7 @@ const initStyles = {
     '--pos': '0',
 }
 let animationTrigger = 'modeSelf';
+let animationFriction = .9
 //======================== main ========================
 
 window.addEventListener("load", () => {
@@ -123,6 +130,13 @@ window.addEventListener("load", () => {
 //====================== main-end ======================
 
 function start () {
+    // gui.add(config[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.TRANSLATE_X))
+    // .onChange(val => {
+    //     const isInAnimation = effectsIsInAnimation[sectionName][elemName];
+    //     element.style.setProperty('--x-trans', `${val}px`);
+    //     if (!isInAnimation) element.nextElementSibling.style.setProperty('--x-trans', `${val}px`);
+    //     init();
+    // })
     sections.forEach((section, index) => {
         const sectionName = `Section-${index+1}`;
         const sectionFolder = gui.addFolder(sectionName);
@@ -201,7 +215,9 @@ function createScenes () {
 
 function init () {
     const scroll = new Scroll({
-        scenes: createScenes()
+        scenes: createScenes(),
+        animationActive: true,
+        animationFriction: animationFriction,
     });
     scroll.on();
 }
