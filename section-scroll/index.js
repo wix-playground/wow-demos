@@ -36,6 +36,18 @@ const EFFECTS_CONFIG = {
         MAX: 1080,
         STEP: 5,
     },
+    SKEW_X: {
+        LABEL: 'Skew X',
+        MIN: -45,
+        MAX: 45,
+        STEP: 1,
+    },
+    SKEW_Y: {
+        LABEL: 'Skew Y',
+        MIN: -45,
+        MAX: 45,
+        STEP: 1,
+    },
     SCALE: {
         LABEL: 'Scale',
         MIN: 0,
@@ -106,6 +118,8 @@ const guiSettings = {
         [EFFECTS_CONFIG.ROTATE.LABEL]: 0,
         [EFFECTS_CONFIG.ROTATE_Y.LABEL]: 0,
         [EFFECTS_CONFIG.ROTATE_X.LABEL]: 0,
+        [EFFECTS_CONFIG.SKEW_X.LABEL]: 0,
+        [EFFECTS_CONFIG.SKEW_Y.LABEL]: 0,
         [EFFECTS_CONFIG.SCALE.LABEL]: 1,
         [EFFECTS_CONFIG.OPACITY.LABEL]: 1,
         [EFFECTS_CONFIG.GHOST.LABEL]: true,
@@ -142,6 +156,8 @@ const initStyles = {
     '--rotate': '0deg',
     '--rotate-y': '0deg',
     '--rotate-x': '0deg',
+    '--skew-y': '0deg',
+    '--skew-x': '0deg',
     '--scale': 0,
     '--pos': '0',
 }
@@ -349,6 +365,22 @@ function addScrollEffects (element, sectionName, folder, elemName) {
         resetChildrenStyle(element)
         init();
     })
+    folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.SKEW_X))
+    .onChange(val => {
+        const animationDirection = animationDirections[elemName];
+        element.style.setProperty('--skew-x', `${val}deg`);
+        if (animationDirection === ANIMATION_DIRECTION.out) element.nextElementSibling.style.setProperty('--skew-x', `${val}deg`);
+        resetChildrenStyle(element)
+        init();
+    })
+    folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.SKEW_Y))
+    .onChange(val => {
+        const animationDirection = animationDirections[elemName];
+        element.style.setProperty('--skew-y', `${val}deg`);
+        if (animationDirection === ANIMATION_DIRECTION.out) element.nextElementSibling.style.setProperty('--skew-y', `${val}deg`);
+        resetChildrenStyle(element)
+        init();
+    })
     folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.SCALE))
     .onChange(val => {
         const animationDirection = animationDirections[elemName];
@@ -449,8 +481,10 @@ function applyStyle (element, elementCSS) {
     element.style.setProperty('--x-trans', elementCSS.xTrans);
     element.style.setProperty('--y-trans', elementCSS.yTrans);
     element.style.setProperty('--rotate', elementCSS.rotate);
-    element.style.setProperty('--rotate-y', elementCSS.rotateY);
     element.style.setProperty('--rotate-x', elementCSS.rotateX);
+    element.style.setProperty('--rotate-y', elementCSS.rotateY);
+    element.style.setProperty('--skew-x', elementCSS.skewX);
+    element.style.setProperty('--skew-y', elementCSS.skewY);
     element.style.setProperty('--scale', elementCSS.scale);
 }
 
@@ -461,6 +495,8 @@ function getStyle (element) {
         'rotate': window.getComputedStyle(element).getPropertyValue('--rotate'),
         'rotateY': window.getComputedStyle(element).getPropertyValue('--rotate-y'),
         'rotateX': window.getComputedStyle(element).getPropertyValue('--rotate-x'),
+        'skewX': window.getComputedStyle(element).getPropertyValue('--skew-x'),
+        'skewY': window.getComputedStyle(element).getPropertyValue('--skew-y'),
         'scale': window.getComputedStyle(element).getPropertyValue('--scale')
     }
 }

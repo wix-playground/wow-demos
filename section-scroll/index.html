@@ -78,6 +78,8 @@
                     rotateZ(calc(var(--pos, 0) * var(--rotate, 0)))
                     rotateY(calc(var(--pos, 0) * var(--rotate-y, 0))) 
                     rotateX(calc(var(--pos, 0) * var(--rotate-x, 0))) 
+                    skewX(calc(var(--pos, 0) * var(--skew-x, 0))) 
+                    skewY(calc(var(--pos, 0) * var(--skew-y, 0))) 
                     scale(calc(1 + var(--pos, 0) * var(--scale, 0)));
             }
             .ghost {
@@ -89,6 +91,8 @@
                     rotateZ(var(--rotate, 0))
                     rotateY(var(--rotate-y, 0)) 
                     rotateX(var(--rotate-x, 0)) 
+                    skewX(var(--skew-x, 0)) 
+                    skewY(var(--skew-y, 0)) 
                     scale(calc(1 + var(--scale, 0)));
             }
             .hint {
