@@ -130,6 +130,8 @@ const effectDuration = {}
 const effectStartOffset = {}
 const animationDirections = {}
 const animationTriggers = {}
+const sectionsElements = {};
+const sectionNames = [];
 
 const sections = [...document.querySelectorAll('section')];
 const root = document.documentElement;
@@ -172,6 +174,8 @@ function initGUI () {
         const sectionName = `Section-${index+1}`;
         const sectionFolder = GUI.addFolder(sectionName);
         const sectionElements = [...section.querySelectorAll('.actual')]
+        sectionNames.push(sectionName);
+        sectionsElements[sectionName] = sectionElements;
         CONFIG[sectionName] = {height: guiSettings.sectionHeight};
         makeDynamicHeight(section, sectionFolder, sectionName);
 
@@ -199,8 +203,8 @@ function restart () {
         const sectionDuration = isFirstOrLastSection ? section.offsetHeight : section.offsetHeight + window.innerHeight
         const sectionOffset = index === 0 ? 0 : section.offsetTop - window.innerHeight
 
-        const sectionElements = [...section.querySelectorAll('.actual')]
-        sectionElements.forEach((element, idx) => {
+        const sectionName = sectionNames[index];
+        sectionsElements[sectionName].forEach((element, idx) => {
             const elemStyle = getAndResetStyle(element);
             const elemName = `${element.tagName}-${idx}`;
             const elemDistFromTop = element.getBoundingClientRect().top + window.scrollY
@@ -242,10 +246,9 @@ function restart () {
 function createScenes () {
     const scenes = [];
     sections.forEach((section, index) => {
-        const sectionName = `Section-${index+1}`
-        const sectionElements = [...section.querySelectorAll('.actual')]
-        sectionElements.forEach((element, i) => { 
-            const elemName = `${element.tagName}-${i}`;
+        const sectionName = sectionNames[index];
+        sectionsElements[sectionName].forEach((element, idx) => {
+            const elemName = `${element.tagName}-${idx}`;
             const animationDirection = animationDirections[elemName];
             const animationTrigger = animationTriggers[elemName];
             scenes.push({
