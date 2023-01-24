@@ -186,7 +186,7 @@ function initGUI () {
             addGhost(element);
             addScrollEffects(element, sectionName, effectsFolder, elemName);
             addScrollModifications(element, sectionName, modificationsFolder, elemName);
-            animationDirections[sectionName] = {...animationDirections[sectionName],[elemName]: ANIMATION_DIRECTION.out};
+            animationDirections[elemName] = ANIMATION_DIRECTION.out;
             animationTriggers[elemName] = ANIMATION_TRIGGER.self;
         })
     })
@@ -246,7 +246,7 @@ function createScenes () {
         const sectionElements = [...section.querySelectorAll('.actual')]
         sectionElements.forEach((element, i) => { 
             const elemName = `${element.tagName}-${i}`;
-            const animationDirection = animationDirections[sectionName][elemName];
+            const animationDirection = animationDirections[elemName];
             const animationTrigger = animationTriggers[elemName];
             scenes.push({
                 start: effectStartOffset[elemName][animationTrigger].current,
@@ -308,7 +308,7 @@ function makeDynamicHeight (section, sectionFolder, sectionName) {
 function addScrollEffects (element, sectionName, folder, elemName) {
     folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.TRANSLATE_X))
     .onChange(val => {
-        const animationDirection = animationDirections[sectionName][elemName];
+        const animationDirection = animationDirections[elemName];
         element.style.setProperty('--x-trans', `${val}px`);
         if (animationDirection === ANIMATION_DIRECTION.out) element.nextElementSibling.style.setProperty('--x-trans', `${val}px`);
         resetChildrenStyle(element)
@@ -316,7 +316,7 @@ function addScrollEffects (element, sectionName, folder, elemName) {
     })
     folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.TRANSLATE_Y))
     .onChange(val => {
-        const animationDirection = animationDirections[sectionName][elemName];
+        const animationDirection = animationDirections[elemName];
         element.style.setProperty('--y-trans', `${val}px`);
         if (animationDirection === ANIMATION_DIRECTION.out) element.nextElementSibling.style.setProperty('--y-trans', `${val}px`);
         resetChildrenStyle(element)
@@ -324,7 +324,7 @@ function addScrollEffects (element, sectionName, folder, elemName) {
     })
     folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.ROTATE))
     .onChange(val => {
-        const animationDirection = animationDirections[sectionName][elemName];
+        const animationDirection = animationDirections[elemName];
         element.style.setProperty('--rotate', `${val}deg`);
         if (animationDirection === ANIMATION_DIRECTION.out) element.nextElementSibling.style.setProperty('--rotate', `${val}deg`);
         resetChildrenStyle(element)
@@ -332,7 +332,7 @@ function addScrollEffects (element, sectionName, folder, elemName) {
     })
     folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.ROTATE_Y))
     .onChange(val => {
-        const animationDirection = animationDirections[sectionName][elemName];
+        const animationDirection = animationDirections[elemName];
         element.style.setProperty('--rotate-y', `${val}deg`);
         if (animationDirection === ANIMATION_DIRECTION.out) element.nextElementSibling.style.setProperty('--rotate-y', `${val}deg`);
         resetChildrenStyle(element)
@@ -340,7 +340,7 @@ function addScrollEffects (element, sectionName, folder, elemName) {
     })
     folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.ROTATE_X))
     .onChange(val => {
-        const animationDirection = animationDirections[sectionName][elemName];
+        const animationDirection = animationDirections[elemName];
         element.style.setProperty('--rotate-x', `${val}deg`);
         if (animationDirection === ANIMATION_DIRECTION.out) element.nextElementSibling.style.setProperty('--rotate-x', `${val}deg`);
         resetChildrenStyle(element)
@@ -348,7 +348,7 @@ function addScrollEffects (element, sectionName, folder, elemName) {
     })
     folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.SCALE))
     .onChange(val => {
-        const animationDirection = animationDirections[sectionName][elemName];
+        const animationDirection = animationDirections[elemName];
         element.style.setProperty('--scale', val - 1);
         if (animationDirection === ANIMATION_DIRECTION.out) element.nextElementSibling.style.setProperty('--scale', val - 1);
         resetChildrenStyle(element)
@@ -394,7 +394,7 @@ function addScrollModifications (element, sectionName, folder, elemName) {
     })
     folder.add(CONFIG[sectionName][elemName].travelSettings, EFFECTS_CONFIG.ANIMATION_DIR.LABEL, ANIMATION_DIRECTION)
     .onChange(animationDir => {
-        animationDirections[sectionName][elemName] = animationDir;
+        animationDirections[elemName] = animationDir;
         if (animationDir === ANIMATION_DIRECTION.in) resetStyles(element.nextElementSibling)
         else (copyCSSProperties(element, element.nextElementSibling)) 
         init();
