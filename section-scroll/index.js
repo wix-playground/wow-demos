@@ -1,6 +1,6 @@
 import { Scroll } from './two.5.js';
 
-let lerp = 0.5;
+let lerp = 0.9;
 let scroll;
 
 const ANGLE_FIX = -90;
