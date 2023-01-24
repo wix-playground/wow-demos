@@ -80,9 +80,9 @@ const EFFECTS_CONFIG = {
         VALUE: 'in',
     },
     SPEED: {
-        LABEL: 'Speed',
-        MIN: 0.1,
-        MAX: 4,
+        LABEL: 'Distance',
+        MIN: 0,
+        MAX: 3,
         STEP: .1,
     },
     OFFSET: {
@@ -98,7 +98,7 @@ const EFFECTS_CONFIG = {
     SECTION_HEIGHT: {
         LABEL: 'Section Height',
         MIN: 25,
-        MAX: 200,
+        MAX: 300,
         STEP: 10,
     },
     LERP: {
@@ -173,6 +173,14 @@ const initStyles = {
     '--scale': 0,
     '--pos': '0',
 }
+// const importExport = {
+//     "Save to File": function () {
+//       download(getValues(), `saved-settings-${getTimeStamp()}.txt`, "text/plain");
+//     },
+//     "Load from File": function () {
+//       upload(); // stub
+//     }
+//   };
 
 //======================== main ========================
 
@@ -186,10 +194,6 @@ window.addEventListener("load", () => {
 
 //====================== main-end ======================
 
-
-
-
-
 // ========== flow ==========
 
 function restart () {
@@ -201,9 +205,10 @@ function restart () {
         const sectionName = sectionNames[index];
         sectionsElements[sectionName].forEach((element, idx) => {
             const elemStyle = getAndResetStyle(element);
-            const elemName = `${element.tagName}-s${index+1}_e${idx}`;
+            const elemName = `${element.tagName}-s${index + 1}_e${idx + 1}`;
             const elemDistFromTop = element.getBoundingClientRect().top + window.scrollY
             const elemDistFromBottom = document.body.scrollHeight - (elemDistFromTop + element.offsetHeight);
+            const elementOffset = elemDistFromTop < window.innerHeight ? 0 : elemDistFromTop - window.innerHeight;
             const elementDuration = element.offsetHeight + (
                 elemDistFromTop < window.innerHeight 
                 ? elemDistFromTop 
@@ -211,7 +216,6 @@ function restart () {
                 ? elemDistFromBottom 
                 : window.innerHeight
             );
-            const elementOffset = elemDistFromTop < window.innerHeight ? 0 : elemDistFromTop - window.innerHeight;
             effectStartOffset[elemName] = {
                 modeSection: {
                     default: sectionOffset, 
@@ -248,7 +252,7 @@ function createScenes () {
     sections.forEach((section, index) => {
         const sectionName = sectionNames[index];
         sectionsElements[sectionName].forEach((element, idx) => {
-            const elemName = `${element.tagName}-s${index+1}_e${idx}`;
+            const elemName = `${element.tagName}-s${index + 1}_e${idx + 1}`;
             const animationDirection = animationDirections[elemName];
             const animationTrigger = animationTriggers[elemName];
             scenes.push({
@@ -292,6 +296,8 @@ function updatePosition (element, angle, distance, isOutAnimation) {
 
 function initGUI () {
     // lerp folder and to config
+    // GUI.add(importExport, "Save to File");
+    // GUI.add(importExport, "Load from File");
     const lerpLabel_lerpInitVal = guiSettings.lerp;
     const lerpEditSettings = Object.values(EFFECTS_CONFIG.LERP);
 
@@ -303,7 +309,7 @@ function initGUI () {
     CONFIG.lerp = lerpLabel_lerpInitVal;
 
     sections.forEach((section, index) => {
-        const sectionName = `Section-${index+1}`;
+        const sectionName = `Section-${index + 1}`;
         const sectionFolder = GUI.addFolder(sectionName);
         const sectionElements = [...section.querySelectorAll('.actual')]
         sectionNames.push(sectionName);
@@ -312,9 +318,9 @@ function initGUI () {
         makeDynamicHeight(section, sectionFolder, sectionName);
 
         sectionElements.forEach((element, idx) => {
-            const elemName = `${element.tagName}-s${index+1}_e${idx}`;
+            const elemName = `${element.tagName}-s${index + 1}_e${idx + 1}`;
             const elemFolder = sectionFolder.addFolder(elemName);
-            const effectsFolder = elemFolder.addFolder('Effects');
+            const effectsFolder = elemFolder.addFolder('Tranformations');
             const modificationsFolder = elemFolder.addFolder('Travel Settings');
 
             CONFIG[sectionName] = {
@@ -477,21 +483,7 @@ function addScrollEffects (element, sectionName, folder, elemName) {
 
 function addScrollModifications (element, sectionName, folder, elemName) {
     const hint = document.querySelector(`.hint-${elemName}`);
-    folder.add(CONFIG[sectionName][elemName].travelSettings, ...Object.values(EFFECTS_CONFIG.HINT))
-    .onChange(showGuide => {
-        [...document.querySelectorAll('.actual')].forEach(e => {
-            e.style.setProperty('--z-index', 0);
-        });
-        [...document.querySelectorAll('.hint')].forEach(e => {
-            e.style.setProperty('--visible', 'hidden')
-            e.style.setProperty('--z-index', -1);
-        });
-        if (showGuide) {
-            hint.style.setProperty('--visible', 'visible');
-            element.style.setProperty('--z-index', 4)
-        }
-        init();
-    })
+
     folder.add(CONFIG[sectionName][elemName].travelSettings, EFFECTS_CONFIG.TRIGGER.LABEL, ANIMATION_TRIGGER)
     .onChange(animationTrigger => {
         animationTriggers[elemName] = animationTrigger;
@@ -509,7 +501,7 @@ function addScrollModifications (element, sectionName, folder, elemName) {
     folder.add(CONFIG[sectionName][elemName].travelSettings, ...Object.values(EFFECTS_CONFIG.SPEED))
     .onChange(val => {
         const animationTrigger = animationTriggers[elemName]
-        effectDuration[elemName][animationTrigger].current = effectDuration[elemName][animationTrigger].default/val;
+        effectDuration[elemName][animationTrigger].current = effectDuration[elemName][animationTrigger].default * val;
         hint.style.setProperty('--duration', `${effectDuration[elemName][animationTrigger].current}px`);
         init();
     })
@@ -518,6 +510,21 @@ function addScrollModifications (element, sectionName, folder, elemName) {
         const animationTrigger = animationTriggers[elemName]
         effectStartOffset[elemName][animationTrigger].current = effectStartOffset[elemName][animationTrigger].default + window.innerHeight * val;
         hint.style.setProperty('--offset-top',  `${effectStartOffset[elemName][animationTrigger].current}px`);
+        init();
+    })
+    folder.add(CONFIG[sectionName][elemName].travelSettings, ...Object.values(EFFECTS_CONFIG.HINT))
+    .onChange(showGuide => {
+        [...document.querySelectorAll('.actual')].forEach(e => {
+            e.style.setProperty('--z-index', 0);
+        });
+        [...document.querySelectorAll('.hint')].forEach(e => {
+            e.style.setProperty('--visible', 'hidden')
+            e.style.setProperty('--z-index', -1);
+        });
+        if (showGuide) {
+            hint.style.setProperty('--visible', 'visible');
+            element.style.setProperty('--z-index', 4)
+        }
         init();
     })
 }
@@ -582,4 +589,65 @@ function getTranslate_XY(angle, distance) {
     return [ x, y ];
 }
 
+// function getValues() {
+//     return JSON.stringify(GUI.__rememberedObjects, null, 2);
+//   }
+
+//   function setValues(rememberedValues) {
+//     rememberedValues.forEach((values, index) => {
+//       Object.keys(values).forEach((key) => {
+//         const controller = GUI.__rememberedObjectIndecesToControllers[index][key];
+//         controller && controller.setValue(values[key]);
+//       });
+//     });
+//   }
+
+//   function upload() {
+//     const input = document.createElement("input");
+//     input.type = "file";
+//     input.accept = "text/plain";
+//     input.onchange = function () {
+//       if (this.files && this.files[0]) {
+//         var myFile = this.files[0];
+//         var reader = new FileReader();
+  
+//         reader.addEventListener("load", function (e) {
+//           setValues(JSON.parse(e.target.result));
+//         });
+  
+//         reader.readAsBinaryString(myFile);
+//       }
+//     };
+//     document.body.appendChild(input);
+
+//     input.click();
+//     setTimeout(function () {
+//       document.body.removeChild(input);
+//     }, 0);
+//   }
+
+//   function download(data, filename, type) {
+//     const file = new Blob([data], { type: type });
+//     const a = document.createElement("a");
+//     const url = URL.createObjectURL(file);
+  
+//     a.href = url;
+//     a.download = filename;
+//     document.body.appendChild(a);
+  
+//     a.click();
+//     setTimeout(function () {
+//       document.body.removeChild(a);
+//       window.URL.revokeObjectURL(url);
+//     }, 0);
+//   }
+
+//   function getTimeStamp() {
+//     const date = new Date();
+//     return `${date.toISOString().split("T")[0]}-${date.toLocaleTimeString(
+//       "en-US",
+//       { hour12: false }
+//     )}`;
+//   }
+  
 
