@@ -3,21 +3,34 @@ import { Scroll } from './two.5.js';
 let lerp = 0.5;
 let scroll;
 
+const ANGLE_FIX = -90;
 const GUI = new dat.gui.GUI();
 
 const EFFECTS_CONFIG = {
-    TRANSLATE_X: {
-        LABEL: 'Translate X',
+    POS_ANGLE: {
+        LABEL: 'Angle',
+        MIN: 0,
+        MAX: 359,
+        STEP: 1,
+    },
+    POS_DIST: {
+        LABEL: 'Distance',
         MIN: -window.innerWidth,
         MAX: window.innerWidth,
         STEP: 5,
     },
-    TRANSLATE_Y: {
-        LABEL: 'Translate Y',
-        MIN: -window.innerHeight,
-        MAX: window.innerHeight,
-        STEP: 5,
-    },
+    // TRANSLATE_X: {
+    //     LABEL: 'Translate X',
+    //     MIN: -window.innerWidth,
+    //     MAX: window.innerWidth,
+    //     STEP: 5,
+    // },
+    // TRANSLATE_Y: {
+    //     LABEL: 'Translate Y',
+    //     MIN: -window.innerHeight,
+    //     MAX: window.innerHeight,
+    //     STEP: 5,
+    // },
     ROTATE: {
         LABEL: 'Rotate',
         MIN: -1080,
@@ -113,8 +126,8 @@ const ANIMATION_DIRECTION = {
 
 const guiSettings = {
     effects: {
-        [EFFECTS_CONFIG.TRANSLATE_X.LABEL]: 0,
-        [EFFECTS_CONFIG.TRANSLATE_Y.LABEL]: 0,
+        // [EFFECTS_CONFIG.TRANSLATE_X.LABEL]: 0,
+        // [EFFECTS_CONFIG.TRANSLATE_Y.LABEL]: 0,
         [EFFECTS_CONFIG.ROTATE.LABEL]: 0,
         [EFFECTS_CONFIG.ROTATE_Y.LABEL]: 0,
         [EFFECTS_CONFIG.ROTATE_X.LABEL]: 0,
@@ -123,6 +136,10 @@ const guiSettings = {
         [EFFECTS_CONFIG.SCALE.LABEL]: 1,
         [EFFECTS_CONFIG.OPACITY.LABEL]: 1,
         [EFFECTS_CONFIG.GHOST.LABEL]: true,
+        position: {
+            [EFFECTS_CONFIG.POS_ANGLE.LABEL]: 0,
+            [EFFECTS_CONFIG.POS_DIST.LABEL]: 0,
+        }
     },
     travelSettings: {
         [EFFECTS_CONFIG.ANIMATION_DIR.LABEL]: ANIMATION_DIRECTION.out,
@@ -140,6 +157,7 @@ const guiSettings = {
 }
 
 const CONFIG = {};
+const positions = {};
 const effectDuration = {}
 const effectStartOffset = {}
 const animationDirections = {}
@@ -163,7 +181,7 @@ const initStyles = {
 }
 
 //======================== main ========================
-console.log(CONFIG);
+
 window.addEventListener("load", () => {
     resetStyles(root)
     initGUI();
@@ -201,13 +219,26 @@ function initGUI () {
             const effectsFolder = elemFolder.addFolder('Effects');
             const modificationsFolder = elemFolder.addFolder('Travel Settings');
 
-            CONFIG[sectionName] = {...CONFIG[sectionName], [elemName]: {effects: guiSettings.effects, travelSettings: guiSettings.travelSettings}};
+            CONFIG[sectionName] = {
+                ...CONFIG[sectionName], 
+                [elemName]: {
+                    effects: {
+                        ...guiSettings.effects, 
+                        position: guiSettings.effects.position
+                    }, 
+                    travelSettings: guiSettings.travelSettings
+                }
+            };
             addHint(elemName);
             addGhost(element);
             addScrollEffects(element, sectionName, effectsFolder, elemName);
             addScrollModifications(element, sectionName, modificationsFolder, elemName);
             animationDirections[elemName] = ANIMATION_DIRECTION.out;
             animationTriggers[elemName] = ANIMATION_TRIGGER.self;
+            positions[elemName] = {
+                angle: 0 + ANGLE_FIX,
+                distance: 0,
+            }
         })
     })
 }
@@ -325,67 +356,105 @@ function makeDynamicHeight (section, sectionFolder, sectionName) {
 }
 
 function addScrollEffects (element, sectionName, folder, elemName) {
-    folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.TRANSLATE_X))
-    .onChange(val => {
-        const animationDirection = animationDirections[elemName];
-        element.style.setProperty('--x-trans', `${val}px`);
-        if (animationDirection === ANIMATION_DIRECTION.out) element.nextElementSibling.style.setProperty('--x-trans', `${val}px`);
+    const positionFolder = folder.addFolder('Position');
+    positionFolder.add(CONFIG[sectionName][elemName].effects.position, ...Object.values(EFFECTS_CONFIG.POS_ANGLE))
+    .onChange(angle => {
+        const angleFixed = angle + ANGLE_FIX;
+        positions[elemName].angle = angleFixed;
+        const distance = positions[elemName].distance;
+        const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION.out;
+        updatePosition(element, angleFixed, distance, isOutAnimation)
         resetChildrenStyle(element)
         init();
     })
-    folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.TRANSLATE_Y))
-    .onChange(val => {
-        const animationDirection = animationDirections[elemName];
-        element.style.setProperty('--y-trans', `${val}px`);
-        if (animationDirection === ANIMATION_DIRECTION.out) element.nextElementSibling.style.setProperty('--y-trans', `${val}px`);
+    positionFolder.add(CONFIG[sectionName][elemName].effects.position, ...Object.values(EFFECTS_CONFIG.POS_DIST))
+    .onChange(newDist => {
+        positions[elemName].distance = newDist;
+        const angle = positions[elemName].angle;
+        const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION.out;        
+        updatePosition(element, angle, newDist, isOutAnimation)
         resetChildrenStyle(element)
         init();
     })
+    positionFolder.open();
+
+    // folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.TRANSLATE_X))
+    // .onChange(val => {
+    //     const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION.out;
+    //     element.style.setProperty('--x-trans', `${val}px`);
+    //     if (isOutAnimation) {
+    //         element.nextElementSibling.style.setProperty('--x-trans', `${val}px`);
+    //     }
+    //     resetChildrenStyle(element)
+    //     init();
+    // })
+    // folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.TRANSLATE_Y))
+    // .onChange(val => {
+    //     const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION.out;
+    //     element.style.setProperty('--y-trans', `${val}px`);
+    //     if (isOutAnimation) {
+    //         element.nextElementSibling.style.setProperty('--y-trans', `${val}px`);
+    //     }
+    //     resetChildrenStyle(element)
+    //     init();
+    // })
     folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.ROTATE))
     .onChange(val => {
-        const animationDirection = animationDirections[elemName];
+        const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION.out;
         element.style.setProperty('--rotate', `${val}deg`);
-        if (animationDirection === ANIMATION_DIRECTION.out) element.nextElementSibling.style.setProperty('--rotate', `${val}deg`);
+        if (isOutAnimation) {
+            element.nextElementSibling.style.setProperty('--rotate', `${val}deg`);
+        }
         resetChildrenStyle(element)
         init();
     })
     folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.ROTATE_Y))
     .onChange(val => {
-        const animationDirection = animationDirections[elemName];
+        const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION.out;
         element.style.setProperty('--rotate-y', `${val}deg`);
-        if (animationDirection === ANIMATION_DIRECTION.out) element.nextElementSibling.style.setProperty('--rotate-y', `${val}deg`);
+        if (isOutAnimation) {
+            element.nextElementSibling.style.setProperty('--rotate-y', `${val}deg`);
+        }
         resetChildrenStyle(element)
         init();
     })
     folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.ROTATE_X))
     .onChange(val => {
-        const animationDirection = animationDirections[elemName];
+        const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION.out;
         element.style.setProperty('--rotate-x', `${val}deg`);
-        if (animationDirection === ANIMATION_DIRECTION.out) element.nextElementSibling.style.setProperty('--rotate-x', `${val}deg`);
+        if (isOutAnimation) {
+            element.nextElementSibling.style.setProperty('--rotate-x', `${val}deg`);
+        }
         resetChildrenStyle(element)
         init();
     })
     folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.SKEW_X))
     .onChange(val => {
-        const animationDirection = animationDirections[elemName];
+        const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION.out;
         element.style.setProperty('--skew-x', `${val}deg`);
-        if (animationDirection === ANIMATION_DIRECTION.out) element.nextElementSibling.style.setProperty('--skew-x', `${val}deg`);
+        if (isOutAnimation) {
+            element.nextElementSibling.style.setProperty('--skew-x', `${val}deg`);
+        }
         resetChildrenStyle(element)
         init();
     })
     folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.SKEW_Y))
     .onChange(val => {
-        const animationDirection = animationDirections[elemName];
+        const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION.out;
         element.style.setProperty('--skew-y', `${val}deg`);
-        if (animationDirection === ANIMATION_DIRECTION.out) element.nextElementSibling.style.setProperty('--skew-y', `${val}deg`);
+        if (isOutAnimation) {
+            element.nextElementSibling.style.setProperty('--skew-y', `${val}deg`);
+        }
         resetChildrenStyle(element)
         init();
     })
     folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.SCALE))
     .onChange(val => {
-        const animationDirection = animationDirections[elemName];
+        const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION.out;
         element.style.setProperty('--scale', val - 1);
-        if (animationDirection === ANIMATION_DIRECTION.out) element.nextElementSibling.style.setProperty('--scale', val - 1);
+        if (isOutAnimation) {
+            element.nextElementSibling.style.setProperty('--scale', val - 1);
+        }
         resetChildrenStyle(element)
         init();
     })
@@ -498,6 +567,23 @@ function getStyle (element) {
         'skewX': window.getComputedStyle(element).getPropertyValue('--skew-x'),
         'skewY': window.getComputedStyle(element).getPropertyValue('--skew-y'),
         'scale': window.getComputedStyle(element).getPropertyValue('--scale')
+    }
+}
+
+function getTranslate_XY(angle, distance) {
+    const radians = (angle * Math.PI) / 180;
+    const x = Math.cos(radians) * distance;
+    const y = Math.sin(radians) * distance;
+    return [ x, y ];
+}
+
+function updatePosition (element, angle, distance, isOutAnimation) {
+    const [transX, transY] = getTranslate_XY(angle, distance);
+    element.style.setProperty('--x-trans', `${transX}px`);
+    element.style.setProperty('--y-trans', `${transY}px`);
+    if (isOutAnimation) {
+        element.nextElementSibling.style.setProperty('--x-trans', `${transX}px`);
+        element.nextElementSibling.style.setProperty('--y-trans', `${transY}px`);
     }
 }
 
