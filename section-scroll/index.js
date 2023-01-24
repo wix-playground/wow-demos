@@ -1,9 +1,6 @@
 import { Scroll } from './two.5.js';
 
 let lerp = 0.5;
-// let headlineTopVisible = false;
-// let headlineMidVisible = true;
-// let headlineBottomVisible = false;
 let scroll;
 
 const ANGLE_FIX = -90;
@@ -178,21 +175,6 @@ const initStyles = {
 }
 
 //======================== main ========================
-// document.querySelector('.toggle-top').addEventListener('click', () => {
-//     const visibility = headlineTopVisible ? 'hidden' : 'visible';
-//     headlineTopVisible = !headlineTopVisible;
-//     document.querySelector('.headline-top').style.setProperty('visibility', visibility)
-// })
-// document.querySelector('.toggle-middle').addEventListener('click', () => {
-//     const visibility = headlineMidVisible ? 'hidden' : 'visible';
-//     headlineMidVisible = !headlineMidVisible;
-//     document.querySelector('.headline-mid').style.setProperty('visibility', visibility)
-// })
-// document.querySelector('.toggle-bottom').addEventListener('click', () => {
-//     const visibility = headlineBottomVisible ? 'hidden' : 'visible';
-//     headlineBottomVisible = !headlineBottomVisible;
-//     document.querySelector('.headline-bottom').style.setProperty('visibility', visibility)
-// })
 
 window.addEventListener("load", () => {
     resetStyles(root)
@@ -204,57 +186,11 @@ window.addEventListener("load", () => {
 
 //====================== main-end ======================
 
-function initGUI () {
-    // lerp folder and to config
-    const lerpLabel_lerpInitVal = guiSettings.lerp;
-    const lerpEditSettings = Object.values(EFFECTS_CONFIG.LERP);
 
-    GUI.add(lerpLabel_lerpInitVal, ...lerpEditSettings)
-    .onChange(newLerpVal => {
-        lerp = newLerpVal;
-        init();
-    })
-    CONFIG.lerp = lerpLabel_lerpInitVal;
 
-    sections.forEach((section, index) => {
-        const sectionName = `Section-${index+1}`;
-        const sectionFolder = GUI.addFolder(sectionName);
-        const sectionElements = [...section.querySelectorAll('.actual')]
-        sectionNames.push(sectionName);
-        sectionsElements[sectionName] = sectionElements;
-        CONFIG[sectionName] = {height: guiSettings.sectionHeight};
-        makeDynamicHeight(section, sectionFolder, sectionName);
 
-        sectionElements.forEach((element, idx) => {
-            const elemName = `${element.tagName}-${idx}`;
-            const elemFolder = sectionFolder.addFolder(elemName);
-            const effectsFolder = elemFolder.addFolder('Effects');
-            const modificationsFolder = elemFolder.addFolder('Travel Settings');
 
-            CONFIG[sectionName] = {
-                ...CONFIG[sectionName], 
-                [elemName]: {
-                    effects: {
-                        ...guiSettings.effects, 
-                        position: guiSettings.effects.position
-                    }, 
-                    travelSettings: guiSettings.travelSettings
-                }
-            };
-            addHint(elemName);
-            addGhost(element);
-            addScrollEffects(element, sectionName, effectsFolder, elemName);
-            addScrollModifications(element, sectionName, modificationsFolder, elemName);
-            animationDirections[elemName] = ANIMATION_DIRECTION.out;
-            animationTriggers[elemName] = ANIMATION_TRIGGER.self;
-            positions[elemName] = {
-                angle: 0 + ANGLE_FIX,
-                distance: 0,
-            }
-        })
-    })
-}
-
+// ========== flow ==========
 
 function restart () {
     sections.forEach((section, index) => {
@@ -265,9 +201,16 @@ function restart () {
         const sectionName = sectionNames[index];
         sectionsElements[sectionName].forEach((element, idx) => {
             const elemStyle = getAndResetStyle(element);
-            const elemName = `${element.tagName}-${idx}`;
+            const elemName = `${element.tagName}-s${index+1}_e${idx}`;
             const elemDistFromTop = element.getBoundingClientRect().top + window.scrollY
-            const elementDuration = element.offsetHeight + (elemDistFromTop < window.innerHeight ? elemDistFromTop : window.innerHeight);
+            const elemDistFromBottom = document.body.scrollHeight - (elemDistFromTop + element.offsetHeight);
+            const elementDuration = element.offsetHeight + (
+                elemDistFromTop < window.innerHeight 
+                ? elemDistFromTop 
+                : elemDistFromBottom < window.innerHeight 
+                ? elemDistFromBottom 
+                : window.innerHeight
+            );
             const elementOffset = elemDistFromTop < window.innerHeight ? 0 : elemDistFromTop - window.innerHeight;
             effectStartOffset[elemName] = {
                 modeSection: {
@@ -300,14 +243,12 @@ function restart () {
     })
 }
 
-// ========== flow ==========
-
 function createScenes () {
     const scenes = [];
     sections.forEach((section, index) => {
         const sectionName = sectionNames[index];
         sectionsElements[sectionName].forEach((element, idx) => {
-            const elemName = `${element.tagName}-${idx}`;
+            const elemName = `${element.tagName}-s${index+1}_e${idx}`;
             const animationDirection = animationDirections[elemName];
             const animationTrigger = animationTriggers[elemName];
             scenes.push({
@@ -337,7 +278,68 @@ function updateHint (elemName, startOffset, duration) {
     hint.style.setProperty('--duration', `${duration}px`);
 }
 
+function updatePosition (element, angle, distance, isOutAnimation) {
+    const [transX, transY] = getTranslate_XY(angle, distance);
+    element.style.setProperty('--x-trans', `${transX}px`);
+    element.style.setProperty('--y-trans', `${transY}px`);
+    if (isOutAnimation) {
+        element.nextElementSibling.style.setProperty('--x-trans', `${transX}px`);
+        element.nextElementSibling.style.setProperty('--y-trans', `${transY}px`);
+    }
+}
+
 // ========== initiators ==========
+
+function initGUI () {
+    // lerp folder and to config
+    const lerpLabel_lerpInitVal = guiSettings.lerp;
+    const lerpEditSettings = Object.values(EFFECTS_CONFIG.LERP);
+
+    GUI.add(lerpLabel_lerpInitVal, ...lerpEditSettings)
+    .onChange(newLerpVal => {
+        lerp = newLerpVal;
+        init();
+    })
+    CONFIG.lerp = lerpLabel_lerpInitVal;
+
+    sections.forEach((section, index) => {
+        const sectionName = `Section-${index+1}`;
+        const sectionFolder = GUI.addFolder(sectionName);
+        const sectionElements = [...section.querySelectorAll('.actual')]
+        sectionNames.push(sectionName);
+        sectionsElements[sectionName] = sectionElements;
+        CONFIG[sectionName] = {height: guiSettings.sectionHeight};
+        makeDynamicHeight(section, sectionFolder, sectionName);
+
+        sectionElements.forEach((element, idx) => {
+            const elemName = `${element.tagName}-s${index+1}_e${idx}`;
+            const elemFolder = sectionFolder.addFolder(elemName);
+            const effectsFolder = elemFolder.addFolder('Effects');
+            const modificationsFolder = elemFolder.addFolder('Travel Settings');
+
+            CONFIG[sectionName] = {
+                ...CONFIG[sectionName], 
+                [elemName]: {
+                    effects: {
+                        ...guiSettings.effects, 
+                        position: guiSettings.effects.position
+                    }, 
+                    travelSettings: guiSettings.travelSettings
+                }
+            };
+            addHint(elemName);
+            addGhost(element);
+            addScrollEffects(element, sectionName, effectsFolder, elemName);
+            addScrollModifications(element, sectionName, modificationsFolder, elemName);
+            animationDirections[elemName] = ANIMATION_DIRECTION.out;
+            animationTriggers[elemName] = ANIMATION_TRIGGER.self;
+            positions[elemName] = {
+                angle: 0 + ANGLE_FIX,
+                distance: 0,
+            }
+        })
+    })
+}
 
 function addGhost (element) {
     let clone = element.cloneNode(true);
@@ -356,7 +358,6 @@ function addHint (elementName) {
     hint.dataset["name"] = elementName;
     document.body.appendChild(hint);
 }
-
 
 function makeDynamicHeight (section, sectionFolder, sectionName) {
     sectionFolder.add(CONFIG[sectionName].height, ...Object.values(EFFECTS_CONFIG.SECTION_HEIGHT))
@@ -390,26 +391,6 @@ function addScrollEffects (element, sectionName, folder, elemName) {
     })
     positionFolder.open();
 
-    // folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.TRANSLATE_X))
-    // .onChange(val => {
-    //     const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION.out;
-    //     element.style.setProperty('--x-trans', `${val}px`);
-    //     if (isOutAnimation) {
-    //         element.nextElementSibling.style.setProperty('--x-trans', `${val}px`);
-    //     }
-    //     resetChildrenStyle(element)
-    //     init();
-    // })
-    // folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.TRANSLATE_Y))
-    // .onChange(val => {
-    //     const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION.out;
-    //     element.style.setProperty('--y-trans', `${val}px`);
-    //     if (isOutAnimation) {
-    //         element.nextElementSibling.style.setProperty('--y-trans', `${val}px`);
-    //     }
-    //     resetChildrenStyle(element)
-    //     init();
-    // })
     folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.ROTATE))
     .onChange(val => {
         const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION.out;
@@ -601,13 +582,4 @@ function getTranslate_XY(angle, distance) {
     return [ x, y ];
 }
 
-function updatePosition (element, angle, distance, isOutAnimation) {
-    const [transX, transY] = getTranslate_XY(angle, distance);
-    element.style.setProperty('--x-trans', `${transX}px`);
-    element.style.setProperty('--y-trans', `${transY}px`);
-    if (isOutAnimation) {
-        element.nextElementSibling.style.setProperty('--x-trans', `${transX}px`);
-        element.nextElementSibling.style.setProperty('--y-trans', `${transY}px`);
-    }
-}
 
