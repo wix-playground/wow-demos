@@ -35,7 +35,7 @@
             }
 
             section:nth-child(2n) {
-                background-image: linear-gradient(rgb(58, 58, 58), rgb(36, 36, 36), black );
+                background-image: linear-gradient(rgb(58, 58, 58), rgb(36, 36, 36), black);
                 margin: 5px 0;
             }
             section:nth-child(2n + 1) {
@@ -72,28 +72,18 @@
             .actual {
                 opacity: calc(1 + var(--pos, 0) * var(--opacity, 0));
                 z-index: var(--z-index, 0);
-                transform: 
-                    translateX(calc(var(--pos, 0) * var(--x-trans, 0)))
-                    translateY(calc(var(--pos, 0) * var(--y-trans, 0))) 
-                    rotateZ(calc(var(--pos, 0) * var(--rotate, 0)))
-                    rotateY(calc(var(--pos, 0) * var(--rotate-y, 0))) 
-                    rotateX(calc(var(--pos, 0) * var(--rotate-x, 0))) 
-                    skewX(calc(var(--pos, 0) * var(--skew-x, 0))) 
-                    skewY(calc(var(--pos, 0) * var(--skew-y, 0))) 
+                transform: translateX(calc(var(--pos, 0) * var(--x-trans, 0)))
+                    translateY(calc(var(--pos, 0) * var(--y-trans, 0))) rotateZ(calc(var(--pos, 0) * var(--rotate, 0)))
+                    rotateY(calc(var(--pos, 0) * var(--rotate-y, 0))) rotateX(calc(var(--pos, 0) * var(--rotate-x, 0)))
+                    skewX(calc(var(--pos, 0) * var(--skew-x, 0))) skewY(calc(var(--pos, 0) * var(--skew-y, 0)))
                     scale(calc(1 + var(--pos, 0) * var(--scale, 0)));
             }
             .ghost {
                 opacity: var(--no-ghost, 0.1);
                 z-index: var(--z-index, 0);
-                transform: 
-                    translateX(var(--x-trans, 0)) 
-                    translateY(var(--y-trans, 0)) 
-                    rotateZ(var(--rotate, 0))
-                    rotateY(var(--rotate-y, 0)) 
-                    rotateX(var(--rotate-x, 0)) 
-                    skewX(var(--skew-x, 0)) 
-                    skewY(var(--skew-y, 0)) 
-                    scale(calc(1 + var(--scale, 0)));
+                transform: translateX(var(--x-trans, 0)) translateY(var(--y-trans, 0)) rotateZ(var(--rotate, 0))
+                    rotateY(var(--rotate-y, 0)) rotateX(var(--rotate-x, 0)) skewX(var(--skew-x, 0))
+                    skewY(var(--skew-y, 0)) scale(calc(1 + var(--scale, 0)));
             }
             .hint {
                 position: absolute;
@@ -141,7 +131,7 @@
                 gap: 20px;
             }
             /* ==================== strip 1 ================= */
-    
+
             #strip-1 .headline div:nth-child(2n) {
                 color: palevioletred;
             }
@@ -155,63 +145,19 @@
                 box-shadow: 1px 1px 3px white(162, 162, 162);
             }
             /* ==================== strip 2 ================= */
-            #strip-2 .card {
-                width: 80%;
-                display: grid;
-                grid-template-columns: 300px 1fr;
-                column-gap: 10px;
-                align-items: flex-start;
-                justify-content: space-between;
-                overflow: hidden;
-                border-radius: 8px;
-                text-overflow: ellipsis;
-                background: white;
-                box-shadow: 1px 1px 3px grey;
-                max-height: 230px;
-            }
-            #strip-2 .middle {
-                grid-template-columns: 1fr 300px;
-            }
-            #strip-2 .card img {
-                box-shadow: 1px 1px 3px grey;
-                /* height: 120%; */
-            }
-            #strip-2 h3 {
-                overflow: hidden;
-                padding: 10px;
-                text-overflow: ellipsis;
-                font-size: 16px;
-                font-family: sans-serif;
-                font-weight: 100;
-                margin: 0px;
-                line-height: 1.5em;
-            }
-            #b1,
-            #b2,
-            #b3,
-            #b4,
-            #b5,
-            #b6 {
+
+            #b1, #b2, #b3, #b4, #b5, #b6, #b7, #b8, #b9, #b10 {
                 position: absolute;
             }
-            #b1 img,
-            #b2 img,
-            #b4 img,
-            #b5 img {
+            #b1 img, #b2 img,#b4 img,#b5 img,#b8 img,#b9 img {
                 position: absolute;
                 height: 200px;
                 width: 200px;
-                /* top: 0; */
             }
-
-            #b3 img,
-            #b6 img {
+            #b3 img, #b6 img, #b7 img, #b10 img {
                 position: absolute;
                 height: 100px;
                 width: 100px;
-            }
-            #strip-2 .bubble .actual {
-                opacity: 0.5;
             }
             #b1 {
                 top: 5vh;
@@ -235,11 +181,69 @@
             }
             #b6 {
                 top: 40vh;
-                left: 100px;
+                left: 10vw;
             }
+            #b7 {
+                top: 110vh;
+                right: 10vh;
+            }
+            #b8 {
+                top: 140vh;
+                left: 20vw;
+            }
+            #b9 {
+                top: 150vh;
+                left: 60vw;
+            }
+            #b10 {
+                top: 190vh;
+                left: 40vw;
+            }
+
+            /* ==================== strip 3 ================= */
+
             #strip-3 img {
                 border-radius: 8px;
+                border: 3px solid white;
+            }
+            #strip-3 {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: 1fr 1fr;
+                justify-items: space-around;
+            }
+
+            /* ==================== strip 5 ================= */
+
+            #strip-5 .card {
+                width: 80%;
+                display: grid;
+                grid-template-columns: 300px 1fr;
+                column-gap: 10px;
+                align-items: flex-start;
+                justify-content: space-between;
+                overflow: hidden;
+                border-radius: 8px;
+                text-overflow: ellipsis;
+                background: white;
                 box-shadow: 1px 1px 3px grey;
+                max-height: 230px;
+            }
+            #strip-5 .middle {
+                grid-template-columns: 1fr 300px;
+            }
+            #strip-5 .card img {
+                box-shadow: 1px 1px 3px grey;
+            }
+            #strip-5 h3 {
+                overflow: hidden;
+                padding: 10px;
+                text-overflow: ellipsis;
+                font-size: 16px;
+                font-family: sans-serif;
+                font-weight: 100;
+                margin: 0px;
+                line-height: 1.5em;
             }
         </style>
     </head>
@@ -299,6 +303,35 @@
                     <div class="element bubble" id="b6">
                         <img class="actual" src="https://freesvg.org/img/food-blue-bubble.png" />
                     </div>
+                    <div class="element bubble" id="b7">
+                        <img class="actual" src="https://freesvg.org/img/food-blue-bubble.png" />
+                    </div>
+                    <div class="element bubble" id="b8">
+                        <img class="actual" src="https://freesvg.org/img/food-blue-bubble.png" />
+                    </div>
+                    <div class="element bubble" id="b9">
+                        <img class="actual" src="https://freesvg.org/img/food-blue-bubble.png" />
+                    </div>
+                    <div class="element bubble" id="b10">
+                        <img class="actual" src="https://freesvg.org/img/food-blue-bubble.png" />
+                    </div>
+                </section>
+                <section id="strip-3">
+                    <div class="element">
+                        <img class="actual" src="https://picsum.photos/500/400?random=4" alt="" />
+                    </div>
+                    <div class="element">
+                        <img class="actual" src="https://picsum.photos/500/400?random=5" alt="" />
+                    </div>
+                    <div class="element">
+                        <img class="actual" src="https://picsum.photos/500/400?random=6" alt="" />
+                    </div>
+                    <div class="element">
+                        <img class="actual" src="https://picsum.photos/500/400?random=7" alt="" />
+                    </div>
+                </section>
+                <section id="strip-4"></section>
+                <section id="strip-5">
                     <div class="element">
                         <div class="card actual">
                             <div class="element">
@@ -365,28 +398,6 @@
                             </div>
                         </div>
                     </div>
-                </section>
-                <section id="strip-3">
-                    <div class="row">
-                        <div class="element">
-                            <img class="actual" src="https://picsum.photos/500/400?random=4" alt="" />
-                        </div>
-                        <div class="element">
-                            <img class="actual" src="https://picsum.photos/500/400?random=5" alt="" />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="element">
-                            <img class="actual" src="https://picsum.photos/500/400?random=6" alt="" />
-                        </div>
-                        <div class="element">
-                            <img class="actual" src="https://picsum.photos/500/400?random=7" alt="" />
-                        </div>
-                    </div>
-                </section>
-                <section id="strip-4"></section>
-                <section id="strip-5">
-                    <div class="element"></div>
                 </section>
             </main>
         </div>
