@@ -72,7 +72,9 @@
             .actual {
                 opacity: calc(1 + var(--pos, 0) * var(--opacity, 0));
                 z-index: var(--z-index, 0);
-                transform: translateX(calc(var(--pos, 0) * var(--x-trans, 0)))
+                filter: hue-rotate(calc(var(--pos, 0) * var(--hue, 0)));
+                transform: 
+                    translateX(calc(var(--pos, 0) * var(--x-trans, 0)))
                     translateY(calc(var(--pos, 0) * var(--y-trans, 0))) rotateZ(calc(var(--pos, 0) * var(--rotate, 0)))
                     rotateY(calc(var(--pos, 0) * var(--rotate-y, 0))) rotateX(calc(var(--pos, 0) * var(--rotate-x, 0)))
                     skewX(calc(var(--pos, 0) * var(--skew-x, 0))) skewY(calc(var(--pos, 0) * var(--skew-y, 0)))
@@ -81,6 +83,7 @@
             .ghost {
                 opacity: var(--no-ghost, 0.1);
                 z-index: var(--z-index, 0);
+                filter: hue-rotate(var(--hue, 0));
                 transform: translateX(var(--x-trans, 0)) translateY(var(--y-trans, 0)) rotateZ(var(--rotate, 0))
                     rotateY(var(--rotate-y, 0)) rotateX(var(--rotate-x, 0)) skewX(var(--skew-x, 0))
                     skewY(var(--skew-y, 0)) scale(calc(1 + var(--scale, 0)));
@@ -131,18 +134,42 @@
                 gap: 20px;
             }
             /* ==================== strip 1 ================= */
-
+            #strip-1 {
+                display: grid;
+                grid-template-rows: 1fr;
+                justify-items: space-between;
+            }
             #strip-1 .headline div:nth-child(2n) {
                 color: palevioletred;
             }
             #strip-1 .headline div:nth-child(2n + 1) {
                 color: orange;
             }
+            .headline-top, .headline-bottom {
+                visibility: hidden;
+            }
+            #strip-1 .headline-top div:nth-child(2n) {
+                color: rgb(112, 216, 117);
+            }
+            #strip-1 .headline-top div:nth-child(2n + 1) {
+                color: rgb(0, 170, 255);
+            }
+            #strip-1 .headline-bottom div:nth-child(2n) {
+                color: rgb(112, 216, 117);
+            }
+            #strip-1 .headline-bottom div:nth-child(2n + 1) {
+                color: rgb(0, 170, 255);
+            }
             #strip-1 .headline h1 {
                 background: rgb(255, 233, 209);
                 padding: 0 6px;
                 border-radius: 5px;
                 box-shadow: 1px 1px 3px white(162, 162, 162);
+            }
+            #strip-1 .buttons {
+                position: fixed;
+                top: 10px;
+                left: 10px;
             }
             /* ==================== strip 2 ================= */
 
@@ -251,7 +278,23 @@
         <div id="wrapper">
             <main>
                 <section id="strip-1">
-                    <div class="row headline">
+                    <!-- <div class="buttons">
+                        <button class="toggle-top">Hide/Show top</button>
+                        <button class="toggle-middle">Hide/Show middle</button>
+                        <button class="toggle-bottom">Hide/Show bottom</button>
+                    </div> -->
+                    <!-- <div class="row headline headline-top">
+                        <div class="element">
+                            <h1 class="actual">T</h1>
+                        </div>
+                        <div class="element">
+                            <h1 class="actual">O</h1>
+                        </div>
+                        <div class="element">
+                            <h1 class="actual">P</h1>
+                        </div>
+                    </div> -->
+                    <div class="row headline headline-middle">
                         <div class="element">
                             <h1 class="actual">P</h1>
                         </div>
@@ -283,6 +326,26 @@
                             <h1 class="actual">D</h1>
                         </div>
                     </div>
+                    <!-- <div class="row headline headline-bottom">
+                        <div class="element">
+                            <h1 class="actual">B</h1>
+                        </div>
+                        <div class="element">
+                            <h1 class="actual">O</h1>
+                        </div>
+                        <div class="element">
+                            <h1 class="actual">T</h1>
+                        </div>
+                        <div class="element">
+                            <h1 class="actual">T</h1>
+                        </div>
+                        <div class="element">
+                            <h1 class="actual">O</h1>
+                        </div>
+                        <div class="element">
+                            <h1 class="actual">M</h1>
+                        </div>
+                    </div> -->
                 </section>
                 <section id="strip-2">
                     <div class="element bubble" id="b1">

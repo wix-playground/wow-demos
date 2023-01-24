@@ -1,6 +1,9 @@
 import { Scroll } from './two.5.js';
 
 let lerp = 0.5;
+// let headlineTopVisible = false;
+// let headlineMidVisible = true;
+// let headlineBottomVisible = false;
 let scroll;
 
 const ANGLE_FIX = -90;
@@ -19,18 +22,6 @@ const EFFECTS_CONFIG = {
         MAX: window.innerWidth,
         STEP: 5,
     },
-    // TRANSLATE_X: {
-    //     LABEL: 'Translate X',
-    //     MIN: -window.innerWidth,
-    //     MAX: window.innerWidth,
-    //     STEP: 5,
-    // },
-    // TRANSLATE_Y: {
-    //     LABEL: 'Translate Y',
-    //     MIN: -window.innerHeight,
-    //     MAX: window.innerHeight,
-    //     STEP: 5,
-    // },
     ROTATE: {
         LABEL: 'Rotate',
         MIN: -1080,
@@ -73,6 +64,12 @@ const EFFECTS_CONFIG = {
         MAX: 1,
         STEP: .1,
     },
+    HUE: {
+        LABEL: 'Hue Rotate',
+        MIN: -360,
+        MAX: 360,
+        STEP: 1,
+    },
     GHOST: {
         LABEL: 'Ghost',
         VALUE: true,
@@ -104,7 +101,7 @@ const EFFECTS_CONFIG = {
     SECTION_HEIGHT: {
         LABEL: 'Section Height',
         MIN: 25,
-        MAX: 500,
+        MAX: 200,
         STEP: 10,
     },
     LERP: {
@@ -126,8 +123,6 @@ const ANIMATION_DIRECTION = {
 
 const guiSettings = {
     effects: {
-        // [EFFECTS_CONFIG.TRANSLATE_X.LABEL]: 0,
-        // [EFFECTS_CONFIG.TRANSLATE_Y.LABEL]: 0,
         [EFFECTS_CONFIG.ROTATE.LABEL]: 0,
         [EFFECTS_CONFIG.ROTATE_Y.LABEL]: 0,
         [EFFECTS_CONFIG.ROTATE_X.LABEL]: 0,
@@ -135,6 +130,7 @@ const guiSettings = {
         [EFFECTS_CONFIG.SKEW_Y.LABEL]: 0,
         [EFFECTS_CONFIG.SCALE.LABEL]: 1,
         [EFFECTS_CONFIG.OPACITY.LABEL]: 1,
+        [EFFECTS_CONFIG.HUE.LABEL]: 0,
         [EFFECTS_CONFIG.GHOST.LABEL]: true,
         position: {
             [EFFECTS_CONFIG.POS_ANGLE.LABEL]: 0,
@@ -176,11 +172,27 @@ const initStyles = {
     '--rotate-x': '0deg',
     '--skew-y': '0deg',
     '--skew-x': '0deg',
+    '--hue': '0deg',
     '--scale': 0,
     '--pos': '0',
 }
 
 //======================== main ========================
+// document.querySelector('.toggle-top').addEventListener('click', () => {
+//     const visibility = headlineTopVisible ? 'hidden' : 'visible';
+//     headlineTopVisible = !headlineTopVisible;
+//     document.querySelector('.headline-top').style.setProperty('visibility', visibility)
+// })
+// document.querySelector('.toggle-middle').addEventListener('click', () => {
+//     const visibility = headlineMidVisible ? 'hidden' : 'visible';
+//     headlineMidVisible = !headlineMidVisible;
+//     document.querySelector('.headline-mid').style.setProperty('visibility', visibility)
+// })
+// document.querySelector('.toggle-bottom').addEventListener('click', () => {
+//     const visibility = headlineBottomVisible ? 'hidden' : 'visible';
+//     headlineBottomVisible = !headlineBottomVisible;
+//     document.querySelector('.headline-bottom').style.setProperty('visibility', visibility)
+// })
 
 window.addEventListener("load", () => {
     resetStyles(root)
@@ -465,6 +477,16 @@ function addScrollEffects (element, sectionName, folder, elemName) {
         resetChildrenStyle(element)
         init();
     })
+    folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.HUE))
+    .onChange(val => {
+        const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION.out;
+        element.style.setProperty('--hue', `${val}deg`);
+        if (isOutAnimation) {
+            element.nextElementSibling.style.setProperty('--hue', `${val}deg`);
+        }
+        resetChildrenStyle(element)
+        init();
+    })
     folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.GHOST))
     .onChange(showGhost => {
         element.nextElementSibling.style.setProperty('--no-ghost', showGhost ? .1 : 0);
@@ -554,6 +576,7 @@ function applyStyle (element, elementCSS) {
     element.style.setProperty('--rotate-y', elementCSS.rotateY);
     element.style.setProperty('--skew-x', elementCSS.skewX);
     element.style.setProperty('--skew-y', elementCSS.skewY);
+    element.style.setProperty('--hue', elementCSS.hue);
     element.style.setProperty('--scale', elementCSS.scale);
 }
 
@@ -566,6 +589,7 @@ function getStyle (element) {
         'rotateX': window.getComputedStyle(element).getPropertyValue('--rotate-x'),
         'skewX': window.getComputedStyle(element).getPropertyValue('--skew-x'),
         'skewY': window.getComputedStyle(element).getPropertyValue('--skew-y'),
+        'hue': window.getComputedStyle(element).getPropertyValue('--hue'),
         'scale': window.getComputedStyle(element).getPropertyValue('--scale')
     }
 }
