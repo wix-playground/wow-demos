@@ -82,14 +82,14 @@ const EFFECTS_CONFIG = {
     SPEED: {
         LABEL: 'Speed',
         MIN: 0.1,
-        MAX: 3,
+        MAX: 4,
         STEP: .1,
     },
     OFFSET: {
         LABEL: 'Offset',
         MIN: -1,
         MAX: 1,
-        STEP: .1,
+        STEP: .05,
     },
     TRIGGER: {
         LABEL: 'Trigger',
