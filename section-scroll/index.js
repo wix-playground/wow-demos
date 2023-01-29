@@ -255,14 +255,17 @@ function restart () {
                 ? elemDistFromBottom 
                 : window.innerHeight
             );
+
+            const currentSectionOffset = effectStartOffset[elemName]?.modeSection.current;
+            const currentSelfOffset = effectStartOffset[elemName]?.modeSelf.current;
             effectStartOffset[elemName] = {
                 modeSection: {
                     default: sectionOffset, 
-                    current: sectionOffset
+                    current: currentSectionOffset || sectionOffset
                 }, 
                 modeSelf: {
                     default: elementOffset, 
-                    current: elementOffset
+                    current: currentSelfOffset || elementOffset
                 }
             }
             
