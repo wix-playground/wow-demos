@@ -225,6 +225,7 @@ const initStyles = {
 window.addEventListener("load", () => {
     resetStyles(root)
     initGUI();
+    restart();
     GUI.remember(CONFIG);
     init();
 })
@@ -305,12 +306,11 @@ function createScenes () {
 }
 
 function init () {
-    restart();
     scroll?.destroy();
     scroll = new Scroll({
         scenes: createScenes(),
         animationActive: true,
-        animationFriction: lerp,
+        animationFriction: lerp || false,
     });
     scroll.on();
 }
@@ -423,7 +423,8 @@ function addScrollEffects (element, sectionName, folder, elemName) {
         const distance = positions[elemName].distance;
         const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION_OPT.out;
         updatePosition(element, angleFixed, distance, isOutAnimation)
-        resetChildrenStyle(element)
+        resetChildrenStyle(element);
+        restart();
         init();
     })
     positionFolder.add(CONFIG[sectionName][elemName].effects.position, ...Object.values(EFFECTS_CONFIG.POS_DIST))
@@ -432,7 +433,8 @@ function addScrollEffects (element, sectionName, folder, elemName) {
         const angle = positions[elemName].angle;
         const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION_OPT.out;        
         updatePosition(element, angle, newDist, isOutAnimation)
-        resetChildrenStyle(element)
+        resetChildrenStyle(element);
+        restart();
         init();
     })
     positionFolder.open();
@@ -444,7 +446,8 @@ function addScrollEffects (element, sectionName, folder, elemName) {
         if (isOutAnimation) {
             element.nextElementSibling.style.setProperty('--rotate', `${val}deg`);
         }
-        resetChildrenStyle(element)
+        resetChildrenStyle(element);
+        restart();
         init();
     })
     folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.ROTATE_Y))
@@ -454,7 +457,8 @@ function addScrollEffects (element, sectionName, folder, elemName) {
         if (isOutAnimation) {
             element.nextElementSibling.style.setProperty('--rotate-y', `${val}deg`);
         }
-        resetChildrenStyle(element)
+        resetChildrenStyle(element);
+        restart();
         init();
     })
     folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.ROTATE_X))
@@ -464,7 +468,8 @@ function addScrollEffects (element, sectionName, folder, elemName) {
         if (isOutAnimation) {
             element.nextElementSibling.style.setProperty('--rotate-x', `${val}deg`);
         }
-        resetChildrenStyle(element)
+        resetChildrenStyle(element);
+        restart();
         init();
     })
     folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.SKEW_X))
@@ -474,7 +479,8 @@ function addScrollEffects (element, sectionName, folder, elemName) {
         if (isOutAnimation) {
             element.nextElementSibling.style.setProperty('--skew-x', `${val}deg`);
         }
-        resetChildrenStyle(element)
+        resetChildrenStyle(element);
+        restart();
         init();
     })
     folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.SKEW_Y))
@@ -484,7 +490,8 @@ function addScrollEffects (element, sectionName, folder, elemName) {
         if (isOutAnimation) {
             element.nextElementSibling.style.setProperty('--skew-y', `${val}deg`);
         }
-        resetChildrenStyle(element)
+        resetChildrenStyle(element);
+        restart();
         init();
     })
     folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.SCALE_X))
@@ -494,7 +501,8 @@ function addScrollEffects (element, sectionName, folder, elemName) {
         if (isOutAnimation) {
             element.nextElementSibling.style.setProperty('--scale-x', val - 1);
         }
-        resetChildrenStyle(element)
+        resetChildrenStyle(element);
+        restart();
         init();
     })
     folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.SCALE_Y))
@@ -504,14 +512,16 @@ function addScrollEffects (element, sectionName, folder, elemName) {
         if (isOutAnimation) {
             element.nextElementSibling.style.setProperty('--scale-y', val - 1);
         }
-        resetChildrenStyle(element)
+        resetChildrenStyle(element);
+        restart();
         init();
     })
     folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.OPACITY))
     .onChange(val => {
         element.style.setProperty('--opacity', val - 1);
         element.nextElementSibling.style.setProperty('--opacity', val - 1);
-        resetChildrenStyle(element)
+        resetChildrenStyle(element);
+        restart();
         init();
     })
     folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.HUE))
@@ -521,7 +531,8 @@ function addScrollEffects (element, sectionName, folder, elemName) {
         if (isOutAnimation) {
             element.nextElementSibling.style.setProperty('--hue', `${val}deg`);
         }
-        resetChildrenStyle(element)
+        resetChildrenStyle(element);
+        restart();
         init();
     })
     folder.add(CONFIG[sectionName][elemName].effects, EFFECTS_CONFIG.TRANS_ORIGIN.LABEL, TRANSFORM_ORIGIN_OPT)
@@ -534,7 +545,8 @@ function addScrollEffects (element, sectionName, folder, elemName) {
             element.nextElementSibling.style.setProperty('--trans-origin-x', originX);
             element.nextElementSibling.style.setProperty('--trans-origin-y', originY);
         }
-        resetChildrenStyle(element)
+        resetChildrenStyle(element);
+        restart();
         init();
     })
     folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.GHOST))
