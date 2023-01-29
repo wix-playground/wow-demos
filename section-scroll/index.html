@@ -159,6 +159,14 @@
                 top: 10px;
                 left: 10px;
             }
+
+            /* actually strip 5 */
+            #strip-1:nth-child(5) .headline div:nth-child(2n) {
+                color: rgb(199, 112, 216);
+            }
+            #strip-1:nth-child(5) .headline div:nth-child(2n + 1) {
+                color: rgb(0, 170, 255);
+            }
             /* ==================== strip 2 ================= */
 
             #b1, #b2, #b3, #b4, #b5, #b6, #b7, #b8, #b9, #b10 {
@@ -255,7 +263,7 @@
             }
             /* ==================== strip 5 ================= */
 
-            #strip-5 .card {
+            #strip-6 .card {
                 width: 80%;
                 display: grid;
                 grid-template-columns: 300px 1fr;
@@ -269,13 +277,13 @@
                 box-shadow: 1px 1px 3px grey;
                 max-height: 230px;
             }
-            #strip-5 .middle {
+            #strip-6 .middle {
                 grid-template-columns: 1fr 300px;
             }
-            #strip-5 .card img {
+            #strip-6 .card img {
                 box-shadow: 1px 1px 3px grey;
             }
-            #strip-5 h3 {
+            #strip-6 h3 {
                 overflow: hidden;
                 padding: 10px;
                 text-overflow: ellipsis;
@@ -373,7 +381,41 @@
                     </div>
                     <div class="finish-line"></div>
                 </section>
-                <section id="strip-5">
+                <section id="strip-1">
+                    <div class="row headline headline-middle">
+                        <div class="element">
+                            <h1 class="actual">P</h1>
+                        </div>
+                        <div class="element">
+                            <h1 class="actual">L</h1>
+                        </div>
+                        <div class="element">
+                            <h1 class="actual">A</h1>
+                        </div>
+                        <div class="element">
+                            <h1 class="actual">Y</h1>
+                        </div>
+                        <div class="element">
+                            <h1 class="actual">G</h1>
+                        </div>
+                        <div class="element">
+                            <h1 class="actual">R</h1>
+                        </div>
+                        <div class="element">
+                            <h1 class="actual">O</h1>
+                        </div>
+                        <div class="element">
+                            <h1 class="actual">U</h1>
+                        </div>
+                        <div class="element">
+                            <h1 class="actual">N</h1>
+                        </div>
+                        <div class="element">
+                            <h1 class="actual">D</h1>
+                        </div>
+                    </div>
+                </section>
+                <section id="strip-6">
                     <div class="element">
                         <div class="card actual">
                             <div class="element">
