@@ -9,8 +9,8 @@ const GUI = new dat.gui.GUI();
 const EFFECTS_CONFIG = {
     POS_ANGLE: {
         LABEL: 'Angle',
-        MIN: 0,
-        MAX: 359,
+        MIN: -180,
+        MAX: 180,
         STEP: 1,
     },
     POS_DIST: {
@@ -49,8 +49,14 @@ const EFFECTS_CONFIG = {
         MAX: 45,
         STEP: 1,
     },
-    SCALE: {
-        LABEL: 'Scale',
+    SCALE_X: {
+        LABEL: 'Scale X',
+        MIN: 0,
+        MAX: 2,
+        STEP: .1,
+    },
+    SCALE_Y: {
+        LABEL: 'Scale Y',
         MIN: 0,
         MAX: 2,
         STEP: .1,
@@ -125,7 +131,8 @@ const guiSettings = {
         [EFFECTS_CONFIG.ROTATE_X.LABEL]: 0,
         [EFFECTS_CONFIG.SKEW_X.LABEL]: 0,
         [EFFECTS_CONFIG.SKEW_Y.LABEL]: 0,
-        [EFFECTS_CONFIG.SCALE.LABEL]: 1,
+        [EFFECTS_CONFIG.SCALE_X.LABEL]: 1,
+        [EFFECTS_CONFIG.SCALE_Y.LABEL]: 1,
         [EFFECTS_CONFIG.OPACITY.LABEL]: 1,
         [EFFECTS_CONFIG.HUE.LABEL]: 0,
         [EFFECTS_CONFIG.GHOST.LABEL]: true,
@@ -447,12 +454,22 @@ function addScrollEffects (element, sectionName, folder, elemName) {
         resetChildrenStyle(element)
         init();
     })
-    folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.SCALE))
+    folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.SCALE_X))
     .onChange(val => {
         const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION.out;
-        element.style.setProperty('--scale', val - 1);
+        element.style.setProperty('--scale-x', val - 1);
         if (isOutAnimation) {
-            element.nextElementSibling.style.setProperty('--scale', val - 1);
+            element.nextElementSibling.style.setProperty('--scale-x', val - 1);
+        }
+        resetChildrenStyle(element)
+        init();
+    })
+    folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.SCALE_Y))
+    .onChange(val => {
+        const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION.out;
+        element.style.setProperty('--scale-y', val - 1);
+        if (isOutAnimation) {
+            element.nextElementSibling.style.setProperty('--scale-y', val - 1);
         }
         resetChildrenStyle(element)
         init();
