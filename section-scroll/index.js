@@ -61,6 +61,10 @@ const EFFECTS_CONFIG = {
         MAX: 2,
         STEP: .1,
     },
+    TRANS_ORIGIN: {
+        LABEL: 'Trans Origin',
+        VALUE: 'center',
+    },
     OPACITY: {
         LABEL: 'Opacity',
         MIN: 0,
@@ -83,7 +87,7 @@ const EFFECTS_CONFIG = {
     },
     ANIMATION_DIR: {
         LABEL: 'Direction',
-        VALUE: 'in',
+        VALUE: 'out',
     },
     SPEED: {
         LABEL: 'Distance',
@@ -115,13 +119,29 @@ const EFFECTS_CONFIG = {
     },
 };
 
-const ANIMATION_TRIGGER = {
+const ANIMATION_TRIGGER_OPT = {
     self: 'modeSelf',
     section: 'modeSection'
 }
-const ANIMATION_DIRECTION = {
+const ANIMATION_DIRECTION_OPT = {
     in: 'inAnimation',
     out: 'outAnimation'
+}
+
+const TRANSFORM_ORIGIN_OPT = {
+    center: 'center',
+    'Top-left': 'topLeft',
+    'Top-right': 'topRight',
+    'Bottom-left': 'bottomLeft',
+    'Bottom-right': 'bottomRight'
+}
+
+const TRANSFORM_ORIGIN_VALS = {
+    center: ['50%', '50%'],
+    topLeft: ['0%', '0%'],
+    topRight: ['100%', '0%'],
+    bottomLeft: ['0%', '100%'],
+    bottomRight: ['100%', '100%'],
 }
 
 const guiSettings = {
@@ -135,6 +155,7 @@ const guiSettings = {
         [EFFECTS_CONFIG.SCALE_Y.LABEL]: 1,
         [EFFECTS_CONFIG.OPACITY.LABEL]: 1,
         [EFFECTS_CONFIG.HUE.LABEL]: 0,
+        [EFFECTS_CONFIG.TRANS_ORIGIN.LABEL]: TRANSFORM_ORIGIN_OPT.center,
         [EFFECTS_CONFIG.GHOST.LABEL]: true,
         position: {
             [EFFECTS_CONFIG.POS_ANGLE.LABEL]: 0,
@@ -142,9 +163,9 @@ const guiSettings = {
         }
     },
     travelSettings: {
-        [EFFECTS_CONFIG.ANIMATION_DIR.LABEL]: ANIMATION_DIRECTION.out,
+        [EFFECTS_CONFIG.ANIMATION_DIR.LABEL]: ANIMATION_DIRECTION_OPT.out,
         [EFFECTS_CONFIG.HINT.LABEL]: false,
-        [EFFECTS_CONFIG.TRIGGER.LABEL]: ANIMATION_TRIGGER.self,
+        [EFFECTS_CONFIG.TRIGGER.LABEL]: ANIMATION_TRIGGER_OPT.self,
         [EFFECTS_CONFIG.SPEED.LABEL]: 1,
         [EFFECTS_CONFIG.OFFSET.LABEL]: 0,
     },
@@ -266,7 +287,7 @@ function createScenes () {
                 start: effectStartOffset[elemName][animationTrigger].current,
                 duration: effectDuration[elemName][animationTrigger].current,
                 target: element,
-                effect: (scene, pos) => scene.target.style.setProperty('--pos', animationDirection === ANIMATION_DIRECTION.in ? 1 - pos : pos)
+                effect: (scene, pos) => scene.target.style.setProperty('--pos', animationDirection === ANIMATION_DIRECTION_OPT.in ? 1 - pos : pos)
             })
         })
     })
@@ -344,8 +365,8 @@ function initGUI () {
             addGhost(element);
             addScrollEffects(element, sectionName, effectsFolder, elemName);
             addScrollModifications(element, sectionName, modificationsFolder, elemName);
-            animationDirections[elemName] = ANIMATION_DIRECTION.out;
-            animationTriggers[elemName] = ANIMATION_TRIGGER.self;
+            animationDirections[elemName] = ANIMATION_DIRECTION_OPT.out;
+            animationTriggers[elemName] = ANIMATION_TRIGGER_OPT.self;
             positions[elemName] = {
                 angle: 0 + ANGLE_FIX,
                 distance: 0,
@@ -388,7 +409,7 @@ function addScrollEffects (element, sectionName, folder, elemName) {
         const angleFixed = angle + ANGLE_FIX;
         positions[elemName].angle = angleFixed;
         const distance = positions[elemName].distance;
-        const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION.out;
+        const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION_OPT.out;
         updatePosition(element, angleFixed, distance, isOutAnimation)
         resetChildrenStyle(element)
         init();
@@ -397,7 +418,7 @@ function addScrollEffects (element, sectionName, folder, elemName) {
     .onChange(newDist => {
         positions[elemName].distance = newDist;
         const angle = positions[elemName].angle;
-        const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION.out;        
+        const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION_OPT.out;        
         updatePosition(element, angle, newDist, isOutAnimation)
         resetChildrenStyle(element)
         init();
@@ -406,7 +427,7 @@ function addScrollEffects (element, sectionName, folder, elemName) {
 
     folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.ROTATE))
     .onChange(val => {
-        const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION.out;
+        const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION_OPT.out;
         element.style.setProperty('--rotate', `${val}deg`);
         if (isOutAnimation) {
             element.nextElementSibling.style.setProperty('--rotate', `${val}deg`);
@@ -416,7 +437,7 @@ function addScrollEffects (element, sectionName, folder, elemName) {
     })
     folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.ROTATE_Y))
     .onChange(val => {
-        const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION.out;
+        const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION_OPT.out;
         element.style.setProperty('--rotate-y', `${val}deg`);
         if (isOutAnimation) {
             element.nextElementSibling.style.setProperty('--rotate-y', `${val}deg`);
@@ -426,7 +447,7 @@ function addScrollEffects (element, sectionName, folder, elemName) {
     })
     folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.ROTATE_X))
     .onChange(val => {
-        const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION.out;
+        const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION_OPT.out;
         element.style.setProperty('--rotate-x', `${val}deg`);
         if (isOutAnimation) {
             element.nextElementSibling.style.setProperty('--rotate-x', `${val}deg`);
@@ -436,7 +457,7 @@ function addScrollEffects (element, sectionName, folder, elemName) {
     })
     folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.SKEW_X))
     .onChange(val => {
-        const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION.out;
+        const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION_OPT.out;
         element.style.setProperty('--skew-x', `${val}deg`);
         if (isOutAnimation) {
             element.nextElementSibling.style.setProperty('--skew-x', `${val}deg`);
@@ -446,7 +467,7 @@ function addScrollEffects (element, sectionName, folder, elemName) {
     })
     folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.SKEW_Y))
     .onChange(val => {
-        const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION.out;
+        const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION_OPT.out;
         element.style.setProperty('--skew-y', `${val}deg`);
         if (isOutAnimation) {
             element.nextElementSibling.style.setProperty('--skew-y', `${val}deg`);
@@ -456,7 +477,7 @@ function addScrollEffects (element, sectionName, folder, elemName) {
     })
     folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.SCALE_X))
     .onChange(val => {
-        const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION.out;
+        const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION_OPT.out;
         element.style.setProperty('--scale-x', val - 1);
         if (isOutAnimation) {
             element.nextElementSibling.style.setProperty('--scale-x', val - 1);
@@ -466,7 +487,7 @@ function addScrollEffects (element, sectionName, folder, elemName) {
     })
     folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.SCALE_Y))
     .onChange(val => {
-        const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION.out;
+        const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION_OPT.out;
         element.style.setProperty('--scale-y', val - 1);
         if (isOutAnimation) {
             element.nextElementSibling.style.setProperty('--scale-y', val - 1);
@@ -483,10 +504,23 @@ function addScrollEffects (element, sectionName, folder, elemName) {
     })
     folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.HUE))
     .onChange(val => {
-        const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION.out;
+        const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION_OPT.out;
         element.style.setProperty('--hue', `${val}deg`);
         if (isOutAnimation) {
             element.nextElementSibling.style.setProperty('--hue', `${val}deg`);
+        }
+        resetChildrenStyle(element)
+        init();
+    })
+    folder.add(CONFIG[sectionName][elemName].effects, EFFECTS_CONFIG.TRANS_ORIGIN.LABEL, TRANSFORM_ORIGIN_OPT)
+    .onChange(val => {
+        const [originX, originY] = TRANSFORM_ORIGIN_VALS[val];
+        const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION_OPT.out;
+        element.style.setProperty('--trans-origin-x', originX);
+        element.style.setProperty('--trans-origin-y', originY);
+        if (isOutAnimation) {
+            element.nextElementSibling.style.setProperty('--trans-origin-x', originX);
+            element.nextElementSibling.style.setProperty('--trans-origin-y', originY);
         }
         resetChildrenStyle(element)
         init();
@@ -501,17 +535,17 @@ function addScrollEffects (element, sectionName, folder, elemName) {
 function addScrollModifications (element, sectionName, folder, elemName) {
     const hint = document.querySelector(`.hint-${elemName}`);
 
-    folder.add(CONFIG[sectionName][elemName].travelSettings, EFFECTS_CONFIG.TRIGGER.LABEL, ANIMATION_TRIGGER)
+    folder.add(CONFIG[sectionName][elemName].travelSettings, EFFECTS_CONFIG.TRIGGER.LABEL, ANIMATION_TRIGGER_OPT)
     .onChange(animationTrigger => {
         animationTriggers[elemName] = animationTrigger;
         hint.style.setProperty('--offset-top',  `${effectStartOffset[elemName][animationTrigger].current}px`);
         hint.style.setProperty('--duration', `${effectDuration[elemName][animationTrigger].current}px`);
         init();
     })
-    folder.add(CONFIG[sectionName][elemName].travelSettings, EFFECTS_CONFIG.ANIMATION_DIR.LABEL, ANIMATION_DIRECTION)
+    folder.add(CONFIG[sectionName][elemName].travelSettings, EFFECTS_CONFIG.ANIMATION_DIR.LABEL, ANIMATION_DIRECTION_OPT)
     .onChange(animationDir => {
         animationDirections[elemName] = animationDir;
-        if (animationDir === ANIMATION_DIRECTION.in) resetStyles(element.nextElementSibling)
+        if (animationDir === ANIMATION_DIRECTION_OPT.in) resetStyles(element.nextElementSibling)
         else (copyCSSProperties(element, element.nextElementSibling)) 
         init();
     })

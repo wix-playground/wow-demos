@@ -73,6 +73,7 @@
                 opacity: calc(1 + var(--pos, 0) * var(--opacity, 0));
                 z-index: var(--z-index, 0);
                 filter: hue-rotate(calc(var(--pos, 0) * var(--hue, 0)));
+                transform-origin: var(--trans-origin-x, 50%) var(--trans-origin-y, 50%);
                 transform: 
                     translateX(calc(var(--pos, 0) * var(--x-trans, 0)))
                     translateY(calc(var(--pos, 0) * var(--y-trans, 0))) rotateZ(calc(var(--pos, 0) * var(--rotate, 0)))
@@ -85,6 +86,7 @@
                 opacity: var(--no-ghost, 0.1);
                 z-index: var(--z-index, 0);
                 filter: hue-rotate(var(--hue, 0));
+                transform-origin: var(--trans-origin-x, 50%) var(--trans-origin-y, 50%);
                 transform: translateX(var(--x-trans, 0)) translateY(var(--y-trans, 0)) rotateZ(var(--rotate, 0))
                     rotateY(var(--rotate-y, 0)) rotateX(var(--rotate-x, 0)) skewX(var(--skew-x, 0))
                     skewY(var(--skew-y, 0)) scaleX(calc(1 + var(--scale-x, 0))) scaleY(calc(1 + var(--scale-y, 0)));
