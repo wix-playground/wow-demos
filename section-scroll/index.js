@@ -130,6 +130,10 @@ const ANIMATION_DIRECTION_OPT = {
 
 const TRANSFORM_ORIGIN_OPT = {
     center: 'center',
+    top: 'top',
+    right: 'right',
+    bottom: 'bottom',
+    left: 'left',
     'Top-left': 'topLeft',
     'Top-right': 'topRight',
     'Bottom-left': 'bottomLeft',
@@ -138,6 +142,10 @@ const TRANSFORM_ORIGIN_OPT = {
 
 const TRANSFORM_ORIGIN_VALS = {
     center: ['50%', '50%'],
+    top: ['50%', '0%'],
+    right: ['100%', '50%'],
+    bottom: ['50%', '100%'],
+    left: ['0%', '50%'],
     topLeft: ['0%', '0%'],
     topRight: ['100%', '0%'],
     bottomLeft: ['0%', '100%'],
@@ -350,6 +358,7 @@ function initGUI () {
             const elemFolder = sectionFolder.addFolder(elemName);
             const effectsFolder = elemFolder.addFolder('Tranformations');
             const modificationsFolder = elemFolder.addFolder('Travel Settings');
+            element.title = elemName;
 
             CONFIG[sectionName] = {
                 ...CONFIG[sectionName], 
