@@ -208,6 +208,8 @@ const initStyles = {
     '--hue': '0deg',
     '--scale': 0,
     '--pos': '0',
+    '--trans-origin-x': '50%',
+    '--trans-origin-y': '50%',
 }
 // const importExport = {
 //     "Save to File": function () {
@@ -625,7 +627,10 @@ function applyStyle (element, elementCSS) {
     element.style.setProperty('--skew-x', elementCSS.skewX);
     element.style.setProperty('--skew-y', elementCSS.skewY);
     element.style.setProperty('--hue', elementCSS.hue);
-    element.style.setProperty('--scale', elementCSS.scale);
+    element.style.setProperty('--scale-x', elementCSS.scaleX);
+    element.style.setProperty('--scale-y', elementCSS.scaleY);
+    element.style.setProperty('--trans-origin-x', elementCSS.transOriginX);
+    element.style.setProperty('--trans-origin-y', elementCSS.transOriginY);
 }
 
 function getStyle (element) {
@@ -638,7 +643,10 @@ function getStyle (element) {
         'skewX': window.getComputedStyle(element).getPropertyValue('--skew-x'),
         'skewY': window.getComputedStyle(element).getPropertyValue('--skew-y'),
         'hue': window.getComputedStyle(element).getPropertyValue('--hue'),
-        'scale': window.getComputedStyle(element).getPropertyValue('--scale')
+        'scaleX': window.getComputedStyle(element).getPropertyValue('--scale-x'),
+        'scaleY': window.getComputedStyle(element).getPropertyValue('--scale-y'),
+        'transOriginX': window.getComputedStyle(element).getPropertyValue('--trans-origin-x'),
+        'transOriginY': window.getComputedStyle(element).getPropertyValue('--trans-origin-y'),
     }
 }
 
