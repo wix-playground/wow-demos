@@ -225,7 +225,6 @@ const initStyles = {
 window.addEventListener("load", () => {
     resetStyles(root)
     initGUI();
-    restart();
     GUI.remember(CONFIG);
     init();
 })
@@ -247,7 +246,8 @@ function restart () {
             const elemDistFromTop = element.getBoundingClientRect().top + window.scrollY
             const elemDistFromBottom = document.body.scrollHeight - (elemDistFromTop + element.offsetHeight);
             const elementOffset = elemDistFromTop < window.innerHeight ? 0 : elemDistFromTop - window.innerHeight;
-            const elementDuration = element.offsetHeight + (
+            const animationTravelY = element.nextElementSibling.getBoundingClientRect().bottom - element.getBoundingClientRect().bottom
+            const elementDuration = element.offsetHeight + animationTravelY + (
                 elemDistFromTop < window.innerHeight 
                 ? elemDistFromTop 
                 : elemDistFromBottom < window.innerHeight 
@@ -305,6 +305,7 @@ function createScenes () {
 }
 
 function init () {
+    restart();
     scroll?.destroy();
     scroll = new Scroll({
         scenes: createScenes(),
