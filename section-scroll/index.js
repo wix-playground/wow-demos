@@ -309,7 +309,7 @@ function init () {
     scroll = new Scroll({
         scenes: createScenes(),
         animationActive: true,
-        animationFriction: lerp,
+        animationFriction: lerp || false,
     });
     scroll.on();
 }
