@@ -4,7 +4,7 @@ let lerp = 0.9;
 let scroll;
 
 const ANGLE_FIX = -90;
-const GUI = new dat.gui.GUI();
+const GUI = new dat.GUI();
 
 const EFFECTS_CONFIG = {
     POS_ANGLE: {
@@ -193,6 +193,7 @@ const animationDirections = {}
 const animationTriggers = {}
 const sectionsElements = {};
 const sectionNames = [];
+const controllers = {};
 
 const sections = [...document.querySelectorAll('section')];
 const root = document.documentElement;
@@ -211,14 +212,15 @@ const initStyles = {
     '--trans-origin-x': '50%',
     '--trans-origin-y': '50%',
 }
-// const importExport = {
-//     "Save to File": function () {
-//       download(getValues(), `saved-settings-${getTimeStamp()}.txt`, "text/plain");
-//     },
-//     "Load from File": function () {
-//       upload(); // stub
-//     }
-//   };
+
+const importExport = {
+    "Save to File": function () {
+        download(getValues(), `saved-settings-${getTimeStamp()}.txt`, "text/plain");
+    },
+    "Load from File": function () {
+        upload(); 
+    }
+  };
 
 //======================== main ========================
 
@@ -333,18 +335,10 @@ function updatePosition (element, angle, distance, isOutAnimation) {
 // ========== initiators ==========
 
 function initGUI () {
-    // lerp folder and to config
-    // GUI.add(importExport, "Save to File");
-    // GUI.add(importExport, "Load from File");
-    const lerpLabel_lerpInitVal = guiSettings.lerp;
-    const lerpEditSettings = Object.values(EFFECTS_CONFIG.LERP);
-
-    GUI.add(lerpLabel_lerpInitVal, ...lerpEditSettings)
-    .onChange(newLerpVal => {
-        lerp = newLerpVal;
-        init();
-    })
-    CONFIG.lerp = lerpLabel_lerpInitVal;
+    GUI.add(importExport, "Save to File");
+    GUI.add(importExport, "Load from File");
+    
+    addLerp();
 
     sections.forEach((section, index) => {
         const sectionName = `Section-${index + 1}`;
@@ -352,13 +346,13 @@ function initGUI () {
         const sectionElements = [...section.querySelectorAll('.actual')]
         sectionNames.push(sectionName);
         sectionsElements[sectionName] = sectionElements;
-        CONFIG[sectionName] = {height: guiSettings.sectionHeight};
+        CONFIG[sectionName] = {height: structuredClone(guiSettings.sectionHeight)};
         makeDynamicHeight(section, sectionFolder, sectionName);
 
         sectionElements.forEach((element, idx) => {
             const elemName = `${element.tagName}-s${index + 1}_e${idx + 1}`;
             const elemFolder = sectionFolder.addFolder(elemName);
-            const effectsFolder = elemFolder.addFolder('Tranformations');
+            const effectsFolder = elemFolder.addFolder('Transformations');
             const modificationsFolder = elemFolder.addFolder('Travel Settings');
             element.title = elemName;
 
@@ -367,9 +361,9 @@ function initGUI () {
                 [elemName]: {
                     effects: {
                         ...guiSettings.effects, 
-                        position: guiSettings.effects.position
+                        position: structuredClone(guiSettings.effects.position)
                     }, 
-                    travelSettings: guiSettings.travelSettings
+                    travelSettings: structuredClone(guiSettings.travelSettings)
                 }
             };
             addHint(elemName);
@@ -405,17 +399,19 @@ function addHint (elementName) {
 }
 
 function makeDynamicHeight (section, sectionFolder, sectionName) {
-    sectionFolder.add(CONFIG[sectionName].height, ...Object.values(EFFECTS_CONFIG.SECTION_HEIGHT))
+    const sectionHeightCtrllr = sectionFolder.add(CONFIG[sectionName].height, ...Object.values(EFFECTS_CONFIG.SECTION_HEIGHT))
     .onChange(val => {
         section.style.setProperty('--strip-height', `${val}vh`);
          restart();
          init()
     })
+    controllers[sectionName] = {height: sectionHeightCtrllr };
 }
 
 function addScrollEffects (element, sectionName, folder, elemName) {
     const positionFolder = folder.addFolder('Position');
-    positionFolder.add(CONFIG[sectionName][elemName].effects.position, ...Object.values(EFFECTS_CONFIG.POS_ANGLE))
+
+    const angleCtrllr = positionFolder.add(CONFIG[sectionName][elemName].effects.position, ...Object.values(EFFECTS_CONFIG.POS_ANGLE))
     .onChange(angle => {
         const angleFixed = angle + ANGLE_FIX;
         positions[elemName].angle = angleFixed;
@@ -425,7 +421,8 @@ function addScrollEffects (element, sectionName, folder, elemName) {
         resetChildrenStyle(element)
         init();
     })
-    positionFolder.add(CONFIG[sectionName][elemName].effects.position, ...Object.values(EFFECTS_CONFIG.POS_DIST))
+
+    const distCtrllr = positionFolder.add(CONFIG[sectionName][elemName].effects.position, ...Object.values(EFFECTS_CONFIG.POS_DIST))
     .onChange(newDist => {
         positions[elemName].distance = newDist;
         const angle = positions[elemName].angle;
@@ -436,7 +433,7 @@ function addScrollEffects (element, sectionName, folder, elemName) {
     })
     positionFolder.open();
 
-    folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.ROTATE))
+    const rotateCtrllr = folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.ROTATE))
     .onChange(val => {
         const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION_OPT.out;
         element.style.setProperty('--rotate', `${val}deg`);
@@ -446,7 +443,8 @@ function addScrollEffects (element, sectionName, folder, elemName) {
         resetChildrenStyle(element)
         init();
     })
-    folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.ROTATE_Y))
+
+    const rotateYCtrllr = folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.ROTATE_Y))
     .onChange(val => {
         const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION_OPT.out;
         element.style.setProperty('--rotate-y', `${val}deg`);
@@ -456,7 +454,8 @@ function addScrollEffects (element, sectionName, folder, elemName) {
         resetChildrenStyle(element)
         init();
     })
-    folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.ROTATE_X))
+
+    const rotateXCtrllr = folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.ROTATE_X))
     .onChange(val => {
         const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION_OPT.out;
         element.style.setProperty('--rotate-x', `${val}deg`);
@@ -466,7 +465,8 @@ function addScrollEffects (element, sectionName, folder, elemName) {
         resetChildrenStyle(element)
         init();
     })
-    folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.SKEW_X))
+
+    const skewXCtrllr = folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.SKEW_X))
     .onChange(val => {
         const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION_OPT.out;
         element.style.setProperty('--skew-x', `${val}deg`);
@@ -476,7 +476,8 @@ function addScrollEffects (element, sectionName, folder, elemName) {
         resetChildrenStyle(element)
         init();
     })
-    folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.SKEW_Y))
+
+    const skewYCtrllr = folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.SKEW_Y))
     .onChange(val => {
         const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION_OPT.out;
         element.style.setProperty('--skew-y', `${val}deg`);
@@ -486,7 +487,8 @@ function addScrollEffects (element, sectionName, folder, elemName) {
         resetChildrenStyle(element)
         init();
     })
-    folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.SCALE_X))
+
+    const scaleXCtrllr = folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.SCALE_X))
     .onChange(val => {
         const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION_OPT.out;
         element.style.setProperty('--scale-x', val - 1);
@@ -496,7 +498,8 @@ function addScrollEffects (element, sectionName, folder, elemName) {
         resetChildrenStyle(element)
         init();
     })
-    folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.SCALE_Y))
+
+    const scaleYCtrllr = folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.SCALE_Y))
     .onChange(val => {
         const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION_OPT.out;
         element.style.setProperty('--scale-y', val - 1);
@@ -506,14 +509,16 @@ function addScrollEffects (element, sectionName, folder, elemName) {
         resetChildrenStyle(element)
         init();
     })
-    folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.OPACITY))
+
+    const opacityCtrllr = folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.OPACITY))
     .onChange(val => {
         element.style.setProperty('--opacity', val - 1);
         element.nextElementSibling.style.setProperty('--opacity', val - 1);
         resetChildrenStyle(element)
         init();
     })
-    folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.HUE))
+
+    const hueCtrllr = folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.HUE))
     .onChange(val => {
         const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION_OPT.out;
         element.style.setProperty('--hue', `${val}deg`);
@@ -523,7 +528,8 @@ function addScrollEffects (element, sectionName, folder, elemName) {
         resetChildrenStyle(element)
         init();
     })
-    folder.add(CONFIG[sectionName][elemName].effects, EFFECTS_CONFIG.TRANS_ORIGIN.LABEL, TRANSFORM_ORIGIN_OPT)
+
+    const transOriginCtrllr = folder.add(CONFIG[sectionName][elemName].effects, EFFECTS_CONFIG.TRANS_ORIGIN.LABEL, TRANSFORM_ORIGIN_OPT)
     .onChange(val => {
         const [originX, originY] = TRANSFORM_ORIGIN_VALS[val];
         const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION_OPT.out;
@@ -536,11 +542,32 @@ function addScrollEffects (element, sectionName, folder, elemName) {
         resetChildrenStyle(element)
         init();
     })
-    folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.GHOST))
+    const ghostCtrllr = folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.GHOST))
     .onChange(showGhost => {
         element.nextElementSibling.style.setProperty('--no-ghost', showGhost ? .1 : 0);
         init();
     })
+
+    controllers[sectionName][elemName] = {
+        effects: {
+            [EFFECTS_CONFIG.ROTATE.LABEL]: rotateCtrllr,
+            [EFFECTS_CONFIG.ROTATE_Y.LABEL]: rotateYCtrllr,
+            [EFFECTS_CONFIG.ROTATE_X.LABEL]: rotateXCtrllr,
+            [EFFECTS_CONFIG.SKEW_X.LABEL]: skewXCtrllr,
+            [EFFECTS_CONFIG.SKEW_Y.LABEL]: skewYCtrllr,
+            [EFFECTS_CONFIG.SCALE_X.LABEL]: scaleXCtrllr,
+            [EFFECTS_CONFIG.SCALE_Y.LABEL]: scaleYCtrllr,
+            [EFFECTS_CONFIG.OPACITY.LABEL]: opacityCtrllr,
+            [EFFECTS_CONFIG.HUE.LABEL]: hueCtrllr,
+            [EFFECTS_CONFIG.TRANS_ORIGIN.LABEL]: transOriginCtrllr,
+            [EFFECTS_CONFIG.GHOST.LABEL]: ghostCtrllr,
+            position: {
+                [EFFECTS_CONFIG.POS_ANGLE.LABEL]: angleCtrllr,
+                [EFFECTS_CONFIG.POS_DIST.LABEL]: distCtrllr,
+            }
+
+        }
+    }
 }
 
 function addScrollModifications (element, sectionName, folder, elemName) {
@@ -589,6 +616,19 @@ function addScrollModifications (element, sectionName, folder, elemName) {
         }
         init();
     })
+}
+
+function addLerp() {
+    const lerpLabel_lerpInitVal = guiSettings.lerp;
+    const lerpEditSettings = Object.values(EFFECTS_CONFIG.LERP);
+    const lerpController = GUI.add(lerpLabel_lerpInitVal, ...lerpEditSettings)
+    .onChange(newLerpVal => {
+        lerp = newLerpVal;
+        init();
+    })
+
+    CONFIG.lerp = lerpLabel_lerpInitVal;
+    controllers.lerp = lerpController;
 }
 
 // ========== helpers ==========
@@ -657,65 +697,79 @@ function getTranslate_XY(angle, distance) {
     return [ x, y ];
 }
 
-// function getValues() {
-//     return JSON.stringify(GUI.__rememberedObjects, null, 2);
-//   }
+function getValues() {
+    return JSON.stringify(GUI.__rememberedObjects, null, 2);
+}
 
-//   function setValues(rememberedValues) {
-//     rememberedValues.forEach((values, index) => {
-//       Object.keys(values).forEach((key) => {
-//         const controller = GUI.__rememberedObjectIndecesToControllers[index][key];
-//         controller && controller.setValue(values[key]);
-//       });
-//     });
-//   }
+function setValues(rememberedValues) {
+    const db = rememberedValues[0]
+    const lerpVal = db.lerp.Lerp
+    controllers.lerp.setValue(lerpVal);
+    Object.values(db).slice(1).forEach((sectionData, index) => {
+        const sectionName = sectionNames[index];
+        controllers[sectionName].height.setValue(Object.values(sectionData.height)[0]) 
+        Object.values(sectionData).slice(1).forEach((elem, idx) => {
+            const elemName = `${sectionsElements[sectionName][idx].tagName}-s${index + 1}_e${idx + 1}`;
+            for (const [key, value] of Object.entries(elem.effects)) {
+                if (typeof(value) === "object") {
+                    for (const [k, v] of Object.entries(value)) {
+                        controllers[sectionName][elemName].effects.position[k].setValue(v);
+                    }
+                } else {
+                    controllers[sectionName][elemName].effects[key].setValue(value);
+                }
+              } 
+        })
+    })
+}
 
-//   function upload() {
-//     const input = document.createElement("input");
-//     input.type = "file";
-//     input.accept = "text/plain";
-//     input.onchange = function () {
-//       if (this.files && this.files[0]) {
-//         var myFile = this.files[0];
-//         var reader = new FileReader();
-  
-//         reader.addEventListener("load", function (e) {
-//           setValues(JSON.parse(e.target.result));
-//         });
-  
-//         reader.readAsBinaryString(myFile);
-//       }
-//     };
-//     document.body.appendChild(input);
 
-//     input.click();
-//     setTimeout(function () {
-//       document.body.removeChild(input);
-//     }, 0);
-//   }
+function upload() {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "text/plain";
+    input.onchange = function () {
+        if (this.files && this.files[0]) {
+        var myFile = this.files[0];
+        var reader = new FileReader();
 
-//   function download(data, filename, type) {
-//     const file = new Blob([data], { type: type });
-//     const a = document.createElement("a");
-//     const url = URL.createObjectURL(file);
-  
-//     a.href = url;
-//     a.download = filename;
-//     document.body.appendChild(a);
-  
-//     a.click();
-//     setTimeout(function () {
-//       document.body.removeChild(a);
-//       window.URL.revokeObjectURL(url);
-//     }, 0);
-//   }
+        reader.addEventListener("load", function (e) {
+            setValues(JSON.parse(e.target.result));
+        });
 
-//   function getTimeStamp() {
-//     const date = new Date();
-//     return `${date.toISOString().split("T")[0]}-${date.toLocaleTimeString(
-//       "en-US",
-//       { hour12: false }
-//     )}`;
-//   }
-  
+        reader.readAsBinaryString(myFile);
+        }
+    };
+    document.body.appendChild(input);
+
+    input.click();
+    setTimeout(function () {
+        document.body.removeChild(input);
+    }, 0);
+}
+
+function download(data, filename, type) {
+    const file = new Blob([data], { type: type });
+    const a = document.createElement("a");
+    const url = URL.createObjectURL(file);
+
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+
+    a.click();
+    setTimeout(function () {
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+    }, 0);
+}
+
+function getTimeStamp() {
+    const date = new Date();
+    return `${date.toISOString().split("T")[0]}-${date.toLocaleTimeString(
+        "en-US",
+        { hour12: false }
+    )}`;
+}
+
 
