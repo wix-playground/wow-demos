@@ -565,7 +565,6 @@ function addScrollEffects (element, sectionName, folder, elemName) {
                 [EFFECTS_CONFIG.POS_ANGLE.LABEL]: angleCtrllr,
                 [EFFECTS_CONFIG.POS_DIST.LABEL]: distCtrllr,
             }
-
         }
     }
 }
@@ -573,28 +572,31 @@ function addScrollEffects (element, sectionName, folder, elemName) {
 function addScrollModifications (element, sectionName, folder, elemName) {
     const hint = document.querySelector(`.hint-${elemName}`);
 
-    folder.add(CONFIG[sectionName][elemName].travelSettings, EFFECTS_CONFIG.TRIGGER.LABEL, ANIMATION_TRIGGER_OPT)
+    const triggerCtrllr = folder.add(CONFIG[sectionName][elemName].travelSettings, EFFECTS_CONFIG.TRIGGER.LABEL, ANIMATION_TRIGGER_OPT)
     .onChange(animationTrigger => {
         animationTriggers[elemName] = animationTrigger;
         hint.style.setProperty('--offset-top',  `${effectStartOffset[elemName][animationTrigger].current}px`);
         hint.style.setProperty('--duration', `${effectDuration[elemName][animationTrigger].current}px`);
         init();
     })
-    folder.add(CONFIG[sectionName][elemName].travelSettings, EFFECTS_CONFIG.ANIMATION_DIR.LABEL, ANIMATION_DIRECTION_OPT)
+
+    const directionCtrllr = folder.add(CONFIG[sectionName][elemName].travelSettings, EFFECTS_CONFIG.ANIMATION_DIR.LABEL, ANIMATION_DIRECTION_OPT)
     .onChange(animationDir => {
         animationDirections[elemName] = animationDir;
         if (animationDir === ANIMATION_DIRECTION_OPT.in) resetStyles(element.nextElementSibling)
         else (copyCSSProperties(element, element.nextElementSibling)) 
         init();
     })
-    folder.add(CONFIG[sectionName][elemName].travelSettings, ...Object.values(EFFECTS_CONFIG.SPEED))
+
+    const speedCtrllr = folder.add(CONFIG[sectionName][elemName].travelSettings, ...Object.values(EFFECTS_CONFIG.SPEED))
     .onChange(val => {
         const animationTrigger = animationTriggers[elemName]
         effectDuration[elemName][animationTrigger].current = effectDuration[elemName][animationTrigger].default * val;
         hint.style.setProperty('--duration', `${effectDuration[elemName][animationTrigger].current}px`);
         init();
     })
-    folder.add(CONFIG[sectionName][elemName].travelSettings, ...Object.values(EFFECTS_CONFIG.OFFSET))
+
+    const offsetCtrllr = folder.add(CONFIG[sectionName][elemName].travelSettings, ...Object.values(EFFECTS_CONFIG.OFFSET))
     .onChange(val => {
         const animationTrigger = animationTriggers[elemName]
         effectStartOffset[elemName][animationTrigger].current = effectStartOffset[elemName][animationTrigger].default + window.innerHeight * val;
@@ -616,6 +618,14 @@ function addScrollModifications (element, sectionName, folder, elemName) {
         }
         init();
     })
+
+    controllers[sectionName][elemName].travelSettings = {
+        [EFFECTS_CONFIG.ANIMATION_DIR.LABEL]: directionCtrllr,
+        [EFFECTS_CONFIG.TRIGGER.LABEL]: triggerCtrllr,
+        [EFFECTS_CONFIG.SPEED.LABEL]: speedCtrllr,
+        [EFFECTS_CONFIG.OFFSET.LABEL]: offsetCtrllr,
+    }
+
 }
 
 function addLerp() {
@@ -719,6 +729,9 @@ function setValues(rememberedValues) {
                     controllers[sectionName][elemName].effects[key].setValue(value);
                 }
               } 
+            for (const [key, value] of Object.entries(elem.travelSettings)) {
+                controllers[sectionName][elemName].travelSettings[key]?.setValue(value);
+            } 
         })
     })
 }
