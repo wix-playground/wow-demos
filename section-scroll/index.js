@@ -399,13 +399,13 @@ function addHint (elementName) {
 }
 
 function makeDynamicHeight (section, sectionFolder, sectionName) {
-    const sectionHeightCtrllr = sectionFolder.add(CONFIG[sectionName].height, ...Object.values(EFFECTS_CONFIG.SECTION_HEIGHT))
+    sectionFolder.add(CONFIG[sectionName].height, ...Object.values(EFFECTS_CONFIG.SECTION_HEIGHT))
     .onChange(val => {
         section.style.setProperty('--strip-height', `${val}vh`);
          restart();
          init()
     })
-    controllers[sectionName] = {height: sectionHeightCtrllr };
+    controllers[sectionName] = {};
 }
 
 function addScrollEffects (element, sectionName, folder, elemName) {
@@ -717,7 +717,6 @@ function setValues(rememberedValues) {
     controllers.lerp.setValue(lerpVal);
     Object.values(db).slice(1).forEach((sectionData, index) => {
         const sectionName = sectionNames[index];
-        controllers[sectionName].height.setValue(Object.values(sectionData.height)[0]) 
         Object.values(sectionData).slice(1).forEach((elem, idx) => {
             const elemName = `${sectionsElements[sectionName][idx].tagName}-s${index + 1}_e${idx + 1}`;
             for (const [key, value] of Object.entries(elem.effects)) {
@@ -731,6 +730,14 @@ function setValues(rememberedValues) {
               } 
             for (const [key, value] of Object.entries(elem.travelSettings)) {
                 controllers[sectionName][elemName].travelSettings[key]?.setValue(value);
+                if (key === 'Distance') {
+                    const durationRef = effectDuration[elemName][animationTriggers[elemName]]
+                    durationRef.current = durationRef.default * value;
+                }
+                if (key === 'Offset') {
+                    const offsetRef = effectStartOffset[elemName][animationTriggers[elemName]]
+                    offsetRef.current = offsetRef.default + window.innerHeight * value;
+                }
             } 
         })
     })
