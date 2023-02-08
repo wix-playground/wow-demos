@@ -381,6 +381,7 @@ function initGUI () {
 }
 
 function addGhost (element) {
+    
     let clone = element.cloneNode(true);
     clone.classList.add("ghost");
     clone.classList.remove("actual");
@@ -389,16 +390,16 @@ function addGhost (element) {
         child.classList.remove("ghost")
     })
     element.insertAdjacentElement("afterend", clone);
+    
+    let cloneOut = element.cloneNode(true);
+    cloneOut.classList.add("ghost-out");
+    cloneOut.classList.remove("actual");
+    [...cloneOut.querySelectorAll('.actual', '.ghost-out')].forEach(child => {
+        child.classList.remove("actual")
+        child.classList.remove("ghost-out")
+    })
+    element.insertAdjacentElement("afterend", cloneOut);
 
-    // let cloneOut = element.cloneNode(true);
-    // cloneOut.classList.add("ghost-out");
-    // clone.classList.remove("actual");
-    // [...clone.querySelectorAll('.actual', '.ghost', '.ghost-out')].forEach(child => {
-    //     child.classList.remove("actual")
-    //     child.classList.remove("ghost")
-    //     child.classList.remove("ghost-out")
-    // })
-    // element.insertAdjacentElement("afterend", cloneOut);
 }
 
 function addHint (elementName) {
@@ -445,77 +446,62 @@ function addScrollEffects (element, sectionName, folder, elemName, direction) {
 
     const rotateCtrllr = folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.ROTATE))
     .onChange(val => {
-        const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION_OPT.out;
         element.style.setProperty(`--rotate-${direction}`, `${val}deg`);
-        if (isOutAnimation) {
             element.nextElementSibling.style.setProperty(`--rotate-${direction}`, `${val}deg`);
-        }
+        
         resetChildrenStyle(element)
         init();
     })
 
     const rotateYCtrllr = folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.ROTATE_Y))
     .onChange(val => {
-        const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION_OPT.out;
         element.style.setProperty(`--rotate-y-${direction}`, `${val}deg`);
-        if (isOutAnimation) {
             element.nextElementSibling.style.setProperty(`--rotate-y-${direction}`, `${val}deg`);
-        }
+        
         resetChildrenStyle(element)
         init();
     })
 
     const rotateXCtrllr = folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.ROTATE_X))
     .onChange(val => {
-        const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION_OPT.out;
         element.style.setProperty(`--rotate-x-${direction}`, `${val}deg`);
-        if (isOutAnimation) {
             element.nextElementSibling.style.setProperty(`--rotate-x-${direction}`, `${val}deg`);
-        }
+        
         resetChildrenStyle(element)
         init();
     })
 
     const skewXCtrllr = folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.SKEW_X))
     .onChange(val => {
-        const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION_OPT.out;
         element.style.setProperty(`--skew-x-${direction}`, `${val}deg`);
-        if (isOutAnimation) {
             element.nextElementSibling.style.setProperty(`--skew-x-${direction}`, `${val}deg`);
-        }
+        
         resetChildrenStyle(element)
         init();
     })
 
     const skewYCtrllr = folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.SKEW_Y))
     .onChange(val => {
-        const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION_OPT.out;
         element.style.setProperty(`--skew-y-${direction}`, `${val}deg`);
-        if (isOutAnimation) {
             element.nextElementSibling.style.setProperty(`--skew-y-${direction}`, `${val}deg`);
-        }
+        
         resetChildrenStyle(element)
         init();
     })
 
     const scaleXCtrllr = folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.SCALE_X))
     .onChange(val => {
-        const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION_OPT.out;
         element.style.setProperty(`--scale-x-${direction}`, val - 1);
-        if (isOutAnimation) {
             element.nextElementSibling.style.setProperty(`--scale-x-${direction}`, val - 1);
-        }
+        
         resetChildrenStyle(element)
         init();
     })
 
     const scaleYCtrllr = folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.SCALE_Y))
     .onChange(val => {
-        const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION_OPT.out;
         element.style.setProperty(`--scale-y-${direction}`, val - 1);
-        if (isOutAnimation) {
-            element.nextElementSibling.style.setProperty(`--scale-y-${direction}`, val - 1);
-        }
+        element.nextElementSibling.style.setProperty(`--scale-y-${direction}`, val - 1);
         resetChildrenStyle(element)
         init();
     })
@@ -530,11 +516,9 @@ function addScrollEffects (element, sectionName, folder, elemName, direction) {
 
     const hueCtrllr = folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.HUE))
     .onChange(val => {
-        const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION_OPT.out;
         element.style.setProperty(`--hue-${direction}`, `${val}deg`);
-        if (isOutAnimation) {
             element.nextElementSibling.style.setProperty(`--hue-${direction}`, `${val}deg`);
-        }
+        
         resetChildrenStyle(element)
         init();
     })
