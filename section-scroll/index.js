@@ -242,30 +242,34 @@ function restart () {
                 : window.innerHeight
             );
             effectStartOffset[elemName] = {
-                modeSection: {
-                    default: sectionOffset, 
-                    current: sectionOffset
-                }, 
-                modeSelf: {
-                    default: elementOffset, 
-                    current: elementOffset
+                in: {
+                    modeSection: {
+                        default: sectionOffset, 
+                        current: sectionOffset
+                    }, 
+                    modeSelf: {
+                        default: elementOffset, 
+                        current: elementOffset
+                    }
                 }
             }
             
             effectDuration[elemName] = {
-                modeSection: {
-                    default: sectionDuration, 
-                    current: sectionDuration
-                }, 
-                modeSelf: {
-                    default: elementDuration, 
-                    current: elementDuration
+                in: {
+                    modeSection: {
+                        default: sectionDuration, 
+                        current: sectionDuration
+                    }, 
+                    modeSelf: {
+                        default: elementDuration, 
+                        current: elementDuration
+                    }
                 }
             }
 
             const trigger = animationTriggers[elemName];
-            const offset = effectStartOffset[elemName][trigger].current;
-            const duration = effectDuration[elemName][trigger].current;
+            const offset = effectStartOffset[elemName].in[trigger].current;
+            const duration = effectDuration[elemName].in[trigger].current;
             updateHint(elemName, offset, duration);
             applyStyle(element, elemStyle, ANIMATION_DIRECTION_OPT.in);
             applyStyle(element, elemStyle, ANIMATION_DIRECTION_OPT.out);
@@ -279,14 +283,23 @@ function createScenes () {
         const sectionName = sectionNames[index];
         sectionsElements[sectionName].forEach((element, idx) => {
             const elemName = `${element.tagName}-s${index + 1}_e${idx + 1}`;
-            const animationDirection = animationDirections[elemName];
             const animationTrigger = animationTriggers[elemName];
-            scenes.push({
-                start: effectStartOffset[elemName][animationTrigger].current,
-                duration: effectDuration[elemName][animationTrigger].current,
-                target: element,
-                effect: (scene, pos) => scene.target.style.setProperty('--pos', 1 - pos)
-            })
+            scenes.push(
+                ...[
+                    {
+                        start: effectStartOffset[elemName].in[animationTrigger].current,
+                        duration: effectDuration[elemName].in[animationTrigger].current,
+                        target: element,
+                        effect: (scene, pos) => scene.target.style.setProperty('--pos-in', 1 - pos)
+                    },
+                    {
+                        start: effectStartOffset[elemName].in[animationTrigger].current + effectDuration[elemName].in[animationTrigger].current,
+                        duration: effectDuration[elemName].in[animationTrigger].current,
+                        target: element,
+                        effect: (scene, pos) => scene.target.style.setProperty('--pos-out', pos)
+                    },
+                ]
+            )
         })
     })
     return scenes;
@@ -338,7 +351,8 @@ function initGUI () {
         sectionElements.forEach((element, idx) => {
             const elemName = `${element.tagName}-s${index + 1}_e${idx + 1}`;
             const elemFolder = sectionFolder.addFolder(elemName);
-            const effectsFolder = elemFolder.addFolder('Transformations');
+            const effectsFolderIn = elemFolder.addFolder('In Transformations');
+            const effectsFolderOut = elemFolder.addFolder('Out Transformations');
             const modificationsFolder = elemFolder.addFolder('Travel Settings');
             element.title = elemName;
 
@@ -354,9 +368,9 @@ function initGUI () {
             };
             addHint(elemName);
             addGhost(element);
-            addScrollEffects(element, sectionName, effectsFolder, elemName, ANIMATION_DIRECTION_OPT.in);
+            addScrollEffects(element, sectionName, effectsFolderIn, elemName, ANIMATION_DIRECTION_OPT.in);
+            addScrollEffects(element, sectionName, effectsFolderOut, elemName, ANIMATION_DIRECTION_OPT.out);
             addScrollModifications(element, sectionName, modificationsFolder, elemName);
-            // animationDirections[elemName] = ANIMATION_DIRECTION_OPT.out;
             animationTriggers[elemName] = ANIMATION_TRIGGER_OPT.self;
             positions[elemName] = {
                 angle: 0 + ANGLE_FIX,
@@ -375,6 +389,16 @@ function addGhost (element) {
         child.classList.remove("ghost")
     })
     element.insertAdjacentElement("afterend", clone);
+
+    // let cloneOut = element.cloneNode(true);
+    // cloneOut.classList.add("ghost-out");
+    // clone.classList.remove("actual");
+    // [...clone.querySelectorAll('.actual', '.ghost', '.ghost-out')].forEach(child => {
+    //     child.classList.remove("actual")
+    //     child.classList.remove("ghost")
+    //     child.classList.remove("ghost-out")
+    // })
+    // element.insertAdjacentElement("afterend", cloneOut);
 }
 
 function addHint (elementName) {
@@ -519,11 +543,11 @@ function addScrollEffects (element, sectionName, folder, elemName, direction) {
     .onChange(val => {
         const [originX, originY] = TRANSFORM_ORIGIN_VALS[val];
         const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION_OPT.out;
-        element.style.setProperty(`--trans-origin-x-${direction}`, originX);
-        element.style.setProperty(`--trans-origin-y-${direction}`, originY);
+        element.style.setProperty(`--trans-origin-x`, originX);
+        element.style.setProperty(`--trans-origin-y`, originY);
         if (isOutAnimation) {
-            element.nextElementSibling.style.setProperty(`--trans-origin-x-${direction}`, originX);
-            element.nextElementSibling.style.setProperty(`--trans-origin-y-${direction}`, originY);
+            element.nextElementSibling.style.setProperty(`--trans-origin-x`, originX);
+            element.nextElementSibling.style.setProperty(`--trans-origin-y`, originY);
         }
         resetChildrenStyle(element)
         init();
@@ -561,8 +585,8 @@ function addScrollModifications (element, sectionName, folder, elemName) {
     const triggerCtrllr = folder.add(CONFIG[sectionName][elemName].travelSettings, EFFECTS_CONFIG.TRIGGER.LABEL, ANIMATION_TRIGGER_OPT)
     .onChange(animationTrigger => {
         animationTriggers[elemName] = animationTrigger;
-        hint.style.setProperty('--offset-top',  `${effectStartOffset[elemName][animationTrigger].current}px`);
-        hint.style.setProperty('--duration', `${effectDuration[elemName][animationTrigger].current}px`);
+        hint.style.setProperty('--offset-top',  `${effectStartOffset[elemName].in[animationTrigger].current}px`);
+        hint.style.setProperty('--duration', `${effectDuration[elemName].in[animationTrigger].current}px`);
         init();
     })
 
@@ -570,20 +594,20 @@ function addScrollModifications (element, sectionName, folder, elemName) {
     const speedCtrllr = folder.add(CONFIG[sectionName][elemName].travelSettings, ...Object.values(EFFECTS_CONFIG.SPEED))
     .onChange(val => {
         const animationTrigger = animationTriggers[elemName]
-        effectDuration[elemName][animationTrigger].current = effectDuration[elemName][animationTrigger].default * val;
-        hint.style.setProperty('--duration', `${effectDuration[elemName][animationTrigger].current}px`);
+        effectDuration[elemName].in[animationTrigger].current = effectDuration[elemName].in[animationTrigger].default * val;
+        hint.style.setProperty('--duration', `${effectDuration[elemName].in[animationTrigger].current}px`);
         init();
     })
 
     const offsetCtrllr = folder.add(CONFIG[sectionName][elemName].travelSettings, ...Object.values(EFFECTS_CONFIG.OFFSET))
     .onChange(val => {
         const animationTrigger = animationTriggers[elemName]
-        effectStartOffset[elemName][animationTrigger].current = effectStartOffset[elemName][animationTrigger].default + window.innerHeight * val;
-        hint.style.setProperty('--offset-top',  `${effectStartOffset[elemName][animationTrigger].current}px`);
+        effectStartOffset[elemName].in[animationTrigger].current = effectStartOffset[elemName].in[animationTrigger].default + window.innerHeight * val;
+        hint.style.setProperty('--offset-top',  `${effectStartOffset[elemName].in[animationTrigger].current}px`);
         init();
     })
     folder.add(CONFIG[sectionName][elemName].travelSettings, ...Object.values(EFFECTS_CONFIG.HINT))
-    .onChange(showGuide => {
+    .onChange(showHint => {
         [...document.querySelectorAll('.actual')].forEach(e => {
             e.style.setProperty('--z-index', 0);
         });
@@ -591,7 +615,7 @@ function addScrollModifications (element, sectionName, folder, elemName) {
             e.style.setProperty('--visible', 'hidden')
             e.style.setProperty('--z-index', -1);
         });
-        if (showGuide) {
+        if (showHint) {
             hint.style.setProperty('--visible', 'visible');
             element.style.setProperty('--z-index', 4)
         }
@@ -634,8 +658,8 @@ function getInitStyles(direction) {
         [`--hue-${direction}`]: '0deg',
         [`--scale-${direction}`]: 0,
         [`--pos-${direction}`]: '0',
-        [`--trans-origin-x-${direction}`]: '50%',
-        [`--trans-origin-y-${direction}`]: '50%',
+        [`--trans-origin-x`]: '50%',
+        [`--trans-origin-y`]: '50%',
     }
 }
 
@@ -665,35 +689,59 @@ function getAndResetStyle (element) {
     return elementCSS
 }
 
-function applyStyle (element, elementCSS, direction) {
-    element.style.setProperty(`--x-trans-${direction}`, elementCSS.xTrans);
-    element.style.setProperty(`--y-trans-${direction}`, elementCSS.yTrans);
-    element.style.setProperty(`--rotate-${direction}`, elementCSS.rotate);
-    element.style.setProperty(`--rotate-x-${direction}`, elementCSS.rotateX);
-    element.style.setProperty(`--rotate-y-${direction}`, elementCSS.rotateY);
-    element.style.setProperty(`--skew-x-${direction}`, elementCSS.skewX);
-    element.style.setProperty(`--skew-y-${direction}`, elementCSS.skewY);
-    element.style.setProperty(`--hue-${direction}`, elementCSS.hue);
-    element.style.setProperty(`--scale-x-${direction}`, elementCSS.scaleX);
-    element.style.setProperty(`--scale-y-${direction}`, elementCSS.scaleY);
-    element.style.setProperty(`--trans-origin-x-${direction}`, elementCSS.transOriginX);
-    element.style.setProperty(`--trans-origin-y-${direction}`, elementCSS.transOriginY);
+function applyStyle (element, elementCSS) {
+    element.style.setProperty(`--x-trans-in`, elementCSS.xTransIn);
+    element.style.setProperty(`--y-trans-in`, elementCSS.yTransIn);
+    element.style.setProperty(`--rotate-in`, elementCSS.rotateIn);
+    element.style.setProperty(`--rotate-x-in`, elementCSS.rotateXIn);
+    element.style.setProperty(`--rotate-y-in`, elementCSS.rotateYIn);
+    element.style.setProperty(`--skew-x-in`, elementCSS.skewXIn);
+    element.style.setProperty(`--skew-y-in`, elementCSS.skewYIn);
+    element.style.setProperty(`--hue-in`, elementCSS.hueIn);
+    element.style.setProperty(`--scale-x-in`, elementCSS.scaleXIn);
+    element.style.setProperty(`--scale-y-in`, elementCSS.scaleYIn);
+
+    element.style.setProperty(`--x-trans-out`, elementCSS.xTransOut);
+    element.style.setProperty(`--y-trans-out`, elementCSS.yTransOut);
+    element.style.setProperty(`--rotate-out`, elementCSS.rotateOut);
+    element.style.setProperty(`--rotate-x-out`, elementCSS.rotateXOut);
+    element.style.setProperty(`--rotate-y-out`, elementCSS.rotateYOut);
+    element.style.setProperty(`--skew-x-out`, elementCSS.skewXOut);
+    element.style.setProperty(`--skew-y-out`, elementCSS.skewYOut);
+    element.style.setProperty(`--hue-out`, elementCSS.hueOut);
+    element.style.setProperty(`--scale-x-out`, elementCSS.scaleXOut);
+    element.style.setProperty(`--scale-y-out`, elementCSS.scaleYOut);
+
+    element.style.setProperty(`--trans-origin-x`, elementCSS.transOriginX);
+    element.style.setProperty(`--trans-origin-y`, elementCSS.transOriginY);
 }
 
-function getStyle (element, direction) {
+function getStyle (element) {
     return {
-        'xTrans': window.getComputedStyle(element).getPropertyValue(`--x-trans-${direction}`),
-        'yTrans': window.getComputedStyle(element).getPropertyValue(`--y-trans-${direction}`),
-        'rotate': window.getComputedStyle(element).getPropertyValue(`--rotate-${direction}`),
-        'rotateY': window.getComputedStyle(element).getPropertyValue(`--rotate-y-${direction}`),
-        'rotateX': window.getComputedStyle(element).getPropertyValue(`--rotate-x-${direction}`),
-        'skewX': window.getComputedStyle(element).getPropertyValue(`--skew-x-${direction}`),
-        'skewY': window.getComputedStyle(element).getPropertyValue(`--skew-y-${direction}`),
-        'hue': window.getComputedStyle(element).getPropertyValue(`--hue-${direction}`),
-        'scaleX': window.getComputedStyle(element).getPropertyValue(`--scale-x-${direction}`),
-        'scaleY': window.getComputedStyle(element).getPropertyValue(`--scale-y-${direction}`),
-        'transOriginX': window.getComputedStyle(element).getPropertyValue(`--trans-origin-x-${direction}`),
-        'transOriginY': window.getComputedStyle(element).getPropertyValue(`--trans-origin-y-${direction}`),
+        'xTransIn': window.getComputedStyle(element).getPropertyValue(`--x-trans-in`),
+        'yTransIn': window.getComputedStyle(element).getPropertyValue(`--y-trans-in`),
+        'rotateIn': window.getComputedStyle(element).getPropertyValue(`--rotate-in`),
+        'rotateYIn': window.getComputedStyle(element).getPropertyValue(`--rotate-y-in`),
+        'rotateXIn': window.getComputedStyle(element).getPropertyValue(`--rotate-x-in`),
+        'skewXIn': window.getComputedStyle(element).getPropertyValue(`--skew-x-in`),
+        'skewYIn': window.getComputedStyle(element).getPropertyValue(`--skew-y-in`),
+        'hueIn': window.getComputedStyle(element).getPropertyValue(`--hue-in`),
+        'scaleXIn': window.getComputedStyle(element).getPropertyValue(`--scale-x-in`),
+        'scaleYIn': window.getComputedStyle(element).getPropertyValue(`--scale-y-in`),
+
+        'xTransOut': window.getComputedStyle(element).getPropertyValue(`--x-trans-out`),
+        'yTransOut': window.getComputedStyle(element).getPropertyValue(`--y-trans-out`),
+        'rotateOut': window.getComputedStyle(element).getPropertyValue(`--rotate-out`),
+        'rotateYOut': window.getComputedStyle(element).getPropertyValue(`--rotate-y-out`),
+        'rotateXOut': window.getComputedStyle(element).getPropertyValue(`--rotate-x-out`),
+        'skewXOut': window.getComputedStyle(element).getPropertyValue(`--skew-x-out`),
+        'skewYOut': window.getComputedStyle(element).getPropertyValue(`--skew-y-out`),
+        'hueOut': window.getComputedStyle(element).getPropertyValue(`--hue-out`),
+        'scaleXOut': window.getComputedStyle(element).getPropertyValue(`--scale-x-out`),
+        'scaleYOut': window.getComputedStyle(element).getPropertyValue(`--scale-y-out`),
+
+        'transOriginXIn': window.getComputedStyle(element).getPropertyValue(`--trans-origin-x`),
+        'transOriginYIn': window.getComputedStyle(element).getPropertyValue(`--trans-origin-y`),
     }
 }
 

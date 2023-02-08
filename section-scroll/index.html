@@ -70,17 +70,20 @@
             }
 
             .actual {
-                opacity: calc(1 + var(--pos, 0) * var(--opacity-in, 0));
+                opacity: calc(1 + var(--pos-in, 0) * var(--opacity-in, 0) + var(--pos-out, 0) * var(--opacity-out, 0));
                 z-index: var(--z-index, 0);
-                filter: hue-rotate(calc(var(--pos, 0) * var(--hue-in, 0)));
-                transform-origin: var(--trans-origin-x-in, 50%) var(--trans-origin-y-in, 50%);
+                filter: hue-rotate(calc(var(--pos-in, 0) * var(--hue-in, 0) + var(--pos-out, 0) * var(--hue-out, 0)));
+                transform-origin: var(--trans-origin-x, 50%) var(--trans-origin-y, 50%);
                 transform: 
-                    translateX(calc(var(--pos, 0) * var(--x-trans-in, 0)))
-                    translateY(calc(var(--pos, 0) * var(--y-trans-in, 0))) rotateZ(calc(var(--pos, 0) * var(--rotate-in, 0)))
-                    rotateY(calc(var(--pos, 0) * var(--rotate-y-in, 0))) rotateX(calc(var(--pos, 0) * var(--rotate-x-in, 0)))
-                    skewX(calc(var(--pos, 0) * var(--skew-x-in, 0))) skewY(calc(var(--pos, 0) * var(--skew-y-in, 0)))
-                    scaleX(calc(1 + var(--pos, 0) * var(--scale-x-in, 0)))
-                    scaleY(calc(1 + var(--pos, 0) * var(--scale-y-in, 0)));
+                    translateX(calc(var(--pos-in, 0) * var(--x-trans-in, 0) + var(--pos-out, 0) * var(--x-trans-out)))
+                    translateY(calc(var(--pos-in, 0) * var(--y-trans-in, 0) + var(--pos-out, 0) * var(--y-trans-out))) 
+                    rotateZ(calc(var(--pos-in, 0) * var(--rotate-in, 0) + var(--pos-out, 0) * var(--rotate-out, 0)))
+                    rotateY(calc(var(--pos-in, 0) * var(--rotate-y-in, 0) + var(--pos-out, 0) * var(--rotate-y-out, 0))) 
+                    rotateX(calc(var(--pos-in, 0) * var(--rotate-x-in, 0) + var(--pos-out, 0) * var(--rotate-x-out, 0)))
+                    skewX(calc(var(--pos-in, 0) * var(--skew-x-in, 0) + var(--pos-out, 0) * var(--skew-x-out, 0))) 
+                    skewY(calc(var(--pos-in, 0) * var(--skew-y-in, 0) + var(--pos-out, 0) * var(--skew-y-out, 0)))
+                    scaleX(calc(1 + var(--pos-in, 0) * var(--scale-x-in, 0) + var(--pos-out, 0) * var(--scale-x-out, 0)))
+                    scaleY(calc(1 + var(--pos-in, 0) * var(--scale-y-in, 0) + var(--pos-out, 0) * var(--scale-y-out, 0)));
             }
             .ghost {
                 opacity: var(--no-ghost, 0.1);
