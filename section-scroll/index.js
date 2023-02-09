@@ -611,7 +611,11 @@ function addScrollEffects (element, sectionName, folder, elemName, direction) {
     })
     const ghostCtrllr = folder.add(CONFIG[sectionName][elemName][direction].effects, ...Object.values(EFFECTS_CONFIG.GHOST))
     .onChange(showGhost => {
-        element.nextElementSibling.style.setProperty(`--no-ghost-${direction}`, showGhost ? .1 : 0);
+        if (direction === ANIMATION_DIRECTION_OPT.out) {
+            element.nextElementSibling.style.setProperty(`--no-ghost-out`, showGhost ? .1 : 0);
+        } else {
+            element.nextElementSibling.nextElementSibling.style.setProperty(`--no-ghost-in`, showGhost ? .1 : 0);
+        }
         init();
     })
 

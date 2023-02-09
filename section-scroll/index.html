@@ -107,8 +107,8 @@
                 left: 0;
                 height: var(--duration-in, 0);
                 top: var(--offset-top-in, 0);
-                border-top: 2px solid lightcoral;
-                border-bottom: 2px solid lightcoral;
+                border-top: 2px solid lightgreen;
+                border-bottom: 2px solid lightgreen;
                 opacity: 0.5;
                 visibility: var(--visible-in, hidden);
                 z-index: 3;
@@ -120,10 +120,10 @@
                 top: 0;
                 left: 0;
                 content: attr(data-name);
-                color: red;
+                color: lightgreen;
                 z-index: 5;
                 font-weight: bold;
-                border: 2px solid red;
+                border: 2px solid lightgreen;
                 background: white;
             }
             .hint-out {
@@ -132,8 +132,8 @@
                 left: 0;
                 height: var(--duration-out, 0);
                 top: var(--offset-top-out, 0);
-                border-top: 2px solid lightgreen;
-                border-bottom: 2px solid lightgreen;
+                border-top: 2px solid lightcoral;
+                border-bottom: 2px solid lightcoral;
                 opacity: 0.5;
                 visibility: var(--visible-out, hidden);
                 z-index: 3;
@@ -145,10 +145,10 @@
                 top: 0;
                 left: 0;
                 content: attr(data-name);
-                color: lightgreen;
+                color: lightcoral;
                 z-index: 5;
                 font-weight: bold;
-                border: 2px solid lightgreen;
+                border: 2px solid lightcoral;
                 background: grey;
             }
 
@@ -166,24 +166,24 @@
 
             @keyframes flicker-in {
                 0% {
-                    background-color: lightcoral;
+                    background-color: lightgreen;
                 }
                 50% {
                     background-color: grey
                 }
                 100% {
-                    background-color: lightcoral;
+                    background-color: lightgreen;
                 }
             }
             @keyframes flicker-out {
                 0% {
-                    background-color: lightgreen;
+                    background-color: lightcoral;
                 }
                 50% {
                     background-color: grey
                 }
                 100% {
-                    background-color: lightgreen;
+                    background-color: lightcoral;
                 }
             }
             @keyframes flicker-marker {
