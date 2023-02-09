@@ -85,7 +85,7 @@
                     scaleX(calc(1 + var(--pos-in, 0) * var(--scale-x-in, 0) + var(--pos-out, 0) * var(--scale-x-out, 0)))
                     scaleY(calc(1 + var(--pos-in, 0) * var(--scale-y-in, 0) + var(--pos-out, 0) * var(--scale-y-out, 0)));
             }
-            .ghost {
+            .ghost-in {
                 opacity: var(--no-ghost-in, 0.1);
                 z-index: var(--z-index, 0);
                 filter: contrast(0) blur(2px); 
@@ -152,6 +152,18 @@
                 background: grey;
             }
 
+            .hint-marker {
+                visibility: var(--marker-visible, hidden);
+                position: fixed;
+                top: 50%;
+                left: -5vw;
+                height: 0;
+                width: 110vw;
+                border-top: 2px dotted white;
+                animation: flicker-marker 1.5s ease-in-out alternate infinite;
+
+            }
+
             @keyframes flicker-in {
                 0% {
                     background-color: lightcoral;
@@ -172,6 +184,18 @@
                 }
                 100% {
                     background-color: lightgreen;
+                }
+            }
+            @keyframes flicker-marker {
+                0% {
+                    border-color: lightgreen;
+                }
+                50% {
+                    border-color: white;
+                    transform: scaleX(1.5);
+                }
+                100% {
+                    border-color: lightcoral;
                 }
             }
 
@@ -528,8 +552,8 @@
                         </div>
                     </div>
                 </section>
+                <div class="hint-marker"></div>            
             </main>
-        </div>
         <script src="dat.gui.js"></script>
         <script src="index.js" type="module"></script>
     </body>

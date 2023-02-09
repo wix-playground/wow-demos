@@ -234,13 +234,16 @@ function restart () {
             const elemDistFromTop = element.getBoundingClientRect().top + window.scrollY
             const elemDistFromBottom = document.body.scrollHeight - (elemDistFromTop + element.offsetHeight);
             const elementOffset = elemDistFromTop < window.innerHeight ? 0 : elemDistFromTop - window.innerHeight;
-            const elementDuration = element.offsetHeight + (
-                elemDistFromTop < window.innerHeight 
-                ? elemDistFromTop 
-                : elemDistFromBottom < window.innerHeight 
-                ? elemDistFromBottom 
-                : window.innerHeight
-            );
+            const elementDuration = (
+                element.offsetHeight + 
+                (
+                    elemDistFromTop < window.innerHeight 
+                    ? elemDistFromTop 
+                    : elemDistFromBottom < window.innerHeight 
+                    ? elemDistFromBottom 
+                    : window.innerHeight
+                )
+            ) / 2;
 
             effectStartOffset[elemName] = {
                 in: {
@@ -300,8 +303,8 @@ function restart () {
             const durationIn = effectDuration[elemName].in[trigger].current;
             const durationOut = effectDuration[elemName].out[trigger].current;
 
-            updateHint(elemName, offsetIn, durationIn, ANIMATION_DIRECTION_OPT.in);
-            updateHint(elemName, offsetOut, durationOut, ANIMATION_DIRECTION_OPT.out);
+            updateHint(elemName, offsetIn + window.innerHeight / 2, durationIn, ANIMATION_DIRECTION_OPT.in);
+            updateHint(elemName, offsetOut + window.innerHeight / 2, durationOut, ANIMATION_DIRECTION_OPT.out);
             applyStyle(element, elemStyle, ANIMATION_DIRECTION_OPT.in);
             applyStyle(element, elemStyle, ANIMATION_DIRECTION_OPT.out);
         })
@@ -364,6 +367,23 @@ function updatePosition (element, angle, distance, direction = null) {
 
 // ========== initiators ==========
 
+function showHideHintMarker () {
+    let isAnyHintVisible = false; 
+    [...document.querySelectorAll('.hint-in', '.hint-out')].forEach(hintElement => {
+        const isHintVisible = window.getComputedStyle(hintElement).getPropertyValue(`visibility`) === 'visible';
+        if (isHintVisible) {
+            isAnyHintVisible = true;
+            return;
+        }
+    })
+    const marker = document.querySelector('.hint-marker')
+    if (isAnyHintVisible) {
+        marker.style.setProperty('--marker-visible', 'visible')
+    } else {
+        marker.style.setProperty('--marker-visible', 'hidden')
+    }
+}
+
 function initGUI () {
     GUI.add(importExport, "Save to File");
     GUI.add(importExport, "Load from File");
@@ -385,6 +405,7 @@ function initGUI () {
         })
     })
 }
+
 function addElementToGUI(element, elemName, sectionFolder, sectionName) {
     const elemFolder = sectionFolder.addFolder(elemName);
     const effectsFolderIn = elemFolder.addFolder('In Animation');
@@ -432,11 +453,11 @@ function addElementToGUI(element, elemName, sectionFolder, sectionName) {
 function addGhost (element) {
     
     let clone = element.cloneNode(true);
-    clone.classList.add("ghost");
+    clone.classList.add("ghost-in");
     clone.classList.remove("actual");
-    [...clone.querySelectorAll('.actual', '.ghost')].forEach(child => {
+    [...clone.querySelectorAll('.actual', '.ghost-in')].forEach(child => {
         child.classList.remove("actual")
-        child.classList.remove("ghost")
+        child.classList.remove("ghost-in")
     })
     element.insertAdjacentElement("afterend", clone);
     
@@ -654,7 +675,7 @@ function addScrollModifications (element, sectionName, folder, elemName, directi
         offsetRef.current = offsetRef.default + window.innerHeight * val;
         preventOverlap(direction, offsetRef, elemName, animationTrigger)
  
-        hint.style.setProperty(`--offset-top-${direction}`,  `${offsetRef.current}px`);
+        hint.style.setProperty(`--offset-top-${direction}`, `${offsetRef.current}px`);
         init();
     })
     folder.add(CONFIG[sectionName][elemName][direction].travelSettings, ...Object.values(EFFECTS_CONFIG.HINT))
@@ -670,6 +691,7 @@ function addScrollModifications (element, sectionName, folder, elemName, directi
             hint.style.setProperty(`--visible-${direction}`, 'visible');
             element.style.setProperty('--z-index', 4)
         }
+        showHideHintMarker()
         init();
     })
 
