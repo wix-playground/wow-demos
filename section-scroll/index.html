@@ -86,8 +86,11 @@
                     scaleY(calc(1 + var(--pos-in, 0) * var(--scale-y-in, 0) + var(--pos-out, 0) * var(--scale-y-out, 0)));
             }
             .ghost {
-                opacity: var(--no-ghost, 0.1);
+                opacity: var(--no-ghost-in, 0.1);
                 z-index: var(--z-index, 0);
+                filter: contrast(0) blur(2px); 
+                box-shadow: 1px 1px 3px white(162, 162, 162);
+
             }
             .ghost-out {
                 opacity: var(--no-ghost-out, 0.1);
@@ -98,22 +101,21 @@
                     rotateY(var(--rotate-y-out, 0)) rotateX(var(--rotate-x-out, 0)) skewX(var(--skew-x-out, 0))
                     skewY(var(--skew-y-out, 0)) scaleX(calc(1 + var(--scale-x-out, 0))) scaleY(calc(1 + var(--scale-y-out, 0)));
             }
-            .hint {
+            .hint-in {
                 position: absolute;
                 width: 100%;
                 left: 0;
-                height: var(--duration, 0);
-                top: var(--offset-top, 0);
-                border-top: 2px solid red;
-                border-bottom: 2px solid red;
-                background-color: white;
+                height: var(--duration-in, 0);
+                top: var(--offset-top-in, 0);
+                border-top: 2px solid lightcoral;
+                border-bottom: 2px solid lightcoral;
                 opacity: 0.5;
-                visibility: var(--visible, hidden);
+                visibility: var(--visible-in, hidden);
                 z-index: 3;
-                animation: flicker 1.5s ease-in-out infinite;
+                animation: flicker-in 1.5s ease-in-out infinite;
             }
 
-            .hint::before {
+            .hint-in::before {
                 position: sticky;
                 top: 0;
                 left: 0;
@@ -122,18 +124,54 @@
                 z-index: 5;
                 font-weight: bold;
                 border: 2px solid red;
+                background: white;
+            }
+            .hint-out {
+                position: absolute;
+                width: 100%;
+                left: 0;
+                height: var(--duration-out, 0);
+                top: var(--offset-top-out, 0);
+                border-top: 2px solid lightgreen;
+                border-bottom: 2px solid lightgreen;
+                opacity: 0.5;
+                visibility: var(--visible-out, hidden);
+                z-index: 3;
+                animation: flicker-out 1.5s ease-in-out infinite;
+            }
+
+            .hint-out::before {
+                position: sticky;
+                top: 0;
+                left: 0;
+                content: attr(data-name);
+                color: lightgreen;
+                z-index: 5;
+                font-weight: bold;
+                border: 2px solid lightgreen;
                 background: grey;
             }
 
-            @keyframes flicker {
+            @keyframes flicker-in {
                 0% {
-                    background-color: grey;
+                    background-color: lightcoral;
                 }
                 50% {
-                    background-color: rgb(53, 53, 53);
+                    background-color: grey
                 }
                 100% {
-                    background-color: grey;
+                    background-color: lightcoral;
+                }
+            }
+            @keyframes flicker-out {
+                0% {
+                    background-color: lightgreen;
+                }
+                50% {
+                    background-color: grey
+                }
+                100% {
+                    background-color: lightgreen;
                 }
             }
 

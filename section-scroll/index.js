@@ -241,6 +241,7 @@ function restart () {
                 ? elemDistFromBottom 
                 : window.innerHeight
             );
+
             effectStartOffset[elemName] = {
                 in: {
                     modeSection: {
@@ -250,6 +251,16 @@ function restart () {
                     modeSelf: {
                         default: elementOffset, 
                         current: elementOffset
+                    }
+                },
+                out: {
+                    modeSection: {
+                        default: sectionOffset, 
+                        current: sectionOffset
+                    }, 
+                    modeSelf: {
+                        default: elementOffset + elementDuration, 
+                        current: elementOffset + elementDuration
                     }
                 }
             }
@@ -264,13 +275,33 @@ function restart () {
                         default: elementDuration, 
                         current: elementDuration
                     }
+                },
+                out: {
+                    modeSection: {
+                        default: sectionDuration, 
+                        current: sectionDuration
+                    }, 
+                    modeSelf: {
+                        default: elementDuration, 
+                        current: elementDuration
+                    }
                 }
             }
+            // CONFIG[sectionName][elemName].in.travelSettings.Offset = elementOffset
+            // CONFIG[sectionName][elemName].out.travelSettings.Offset = elementOffset
+            // CONFIG[sectionName][elemName].in.travelSettings.Duration = elementDuration
+            // CONFIG[sectionName][elemName].out.travelSettings.Duration = elementDuration
 
             const trigger = animationTriggers[elemName];
-            const offset = effectStartOffset[elemName].in[trigger].current;
-            const duration = effectDuration[elemName].in[trigger].current;
-            updateHint(elemName, offset, duration);
+
+            const offsetIn = effectStartOffset[elemName].in[trigger].current;
+            const offsetOut = effectStartOffset[elemName].out[trigger].current;
+
+            const durationIn = effectDuration[elemName].in[trigger].current;
+            const durationOut = effectDuration[elemName].out[trigger].current;
+
+            updateHint(elemName, offsetIn, durationIn, ANIMATION_DIRECTION_OPT.in);
+            updateHint(elemName, offsetOut, durationOut, ANIMATION_DIRECTION_OPT.out);
             applyStyle(element, elemStyle, ANIMATION_DIRECTION_OPT.in);
             applyStyle(element, elemStyle, ANIMATION_DIRECTION_OPT.out);
         })
@@ -293,8 +324,8 @@ function createScenes () {
                         effect: (scene, pos) => scene.target.style.setProperty('--pos-in', 1 - pos)
                     },
                     {
-                        start: effectStartOffset[elemName].in[animationTrigger].current + effectDuration[elemName].in[animationTrigger].current,
-                        duration: effectDuration[elemName].in[animationTrigger].current,
+                        start: effectStartOffset[elemName].out[animationTrigger].current,
+                        duration: effectDuration[elemName].out[animationTrigger].current,
                         target: element,
                         effect: (scene, pos) => scene.target.style.setProperty('--pos-out', pos)
                     },
@@ -315,10 +346,10 @@ function init () {
     scroll.on();
 }
 
-function updateHint (elemName, startOffset, duration) {
-    const hint = document.querySelector(`.hint-${elemName}`)
-    hint.style.setProperty('--offset-top', `${startOffset}px`);
-    hint.style.setProperty('--duration', `${duration}px`);
+function updateHint (elemName, startOffset, duration, direction) {
+    const hint = document.querySelector(`.hint-${direction}-${elemName}`)
+    hint.style.setProperty(`--offset-top-${direction}`, `${startOffset}px`);
+    hint.style.setProperty(`--duration-${direction}`, `${duration}px`);
 }
 
 function updatePosition (element, angle, distance, direction = null) {
@@ -350,34 +381,52 @@ function initGUI () {
 
         sectionElements.forEach((element, idx) => {
             const elemName = `${element.tagName}-s${index + 1}_e${idx + 1}`;
-            const elemFolder = sectionFolder.addFolder(elemName);
-            const effectsFolderIn = elemFolder.addFolder('In Transformations');
-            const effectsFolderOut = elemFolder.addFolder('Out Transformations');
-            const modificationsFolder = elemFolder.addFolder('Travel Settings');
-            element.title = elemName;
-
-            CONFIG[sectionName] = {
-                ...CONFIG[sectionName], 
-                [elemName]: {
-                    effects: {
-                        ...guiSettings.effects, 
-                        position: structuredClone(guiSettings.effects.position)
-                    }, 
-                    travelSettings: structuredClone(guiSettings.travelSettings)
-                }
-            };
-            addHint(elemName);
-            addGhost(element);
-            addScrollEffects(element, sectionName, effectsFolderIn, elemName, ANIMATION_DIRECTION_OPT.in);
-            addScrollEffects(element, sectionName, effectsFolderOut, elemName, ANIMATION_DIRECTION_OPT.out);
-            addScrollModifications(element, sectionName, modificationsFolder, elemName);
-            animationTriggers[elemName] = ANIMATION_TRIGGER_OPT.self;
-            positions[elemName] = {
-                angle: 0 + ANGLE_FIX,
-                distance: 0,
-            }
+            addElementToGUI(element, elemName, sectionFolder, sectionName)
         })
     })
+}
+function addElementToGUI(element, elemName, sectionFolder, sectionName) {
+    const elemFolder = sectionFolder.addFolder(elemName);
+    const effectsFolderIn = elemFolder.addFolder('In Animation');
+    const effectsFolderOut = elemFolder.addFolder('Out Animation');
+    const TransformationFolderIn = effectsFolderIn.addFolder('Transformations');
+    const TransformationFolderOut = effectsFolderOut.addFolder('Transformations');
+    const modificationsFolderIn = effectsFolderIn.addFolder('Travel Settings');
+    const modificationsFolderOut = effectsFolderOut.addFolder('Travel Settings');
+    element.title = elemName; // for presenting elemName on mouse over
+
+    const animationGuiSettings = {
+        effects: {
+            ...guiSettings.effects, 
+            position: structuredClone(guiSettings.effects.position)
+        }, 
+        travelSettings: structuredClone(guiSettings.travelSettings)
+    }
+
+    CONFIG[sectionName] = {
+        ...CONFIG[sectionName], 
+        [elemName]: {
+            in: animationGuiSettings,
+            out: animationGuiSettings,
+        }
+    };
+    addHints(elemName);
+    addGhost(element);
+    addScrollEffects(element, sectionName, TransformationFolderIn, elemName, ANIMATION_DIRECTION_OPT.in);
+    addScrollEffects(element, sectionName, TransformationFolderOut, elemName, ANIMATION_DIRECTION_OPT.out);
+    addScrollModifications(element, sectionName, modificationsFolderIn, elemName, ANIMATION_DIRECTION_OPT.in);
+    addScrollModifications(element, sectionName, modificationsFolderOut, elemName, ANIMATION_DIRECTION_OPT.out);
+    animationTriggers[elemName] = ANIMATION_TRIGGER_OPT.self;
+    positions[elemName] = {
+        in: {
+            angle: 0 + ANGLE_FIX,
+            distance: 0,
+        },
+        out: {
+            angle: 0 + ANGLE_FIX,
+            distance: 0,
+        }
+    }
 }
 
 function addGhost (element) {
@@ -402,11 +451,15 @@ function addGhost (element) {
 
 }
 
-function addHint (elementName) {
-    const hint = document.createElement('div')
-    hint.classList.add("hint", `hint-${elementName}`);
-    hint.dataset["name"] = elementName;
-    document.body.appendChild(hint);
+function addHints (elementName) {
+    const hintIn = document.createElement('div')
+    const hintOut = document.createElement('div')
+    hintIn.classList.add("hint-in", `hint-in-${elementName}`);
+    hintOut.classList.add("hint-out", `hint-out-${elementName}`);
+    hintIn.dataset["name"] = elementName;
+    hintOut.dataset["name"] = elementName;
+    document.body.appendChild(hintIn);
+    document.body.appendChild(hintOut);
 }
 
 function makeDynamicHeight (section, sectionFolder, sectionName) {
@@ -422,29 +475,28 @@ function makeDynamicHeight (section, sectionFolder, sectionName) {
 function addScrollEffects (element, sectionName, folder, elemName, direction) {
     const positionFolder = folder.addFolder('Position');
 
-    const angleCtrllr = positionFolder.add(CONFIG[sectionName][elemName].effects.position, ...Object.values(EFFECTS_CONFIG.POS_ANGLE))
+    const angleCtrllr = positionFolder.add(CONFIG[sectionName][elemName][direction].effects.position, ...Object.values(EFFECTS_CONFIG.POS_ANGLE))
     .onChange(angle => {
         const angleFixed = angle + ANGLE_FIX;
-        positions[elemName].angle = angleFixed;
-        const distance = positions[elemName].distance;
+        positions[elemName][direction].angle = angleFixed;
+        const distance = positions[elemName][direction].distance;
         // const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION_OPT.out;
         updatePosition(element, angleFixed, distance, direction)
         resetChildrenStyle(element)
         init();
     })
 
-    const distCtrllr = positionFolder.add(CONFIG[sectionName][elemName].effects.position, ...Object.values(EFFECTS_CONFIG.POS_DIST))
+    const distCtrllr = positionFolder.add(CONFIG[sectionName][elemName][direction].effects.position, ...Object.values(EFFECTS_CONFIG.POS_DIST))
     .onChange(newDist => {
-        positions[elemName].distance = newDist;
-        const angle = positions[elemName].angle;
-        // const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION_OPT.out;        
+        positions[elemName][direction].distance = newDist;
+        const angle = positions[elemName][direction].angle;
         updatePosition(element, angle, newDist, direction)
         resetChildrenStyle(element)
         init();
     })
     positionFolder.open();
 
-    const rotateCtrllr = folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.ROTATE))
+    const rotateCtrllr = folder.add(CONFIG[sectionName][elemName][direction].effects, ...Object.values(EFFECTS_CONFIG.ROTATE))
     .onChange(val => {
         element.style.setProperty(`--rotate-${direction}`, `${val}deg`);
             element.nextElementSibling.style.setProperty(`--rotate-${direction}`, `${val}deg`);
@@ -453,7 +505,7 @@ function addScrollEffects (element, sectionName, folder, elemName, direction) {
         init();
     })
 
-    const rotateYCtrllr = folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.ROTATE_Y))
+    const rotateYCtrllr = folder.add(CONFIG[sectionName][elemName][direction].effects, ...Object.values(EFFECTS_CONFIG.ROTATE_Y))
     .onChange(val => {
         element.style.setProperty(`--rotate-y-${direction}`, `${val}deg`);
             element.nextElementSibling.style.setProperty(`--rotate-y-${direction}`, `${val}deg`);
@@ -462,7 +514,7 @@ function addScrollEffects (element, sectionName, folder, elemName, direction) {
         init();
     })
 
-    const rotateXCtrllr = folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.ROTATE_X))
+    const rotateXCtrllr = folder.add(CONFIG[sectionName][elemName][direction].effects, ...Object.values(EFFECTS_CONFIG.ROTATE_X))
     .onChange(val => {
         element.style.setProperty(`--rotate-x-${direction}`, `${val}deg`);
             element.nextElementSibling.style.setProperty(`--rotate-x-${direction}`, `${val}deg`);
@@ -471,7 +523,7 @@ function addScrollEffects (element, sectionName, folder, elemName, direction) {
         init();
     })
 
-    const skewXCtrllr = folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.SKEW_X))
+    const skewXCtrllr = folder.add(CONFIG[sectionName][elemName][direction].effects, ...Object.values(EFFECTS_CONFIG.SKEW_X))
     .onChange(val => {
         element.style.setProperty(`--skew-x-${direction}`, `${val}deg`);
             element.nextElementSibling.style.setProperty(`--skew-x-${direction}`, `${val}deg`);
@@ -480,7 +532,7 @@ function addScrollEffects (element, sectionName, folder, elemName, direction) {
         init();
     })
 
-    const skewYCtrllr = folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.SKEW_Y))
+    const skewYCtrllr = folder.add(CONFIG[sectionName][elemName][direction].effects, ...Object.values(EFFECTS_CONFIG.SKEW_Y))
     .onChange(val => {
         element.style.setProperty(`--skew-y-${direction}`, `${val}deg`);
             element.nextElementSibling.style.setProperty(`--skew-y-${direction}`, `${val}deg`);
@@ -489,7 +541,7 @@ function addScrollEffects (element, sectionName, folder, elemName, direction) {
         init();
     })
 
-    const scaleXCtrllr = folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.SCALE_X))
+    const scaleXCtrllr = folder.add(CONFIG[sectionName][elemName][direction].effects, ...Object.values(EFFECTS_CONFIG.SCALE_X))
     .onChange(val => {
         element.style.setProperty(`--scale-x-${direction}`, val - 1);
             element.nextElementSibling.style.setProperty(`--scale-x-${direction}`, val - 1);
@@ -498,7 +550,7 @@ function addScrollEffects (element, sectionName, folder, elemName, direction) {
         init();
     })
 
-    const scaleYCtrllr = folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.SCALE_Y))
+    const scaleYCtrllr = folder.add(CONFIG[sectionName][elemName][direction].effects, ...Object.values(EFFECTS_CONFIG.SCALE_Y))
     .onChange(val => {
         element.style.setProperty(`--scale-y-${direction}`, val - 1);
         element.nextElementSibling.style.setProperty(`--scale-y-${direction}`, val - 1);
@@ -506,7 +558,7 @@ function addScrollEffects (element, sectionName, folder, elemName, direction) {
         init();
     })
 
-    const opacityCtrllr = folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.OPACITY))
+    const opacityCtrllr = folder.add(CONFIG[sectionName][elemName][direction].effects, ...Object.values(EFFECTS_CONFIG.OPACITY))
     .onChange(val => {
         element.style.setProperty(`--opacity-${direction}`, val - 1);
         element.nextElementSibling.style.setProperty(`--opacity-${direction}`, val - 1);
@@ -514,7 +566,7 @@ function addScrollEffects (element, sectionName, folder, elemName, direction) {
         init();
     })
 
-    const hueCtrllr = folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.HUE))
+    const hueCtrllr = folder.add(CONFIG[sectionName][elemName][direction].effects, ...Object.values(EFFECTS_CONFIG.HUE))
     .onChange(val => {
         element.style.setProperty(`--hue-${direction}`, `${val}deg`);
             element.nextElementSibling.style.setProperty(`--hue-${direction}`, `${val}deg`);
@@ -523,7 +575,7 @@ function addScrollEffects (element, sectionName, folder, elemName, direction) {
         init();
     })
 
-    const transOriginCtrllr = folder.add(CONFIG[sectionName][elemName].effects, EFFECTS_CONFIG.TRANS_ORIGIN.LABEL, TRANSFORM_ORIGIN_OPT)
+    const transOriginCtrllr = folder.add(CONFIG[sectionName][elemName][direction].effects, EFFECTS_CONFIG.TRANS_ORIGIN.LABEL, TRANSFORM_ORIGIN_OPT)
     .onChange(val => {
         const [originX, originY] = TRANSFORM_ORIGIN_VALS[val];
         const isOutAnimation = animationDirections[elemName] === ANIMATION_DIRECTION_OPT.out;
@@ -536,80 +588,97 @@ function addScrollEffects (element, sectionName, folder, elemName, direction) {
         resetChildrenStyle(element)
         init();
     })
-    const ghostCtrllr = folder.add(CONFIG[sectionName][elemName].effects, ...Object.values(EFFECTS_CONFIG.GHOST))
+    const ghostCtrllr = folder.add(CONFIG[sectionName][elemName][direction].effects, ...Object.values(EFFECTS_CONFIG.GHOST))
     .onChange(showGhost => {
-        element.nextElementSibling.style.setProperty('--no-ghost', showGhost ? .1 : 0);
+        element.nextElementSibling.style.setProperty(`--no-ghost-${direction}`, showGhost ? .1 : 0);
         init();
     })
 
     controllers[sectionName][elemName] = {
-        effects: {
-            [EFFECTS_CONFIG.ROTATE.LABEL]: rotateCtrllr,
-            [EFFECTS_CONFIG.ROTATE_Y.LABEL]: rotateYCtrllr,
-            [EFFECTS_CONFIG.ROTATE_X.LABEL]: rotateXCtrllr,
-            [EFFECTS_CONFIG.SKEW_X.LABEL]: skewXCtrllr,
-            [EFFECTS_CONFIG.SKEW_Y.LABEL]: skewYCtrllr,
-            [EFFECTS_CONFIG.SCALE_X.LABEL]: scaleXCtrllr,
-            [EFFECTS_CONFIG.SCALE_Y.LABEL]: scaleYCtrllr,
-            [EFFECTS_CONFIG.OPACITY.LABEL]: opacityCtrllr,
-            [EFFECTS_CONFIG.HUE.LABEL]: hueCtrllr,
-            [EFFECTS_CONFIG.TRANS_ORIGIN.LABEL]: transOriginCtrllr,
-            [EFFECTS_CONFIG.GHOST.LABEL]: ghostCtrllr,
-            position: {
-                [EFFECTS_CONFIG.POS_ANGLE.LABEL]: angleCtrllr,
-                [EFFECTS_CONFIG.POS_DIST.LABEL]: distCtrllr,
-            }
+        [direction]: {
+            effects: {
+                [EFFECTS_CONFIG.ROTATE.LABEL]: rotateCtrllr,
+                [EFFECTS_CONFIG.ROTATE_Y.LABEL]: rotateYCtrllr,
+                [EFFECTS_CONFIG.ROTATE_X.LABEL]: rotateXCtrllr,
+                [EFFECTS_CONFIG.SKEW_X.LABEL]: skewXCtrllr,
+                [EFFECTS_CONFIG.SKEW_Y.LABEL]: skewYCtrllr,
+                [EFFECTS_CONFIG.SCALE_X.LABEL]: scaleXCtrllr,
+                [EFFECTS_CONFIG.SCALE_Y.LABEL]: scaleYCtrllr,
+                [EFFECTS_CONFIG.OPACITY.LABEL]: opacityCtrllr,
+                [EFFECTS_CONFIG.HUE.LABEL]: hueCtrllr,
+                [EFFECTS_CONFIG.TRANS_ORIGIN.LABEL]: transOriginCtrllr,
+                [EFFECTS_CONFIG.GHOST.LABEL]: ghostCtrllr,
+                position: {
+                    [EFFECTS_CONFIG.POS_ANGLE.LABEL]: angleCtrllr,
+                    [EFFECTS_CONFIG.POS_DIST.LABEL]: distCtrllr,
+                }
+            },
         }
     }
 }
 
-function addScrollModifications (element, sectionName, folder, elemName) {
-    const hint = document.querySelector(`.hint-${elemName}`);
+function addScrollModifications (element, sectionName, folder, elemName, direction) {
+    const hint = document.querySelector(`.hint-${direction}-${elemName}`);
 
-    const triggerCtrllr = folder.add(CONFIG[sectionName][elemName].travelSettings, EFFECTS_CONFIG.TRIGGER.LABEL, ANIMATION_TRIGGER_OPT)
+    const triggerCtrllr = folder.add(CONFIG[sectionName][elemName][direction].travelSettings, EFFECTS_CONFIG.TRIGGER.LABEL, ANIMATION_TRIGGER_OPT)
     .onChange(animationTrigger => {
         animationTriggers[elemName] = animationTrigger;
-        hint.style.setProperty('--offset-top',  `${effectStartOffset[elemName].in[animationTrigger].current}px`);
-        hint.style.setProperty('--duration', `${effectDuration[elemName].in[animationTrigger].current}px`);
+        hint.style.setProperty(`--offset-top-${direction}`,  `${effectStartOffset[elemName][direction][animationTrigger].current}px`);
+        hint.style.setProperty(`--duration-${direction}`, `${effectDuration[elemName][direction][animationTrigger].current}px`);
         init();
     })
 
 
-    const speedCtrllr = folder.add(CONFIG[sectionName][elemName].travelSettings, ...Object.values(EFFECTS_CONFIG.SPEED))
+    const speedCtrllr = folder.add(CONFIG[sectionName][elemName][direction].travelSettings, ...Object.values(EFFECTS_CONFIG.SPEED))
     .onChange(val => {
         const animationTrigger = animationTriggers[elemName]
-        effectDuration[elemName].in[animationTrigger].current = effectDuration[elemName].in[animationTrigger].default * val;
-        hint.style.setProperty('--duration', `${effectDuration[elemName].in[animationTrigger].current}px`);
+        const durationRef = effectDuration[elemName][direction][animationTrigger]
+        durationRef.current = durationRef.default * val;
+        if (direction === ANIMATION_DIRECTION_OPT.in) {
+            const inAnimationStart = effectStartOffset[elemName].in[animationTrigger].current;
+            const inAnimationEnd = inAnimationStart + durationRef.current;
+            const outAnimationStart = effectStartOffset[elemName].out[animationTrigger].current;
+            const isOverlapping = outAnimationStart < inAnimationEnd;
+            if (isOverlapping) {
+                durationRef.current = outAnimationStart - inAnimationStart
+            }
+        }
+        hint.style.setProperty(`--duration-${direction}`, `${durationRef.current}px`);
         init();
     })
 
-    const offsetCtrllr = folder.add(CONFIG[sectionName][elemName].travelSettings, ...Object.values(EFFECTS_CONFIG.OFFSET))
+    const offsetCtrllr = folder.add(CONFIG[sectionName][elemName][direction].travelSettings, ...Object.values(EFFECTS_CONFIG.OFFSET))
     .onChange(val => {
         const animationTrigger = animationTriggers[elemName]
-        effectStartOffset[elemName].in[animationTrigger].current = effectStartOffset[elemName].in[animationTrigger].default + window.innerHeight * val;
-        hint.style.setProperty('--offset-top',  `${effectStartOffset[elemName].in[animationTrigger].current}px`);
+        const offsetRef = effectStartOffset[elemName][direction][animationTrigger]
+        offsetRef.current = offsetRef.default + window.innerHeight * val;
+        preventOverlap(direction, offsetRef, elemName, animationTrigger)
+ 
+        hint.style.setProperty(`--offset-top-${direction}`,  `${offsetRef.current}px`);
         init();
     })
-    folder.add(CONFIG[sectionName][elemName].travelSettings, ...Object.values(EFFECTS_CONFIG.HINT))
+    folder.add(CONFIG[sectionName][elemName][direction].travelSettings, ...Object.values(EFFECTS_CONFIG.HINT))
     .onChange(showHint => {
         [...document.querySelectorAll('.actual')].forEach(e => {
             e.style.setProperty('--z-index', 0);
         });
-        [...document.querySelectorAll('.hint')].forEach(e => {
-            e.style.setProperty('--visible', 'hidden')
+        [...document.querySelectorAll(`.hint-${direction}`)].forEach(e => {
+            e.style.setProperty(`--visible-${direction}`, 'hidden')
             e.style.setProperty('--z-index', -1);
         });
         if (showHint) {
-            hint.style.setProperty('--visible', 'visible');
+            hint.style.setProperty(`--visible-${direction}`, 'visible');
             element.style.setProperty('--z-index', 4)
         }
         init();
     })
 
-    controllers[sectionName][elemName].travelSettings = {
-        [EFFECTS_CONFIG.TRIGGER.LABEL]: triggerCtrllr,
-        [EFFECTS_CONFIG.SPEED.LABEL]: speedCtrllr,
-        [EFFECTS_CONFIG.OFFSET.LABEL]: offsetCtrllr,
+    controllers[sectionName][elemName][direction] = {
+        travelSettings: {
+            [EFFECTS_CONFIG.TRIGGER.LABEL]: triggerCtrllr,
+            [EFFECTS_CONFIG.SPEED.LABEL]: speedCtrllr,
+            [EFFECTS_CONFIG.OFFSET.LABEL]: offsetCtrllr,
+        }
     }
 
 }
@@ -628,6 +697,24 @@ function addLerp() {
 }
 
 // ========== helpers ==========
+
+function preventOverlap (direction, offsetRef, elemName, animationTrigger) {
+    if (direction === ANIMATION_DIRECTION_OPT.out) {
+        const inAnimationEndOffset = effectStartOffset[elemName].in[animationTrigger].current + effectDuration[elemName].in[animationTrigger].current
+        const isOverlapping = offsetRef.current < inAnimationEndOffset;
+        if (isOverlapping) {
+            offsetRef.current = inAnimationEndOffset;
+        }
+    } 
+    if (direction === ANIMATION_DIRECTION_OPT.in) {
+        const outAnimationStartOffset = effectStartOffset[elemName].out[animationTrigger].current
+        const inAnimationDuration = effectDuration[elemName].in[animationTrigger].current;
+        const isOverlapping = outAnimationStartOffset < offsetRef.current + inAnimationDuration;
+        if (isOverlapping) {
+            offsetRef.current = outAnimationStartOffset - inAnimationDuration;
+        }
+    }
+}
 
 function getInitStyles(direction) {
     return {
