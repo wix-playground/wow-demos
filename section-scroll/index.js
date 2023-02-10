@@ -410,8 +410,6 @@ function addElementToGUI(element, elemName, sectionFolder, sectionName) {
     const elemFolder = sectionFolder.addFolder(elemName);
     const effectsFolderIn = elemFolder.addFolder('In Animation');
     const effectsFolderOut = elemFolder.addFolder('Out Animation');
-    const TransformationFolderIn = effectsFolderIn.addFolder('Transformations');
-    const TransformationFolderOut = effectsFolderOut.addFolder('Transformations');
     const modificationsFolderIn = effectsFolderIn.addFolder('Travel Settings');
     const modificationsFolderOut = effectsFolderOut.addFolder('Travel Settings');
     element.title = elemName; // for presenting elemName on mouse over
@@ -433,8 +431,8 @@ function addElementToGUI(element, elemName, sectionFolder, sectionName) {
     };
     addHints(elemName);
     addGhost(element);
-    addScrollEffects(element, sectionName, TransformationFolderIn, elemName, ANIMATION_DIRECTION_OPT.in);
-    addScrollEffects(element, sectionName, TransformationFolderOut, elemName, ANIMATION_DIRECTION_OPT.out);
+    addScrollEffects(element, sectionName, effectsFolderIn, elemName, ANIMATION_DIRECTION_OPT.in);
+    addScrollEffects(element, sectionName, effectsFolderOut, elemName, ANIMATION_DIRECTION_OPT.out);
     addScrollModifications(element, sectionName, modificationsFolderIn, elemName, ANIMATION_DIRECTION_OPT.in);
     addScrollModifications(element, sectionName, modificationsFolderOut, elemName, ANIMATION_DIRECTION_OPT.out);
     animationTriggers[elemName] = ANIMATION_TRIGGER_OPT.self;
