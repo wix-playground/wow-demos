@@ -224,7 +224,7 @@ window.addEventListener("load", () => {
 function restart () {
     sections.forEach((section, index) => {
         const isFirstOrLastSection = (index === 0 || index === sections.length - 1)
-        const sectionDuration = isFirstOrLastSection ? section.offsetHeight : section.offsetHeight + window.innerHeight
+        const sectionDuration = (isFirstOrLastSection ? section.offsetHeight : section.offsetHeight + window.innerHeight) / 2;
         const sectionOffset = index === 0 ? 0 : section.offsetTop - window.innerHeight
 
         const sectionName = sectionNames[index];
@@ -258,8 +258,8 @@ function restart () {
                 },
                 out: {
                     modeSection: {
-                        default: sectionOffset, 
-                        current: sectionOffset
+                        default: sectionOffset + sectionDuration, 
+                        current: sectionOffset + sectionDuration
                     }, 
                     modeSelf: {
                         default: elementOffset + elementDuration, 
@@ -303,8 +303,8 @@ function restart () {
             const durationIn = effectDuration[elemName].in[trigger].current;
             const durationOut = effectDuration[elemName].out[trigger].current;
 
-            updateHint(elemName, offsetIn + window.innerHeight / 2, durationIn, ANIMATION_DIRECTION_OPT.in);
-            updateHint(elemName, offsetOut + window.innerHeight / 2, durationOut, ANIMATION_DIRECTION_OPT.out);
+            updateHint(elemName, offsetIn, durationIn, ANIMATION_DIRECTION_OPT.in);
+            updateHint(elemName, offsetOut, durationOut, ANIMATION_DIRECTION_OPT.out);
             applyStyle(element, elemStyle, ANIMATION_DIRECTION_OPT.in);
             applyStyle(element, elemStyle, ANIMATION_DIRECTION_OPT.out);
         })
@@ -369,7 +369,7 @@ function updatePosition (element, angle, distance, direction = null) {
 
 function showHideHintMarker () {
     let isAnyHintVisible = false; 
-    [...document.querySelectorAll('.hint-in', '.hint-out')].forEach(hintElement => {
+    [...document.querySelectorAll('.hint-in'), ...document.querySelectorAll('.hint-out')].forEach(hintElement => {
         const isHintVisible = window.getComputedStyle(hintElement).getPropertyValue(`visibility`) === 'visible';
         if (isHintVisible) {
             isAnyHintVisible = true;
@@ -410,6 +410,8 @@ function addElementToGUI(element, elemName, sectionFolder, sectionName) {
     const elemFolder = sectionFolder.addFolder(elemName);
     const effectsFolderIn = elemFolder.addFolder('In Animation');
     const effectsFolderOut = elemFolder.addFolder('Out Animation');
+    const TransformationsFolderIn = effectsFolderIn.addFolder('Transformations');
+    const TransformationsFolderOut = effectsFolderOut.addFolder('Transformations');
     const modificationsFolderIn = effectsFolderIn.addFolder('Travel Settings');
     const modificationsFolderOut = effectsFolderOut.addFolder('Travel Settings');
     element.title = elemName; // for presenting elemName on mouse over
@@ -431,8 +433,8 @@ function addElementToGUI(element, elemName, sectionFolder, sectionName) {
     };
     addHints(elemName);
     addGhost(element);
-    addScrollEffects(element, sectionName, effectsFolderIn, elemName, ANIMATION_DIRECTION_OPT.in);
-    addScrollEffects(element, sectionName, effectsFolderOut, elemName, ANIMATION_DIRECTION_OPT.out);
+    addScrollEffects(element, sectionName, TransformationsFolderIn, elemName, ANIMATION_DIRECTION_OPT.in);
+    addScrollEffects(element, sectionName, TransformationsFolderOut, elemName, ANIMATION_DIRECTION_OPT.out);
     addScrollModifications(element, sectionName, modificationsFolderIn, elemName, ANIMATION_DIRECTION_OPT.in);
     addScrollModifications(element, sectionName, modificationsFolderOut, elemName, ANIMATION_DIRECTION_OPT.out);
     animationTriggers[elemName] = ANIMATION_TRIGGER_OPT.self;

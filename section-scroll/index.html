@@ -36,7 +36,8 @@
 
             section:nth-child(2n) {
                 background-image: linear-gradient(rgb(58, 58, 58), rgb(36, 36, 36), black);
-                margin: 5px 0;
+                border-top: 2px solid rgb(38, 38, 38);
+                border-bottom: 2px solid rgb(38, 38, 38);
             }
             section:nth-child(2n + 1) {
                 background-image: linear-gradient(black, rgb(36, 36, 36), rgb(58, 58, 58));
@@ -106,10 +107,10 @@
                 width: 100%;
                 left: 0;
                 height: var(--duration-in, 0);
-                top: var(--offset-top-in, 0);
+                top: calc(var(--offset-top-in, 0) + 50vh);
                 border-top: 2px solid lightgreen;
                 border-bottom: 2px solid lightgreen;
-                opacity: 0.5;
+                opacity: 0.4;
                 visibility: var(--visible-in, hidden);
                 z-index: 3;
                 animation: flicker-in 1.5s ease-in-out infinite;
@@ -131,10 +132,10 @@
                 width: 100%;
                 left: 0;
                 height: var(--duration-out, 0);
-                top: var(--offset-top-out, 0);
+                top: calc(var(--offset-top-out, 0) + 50vh);
                 border-top: 2px solid lightcoral;
                 border-bottom: 2px solid lightcoral;
-                opacity: 0.5;
+                opacity: 0.4;
                 visibility: var(--visible-out, hidden);
                 z-index: 3;
                 animation: flicker-out 1.5s ease-in-out infinite;
@@ -404,35 +405,30 @@
                 <section id="strip-1">
                     <div class="row headline headline-middle">
                         <div class="element">
-                            <h1 class="actual">P</h1>
-                        </div>
-                        <div class="element">
-                            <h1 class="actual">L</h1>
-                        </div>
-                        <div class="element">
-                            <h1 class="actual">A</h1>
-                        </div>
-                        <div class="element">
-                            <h1 class="actual">Y</h1>
-                        </div>
-                        <div class="element">
-                            <h1 class="actual">G</h1>
+                            <h1 class="actual">T</h1>
                         </div>
                         <div class="element">
                             <h1 class="actual">R</h1>
                         </div>
                         <div class="element">
-                            <h1 class="actual">O</h1>
+                            <h1 class="actual">I</h1>
                         </div>
                         <div class="element">
-                            <h1 class="actual">U</h1>
+                            <h1 class="actual">A</h1>
                         </div>
                         <div class="element">
                             <h1 class="actual">N</h1>
                         </div>
                         <div class="element">
-                            <h1 class="actual">D</h1>
+                            <h1 class="actual">G</h1>
                         </div>
+                        <div class="element">
+                            <h1 class="actual">L</h1>
+                        </div>
+                        <div class="element">
+                            <h1 class="actual">E</h1>
+                        </div>
+                        <div class="element">
                     </div>
                 </section>
                 <section id="strip-2">
