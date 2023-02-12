@@ -295,13 +295,14 @@ function restart () {
             // CONFIG[sectionName][elemName].in.travelSettings.Duration = elementDuration
             // CONFIG[sectionName][elemName].out.travelSettings.Duration = elementDuration
 
-            const trigger = animationTriggers[elemName];
+            const triggerIn = animationTriggers[elemName].in;
+            const triggerOut = animationTriggers[elemName].out;
 
-            const offsetIn = effectStartOffset[elemName].in[trigger].current;
-            const offsetOut = effectStartOffset[elemName].out[trigger].current;
+            const offsetIn = effectStartOffset[elemName].in[triggerIn].current;
+            const offsetOut = effectStartOffset[elemName].out[triggerOut].current;
 
-            const durationIn = effectDuration[elemName].in[trigger].current;
-            const durationOut = effectDuration[elemName].out[trigger].current;
+            const durationIn = effectDuration[elemName].in[triggerIn].current;
+            const durationOut = effectDuration[elemName].out[triggerOut].current;
 
             updateHint(elemName, offsetIn, durationIn, ANIMATION_DIRECTION_OPT.in);
             updateHint(elemName, offsetOut, durationOut, ANIMATION_DIRECTION_OPT.out);
@@ -317,18 +318,19 @@ function createScenes () {
         const sectionName = sectionNames[index];
         sectionsElements[sectionName].forEach((element, idx) => {
             const elemName = `${element.tagName}-s${index + 1}_e${idx + 1}`;
-            const animationTrigger = animationTriggers[elemName];
+            const animationTriggerIn = animationTriggers[elemName].in;
+            const animationTriggerOut = animationTriggers[elemName].out;
             scenes.push(
                 ...[
-                    {
-                        start: effectStartOffset[elemName].in[animationTrigger].current,
-                        duration: effectDuration[elemName].in[animationTrigger].current,
+                    {   //in animation:
+                        start: effectStartOffset[elemName].in[animationTriggerIn].current,
+                        duration: effectDuration[elemName].in[animationTriggerIn].current,
                         target: element,
                         effect: (scene, pos) => scene.target.style.setProperty('--pos-in', 1 - pos)
                     },
-                    {
-                        start: effectStartOffset[elemName].out[animationTrigger].current,
-                        duration: effectDuration[elemName].out[animationTrigger].current,
+                    {   //out animation:
+                        start: effectStartOffset[elemName].out[animationTriggerOut].current,
+                        duration: effectDuration[elemName].out[animationTriggerOut].current,
                         target: element,
                         effect: (scene, pos) => scene.target.style.setProperty('--pos-out', pos)
                     },
@@ -437,7 +439,10 @@ function addElementToGUI(element, elemName, sectionFolder, sectionName) {
     addScrollEffects(element, sectionName, TransformationsFolderOut, elemName, ANIMATION_DIRECTION_OPT.out);
     addScrollModifications(element, sectionName, modificationsFolderIn, elemName, ANIMATION_DIRECTION_OPT.in);
     addScrollModifications(element, sectionName, modificationsFolderOut, elemName, ANIMATION_DIRECTION_OPT.out);
-    animationTriggers[elemName] = ANIMATION_TRIGGER_OPT.self;
+    animationTriggers[elemName] = {
+        in: ANIMATION_TRIGGER_OPT.self,
+        out: ANIMATION_TRIGGER_OPT.self
+    }
     positions[elemName] = {
         in: {
             angle: 0 + ANGLE_FIX,
@@ -647,7 +652,7 @@ function addScrollModifications (element, sectionName, folder, elemName, directi
 
     const triggerCtrllr = folder.add(CONFIG[sectionName][elemName][direction].travelSettings, EFFECTS_CONFIG.TRIGGER.LABEL, ANIMATION_TRIGGER_OPT)
     .onChange(animationTrigger => {
-        animationTriggers[elemName] = animationTrigger;
+        animationTriggers[elemName][direction] = animationTrigger;
         hint.style.setProperty(`--offset-top-${direction}`,  `${effectStartOffset[elemName][direction][animationTrigger].current}px`);
         hint.style.setProperty(`--duration-${direction}`, `${effectDuration[elemName][direction][animationTrigger].current}px`);
         init();
@@ -656,7 +661,7 @@ function addScrollModifications (element, sectionName, folder, elemName, directi
 
     const speedCtrllr = folder.add(CONFIG[sectionName][elemName][direction].travelSettings, ...Object.values(EFFECTS_CONFIG.SPEED))
     .onChange(val => {
-        const animationTrigger = animationTriggers[elemName]
+        const animationTrigger = animationTriggers[elemName][direction]
         const durationRef = effectDuration[elemName][direction][animationTrigger]
         durationRef.current = durationRef.default * val;
         if (direction === ANIMATION_DIRECTION_OPT.in) {
@@ -674,7 +679,7 @@ function addScrollModifications (element, sectionName, folder, elemName, directi
 
     const offsetCtrllr = folder.add(CONFIG[sectionName][elemName][direction].travelSettings, ...Object.values(EFFECTS_CONFIG.OFFSET))
     .onChange(val => {
-        const animationTrigger = animationTriggers[elemName]
+        const animationTrigger = animationTriggers[elemName][direction]
         const offsetRef = effectStartOffset[elemName][direction][animationTrigger]
         offsetRef.current = offsetRef.default + window.innerHeight * val;
         preventOverlap(direction, offsetRef, elemName, animationTrigger)
@@ -873,11 +878,11 @@ function setValues(rememberedValues) {
             for (const [key, value] of Object.entries(elem.travelSettings)) {
                 controllers[sectionName][elemName].travelSettings[key]?.setValue(value);
                 if (key === 'Distance') {
-                    const durationRef = effectDuration[elemName][animationTriggers[elemName]]
+                    const durationRef = effectDuration[elemName][animationTriggers[elemName][direction]]
                     durationRef.current = durationRef.default * value;
                 }
                 if (key === 'Offset') {
-                    const offsetRef = effectStartOffset[elemName][animationTriggers[elemName]]
+                    const offsetRef = effectStartOffset[elemName][animationTriggers[elemName][direction]]
                     offsetRef.current = offsetRef.default + window.innerHeight * value;
                 }
             } 
