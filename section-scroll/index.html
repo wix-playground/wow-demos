@@ -71,20 +71,20 @@
             }
 
             .actual {
-                opacity: calc(1 + var(--pos-in, 0) * var(--opacity-in, 0) + var(--pos-out, 0) * var(--opacity-out, 0));
+                opacity: calc(1 + var(--pos-in, 0) * var(--opacity-in, 0) + var(--pos-out, 0) * var(--opacity-out, 0) + var(--pos-cont, 0) * var(--opacity-cont, 0));
                 z-index: var(--z-index, 0);
-                filter: hue-rotate(calc(var(--pos-in, 0) * var(--hue-in, 0) + var(--pos-out, 0) * var(--hue-out, 0)));
+                filter: hue-rotate(calc(var(--pos-in, 0) * var(--hue-in, 0) + var(--pos-out, 0) * var(--hue-out, 0) + var(--pos-cont, 0) * var(--hue-cont, 0)));
                 transform-origin: var(--trans-origin-x, 50%) var(--trans-origin-y, 50%);
                 transform: 
-                    translateX(calc(var(--pos-in, 0) * var(--x-trans-in, 0) + var(--pos-out, 0) * var(--x-trans-out)))
-                    translateY(calc(var(--pos-in, 0) * var(--y-trans-in, 0) + var(--pos-out, 0) * var(--y-trans-out))) 
-                    rotateZ(calc(var(--pos-in, 0) * var(--rotate-in, 0) + var(--pos-out, 0) * var(--rotate-out, 0)))
-                    rotateY(calc(var(--pos-in, 0) * var(--rotate-y-in, 0) + var(--pos-out, 0) * var(--rotate-y-out, 0))) 
-                    rotateX(calc(var(--pos-in, 0) * var(--rotate-x-in, 0) + var(--pos-out, 0) * var(--rotate-x-out, 0)))
-                    skewX(calc(var(--pos-in, 0) * var(--skew-x-in, 0) + var(--pos-out, 0) * var(--skew-x-out, 0))) 
-                    skewY(calc(var(--pos-in, 0) * var(--skew-y-in, 0) + var(--pos-out, 0) * var(--skew-y-out, 0)))
-                    scaleX(calc(1 + var(--pos-in, 0) * var(--scale-x-in, 0) + var(--pos-out, 0) * var(--scale-x-out, 0)))
-                    scaleY(calc(1 + var(--pos-in, 0) * var(--scale-y-in, 0) + var(--pos-out, 0) * var(--scale-y-out, 0)));
+                    translateX(calc(var(--pos-in, 0) * var(--x-trans-in, 0) + var(--pos-out, 0) * var(--x-trans-out) + var(--pos-cont, 0) * var(--x-trans-cont)))
+                    translateY(calc(var(--pos-in, 0) * var(--y-trans-in, 0) + var(--pos-out, 0) * var(--y-trans-out) + var(--pos-cont, 0) * var(--y-trans-cont))) 
+                    rotateZ(calc(var(--pos-in, 0) * var(--rotate-in, 0) + var(--pos-out, 0) * var(--rotate-out, 0) + var(--pos-cont, 0) * var(--rotate-cont, 0)))
+                    rotateY(calc(var(--pos-in, 0) * var(--rotate-y-in, 0) + var(--pos-out, 0) * var(--rotate-y-out, 0) + var(--pos-cont, 0) * var(--rotate-y-cont, 0))) 
+                    rotateX(calc(var(--pos-in, 0) * var(--rotate-x-in, 0) + var(--pos-out, 0) * var(--rotate-x-out, 0) + var(--pos-cont, 0) * var(--rotate-x-cont, 0)))
+                    skewX(calc(var(--pos-in, 0) * var(--skew-x-in, 0) + var(--pos-out, 0) * var(--skew-x-out, 0) + var(--pos-cont, 0) * var(--skew-x-cont, 0))) 
+                    skewY(calc(var(--pos-in, 0) * var(--skew-y-in, 0) + var(--pos-out, 0) * var(--skew-y-out, 0) + var(--pos-cont, 0) * var(--skew-y-cont, 0)))
+                    scaleX(calc(1 + var(--pos-in, 0) * var(--scale-x-in, 0) + var(--pos-out, 0) * var(--scale-x-out, 0) + var(--pos-cont, 0) * var(--scale-x-cont, 0)))
+                    scaleY(calc(1 + var(--pos-in, 0) * var(--scale-y-in, 0) + var(--pos-out, 0) * var(--scale-y-out, 0) + var(--pos-cont, 0) * var(--scale-y-cont, 0)));
             }
             .ghost-in {
                 opacity: var(--no-ghost-in, 0.1);
@@ -101,6 +101,15 @@
                 transform: translateX(var(--x-trans-out, 0)) translateY(var(--y-trans-out, 0)) rotateZ(var(--rotate-out, 0))
                     rotateY(var(--rotate-y-out, 0)) rotateX(var(--rotate-x-out, 0)) skewX(var(--skew-x-out, 0))
                     skewY(var(--skew-y-out, 0)) scaleX(calc(1 + var(--scale-x-out, 0))) scaleY(calc(1 + var(--scale-y-out, 0)));
+            }
+            .ghost-cont {
+                opacity: var(--no-ghost-cont, 0.1);
+                z-index: var(--z-index, 0);
+                filter: hue-rotate(var(--hue-cont, 0));
+                transform-origin: var(--trans-origin-x-cont, 50%) var(--trans-origin-y-cont, 50%);
+                transform: translateX(var(--x-trans-cont, 0)) translateY(var(--y-trans-cont, 0)) rotateZ(var(--rotate-cont, 0))
+                    rotateY(var(--rotate-y-cont, 0)) rotateX(var(--rotate-x-cont, 0)) skewX(var(--skew-x-cont, 0))
+                    skewY(var(--skew-y-cont, 0)) scaleX(calc(1 + var(--scale-x-cont, 0))) scaleY(calc(1 + var(--scale-y-cont, 0)));
             }
             .hint-in {
                 position: absolute;
@@ -150,7 +159,32 @@
                 z-index: 5;
                 font-weight: bold;
                 border: 2px solid lightcoral;
-                background: grey;
+                background: white;
+            }
+            .hint-cont {
+                position: absolute;
+                width: 100%;
+                left: 0;
+                height: var(--duration-cont, 0);
+                top: calc(var(--offset-top-cont, 0) + 50vh);
+                border-top: 2px solid lightgrey;
+                border-bottom: 2px solid lightgrey;
+                opacity: 0.4;
+                visibility: var(--visible-cont, hidden);
+                z-index: 3;
+                animation: flicker-cont 1.5s ease-in-out infinite;
+            }
+
+            .hint-cont::before {
+                position: sticky;
+                top: 0;
+                left: 0;
+                content: attr(data-name);
+                color: brown;
+                z-index: 5;
+                font-weight: bold;
+                border: 2px solid brown;
+                background: white;
             }
 
             .hint-marker {
@@ -187,6 +221,17 @@
                     background-color: lightcoral;
                 }
             }
+            @keyframes flicker-cont {
+                0% {
+                    background-color: lightgrey;
+                }
+                50% {
+                    background-color: grey
+                }
+                100% {
+                    background-color: lightgrey;
+                }
+            }
             @keyframes flicker-marker {
                 0% {
                     border-color: lightgreen;
@@ -213,10 +258,10 @@
                 justify-items: space-between;
             }
             #strip-1 .headline div:nth-child(2n) {
-                color: palevioletred;
+                color: rgb(192, 64, 174);
             }
             #strip-1 .headline div:nth-child(2n + 1) {
-                color: orange;
+                color: rgba(240, 126, 55, 0.919);
             }
             #strip-1 .headline h1 {
                 background: rgb(255, 233, 209);
@@ -232,10 +277,10 @@
 
             /* actually strip 5 */
             #strip-1:nth-child(2) .headline div:nth-child(2n) {
-                color: rgb(6, 177, 120);
+                color: rgb(142, 185, 83);
             }
             #strip-1:nth-child(2) .headline div:nth-child(2n + 1) {
-                color: rgb(0, 170, 255);
+                color: rgb(22, 83, 196);
             }
             /* ==================== strip 2 ================= */
 
