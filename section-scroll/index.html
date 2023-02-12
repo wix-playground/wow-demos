@@ -36,7 +36,8 @@
 
             section:nth-child(2n) {
                 background-image: linear-gradient(rgb(58, 58, 58), rgb(36, 36, 36), black);
-                margin: 5px 0;
+                border-top: 2px solid rgb(38, 38, 38);
+                border-bottom: 2px solid rgb(38, 38, 38);
             }
             section:nth-child(2n + 1) {
                 background-image: linear-gradient(black, rgb(36, 36, 36), rgb(58, 58, 58));
@@ -70,63 +71,177 @@
             }
 
             .actual {
-                opacity: calc(1 + var(--pos, 0) * var(--opacity, 0));
+                opacity: calc(1 + var(--pos-in, 0) * var(--opacity-in, 0) + var(--pos-out, 0) * var(--opacity-out, 0) + var(--pos-cont, 0) * var(--opacity-cont, 0));
                 z-index: var(--z-index, 0);
-                filter: hue-rotate(calc(var(--pos, 0) * var(--hue, 0)));
+                filter: hue-rotate(calc(var(--pos-in, 0) * var(--hue-in, 0) + var(--pos-out, 0) * var(--hue-out, 0) + var(--pos-cont, 0) * var(--hue-cont, 0)));
                 transform-origin: var(--trans-origin-x, 50%) var(--trans-origin-y, 50%);
                 transform: 
-                    translateX(calc(var(--pos, 0) * var(--x-trans, 0)))
-                    translateY(calc(var(--pos, 0) * var(--y-trans, 0))) rotateZ(calc(var(--pos, 0) * var(--rotate, 0)))
-                    rotateY(calc(var(--pos, 0) * var(--rotate-y, 0))) rotateX(calc(var(--pos, 0) * var(--rotate-x, 0)))
-                    skewX(calc(var(--pos, 0) * var(--skew-x, 0))) skewY(calc(var(--pos, 0) * var(--skew-y, 0)))
-                    scaleX(calc(1 + var(--pos, 0) * var(--scale-x, 0)))
-                    scaleY(calc(1 + var(--pos, 0) * var(--scale-y, 0)));
+                    translateX(calc(var(--pos-in, 0) * var(--x-trans-in, 0) + var(--pos-out, 0) * var(--x-trans-out) + var(--pos-cont, 0) * var(--x-trans-cont)))
+                    translateY(calc(var(--pos-in, 0) * var(--y-trans-in, 0) + var(--pos-out, 0) * var(--y-trans-out) + var(--pos-cont, 0) * var(--y-trans-cont))) 
+                    rotateZ(calc(var(--pos-in, 0) * var(--rotate-in, 0) + var(--pos-out, 0) * var(--rotate-out, 0) + var(--pos-cont, 0) * var(--rotate-cont, 0)))
+                    rotateY(calc(var(--pos-in, 0) * var(--rotate-y-in, 0) + var(--pos-out, 0) * var(--rotate-y-out, 0) + var(--pos-cont, 0) * var(--rotate-y-cont, 0))) 
+                    rotateX(calc(var(--pos-in, 0) * var(--rotate-x-in, 0) + var(--pos-out, 0) * var(--rotate-x-out, 0) + var(--pos-cont, 0) * var(--rotate-x-cont, 0)))
+                    skewX(calc(var(--pos-in, 0) * var(--skew-x-in, 0) + var(--pos-out, 0) * var(--skew-x-out, 0) + var(--pos-cont, 0) * var(--skew-x-cont, 0))) 
+                    skewY(calc(var(--pos-in, 0) * var(--skew-y-in, 0) + var(--pos-out, 0) * var(--skew-y-out, 0) + var(--pos-cont, 0) * var(--skew-y-cont, 0)))
+                    scaleX(calc(1 + var(--pos-in, 0) * var(--scale-x-in, 0) + var(--pos-out, 0) * var(--scale-x-out, 0) + var(--pos-cont, 0) * var(--scale-x-cont, 0)))
+                    scaleY(calc(1 + var(--pos-in, 0) * var(--scale-y-in, 0) + var(--pos-out, 0) * var(--scale-y-out, 0) + var(--pos-cont, 0) * var(--scale-y-cont, 0)));
             }
-            .ghost {
-                opacity: var(--no-ghost, 0.1);
+            .ghost-in {
+                opacity: var(--no-ghost-in, 0.1);
                 z-index: var(--z-index, 0);
-                filter: hue-rotate(var(--hue, 0));
-                transform-origin: var(--trans-origin-x, 50%) var(--trans-origin-y, 50%);
-                transform: translateX(var(--x-trans, 0)) translateY(var(--y-trans, 0)) rotateZ(var(--rotate, 0))
-                    rotateY(var(--rotate-y, 0)) rotateX(var(--rotate-x, 0)) skewX(var(--skew-x, 0))
-                    skewY(var(--skew-y, 0)) scaleX(calc(1 + var(--scale-x, 0))) scaleY(calc(1 + var(--scale-y, 0)));
+                filter: contrast(0) blur(2px); 
+                box-shadow: 1px 1px 3px white(162, 162, 162);
+
             }
-            .hint {
+            .ghost-out {
+                opacity: var(--no-ghost-out, 0.1);
+                z-index: var(--z-index, 0);
+                filter: hue-rotate(var(--hue-out, 0));
+                transform-origin: var(--trans-origin-x-out, 50%) var(--trans-origin-y-out, 50%);
+                transform: translateX(var(--x-trans-out, 0)) translateY(var(--y-trans-out, 0)) rotateZ(var(--rotate-out, 0))
+                    rotateY(var(--rotate-y-out, 0)) rotateX(var(--rotate-x-out, 0)) skewX(var(--skew-x-out, 0))
+                    skewY(var(--skew-y-out, 0)) scaleX(calc(1 + var(--scale-x-out, 0))) scaleY(calc(1 + var(--scale-y-out, 0)));
+            }
+            .ghost-cont {
+                opacity: var(--no-ghost-cont, 0.1);
+                z-index: var(--z-index, 0);
+                filter: hue-rotate(var(--hue-cont, 0));
+                transform-origin: var(--trans-origin-x-cont, 50%) var(--trans-origin-y-cont, 50%);
+                transform: translateX(var(--x-trans-cont, 0)) translateY(var(--y-trans-cont, 0)) rotateZ(var(--rotate-cont, 0))
+                    rotateY(var(--rotate-y-cont, 0)) rotateX(var(--rotate-x-cont, 0)) skewX(var(--skew-x-cont, 0))
+                    skewY(var(--skew-y-cont, 0)) scaleX(calc(1 + var(--scale-x-cont, 0))) scaleY(calc(1 + var(--scale-y-cont, 0)));
+            }
+            .hint-in {
                 position: absolute;
                 width: 100%;
                 left: 0;
-                height: var(--duration, 0);
-                top: var(--offset-top, 0);
-                border-top: 2px solid red;
-                border-bottom: 2px solid red;
-                background-color: white;
-                opacity: 0.5;
-                visibility: var(--visible, hidden);
+                height: var(--duration-in, 0);
+                top: calc(var(--offset-top-in, 0) + 50vh);
+                border-top: 2px solid lightgreen;
+                border-bottom: 2px solid lightgreen;
+                opacity: 0.4;
+                visibility: var(--visible-in, hidden);
                 z-index: 3;
-                animation: flicker 1.5s ease-in-out infinite;
+                animation: flicker-in 1.5s ease-in-out infinite;
             }
 
-            .hint::before {
+            .hint-in::before {
                 position: sticky;
                 top: 0;
                 left: 0;
                 content: attr(data-name);
-                color: red;
+                color: lightgreen;
                 z-index: 5;
                 font-weight: bold;
-                border: 2px solid red;
-                background: grey;
+                border: 2px solid lightgreen;
+                background: white;
+            }
+            .hint-out {
+                position: absolute;
+                width: 100%;
+                left: 0;
+                height: var(--duration-out, 0);
+                top: calc(var(--offset-top-out, 0) + 50vh);
+                border-top: 2px solid lightcoral;
+                border-bottom: 2px solid lightcoral;
+                opacity: 0.4;
+                visibility: var(--visible-out, hidden);
+                z-index: 3;
+                animation: flicker-out 1.5s ease-in-out infinite;
             }
 
-            @keyframes flicker {
+            .hint-out::before {
+                position: sticky;
+                top: 0;
+                left: 0;
+                content: attr(data-name);
+                color: lightcoral;
+                z-index: 5;
+                font-weight: bold;
+                border: 2px solid lightcoral;
+                background: white;
+            }
+            .hint-cont {
+                position: absolute;
+                width: 100%;
+                left: 0;
+                height: var(--duration-cont, 0);
+                top: calc(var(--offset-top-cont, 0) + 50vh);
+                border-top: 2px solid lightgrey;
+                border-bottom: 2px solid lightgrey;
+                opacity: 0.4;
+                visibility: var(--visible-cont, hidden);
+                z-index: 3;
+                animation: flicker-cont 1.5s ease-in-out infinite;
+            }
+
+            .hint-cont::before {
+                position: sticky;
+                top: 0;
+                left: 0;
+                content: attr(data-name);
+                color: brown;
+                z-index: 5;
+                font-weight: bold;
+                border: 2px solid brown;
+                background: white;
+            }
+
+            .hint-marker {
+                visibility: var(--marker-visible, hidden);
+                position: fixed;
+                top: 50%;
+                left: -5vw;
+                height: 0;
+                width: 110vw;
+                border-top: 2px dotted white;
+                animation: flicker-marker 1.5s ease-in-out alternate infinite;
+
+            }
+
+            @keyframes flicker-in {
                 0% {
-                    background-color: grey;
+                    background-color: lightgreen;
                 }
                 50% {
-                    background-color: rgb(53, 53, 53);
+                    background-color: grey
                 }
                 100% {
-                    background-color: grey;
+                    background-color: lightgreen;
+                }
+            }
+            @keyframes flicker-out {
+                0% {
+                    background-color: lightcoral;
+                }
+                50% {
+                    background-color: grey
+                }
+                100% {
+                    background-color: lightcoral;
+                }
+            }
+            @keyframes flicker-cont {
+                0% {
+                    background-color: lightgrey;
+                }
+                50% {
+                    background-color: grey
+                }
+                100% {
+                    background-color: lightgrey;
+                }
+            }
+            @keyframes flicker-marker {
+                0% {
+                    border-color: lightgreen;
+                }
+                50% {
+                    border-color: white;
+                    transform: scaleX(1.5);
+                }
+                100% {
+                    border-color: lightcoral;
                 }
             }
 
@@ -143,10 +258,10 @@
                 justify-items: space-between;
             }
             #strip-1 .headline div:nth-child(2n) {
-                color: palevioletred;
+                color: rgb(192, 64, 174);
             }
             #strip-1 .headline div:nth-child(2n + 1) {
-                color: orange;
+                color: rgba(240, 126, 55, 0.919);
             }
             #strip-1 .headline h1 {
                 background: rgb(255, 233, 209);
@@ -162,10 +277,10 @@
 
             /* actually strip 5 */
             #strip-1:nth-child(2) .headline div:nth-child(2n) {
-                color: rgb(6, 177, 120);
+                color: rgb(142, 185, 83);
             }
             #strip-1:nth-child(2) .headline div:nth-child(2n + 1) {
-                color: rgb(0, 170, 255);
+                color: rgb(22, 83, 196);
             }
             /* ==================== strip 2 ================= */
 
@@ -335,35 +450,30 @@
                 <section id="strip-1">
                     <div class="row headline headline-middle">
                         <div class="element">
-                            <h1 class="actual">P</h1>
-                        </div>
-                        <div class="element">
-                            <h1 class="actual">L</h1>
-                        </div>
-                        <div class="element">
-                            <h1 class="actual">A</h1>
-                        </div>
-                        <div class="element">
-                            <h1 class="actual">Y</h1>
-                        </div>
-                        <div class="element">
-                            <h1 class="actual">G</h1>
+                            <h1 class="actual">T</h1>
                         </div>
                         <div class="element">
                             <h1 class="actual">R</h1>
                         </div>
                         <div class="element">
-                            <h1 class="actual">O</h1>
+                            <h1 class="actual">I</h1>
                         </div>
                         <div class="element">
-                            <h1 class="actual">U</h1>
+                            <h1 class="actual">A</h1>
                         </div>
                         <div class="element">
                             <h1 class="actual">N</h1>
                         </div>
                         <div class="element">
-                            <h1 class="actual">D</h1>
+                            <h1 class="actual">G</h1>
                         </div>
+                        <div class="element">
+                            <h1 class="actual">L</h1>
+                        </div>
+                        <div class="element">
+                            <h1 class="actual">E</h1>
+                        </div>
+                        <div class="element">
                     </div>
                 </section>
                 <section id="strip-2">
@@ -483,8 +593,8 @@
                         </div>
                     </div>
                 </section>
+                <div class="hint-marker"></div>            
             </main>
-        </div>
         <script src="dat.gui.js"></script>
         <script src="index.js" type="module"></script>
     </body>
