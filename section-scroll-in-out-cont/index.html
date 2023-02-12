@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+       <meta charset="UTF-8" />
+       <meta name="viewport" content="width=device-width, initial-scale=1" />
+       <meta http-equiv="cache-control" content="no-cache" />
+       <title>Playground for Scroll Effects with Sections as Source</title>
+       <style>
+           * {
+               margin: 0;
+               padding: 0;
+               box-sizing: border-box;
+           }
+           .dg.ac {
+               z-index: 10 !important;
+               position: sticky;
+               top: 0;
+               right: 0;
+               margin: 10px;
+               opacity: 0.5;
+               transition: opacity 0.15s ease-in-out;
+           }
+
+
+           .dg.ac:hover {
+               opacity: 1;
+           }
+
+
+           section {
+               position: relative;
+               height: var(--strip-height, 100vh);
+               overflow: hidden;
+               display: grid;
+               justify-content: center;
+               align-items: center;
+           }
+
+
+           section:nth-child(2n) {
+               background-image: linear-gradient(rgb(58, 58, 58), rgb(36, 36, 36), black);
+               border-top: 2px solid rgb(38, 38, 38);
+               border-bottom: 2px solid rgb(38, 38, 38);
+           }
+           section:nth-child(2n + 1) {
+               background-image: linear-gradient(black, rgb(36, 36, 36), rgb(58, 58, 58));
+           }
+
+
+           section .element {
+               display: grid;
+               grid-template: 1fr/1fr;
+               grid-template-areas: "element";
+               place-items: center;
+               font-size: 22px;
+           }
+
+
+           section .element > * {
+               grid-area: element;
+           }
+
+
+           h1,
+           h6 {
+               width: 100%;
+               text-align: center;
+               font-family: sans-serif;
+           }
+
+
+           h1 {
+               font-size: 80px;
+           }
+
+
+           h6 {
+               font-size: 16px;
+           }
+
+
+           .actual {
+               opacity: calc(1 + var(--pos-in, 0) * var(--opacity-in, 0) + var(--pos-out, 0) * var(--opacity-out, 0) + var(--pos-cont, 0) * var(--opacity-cont, 0));
+               z-index: var(--z-index, 0);
+               filter: hue-rotate(calc(var(--pos-in, 0) * var(--hue-in, 0) + var(--pos-out, 0) * var(--hue-out, 0) + var(--pos-cont, 0) * var(--hue-cont, 0)));
+               transform-origin: var(--trans-origin-x, 50%) var(--trans-origin-y, 50%);
+               transform:
+                   translateX(calc(var(--pos-in, 0) * var(--x-trans-in, 0) + var(--pos-out, 0) * var(--x-trans-out) + var(--pos-cont, 0) * var(--x-trans-cont)))
+                   translateY(calc(var(--pos-in, 0) * var(--y-trans-in, 0) + var(--pos-out, 0) * var(--y-trans-out) + var(--pos-cont, 0) * var(--y-trans-cont)))
+                   rotateZ(calc(var(--pos-in, 0) * var(--rotate-in, 0) + var(--pos-out, 0) * var(--rotate-out, 0) + var(--pos-cont, 0) * var(--rotate-cont, 0)))
+                   rotateY(calc(var(--pos-in, 0) * var(--rotate-y-in, 0) + var(--pos-out, 0) * var(--rotate-y-out, 0) + var(--pos-cont, 0) * var(--rotate-y-cont, 0)))
+                   rotateX(calc(var(--pos-in, 0) * var(--rotate-x-in, 0) + var(--pos-out, 0) * var(--rotate-x-out, 0) + var(--pos-cont, 0) * var(--rotate-x-cont, 0)))
+                   skewX(calc(var(--pos-in, 0) * var(--skew-x-in, 0) + var(--pos-out, 0) * var(--skew-x-out, 0) + var(--pos-cont, 0) * var(--skew-x-cont, 0)))
+                   skewY(calc(var(--pos-in, 0) * var(--skew-y-in, 0) + var(--pos-out, 0) * var(--skew-y-out, 0) + var(--pos-cont, 0) * var(--skew-y-cont, 0)))
+                   scaleX(calc(1 + var(--pos-in, 0) * var(--scale-x-in, 0) + var(--pos-out, 0) * var(--scale-x-out, 0) + var(--pos-cont, 0) * var(--scale-x-cont, 0)))
+                   scaleY(calc(1 + var(--pos-in, 0) * var(--scale-y-in, 0) + var(--pos-out, 0) * var(--scale-y-out, 0) + var(--pos-cont, 0) * var(--scale-y-cont, 0)));
+           }
+           .ghost-in {
+               opacity: var(--no-ghost-in, 0.1);
+               z-index: var(--z-index, 0);
+               filter: contrast(0) blur(2px);
+               box-shadow: 1px 1px 3px white(162, 162, 162);
+
+
+           }
+           .ghost-out {
+               opacity: var(--no-ghost-out, 0.1);
+               z-index: var(--z-index, 0);
+               filter: hue-rotate(var(--hue-out, 0));
+               transform-origin: var(--trans-origin-x-out, 50%) var(--trans-origin-y-out, 50%);
+               transform: translateX(var(--x-trans-out, 0)) translateY(var(--y-trans-out, 0)) rotateZ(var(--rotate-out, 0))
+                   rotateY(var(--rotate-y-out, 0)) rotateX(var(--rotate-x-out, 0)) skewX(var(--skew-x-out, 0))
+                   skewY(var(--skew-y-out, 0)) scaleX(calc(1 + var(--scale-x-out, 0))) scaleY(calc(1 + var(--scale-y-out, 0)));
+           }
+           .ghost-cont {
+               opacity: var(--no-ghost-cont, 0.1);
+               z-index: var(--z-index, 0);
+               filter: hue-rotate(var(--hue-cont, 0));
+               transform-origin: var(--trans-origin-x-cont, 50%) var(--trans-origin-y-cont, 50%);
+               transform: translateX(var(--x-trans-cont, 0)) translateY(var(--y-trans-cont, 0)) rotateZ(var(--rotate-cont, 0))
+                   rotateY(var(--rotate-y-cont, 0)) rotateX(var(--rotate-x-cont, 0)) skewX(var(--skew-x-cont, 0))
+                   skewY(var(--skew-y-cont, 0)) scaleX(calc(1 + var(--scale-x-cont, 0))) scaleY(calc(1 + var(--scale-y-cont, 0)));
+           }
+           .hint-in {
+               position: absolute;
+               width: 100%;
+               left: 0;
+               height: var(--duration-in, 0);
+               top: calc(var(--offset-top-in, 0) + 50vh);
+               border-top: 2px solid lightgreen;
+               border-bottom: 2px solid lightgreen;
+               opacity: 0.4;
+               visibility: var(--visible-in, hidden);
+               z-index: 3;
+               animation: flicker-in 1.5s ease-in-out infinite;
+           }
+
+
+           .hint-in::before {
+               position: sticky;
+               top: 0;
+               left: 0;
+               content: attr(data-name);
+               color: lightgreen;
+               z-index: 5;
+               font-weight: bold;
+               border: 2px solid lightgreen;
+               background: white;
+           }
+           .hint-out {
+               position: absolute;
+               width: 100%;
+               left: 0;
+               height: var(--duration-out, 0);
+               top: calc(var(--offset-top-out, 0) + 50vh);
+               border-top: 2px solid lightcoral;
+               border-bottom: 2px solid lightcoral;
+               opacity: 0.4;
+               visibility: var(--visible-out, hidden);
+               z-index: 3;
+               animation: flicker-out 1.5s ease-in-out infinite;
+           }
+
+
+           .hint-out::before {
+               position: sticky;
+               top: 0;
+               left: 0;
+               content: attr(data-name);
+               color: lightcoral;
+               z-index: 5;
+               font-weight: bold;
+               border: 2px solid lightcoral;
+               background: white;
+           }
+           .hint-cont {
+               position: absolute;
+               width: 100%;
+               left: 0;
+               height: var(--duration-cont, 0);
+               top: calc(var(--offset-top-cont, 0) + 50vh);
+               border-top: 2px solid lightgrey;
+               border-bottom: 2px solid lightgrey;
+               opacity: 0.4;
+               visibility: var(--visible-cont, hidden);
+               z-index: 3;
+               animation: flicker-cont 1.5s ease-in-out infinite;
+           }
+
+
+           .hint-cont::before {
+               position: sticky;
+               top: 0;
+               left: 0;
+               content: attr(data-name);
+               color: brown;
+               z-index: 5;
+               font-weight: bold;
+               border: 2px solid brown;
+               background: white;
+           }
+
+
+           .hint-marker {
+               visibility: var(--marker-visible, hidden);
+               position: fixed;
+               top: 50%;
+               left: -5vw;
+               height: 0;
+               width: 110vw;
+               border-top: 2px dotted white;
+               animation: flicker-marker 1.5s ease-in-out alternate infinite;
+
+
+           }
+
+
+           @keyframes flicker-in {
+               0% {
+                   background-color: lightgreen;
+               }
+               50% {
+                   background-color: grey
+               }
+               100% {
+                   background-color: lightgreen;
+               }
+           }
+           @keyframes flicker-out {
+               0% {
+                   background-color: lightcoral;
+               }
+               50% {
+                   background-color: grey
+               }
+               100% {
+                   background-color: lightcoral;
+               }
+           }
+           @keyframes flicker-cont {
+               0% {
+                   background-color: lightgrey;
+               }
+               50% {
+                   background-color: grey
+               }
+               100% {
+                   background-color: lightgrey;
+               }
+           }
+           @keyframes flicker-marker {
+               0% {
+                   border-color: lightgreen;
+               }
+               50% {
+                   border-color: white;
+                   transform: scaleX(1.5);
+               }
+               100% {
+                   border-color: lightcoral;
+               }
+           }
+
+
+           .row {
+               display: flex;
+               align-items: center;
+               justify-content: center;
+               gap: 20px;
+           }
+           /* ==================== strip 1 ================= */
+           #strip-1 {
+               display: grid;
+               grid-template-rows: 1fr;
+               justify-items: space-between;
+           }
+           #strip-1 .headline div:nth-child(2n) {
+               color: rgb(192, 64, 174);
+           }
+           #strip-1 .headline div:nth-child(2n + 1) {
+               color: rgba(240, 126, 55, 0.919);
+           }
+           #strip-1 .headline h1 {
+               background: rgb(255, 233, 209);
+               padding: 0 6px;
+               border-radius: 5px;
+               box-shadow: 1px 1px 3px white(162, 162, 162);
+           }
+           #strip-1 .buttons {
+               position: fixed;
+               top: 10px;
+               left: 10px;
+           }
+
+
+           /* actually strip 5 */
+           #strip-1:nth-child(2) .headline div:nth-child(2n) {
+               color: rgb(142, 185, 83);
+           }
+           #strip-1:nth-child(2) .headline div:nth-child(2n + 1) {
+               color: rgb(22, 83, 196);
+           }
+           /* ==================== strip 2 ================= */
+
+
+           #b1, #b2, #b3, #b4, #b5, #b6, #b7, #b8, #b9, #b10 {
+               position: absolute;
+           }
+           #b1 img, #b2 img,#b4 img,#b5 img,#b8 img,#b9 img {
+               position: absolute;
+               height: 200px;
+               width: 200px;
+           }
+           #b3 img, #b6 img, #b7 img, #b10 img {
+               position: absolute;
+               height: 100px;
+               width: 100px;
+           }
+           #b1 {
+               top: calc(15vh + 50px);
+               left: 25vw;
+           }
+           #b2 {
+               top: 30vh;
+               left: 70vw;
+           }
+           #b3 {
+               top: 70vh;
+               left: 50vw;
+           }
+           #b4 {
+               top: 95vh;
+               left: 20vw;
+           }
+           #b5 {
+               top: 90vh;
+               left: 85vw;
+           }
+           #b6 {
+               top: 15vh;
+               left: 10vw;
+           }
+           #b7 {
+               top: 110vh;
+               right: 10vh;
+           }
+           #b8 {
+               top: 140vh;
+               left: 20vw;
+           }
+           #b9 {
+               top: 150vh;
+               left: 60vw;
+           }
+           #b10 {
+               top: 190vh;
+               left: 40vw;
+           }
+
+
+           /* ==================== strip 3 ================= */
+
+
+           #strip-3 img {
+               border-radius: 8px;
+           }
+           #strip-3 {
+               display: grid;
+               grid-template-columns: 1fr 1fr;
+               grid-template-rows: 1fr 1fr;
+               justify-items: space-around;
+           }
+           /* ==================== strip 4 ================= */
+           #strip-4 {
+               display: grid;
+               grid-template-rows: 200px 700px;
+               align-items: flex-end;
+           }
+           #strip-4 .cars{
+               display: grid;
+               grid-template-columns: 1fr 1fr;
+           }
+           #strip-4 .car img {
+               width: 150px;
+               height: 150px;
+           }
+          
+           #strip-4 .finish-line {
+               width: 110vw;
+               height: 100px;
+               background-image: repeating-linear-gradient(
+                   90deg,
+                   #fff,
+                   #fff 10px,
+                   #000 10px,
+                   #000 20px
+               );
+               margin-bottom: 200px;
+           }
+           /* ==================== strip 5 ================= */
+
+
+           #strip-6 .card {
+               width: 80%;
+               display: grid;
+               grid-template-columns: 300px 1fr;
+               column-gap: 10px;
+               align-items: flex-start;
+               justify-content: space-between;
+               overflow: hidden;
+               border-radius: 8px;
+               text-overflow: ellipsis;
+               background: white;
+               box-shadow: 1px 1px 3px grey;
+               max-height: 230px;
+           }
+           #strip-6 .middle {
+               grid-template-columns: 1fr 300px;
+           }
+           #strip-6 .card img {
+               box-shadow: 1px 1px 3px grey;
+           }
+           #strip-6 h3 {
+               overflow: hidden;
+               padding: 10px;
+               text-overflow: ellipsis;
+               font-size: 16px;
+               font-family: sans-serif;
+               font-weight: 100;
+               margin: 0px;
+               line-height: 1.5em;
+           }
+       </style>
+   </head>
+   <body>
+       <div id="wrapper">
+           <main>
+               <section id="strip-1">
+                   <div class="row headline headline-middle">
+                       <div class="element">
+                           <h1 class="actual">P</h1>
+                       </div>
+                       <div class="element">
+                           <h1 class="actual">L</h1>
+                       </div>
+                       <div class="element">
+                           <h1 class="actual">A</h1>
+                       </div>
+                       <div class="element">
+                           <h1 class="actual">Y</h1>
+                       </div>
+                       <div class="element">
+                           <h1 class="actual">G</h1>
+                       </div>
+                       <div class="element">
+                           <h1 class="actual">R</h1>
+                       </div>
+                       <div class="element">
+                           <h1 class="actual">O</h1>
+                       </div>
+                       <div class="element">
+                           <h1 class="actual">U</h1>
+                       </div>
+                       <div class="element">
+                           <h1 class="actual">N</h1>
+                       </div>
+                       <div class="element">
+                           <h1 class="actual">D</h1>
+                       </div>
+                   </div>
+               </section>
+               <section id="strip-1">
+                   <div class="row headline headline-middle">
+                       <div class="element">
+                           <h1 class="actual">T</h1>
+                       </div>
+                       <div class="element">
+                           <h1 class="actual">R</h1>
+                       </div>
+                       <div class="element">
+                           <h1 class="actual">I</h1>
+                       </div>
+                       <div class="element">
+                           <h1 class="actual">A</h1>
+                       </div>
+                       <div class="element">
+                           <h1 class="actual">N</h1>
+                       </div>
+                       <div class="element">
+                           <h1 class="actual">G</h1>
+                       </div>
+                       <div class="element">
+                           <h1 class="actual">L</h1>
+                       </div>
+                       <div class="element">
+                           <h1 class="actual">E</h1>
+                       </div>
+                       <div class="element">
+                   </div>
+               </section>
+               <section id="strip-2">
+                   <div class="element bubble" id="b1">
+                       <img class="actual" src="https://freesvg.org/img/food-blue-bubble.png" />
+                   </div>
+                   <div class="element bubble" id="b2">
+                       <img class="actual" src="https://freesvg.org/img/food-blue-bubble.png" />
+                   </div>
+                   <div class="element bubble" id="b3">
+                       <img class="actual" src="https://freesvg.org/img/food-blue-bubble.png" />
+                   </div>
+                   <div class="element bubble" id="b4">
+                       <img class="actual" src="https://freesvg.org/img/food-blue-bubble.png" />
+                   </div>
+                   <div class="element bubble" id="b5">
+                       <img class="actual" src="https://freesvg.org/img/food-blue-bubble.png" />
+                   </div>
+                   <div class="element bubble" id="b6">
+                       <img class="actual" src="https://freesvg.org/img/food-blue-bubble.png" />
+                   </div>
+               </section>
+               <section id="strip-3">
+                   <div class="element">
+                       <img class="actual" src="https://picsum.photos/400/320?random=4" alt="" />
+                   </div>
+                   <div class="element">
+                       <img class="actual" src="https://picsum.photos/400/320?random=5" alt="" />
+                   </div>
+                   <div class="element">
+                       <img class="actual" src="https://picsum.photos/400/320?random=6" alt="" />
+                   </div>
+                   <div class="element">
+                       <img class="actual" src="https://picsum.photos/400/320?random=7" alt="" />
+                   </div>
+               </section>
+               <section id="strip-4">
+                   <div class="cars">
+                       <div class="car">
+                           <div class="element">
+                               <img class="actual" src="https://freesvg.org/img/Car_Purple_Front.png">
+                           </div>
+                       </div>
+                       <div class="car">
+                           <div class="element">
+                               <img class="actual" src="https://freesvg.org/img/Car_Red_Front.png">
+                           </div>
+                       </div>
+                   </div>
+                   <div class="finish-line"></div>
+               </section>
+               <section id="strip-6">
+                   <div class="element">
+                       <div class="card actual">
+                           <div class="element">
+                               <img class="actual" src="https://picsum.photos/300/240?random=1" alt="" />
+                           </div>
+                           <div class="element">
+                               <h3 class="actual">
+                                   Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit praesentium
+                                   corporis ratione fugit libero debitis? Quia dicta placeat est nobis, voluptas ea
+                                   veritatis porro, iure ab minus at! Ad, iste. Est inventore accusantium optio sint
+                                   molestias vero consequuntur quas quos asperiores ab possimus perspiciatis maiores,
+                                   exercitationem labore atque eum rerum minus architecto repudiandae! Sequi maiores
+                                   explicabo vero aspernatur, totam officia! Sed vero laudantium quidem fuga tempore
+                                   quam, magni atque voluptas quaerat assumenda obcaecati totam officia reiciendis
+                                   ipsam itaque cumque iste magnam earum maxime quos autem! Rerum nisi eius aliquam
+                                   iure? Assumenda iure quae saepe qui ex quis labore harum, sint nobis reprehenderit?
+                                   Nulla, aut et deleniti aliquam delectus, odit laboriosam provident quisquam
+                                   consectetur, tempore magni distinctio dolor non tenetur maxime.
+                               </h3>
+                           </div>
+                       </div>
+                   </div>
+                   <div class="element">
+                       <div class="card actual middle">
+                           <div class="element">
+                               <h3 class="actual">
+                                   Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit praesentium
+                                   corporis ratione fugit libero debitis? Quia dicta placeat est nobis, voluptas ea
+                                   veritatis porro, iure ab minus at! Ad, iste. Est inventore accusantium optio sint
+                                   molestias vero consequuntur quas quos asperiores ab possimus perspiciatis maiores,
+                                   exercitationem labore atque eum rerum minus architecto repudiandae! Sequi maiores
+                                   explicabo vero aspernatur, totam officia! Sed vero laudantium quidem fuga tempore
+                                   quam, magni atque voluptas quaerat assumenda obcaecati totam officia reiciendis
+                                   ipsam itaque cumque iste magnam earum maxime quos autem! Rerum nisi eius aliquam
+                                   iure? Assumenda iure quae saepe qui ex quis labore harum, sint nobis reprehenderit?
+                                   Nulla, aut et deleniti aliquam delectus, odit laboriosam provident quisquam
+                                   consectetur, tempore magni distinctio dolor non tenetur maxime.
+                               </h3>
+                           </div>
+                           <div class="element">
+                               <img class="actual" src="https://picsum.photos/300/240?random=2" alt="" />
+                           </div>
+                       </div>
+                   </div>
+                   <div class="element">
+                       <div class="card actual">
+                           <div class="element">
+                               <img class="actual" src="https://picsum.photos/300/240?random=3" alt="" />
+                           </div>
+                           <div class="element">
+                               <h3 class="actual">
+                                   Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit praesentium
+                                   corporis ratione fugit libero debitis? Quia dicta placeat est nobis, voluptas ea
+                                   veritatis porro, iure ab minus at! Ad, iste. Est inventore accusantium optio sint
+                                   molestias vero consequuntur quas quos asperiores ab possimus perspiciatis maiores,
+                                   exercitationem labore atque eum rerum minus architecto repudiandae! Sequi maiores
+                                   explicabo vero aspernatur, totam officia! Sed vero laudantium quidem fuga tempore
+                                   quam, magni atque voluptas quaerat assumenda obcaecati totam officia reiciendis
+                                   ipsam itaque cumque iste magnam earum maxime quos autem! Rerum nisi eius aliquam
+                                   iure? Assumenda iure quae saepe qui ex quis labore harum, sint nobis reprehenderit?
+                                   Nulla, aut et deleniti aliquam delectus, odit laboriosam provident quisquam
+                                   consectetur, tempore magni distinctio dolor non tenetur maxime.
+                               </h3>
+                           </div>
+                       </div>
+                   </div>
+               </section>
+               <div class="hint-marker"></div>           
+           </main>
+       <script src="dat.gui.js"></script>
+       <script src="index.js" type="module"></script>
+   </body>
+</html>
+
+
+
