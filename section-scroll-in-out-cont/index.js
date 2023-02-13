@@ -316,10 +316,6 @@ function restart() {
                     },
                 },
             };
-            // CONFIG[sectionName][elemName].in.travelSettings.Offset = elementOffset
-            // CONFIG[sectionName][elemName].out.travelSettings.Offset = elementOffset
-            // CONFIG[sectionName][elemName].in.travelSettings.Duration = elementDuration
-            // CONFIG[sectionName][elemName].out.travelSettings.Duration = elementDuration
 
             const animationDirections = Object.values(ANIMATION_DIRECTION_OPT);
 
