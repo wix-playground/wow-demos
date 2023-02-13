@@ -321,25 +321,16 @@ function restart() {
             // CONFIG[sectionName][elemName].in.travelSettings.Duration = elementDuration
             // CONFIG[sectionName][elemName].out.travelSettings.Duration = elementDuration
 
-            const anchorIn = animationAnchors[elemName].in;
-            const anchorOut = animationAnchors[elemName].out;
-            const anchorCont = animationAnchors[elemName].cont;
+            const animationDirections = Object.values(ANIMATION_DIRECTION_OPT);
 
-            const offsetIn = effectStartOffset[elemName].in[anchorIn].current;
-            const offsetOut = effectStartOffset[elemName].out[anchorOut].current;
-            const offsetCont = effectStartOffset[elemName].cont[anchorCont].current;
-
-            const durationIn = effectDuration[elemName].in[anchorIn].current;
-            const durationOut = effectDuration[elemName].out[anchorOut].current;
-            const durationCont = effectDuration[elemName].cont[anchorCont].current;
-
-            updateHint(elemName, offsetIn, durationIn, ANIMATION_DIRECTION_OPT.in);
-            updateHint(elemName, offsetOut, durationOut, ANIMATION_DIRECTION_OPT.out);
-            updateHint(elemName, offsetCont, durationCont, ANIMATION_DIRECTION_OPT.cont);
-
-            applyStyle(element, elemStyle, ANIMATION_DIRECTION_OPT.in);
-            applyStyle(element, elemStyle, ANIMATION_DIRECTION_OPT.out);
-            applyStyle(element, elemStyle, ANIMATION_DIRECTION_OPT.cont);
+            for (const animationDirection of animationDirections) {
+                const anchor = animationAnchors[elemName][animationDirection];
+                const offset = effectStartOffset[elemName][animationDirection][anchor].current;
+                const duration = effectDuration[elemName][animationDirection][anchor].current;
+            
+                updateHint(elemName, offset, duration, animationDirection);
+                applyStyle(element, elemStyle, animationDirection);
+            }
         });
     });
 }
@@ -881,6 +872,7 @@ function getInitStyles(direction) {
         [`--hue-${direction}`]: '0deg',
         [`--scale-${direction}`]: 0,
         [`--pos-${direction}`]: '0',
+        [`--no-ghost-${direction}`]: `${direction === 'cont' ? 0 : 0.1}`,
         [`--trans-origin-x`]: '50%',
         [`--trans-origin-y`]: '50%',
     };
@@ -924,7 +916,8 @@ function applyStyle(element, elementCSS) {
     element.style.setProperty(`--hue-in`, elementCSS.hueIn);
     element.style.setProperty(`--scale-x-in`, elementCSS.scaleXIn);
     element.style.setProperty(`--scale-y-in`, elementCSS.scaleYIn);
-
+    element.style.setProperty(`--no-ghost-in`, elementCSS.ghostIn);
+    
     element.style.setProperty(`--x-trans-out`, elementCSS.xTransOut);
     element.style.setProperty(`--y-trans-out`, elementCSS.yTransOut);
     element.style.setProperty(`--rotate-out`, elementCSS.rotateOut);
@@ -935,6 +928,7 @@ function applyStyle(element, elementCSS) {
     element.style.setProperty(`--hue-out`, elementCSS.hueOut);
     element.style.setProperty(`--scale-x-out`, elementCSS.scaleXOut);
     element.style.setProperty(`--scale-y-out`, elementCSS.scaleYOut);
+    element.style.setProperty(`--no-ghost-out`, elementCSS.ghostOut);
 
     element.style.setProperty(`--trans-origin-x`, elementCSS.transOriginX);
     element.style.setProperty(`--trans-origin-y`, elementCSS.transOriginY);
@@ -952,6 +946,7 @@ function getStyle(element) {
         hueIn: window.getComputedStyle(element).getPropertyValue(`--hue-in`),
         scaleXIn: window.getComputedStyle(element).getPropertyValue(`--scale-x-in`),
         scaleYIn: window.getComputedStyle(element).getPropertyValue(`--scale-y-in`),
+        ghostIn: window.getComputedStyle(element).getPropertyValue(`--no-ghost-in`),
 
         xTransOut: window.getComputedStyle(element).getPropertyValue(`--x-trans-out`),
         yTransOut: window.getComputedStyle(element).getPropertyValue(`--y-trans-out`),
@@ -963,6 +958,7 @@ function getStyle(element) {
         hueOut: window.getComputedStyle(element).getPropertyValue(`--hue-out`),
         scaleXOut: window.getComputedStyle(element).getPropertyValue(`--scale-x-out`),
         scaleYOut: window.getComputedStyle(element).getPropertyValue(`--scale-y-out`),
+        ghostOut: window.getComputedStyle(element).getPropertyValue(`--no-ghost-out`),
 
         xTransCont: window.getComputedStyle(element).getPropertyValue(`--x-trans-cont`),
         yTransCont: window.getComputedStyle(element).getPropertyValue(`--y-trans-cont`),
@@ -974,6 +970,7 @@ function getStyle(element) {
         hueCont: window.getComputedStyle(element).getPropertyValue(`--hue-cont`),
         scaleXCont: window.getComputedStyle(element).getPropertyValue(`--scale-x-cont`),
         scaleYCont: window.getComputedStyle(element).getPropertyValue(`--scale-y-cont`),
+        ghostCont: window.getComputedStyle(element).getPropertyValue(`--no-ghost-cont`),
 
         transOriginXIn: window.getComputedStyle(element).getPropertyValue(`--trans-origin-x`),
         transOriginYIn: window.getComputedStyle(element).getPropertyValue(`--trans-origin-y`),
@@ -998,14 +995,14 @@ function setValues(rememberedValues) {
     const lerpVal = db.lerp.Lerp;
     controllers.lerp.setValue(lerpVal);
     Object.values(db)
-        .slice(1)
+        .slice(1) // remove lerp property
         .forEach((sectionData, index) => {
             const sectionName = sectionNames[index];
             Object.values(sectionData)
                 .slice(1) // remove height property
                 .forEach((elem, idx) => {
                     const elemName = `${sectionsElements[sectionName][idx].tagName}-s${index + 1}_e${idx + 1}`;
-                    ['in','out','cont'].forEach(animationType => {
+                    ['out','in','cont'].forEach(animationType => {
                         for (const [key, value] of Object.entries(elem[animationType].effects)) { //effects
                             if (key === 'position') {
                                 controllers[sectionName][elemName][animationType].effects.position.Distance.setValue(value.Distance);
