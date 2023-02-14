@@ -19,6 +19,24 @@
                margin: 10px;
                opacity: 0.5;
                transition: opacity 0.15s ease-in-out;
+            }
+            main {
+                position: relative
+            }
+            button {
+                z-index: 10 !important;
+                position: fixed;
+                top: 10px;
+                left: 10px;
+                margin: 10px;
+                padding: 3px;
+                opacity: 0.7;
+                transition: opacity 0.15s ease-in-out;
+           }
+
+           button:hover {
+                opacity: 1;
+                cursor: pointer;
            }
 
 
@@ -615,6 +633,7 @@
                        </div>
                    </div>
                </section>
+               <button class="ghosts-toggle">Toggle Ghosts</button>
                <div class="hint-marker"></div>           
            </main>
        <script src="dat.gui.js"></script>

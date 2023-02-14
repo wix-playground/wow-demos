@@ -168,7 +168,7 @@ const guiSettings = {
         [EFFECTS_CONFIG.SCALE_Y.LABEL]: 1,
         [EFFECTS_CONFIG.OPACITY.LABEL]: 1,
         [EFFECTS_CONFIG.HUE.LABEL]: 0,
-        [EFFECTS_CONFIG.TRANS_ORIGIN.LABEL]: TRANSFORM_ORIGIN_OPT.center,
+        // [EFFECTS_CONFIG.TRANS_ORIGIN.LABEL]: TRANSFORM_ORIGIN_OPT.center,
         [EFFECTS_CONFIG.GHOST.LABEL]: true,
         position: {
             [EFFECTS_CONFIG.POS_ANGLE.LABEL]: 0,
@@ -190,6 +190,9 @@ const guiSettings = {
     animationType: {
         [EFFECTS_CONFIG.ANIMATION_TYPE.LABEL]: ANIMATION_TYPE_OPT.in_out,
     },
+    transOrigin: {
+        [EFFECTS_CONFIG.TRANS_ORIGIN.LABEL]: TRANSFORM_ORIGIN_OPT.center,
+    }
 };
 
 const CONFIG = {};
@@ -438,6 +441,7 @@ function initGUI() {
     GUI.add(importExport, 'Load from File');
 
     addLerp();
+    addToggleAllGhosts()
 
     sections.forEach((section, index) => {
         const sectionName = `Section-${index + 1}`;
@@ -471,6 +475,7 @@ function addElementToGUI(element, elemName, sectionFolder, sectionName) {
             in: structuredClone(animationGuiSettings),
             out: structuredClone(animationGuiSettings),
             cont: structuredClone(animationGuiSettings),
+            transOrigin: structuredClone(guiSettings.transOrigin),
         },
     };
 
@@ -511,7 +516,8 @@ function addElementToGUI(element, elemName, sectionFolder, sectionName) {
     addHints(elemName);
     addGhosts(element);
     
-    addType(element, sectionName, elemName, elemFolder);
+    // addTransformOrigin(element, sectionName, elemName, elemFolder)
+    addTypeAndTransOrigin(element, sectionName, elemName, elemFolder);
     addScrollEffects(element, sectionName, TransformationsFolderIn, elemName, ANIMATION_DIRECTION_OPT.in);
     addScrollEffects(element, sectionName, TransformationsFolderOut, elemName, ANIMATION_DIRECTION_OPT.out);
     addScrollEffects(element, sectionName, TransformationsFolderCont, elemName, ANIMATION_DIRECTION_OPT.cont);
@@ -559,7 +565,19 @@ function addHints(elementName) {
     document.body.appendChild(hintCont);
 }
 
-function addType (element, sectionName, elemName, elemFolder) {
+function addTypeAndTransOrigin (element, sectionName, elemName, elemFolder) {
+    const transOriginCtrllr = elemFolder
+    .add(CONFIG[sectionName][elemName].transOrigin, EFFECTS_CONFIG.TRANS_ORIGIN.LABEL, TRANSFORM_ORIGIN_OPT)
+    .onChange((val) => {
+        const [originX, originY] = TRANSFORM_ORIGIN_VALS[val];
+        element.style.setProperty(`--trans-origin-x`, originX);
+        element.style.setProperty(`--trans-origin-y`, originY);
+        element.nextElementSibling.style.setProperty(`--trans-origin-x-out`, originX);
+        element.nextElementSibling.style.setProperty(`--trans-origin-y-out`, originY);
+        resetChildrenStyle(element);
+        init();
+    });
+
     const typeCtrllr = elemFolder
     .add(CONFIG[sectionName][elemName].type, EFFECTS_CONFIG.ANIMATION_TYPE.LABEL, ANIMATION_TYPE_OPT)
     .onChange((animationType) => {
@@ -573,7 +591,11 @@ function addType (element, sectionName, elemName, elemFolder) {
         }
         init();
     });
-    controllers[sectionName][elemName] = {type: typeCtrllr}    
+
+    controllers[sectionName][elemName] = {
+        type: typeCtrllr,
+        transOrigin: transOriginCtrllr,
+    }    
 }
 
 function makeDynamicHeight(section, sectionFolder, sectionName) {
@@ -698,19 +720,19 @@ function addScrollEffects(element, sectionName, folder, elemName, direction) {
             init();
         });
 
-    const transOriginCtrllr = folder
-        .add(CONFIG[sectionName][elemName][direction].effects, EFFECTS_CONFIG.TRANS_ORIGIN.LABEL, TRANSFORM_ORIGIN_OPT)
-        .onChange((val) => {
-            const [originX, originY] = TRANSFORM_ORIGIN_VALS[val];
-            element.style.setProperty(`--trans-origin-x`, originX);
-            element.style.setProperty(`--trans-origin-y`, originY);
-            if (direction !== ANIMATION_DIRECTION_OPT.in) {
-                element.nextElementSibling.style.setProperty(`--trans-origin-x-${direction}`, originX);
-                element.nextElementSibling.style.setProperty(`--trans-origin-y-${direction}`, originY);
-            }
-            resetChildrenStyle(element);
-            init();
-        });
+    // const transOriginCtrllr = folder
+    //     .add(CONFIG[sectionName][elemName][direction].effects, EFFECTS_CONFIG.TRANS_ORIGIN.LABEL, TRANSFORM_ORIGIN_OPT)
+    //     .onChange((val) => {
+    //         const [originX, originY] = TRANSFORM_ORIGIN_VALS[val];
+    //         element.style.setProperty(`--trans-origin-x`, originX);
+    //         element.style.setProperty(`--trans-origin-y`, originY);
+    //         if (direction !== ANIMATION_DIRECTION_OPT.in) {
+    //             element.nextElementSibling.style.setProperty(`--trans-origin-x-${direction}`, originX);
+    //             element.nextElementSibling.style.setProperty(`--trans-origin-y-${direction}`, originY);
+    //         }
+    //         resetChildrenStyle(element);
+    //         init();
+    //     });
     const ghostCtrllr = folder
         .add(CONFIG[sectionName][elemName][direction].effects, ...Object.values(EFFECTS_CONFIG.GHOST))
         .onChange((showGhost) => {
@@ -735,7 +757,7 @@ function addScrollEffects(element, sectionName, folder, elemName, direction) {
                 [EFFECTS_CONFIG.SCALE_Y.LABEL]: scaleYCtrllr,
                 [EFFECTS_CONFIG.OPACITY.LABEL]: opacityCtrllr,
                 [EFFECTS_CONFIG.HUE.LABEL]: hueCtrllr,
-                [EFFECTS_CONFIG.TRANS_ORIGIN.LABEL]: transOriginCtrllr,
+                // [EFFECTS_CONFIG.TRANS_ORIGIN.LABEL]: transOriginCtrllr,
                 [EFFECTS_CONFIG.GHOST.LABEL]: ghostCtrllr,
                 position: {
                     [EFFECTS_CONFIG.POS_ANGLE.LABEL]: angleCtrllr,
@@ -776,7 +798,8 @@ function addScrollModifications(element, sectionName, folder, elemName, directio
                 const outAnimationStart = effectStartOffset[elemName].out[animationAnchor].current;
                 const isOverlapping = outAnimationStart < inAnimationEnd;
                 if (isOverlapping) {
-                    durationRef.current = outAnimationStart - inAnimationStart;
+                    effectStartOffset[elemName].out[animationAnchor].current = inAnimationEnd;
+                    document.querySelector(`.hint-out-${elemName}`).style.setProperty(`--offset-top-out`, `${inAnimationEnd}px`);
                 }
             }
             hint.style.setProperty(`--duration-${direction}`, `${durationRef.current}px`);
@@ -833,6 +856,17 @@ function addLerp() {
     controllers.lerp = lerpController;
 }
 
+function addToggleAllGhosts () {
+    let showGhosts = true;
+    document.querySelector('.ghosts-toggle').addEventListener('click', () => {
+        for (const direction in ANIMATION_DIRECTION_OPT) {
+            const ghosts = document.querySelectorAll(`.ghost-${direction}`);
+            ghosts.forEach(ghost => ghost.style.setProperty(`--no-ghost-${direction}`, showGhosts ? 0 : 0.1)) 
+        }
+        showGhosts = !showGhosts;
+    });
+}
+
 // ========== helpers ==========
 
 function preventOverlap(direction, offsetRef, elemName, animationAnchor) {
@@ -848,9 +882,11 @@ function preventOverlap(direction, offsetRef, elemName, animationAnchor) {
     if (direction === ANIMATION_DIRECTION_OPT.in) {
         const outAnimationStartOffset = effectStartOffset[elemName].out[animationAnchor].current;
         const inAnimationDuration = effectDuration[elemName].in[animationAnchor].current;
-        const isOverlapping = outAnimationStartOffset < offsetRef.current + inAnimationDuration;
+        const inAnimationEnd = offsetRef.current + inAnimationDuration
+        const isOverlapping = outAnimationStartOffset < inAnimationEnd;
         if (isOverlapping) {
-            offsetRef.current = outAnimationStartOffset - inAnimationDuration;
+            effectStartOffset[elemName].out[animationAnchor].current = inAnimationEnd;
+            document.querySelector(`.hint-out-${elemName}`).style.setProperty(`--offset-top-out`, `${inAnimationEnd}px`);
         }
     }
 }
@@ -868,7 +904,7 @@ function getInitStyles(direction) {
         [`--hue-${direction}`]: '0deg',
         [`--scale-${direction}`]: 0,
         [`--pos-${direction}`]: '0',
-        [`--no-ghost-${direction}`]: `${direction === 'cont' ? 0 : 0.1}`,
+        [`--no-ghost-${direction}`]: `${direction === ANIMATION_DIRECTION_OPT.cont ? 0 : 0.1}`,
         [`--trans-origin-x`]: '50%',
         [`--trans-origin-y`]: '50%',
     };
@@ -888,11 +924,6 @@ function resetChildrenStyle(element) {
     [...element.querySelectorAll('.actual'), ...element.querySelectorAll('.ghost')].forEach((e) => {
         resetStyles(e);
     });
-}
-
-function copyCSSProperties(elemToCopyFrom, elemToPasteTo) {
-    const elemToCopyFromCSS = getStyle(elemToCopyFrom);
-    applyStyle(elemToPasteTo, elemToCopyFromCSS);
 }
 
 function getAndResetStyle(element) {
@@ -1013,6 +1044,7 @@ function setValues(rememberedValues) {
                         }
                     })
                     controllers[sectionName][elemName].type.setValue(elem.type[EFFECTS_CONFIG.ANIMATION_TYPE.LABEL]);
+                    controllers[sectionName][elemName].transOrigin.setValue(elem.transOrigin[EFFECTS_CONFIG.TRANS_ORIGIN.LABEL]);
                 });
         });
 }
