@@ -837,14 +837,14 @@
             "Hint": false,
             "Anchor": "modeSelf",
             "Duration": 1,
-            "Offset": 0
+            "Offset": -0.04
           }
         },
         "out": {
           "effects": {
-            "Rotate": 0,
+            "Rotate": 360,
             "Rotate Y": 0,
-            "Rotate X": 0,
+            "Rotate X": 180,
             "Skew X": 0,
             "Skew Y": 0,
             "Scale X": 1,
@@ -854,14 +854,14 @@
             "Ghost": true,
             "position": {
               "Angle": 0,
-              "Distance": 0
+              "Distance": 300
             }
           },
           "travelSettings": {
             "Hint": false,
             "Anchor": "modeSelf",
             "Duration": 1,
-            "Offset": 0
+            "Offset": -0.04
           }
         },
         "cont": {
@@ -917,14 +917,14 @@
             "Hint": false,
             "Anchor": "modeSelf",
             "Duration": 1,
-            "Offset": 0
+            "Offset": -0.07
           }
         },
         "out": {
           "effects": {
-            "Rotate": 0,
+            "Rotate": 360,
             "Rotate Y": 0,
-            "Rotate X": 0,
+            "Rotate X": 180,
             "Skew X": 0,
             "Skew Y": 0,
             "Scale X": 1,
@@ -934,14 +934,14 @@
             "Ghost": true,
             "position": {
               "Angle": 0,
-              "Distance": 0
+              "Distance": 300
             }
           },
           "travelSettings": {
             "Hint": false,
             "Anchor": "modeSelf",
             "Duration": 1,
-            "Offset": 0
+            "Offset": -0.07
           }
         },
         "cont": {
@@ -997,14 +997,14 @@
             "Hint": false,
             "Anchor": "modeSelf",
             "Duration": 1,
-            "Offset": 0
+            "Offset": -0.1
           }
         },
         "out": {
           "effects": {
-            "Rotate": 0,
+            "Rotate": 360,
             "Rotate Y": 0,
-            "Rotate X": 0,
+            "Rotate X": 180,
             "Skew X": 0,
             "Skew Y": 0,
             "Scale X": 1,
@@ -1014,14 +1014,14 @@
             "Ghost": true,
             "position": {
               "Angle": 0,
-              "Distance": 0
+              "Distance": 300
             }
           },
           "travelSettings": {
             "Hint": false,
             "Anchor": "modeSelf",
             "Duration": 1,
-            "Offset": 0
+            "Offset": -0.1
           }
         },
         "cont": {
@@ -1077,14 +1077,14 @@
             "Hint": false,
             "Anchor": "modeSelf",
             "Duration": 1,
-            "Offset": 0
+            "Offset": -0.13
           }
         },
         "out": {
           "effects": {
-            "Rotate": 0,
+            "Rotate": 360,
             "Rotate Y": 0,
-            "Rotate X": 0,
+            "Rotate X": 180,
             "Skew X": 0,
             "Skew Y": 0,
             "Scale X": 1,
@@ -1094,14 +1094,14 @@
             "Ghost": true,
             "position": {
               "Angle": 0,
-              "Distance": 0
+              "Distance": 300
             }
           },
           "travelSettings": {
             "Hint": false,
             "Anchor": "modeSelf",
             "Duration": 1,
-            "Offset": 0
+            "Offset": -0.13
           }
         },
         "cont": {
@@ -1157,14 +1157,14 @@
             "Hint": false,
             "Anchor": "modeSelf",
             "Duration": 1,
-            "Offset": 0
+            "Offset": -0.16
           }
         },
         "out": {
           "effects": {
-            "Rotate": 0,
+            "Rotate": 360,
             "Rotate Y": 0,
-            "Rotate X": 0,
+            "Rotate X": 180,
             "Skew X": 0,
             "Skew Y": 0,
             "Scale X": 1,
@@ -1174,14 +1174,14 @@
             "Ghost": true,
             "position": {
               "Angle": 0,
-              "Distance": 0
+              "Distance": 300
             }
           },
           "travelSettings": {
             "Hint": false,
             "Anchor": "modeSelf",
             "Duration": 1,
-            "Offset": 0
+            "Offset": -0.16
           }
         },
         "cont": {
@@ -1237,14 +1237,14 @@
             "Hint": false,
             "Anchor": "modeSelf",
             "Duration": 1,
-            "Offset": 0
+            "Offset":  -0.19
           }
         },
         "out": {
           "effects": {
-            "Rotate": 0,
+            "Rotate": 360,
             "Rotate Y": 0,
-            "Rotate X": 0,
+            "Rotate X": 180,
             "Skew X": 0,
             "Skew Y": 0,
             "Scale X": 1,
@@ -1254,14 +1254,14 @@
             "Ghost": true,
             "position": {
               "Angle": 0,
-              "Distance": 0
+              "Distance": 300
             }
           },
           "travelSettings": {
             "Hint": false,
             "Anchor": "modeSelf",
             "Duration": 1,
-            "Offset": 0
+            "Offset": -0.19
           }
         },
         "cont": {
@@ -1317,14 +1317,14 @@
             "Hint": false,
             "Anchor": "modeSelf",
             "Duration": 1,
-            "Offset": 0
+            "Offset":  -0.22
           }
         },
         "out": {
           "effects": {
-            "Rotate": 0,
+            "Rotate": 360,
             "Rotate Y": 0,
-            "Rotate X": 0,
+            "Rotate X": 180,
             "Skew X": 0,
             "Skew Y": 0,
             "Scale X": 1,
@@ -1334,14 +1334,14 @@
             "Ghost": true,
             "position": {
               "Angle": 0,
-              "Distance": 0
+              "Distance": 300
             }
           },
           "travelSettings": {
             "Hint": false,
             "Anchor": "modeSelf",
             "Duration": 1,
-            "Offset": 0
+            "Offset": -0.22
           }
         },
         "cont": {
@@ -1397,14 +1397,14 @@
             "Hint": false,
             "Anchor": "modeSelf",
             "Duration": 1,
-            "Offset": 0
+            "Offset": -0.25
           }
         },
         "out": {
           "effects": {
-            "Rotate": 0,
+            "Rotate": 360,
             "Rotate Y": 0,
-            "Rotate X": 0,
+            "Rotate X": 180,
             "Skew X": 0,
             "Skew Y": 0,
             "Scale X": 1,
@@ -1414,14 +1414,14 @@
             "Ghost": true,
             "position": {
               "Angle": 0,
-              "Distance": 0
+              "Distance": 300
             }
           },
           "travelSettings": {
             "Hint": false,
             "Anchor": "modeSelf",
             "Duration": 1,
-            "Offset": 0
+            "Offset": -0.25
           }
         },
         "cont": {

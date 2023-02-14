@@ -168,7 +168,6 @@ const guiSettings = {
         [EFFECTS_CONFIG.SCALE_Y.LABEL]: 1,
         [EFFECTS_CONFIG.OPACITY.LABEL]: 1,
         [EFFECTS_CONFIG.HUE.LABEL]: 0,
-        // [EFFECTS_CONFIG.TRANS_ORIGIN.LABEL]: TRANSFORM_ORIGIN_OPT.center,
         [EFFECTS_CONFIG.GHOST.LABEL]: true,
         position: {
             [EFFECTS_CONFIG.POS_ANGLE.LABEL]: 0,
@@ -720,19 +719,6 @@ function addScrollEffects(element, sectionName, folder, elemName, direction) {
             init();
         });
 
-    // const transOriginCtrllr = folder
-    //     .add(CONFIG[sectionName][elemName][direction].effects, EFFECTS_CONFIG.TRANS_ORIGIN.LABEL, TRANSFORM_ORIGIN_OPT)
-    //     .onChange((val) => {
-    //         const [originX, originY] = TRANSFORM_ORIGIN_VALS[val];
-    //         element.style.setProperty(`--trans-origin-x`, originX);
-    //         element.style.setProperty(`--trans-origin-y`, originY);
-    //         if (direction !== ANIMATION_DIRECTION_OPT.in) {
-    //             element.nextElementSibling.style.setProperty(`--trans-origin-x-${direction}`, originX);
-    //             element.nextElementSibling.style.setProperty(`--trans-origin-y-${direction}`, originY);
-    //         }
-    //         resetChildrenStyle(element);
-    //         init();
-    //     });
     const ghostCtrllr = folder
         .add(CONFIG[sectionName][elemName][direction].effects, ...Object.values(EFFECTS_CONFIG.GHOST))
         .onChange((showGhost) => {
@@ -757,7 +743,6 @@ function addScrollEffects(element, sectionName, folder, elemName, direction) {
                 [EFFECTS_CONFIG.SCALE_Y.LABEL]: scaleYCtrllr,
                 [EFFECTS_CONFIG.OPACITY.LABEL]: opacityCtrllr,
                 [EFFECTS_CONFIG.HUE.LABEL]: hueCtrllr,
-                // [EFFECTS_CONFIG.TRANS_ORIGIN.LABEL]: transOriginCtrllr,
                 [EFFECTS_CONFIG.GHOST.LABEL]: ghostCtrllr,
                 position: {
                     [EFFECTS_CONFIG.POS_ANGLE.LABEL]: angleCtrllr,
@@ -1029,7 +1014,7 @@ function setValues(rememberedValues) {
                 .slice(1) // remove height property
                 .forEach((elem, idx) => {
                     const elemName = `${sectionsElements[sectionName][idx].tagName}-s${index + 1}_e${idx + 1}`;
-                    ['out','in','cont'].forEach(animationType => {
+                    ['in', 'out', 'cont'].forEach(animationType => {
                         for (const [key, value] of Object.entries(elem[animationType].effects)) { //effects
                             if (key === 'position') {
                                 controllers[sectionName][elemName][animationType].effects.position.Distance.setValue(value.Distance);
