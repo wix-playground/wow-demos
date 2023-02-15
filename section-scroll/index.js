@@ -843,12 +843,18 @@ function addLerp() {
 
 function addToggleAllGhosts () {
     let showGhosts = true;
-    document.querySelector('.ghosts-toggle').addEventListener('click', () => {
+    const button = document.querySelector('.ghosts-toggle');
+    button.addEventListener('click', () => {
+        showGhosts = !showGhosts;
+        if (showGhosts) {
+            button.innerText = "Hide all Ghosts"
+        } else {
+            button.innerText = "Show all Ghosts"
+        }
         for (const direction in ANIMATION_DIRECTION_OPT) {
             const ghosts = document.querySelectorAll(`.ghost-${direction}`);
-            ghosts.forEach(ghost => ghost.style.setProperty(`--no-ghost-${direction}`, showGhosts ? 0 : 0.1)) 
+            ghosts.forEach(ghost => ghost.style.setProperty(`--no-ghost-${direction}`, showGhosts ? .1 : 0)) 
         }
-        showGhosts = !showGhosts;
     });
 }
 
