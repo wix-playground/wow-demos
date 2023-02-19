@@ -91,11 +91,9 @@
                font-size: 80px;
            }
 
-
            h6 {
                font-size: 16px;
            }
-
 
            .actual {
                opacity: calc(1 + var(--pos-in, 0) * var(--opacity-in, 0) + var(--pos-out, 0) * var(--opacity-out, 0) + var(--pos-cont, 0) * var(--opacity-cont, 0));
@@ -118,8 +116,6 @@
                z-index: var(--z-index, 0);
                filter: contrast(0) blur(2px);
                box-shadow: 1px 1px 3px white(162, 162, 162);
-
-
            }
            .ghost-out {
                opacity: var(--no-ghost-out, 0.1);
@@ -165,6 +161,7 @@
                border: 2px solid lightgreen;
                background: white;
            }
+
            .hint-out {
                position: absolute;
                width: 100%;
@@ -179,7 +176,6 @@
                animation: flicker-out 1.5s ease-in-out infinite;
            }
 
-
            .hint-out::before {
                position: sticky;
                top: 0;
@@ -191,6 +187,7 @@
                border: 2px solid lightcoral;
                background: white;
            }
+
            .hint-cont {
                position: absolute;
                width: 100%;
@@ -204,7 +201,6 @@
                z-index: 3;
                animation: flicker-cont 1.5s ease-in-out infinite;
            }
-
 
            .hint-cont::before {
                position: sticky;
@@ -228,10 +224,7 @@
                width: 110vw;
                border-top: 2px dotted white;
                animation: flicker-marker 1.5s ease-in-out alternate infinite;
-
-
            }
-
 
            @keyframes flicker-in {
                0% {
@@ -244,6 +237,7 @@
                    background-color: lightgreen;
                }
            }
+
            @keyframes flicker-out {
                0% {
                    background-color: lightcoral;
@@ -255,6 +249,7 @@
                    background-color: lightcoral;
                }
            }
+
            @keyframes flicker-cont {
                0% {
                    background-color: lightgrey;
@@ -278,7 +273,6 @@
                    border-color: lightcoral;
                }
            }
-
 
            .row {
                display: flex;
@@ -565,6 +559,11 @@
                    </div>
                    <div class="finish-line"></div>
                </section>
+               <section>
+                <div class="element">
+                    <img class="actual" width="384px" height="577px" src="https://static.wixstatic.com/media/11062b_cc91350fdfe84051a03e6573269a7ac5~mv2.jpg" alt="" />
+                </div>
+           </section>
                <section id="strip-6">
                    <div class="element">
                        <div class="card actual">
@@ -632,11 +631,6 @@
                            </div>
                        </div>
                    </div>
-               </section>
-               <section>
-                    <div class="element">
-                        <img class="actual" width="384px" height="577px" src="https://static.wixstatic.com/media/11062b_cc91350fdfe84051a03e6573269a7ac5~mv2.jpg" alt="" />
-                    </div>
                </section>
                <button class="ghosts-toggle">Hide all ghosts</button>
                <div class="hint-marker"></div>           
