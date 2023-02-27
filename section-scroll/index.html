@@ -99,6 +99,7 @@
                opacity: calc(1 + var(--pos-in, 0) * var(--opacity-in, 0) + var(--pos-out, 0) * var(--opacity-out, 0) + var(--pos-cont, 0) * var(--opacity-cont, 0));
                z-index: var(--z-index, 0);
                filter: hue-rotate(calc(var(--pos-in, 0) * var(--hue-in, 0) + var(--pos-out, 0) * var(--hue-out, 0) + var(--pos-cont, 0) * var(--hue-cont, 0)));
+               clip-path: circle(calc(100% + var(--pos-in, 0) * var(--clip-in, 0) + var(--pos-out, 0) * var(--clip-out, 0) + var(--pos-cont, 0) * var(--clip-cont, 0)));
                transform-origin: var(--trans-origin-x, 50%) var(--trans-origin-y, 50%);
                transform:
                    translateX(calc(var(--pos-in, 0) * var(--x-trans-in, 0) + var(--pos-out, 0) * var(--x-trans-out) + var(--pos-cont, 0) * var(--x-trans-cont)))
@@ -121,6 +122,7 @@
                opacity: var(--no-ghost-out, 0.1);
                z-index: var(--z-index, 0);
                filter: hue-rotate(var(--hue-out, 0));
+               clip-path: circle(var(--clip-out, 100%));
                transform-origin: var(--trans-origin-x-out, 50%) var(--trans-origin-y-out, 50%);
                transform: translateX(var(--x-trans-out, 0)) translateY(var(--y-trans-out, 0)) rotateZ(var(--rotate-out, 0))
                    rotateY(var(--rotate-y-out, 0)) rotateX(var(--rotate-x-out, 0)) skewX(var(--skew-x-out, 0))

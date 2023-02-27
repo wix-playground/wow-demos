@@ -77,6 +77,12 @@ const EFFECTS_CONFIG = {
         MAX: 360,
         STEP: 1,
     },
+    CLIP: {
+        LABEL: 'Clip',
+        MIN: 0,
+        MAX: 100,
+        STEP: 1,
+    },
     GHOST: {
         LABEL: 'Ghost',
         VALUE: true,
@@ -168,6 +174,7 @@ const guiSettings = {
         [EFFECTS_CONFIG.SCALE_Y.LABEL]: 1,
         [EFFECTS_CONFIG.OPACITY.LABEL]: 1,
         [EFFECTS_CONFIG.HUE.LABEL]: 0,
+        [EFFECTS_CONFIG.CLIP.LABEL]: 0,
         [EFFECTS_CONFIG.GHOST.LABEL]: true,
         position: {
             [EFFECTS_CONFIG.POS_ANGLE.LABEL]: 0,
@@ -719,6 +726,16 @@ function addScrollEffects(element, sectionName, folder, elemName, direction) {
             init();
         });
 
+    const clipCtrllr = folder
+    .add(CONFIG[sectionName][elemName][direction].effects, ...Object.values(EFFECTS_CONFIG.CLIP))
+    .onChange((val) => {
+        element.style.setProperty(`--clip-${direction}`, `${-val}%`);
+        element.nextElementSibling.style.setProperty(`--clip-${direction}`, `${-val}%`);
+
+        resetChildrenStyle(element);
+        init();
+    });
+    
     const ghostCtrllr = folder
         .add(CONFIG[sectionName][elemName][direction].effects, ...Object.values(EFFECTS_CONFIG.GHOST))
         .onChange((showGhost) => {
@@ -743,6 +760,7 @@ function addScrollEffects(element, sectionName, folder, elemName, direction) {
                 [EFFECTS_CONFIG.SCALE_Y.LABEL]: scaleYCtrllr,
                 [EFFECTS_CONFIG.OPACITY.LABEL]: opacityCtrllr,
                 [EFFECTS_CONFIG.HUE.LABEL]: hueCtrllr,
+                [EFFECTS_CONFIG.CLIP.LABEL]: clipCtrllr,
                 [EFFECTS_CONFIG.GHOST.LABEL]: ghostCtrllr,
                 position: {
                     [EFFECTS_CONFIG.POS_ANGLE.LABEL]: angleCtrllr,
@@ -893,6 +911,7 @@ function getInitStyles(direction) {
         [`--skew-y-${direction}`]: '0deg',
         [`--skew-x-${direction}`]: '0deg',
         [`--hue-${direction}`]: '0deg',
+        [`--clip-${direction}`]: '0%',
         [`--scale-${direction}`]: 0,
         [`--pos-${direction}`]: '0',
         [`--no-ghost-${direction}`]: `${direction === ANIMATION_DIRECTION_OPT.cont ? 0 : 0.1}`,
@@ -932,6 +951,7 @@ function applyStyle(element, elementCSS) {
     element.style.setProperty(`--skew-x-in`, elementCSS.skewXIn);
     element.style.setProperty(`--skew-y-in`, elementCSS.skewYIn);
     element.style.setProperty(`--hue-in`, elementCSS.hueIn);
+    element.style.setProperty(`--clip-in`, elementCSS.ClipIn);
     element.style.setProperty(`--scale-x-in`, elementCSS.scaleXIn);
     element.style.setProperty(`--scale-y-in`, elementCSS.scaleYIn);
     element.style.setProperty(`--no-ghost-in`, elementCSS.ghostIn);
@@ -944,6 +964,7 @@ function applyStyle(element, elementCSS) {
     element.style.setProperty(`--skew-x-out`, elementCSS.skewXOut);
     element.style.setProperty(`--skew-y-out`, elementCSS.skewYOut);
     element.style.setProperty(`--hue-out`, elementCSS.hueOut);
+    element.style.setProperty(`--clip-out`, elementCSS.clipOut);
     element.style.setProperty(`--scale-x-out`, elementCSS.scaleXOut);
     element.style.setProperty(`--scale-y-out`, elementCSS.scaleYOut);
     element.style.setProperty(`--no-ghost-out`, elementCSS.ghostOut);
@@ -962,6 +983,7 @@ function getStyle(element) {
         skewXIn: window.getComputedStyle(element).getPropertyValue(`--skew-x-in`),
         skewYIn: window.getComputedStyle(element).getPropertyValue(`--skew-y-in`),
         hueIn: window.getComputedStyle(element).getPropertyValue(`--hue-in`),
+        clipIn: window.getComputedStyle(element).getPropertyValue(`--clip-in`),
         scaleXIn: window.getComputedStyle(element).getPropertyValue(`--scale-x-in`),
         scaleYIn: window.getComputedStyle(element).getPropertyValue(`--scale-y-in`),
         ghostIn: window.getComputedStyle(element).getPropertyValue(`--no-ghost-in`),
@@ -974,6 +996,7 @@ function getStyle(element) {
         skewXOut: window.getComputedStyle(element).getPropertyValue(`--skew-x-out`),
         skewYOut: window.getComputedStyle(element).getPropertyValue(`--skew-y-out`),
         hueOut: window.getComputedStyle(element).getPropertyValue(`--hue-out`),
+        clipOut: window.getComputedStyle(element).getPropertyValue(`--clip-out`),
         scaleXOut: window.getComputedStyle(element).getPropertyValue(`--scale-x-out`),
         scaleYOut: window.getComputedStyle(element).getPropertyValue(`--scale-y-out`),
         ghostOut: window.getComputedStyle(element).getPropertyValue(`--no-ghost-out`),
@@ -986,6 +1009,7 @@ function getStyle(element) {
         skewXCont: window.getComputedStyle(element).getPropertyValue(`--skew-x-cont`),
         skewYCont: window.getComputedStyle(element).getPropertyValue(`--skew-y-cont`),
         hueCont: window.getComputedStyle(element).getPropertyValue(`--hue-cont`),
+        clipCont: window.getComputedStyle(element).getPropertyValue(`--clip-cont`),
         scaleXCont: window.getComputedStyle(element).getPropertyValue(`--scale-x-cont`),
         scaleYCont: window.getComputedStyle(element).getPropertyValue(`--scale-y-cont`),
         ghostCont: window.getComputedStyle(element).getPropertyValue(`--no-ghost-cont`),
