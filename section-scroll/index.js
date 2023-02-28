@@ -730,7 +730,7 @@ function addScrollEffects(element, sectionName, folder, elemName, direction) {
     .add(CONFIG[sectionName][elemName][direction].effects, ...Object.values(EFFECTS_CONFIG.CLIP))
     .onChange((val) => {
         element.style.setProperty(`--clip-${direction}`, `${-val}%`);
-        element.nextElementSibling.style.setProperty(`--clip-${direction}`, `${-val}%`);
+        element.nextElementSibling.style.setProperty(`--clip-${direction}`, `${100 - val}%`);
 
         resetChildrenStyle(element);
         init();
