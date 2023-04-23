@@ -87,6 +87,12 @@ const EFFECTS_CONFIG = {
         LABEL: 'Ghost',
         VALUE: true,
     },
+    PERSPECTIVE: {
+        LABEL: 'Perspective',
+        MIN: 100,
+        MAX: 3000,
+        STEP: 100,
+    },
     HINT: {
         LABEL: 'Hint',
         VALUE: false,
@@ -176,6 +182,7 @@ const guiSettings = {
         [EFFECTS_CONFIG.HUE.LABEL]: 0,
         [EFFECTS_CONFIG.CLIP.LABEL]: 0,
         [EFFECTS_CONFIG.GHOST.LABEL]: true,
+        [EFFECTS_CONFIG.PERSPECTIVE.LABEL]: 3000,
         position: {
             [EFFECTS_CONFIG.POS_ANGLE.LABEL]: 0,
             [EFFECTS_CONFIG.POS_DIST.LABEL]: 0,
@@ -747,6 +754,15 @@ function addScrollEffects(element, sectionName, folder, elemName, direction) {
             init();
         });
 
+    const perspectiveCtrllr = folder
+    .add(CONFIG[sectionName][elemName][direction].effects, ...Object.values(EFFECTS_CONFIG.PERSPECTIVE))
+    .onChange((perspective) => {
+        element.style.setProperty(`--perspective`, `${perspective}px`);
+        element.nextElementSibling.style.setProperty(`--perspective-out`,`${perspective}px`);
+        resetChildrenStyle(element);
+        init();
+    });
+
     controllers[sectionName][elemName] = {
         ...controllers[sectionName][elemName],  
         [direction]: {
@@ -762,6 +778,7 @@ function addScrollEffects(element, sectionName, folder, elemName, direction) {
                 [EFFECTS_CONFIG.HUE.LABEL]: hueCtrllr,
                 [EFFECTS_CONFIG.CLIP.LABEL]: clipCtrllr,
                 [EFFECTS_CONFIG.GHOST.LABEL]: ghostCtrllr,
+                [EFFECTS_CONFIG.PERSPECTIVE.LABEL]: perspectiveCtrllr,
                 position: {
                     [EFFECTS_CONFIG.POS_ANGLE.LABEL]: angleCtrllr,
                     [EFFECTS_CONFIG.POS_DIST.LABEL]: distCtrllr,
@@ -911,10 +928,11 @@ function getInitStyles(direction) {
         [`--skew-y-${direction}`]: '0deg',
         [`--skew-x-${direction}`]: '0deg',
         [`--hue-${direction}`]: '0deg',
-        [`--clip-${direction}`]: '0%',
+        [`--clip-${direction}`]: '100%',
         [`--scale-${direction}`]: 0,
         [`--pos-${direction}`]: '0',
         [`--no-ghost-${direction}`]: `${direction === ANIMATION_DIRECTION_OPT.cont ? 0 : 0.1}`,
+        [`--perspective`]: '3000px',
         [`--trans-origin-x`]: '50%',
         [`--trans-origin-y`]: '50%',
     };
@@ -968,7 +986,8 @@ function applyStyle(element, elementCSS) {
     element.style.setProperty(`--scale-x-out`, elementCSS.scaleXOut);
     element.style.setProperty(`--scale-y-out`, elementCSS.scaleYOut);
     element.style.setProperty(`--no-ghost-out`, elementCSS.ghostOut);
-
+    
+    element.style.setProperty(`--perspective`, elementCSS.perspective);
     element.style.setProperty(`--trans-origin-x`, elementCSS.transOriginX);
     element.style.setProperty(`--trans-origin-y`, elementCSS.transOriginY);
 }
@@ -987,7 +1006,7 @@ function getStyle(element) {
         scaleXIn: window.getComputedStyle(element).getPropertyValue(`--scale-x-in`),
         scaleYIn: window.getComputedStyle(element).getPropertyValue(`--scale-y-in`),
         ghostIn: window.getComputedStyle(element).getPropertyValue(`--no-ghost-in`),
-
+        
         xTransOut: window.getComputedStyle(element).getPropertyValue(`--x-trans-out`),
         yTransOut: window.getComputedStyle(element).getPropertyValue(`--y-trans-out`),
         rotateOut: window.getComputedStyle(element).getPropertyValue(`--rotate-out`),
@@ -1000,7 +1019,7 @@ function getStyle(element) {
         scaleXOut: window.getComputedStyle(element).getPropertyValue(`--scale-x-out`),
         scaleYOut: window.getComputedStyle(element).getPropertyValue(`--scale-y-out`),
         ghostOut: window.getComputedStyle(element).getPropertyValue(`--no-ghost-out`),
-
+        
         xTransCont: window.getComputedStyle(element).getPropertyValue(`--x-trans-cont`),
         yTransCont: window.getComputedStyle(element).getPropertyValue(`--y-trans-cont`),
         rotateCont: window.getComputedStyle(element).getPropertyValue(`--rotate-cont`),
@@ -1013,7 +1032,8 @@ function getStyle(element) {
         scaleXCont: window.getComputedStyle(element).getPropertyValue(`--scale-x-cont`),
         scaleYCont: window.getComputedStyle(element).getPropertyValue(`--scale-y-cont`),
         ghostCont: window.getComputedStyle(element).getPropertyValue(`--no-ghost-cont`),
-
+        
+        perspective: window.getComputedStyle(element).getPropertyValue(`--perspective`),
         transOriginXIn: window.getComputedStyle(element).getPropertyValue(`--trans-origin-x`),
         transOriginYIn: window.getComputedStyle(element).getPropertyValue(`--trans-origin-y`),
     };
