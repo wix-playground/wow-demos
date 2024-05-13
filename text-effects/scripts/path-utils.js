@@ -4,6 +4,8 @@
  * https://github.com/michaelrhodes/scale-svg-path
  * https://github.com/jkroso/serialize-svg-path
  * https://github.com/jkroso/parse-svg-path
+ * https://github.com/jkroso/abs-svg-path
+ * https://github.com/jkroso/rel-svg-path
  */
 
 /**
@@ -102,6 +104,137 @@ export function scaleSegments(segments, sx, sy) {
             }
             return (val *= i % 2 ? sx : sy);
         });
+    });
+}
+
+/**
+ * define `path` using relative points
+ *
+ * @param {Array} path
+ * @return {Array}
+ */
+
+export function relative(path) {
+    let startX = 0;
+    let startY = 0;
+    let x = 0;
+    let y = 0;
+
+    return path.map(seg => {
+        seg = [...seg];
+        let type = seg[0];
+        const command = type.toLowerCase();
+
+        // is absolute
+        if (type != command) {
+            seg[0] = command;
+            switch (type) {
+                case 'A':
+                    seg[6] -= x;
+                    seg[7] -= y;
+                    break;
+                case 'V':
+                    seg[1] -= y;
+                    break;
+                case 'H':
+                    seg[1] -= x;
+                    break;
+                default:
+                    for (let i = 1; i < seg.length;) {
+                        seg[i++] -= x;
+                        seg[i++] -= y;
+                    }
+            }
+        }
+
+        // update cursor state
+        switch (command) {
+            case 'z':
+                x = startX;
+                y = startY;
+                break;
+            case 'h':
+                x += seg[1];
+                break;
+            case 'v':
+                y += seg[1];
+                break;
+            case 'm':
+                x += seg[1];
+                y += seg[2];
+                startX += seg[1];
+                startY += seg[2];
+                break;
+            default:
+                x += seg[seg.length - 2];
+                y += seg[seg.length - 1];
+        }
+
+        return seg;
+    });
+}
+
+/**
+* redefine `path` with absolute coordinates
+*
+* @param {Array} path
+* @return {Array}
+*/
+
+export function absolute(path) {
+    let startX = 0;
+    let startY = 0;
+    let x = 0;
+    let y = 0;
+
+    return path.map(seg => {
+        seg = [...seg];
+        let type = seg[0];
+        const command = type.toUpperCase();
+
+        // is relative
+        if (type != command) {
+            seg[0] = command;
+            switch (type) {
+                case 'a':
+                    seg[6] += x;
+                    seg[7] += y;
+                    break;
+                case 'v':
+                    seg[1] += y;
+                    break;
+                case 'h':
+                    seg[1] += x;
+                    break;
+                default:
+                    for (let i = 1; i < seg.length;) {
+                        seg[i++] += x;
+                        seg[i++] += y;
+                    }
+            }
+        }
+
+        // update cursor state
+        switch (command) {
+            case 'Z':
+                x = startX;
+                y = startY;
+                break;
+            case 'H':
+                x = seg[1];
+                break;
+            case 'V':
+                y = seg[1];
+                break;
+            case 'M':
+                [x, y] = [seg[1], seg[2]];
+                [startX, startY] = [x, y];
+                break;
+            default:
+                [x, y] = [seg[seg.length - 2], seg[seg.length - 1]];
+        }
+
+        return seg;
     });
 }
 
