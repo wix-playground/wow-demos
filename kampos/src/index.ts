@@ -1,9 +1,8 @@
 // @ts-expect-error
 import { Kampos, effects } from "kampos";
 import {  getVideoElement } from "./constants";
-import { BindingApiEvents } from "tweakpane";
-import debounce from "debounce";
 import { initPane, state } from "./pane";
+import { getQueryValue, onStateChange, setState } from "./state";
 
 function hexToNormalizedRGBA(hex: string): number[] {
     hex = hex.replace(/^#/, "");
@@ -38,12 +37,8 @@ function updateActiveEffects() {
     activeEffects = Object.keys(effects).filter((effectName) => state.effects[effectName].active);
 }
 
-const debounceReinitKampos = debounce(initKampos, 300);
-function updateEffects(ev?: BindingApiEvents<any>['change']) {
-    if(ev && ev.last || !ev){
-        initKampos();
-        debounceReinitKampos();
-    }
+function updateEffects() {
+    initKampos();
 }
 
 function resolveConfig(config: any) {
@@ -91,24 +86,6 @@ async function initKampos() {
     kamposInstance.play();
 }
 
-async function initDemo() {
-    try {
-        video = await prepareVideo();
-        await initKampos();
-        video.play();
-        kamposInstance.play();
-        updateEffects();
-    } catch (error) {
-        console.error("Error initializing demo:", error);
-    }
-}
-
-
-document.addEventListener("DOMContentLoaded", () => {
-    initPane(updateEffects);
-    initDemo();
-});
-
 function prepareVideo() {
     return new Promise<HTMLVideoElement>((resolve, reject) => {
      const video = getVideoElement();
@@ -122,3 +99,28 @@ function prepareVideo() {
         }
     });
 }
+
+
+async function initDemo() {
+    try {
+        video = await prepareVideo();
+        await initKampos();
+        video.play();
+        kamposInstance.play();
+        updateEffects();
+    } catch (error) {
+        console.error("Error initializing demo:", error);
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const pane = initPane();
+    initDemo();
+    const state = getQueryValue();
+    pane.importState(state);
+    setState(state);
+
+    onStateChange(()=>{
+        updateEffects();
+    });
+});

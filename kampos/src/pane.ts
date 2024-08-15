@@ -1,5 +1,7 @@
 import { getVideoElement, DEFAULT_VIDEO_SOURCE_OPTION, VIDEO_SOURCE_OPTIONS } from "./constants";
-import { BindingApiEvents, Pane } from "tweakpane";
+import { Pane } from "tweakpane";
+import { setState } from "./state";
+import debounce from "debounce";
 
 export const state = {
     video: DEFAULT_VIDEO_SOURCE_OPTION,
@@ -69,8 +71,16 @@ export const state = {
 
 let pane: Pane;
 
-export function initPane(updateEffects: (ev?: BindingApiEvents<any>["change"]) => void) {
+const setStateDebounced = debounce(() => {
+    setState(pane.exportState());
+}, 300);
+
+export function initPane() {
     pane = new Pane();
+
+    const updateQuery = () => {
+        setStateDebounced();
+    }
 
     const setVideoSource = (video: HTMLVideoElement, videoFileName: string) => {
         video.src = `./demo/${videoFileName}`;
@@ -79,7 +89,7 @@ export function initPane(updateEffects: (ev?: BindingApiEvents<any>["change"]) =
         video.addEventListener(
             "loadeddata",
             () => {
-                updateEffects();
+                updateQuery();
             },
             { once: true }
         );
@@ -94,32 +104,32 @@ export function initPane(updateEffects: (ev?: BindingApiEvents<any>["change"]) =
 
     // Duotone Effect
     const duotoneFolder = pane.addFolder({ title: "Duotone Effect" });
-    duotoneFolder.addBinding(state.effects.duotone, "active").on("change", updateEffects);
-    duotoneFolder.addBinding(state.effects.duotone, "dark", { view: "color" }).on("change", updateEffects);
+    duotoneFolder.addBinding(state.effects.duotone, "active").on("change", updateQuery);
+    duotoneFolder.addBinding(state.effects.duotone, "dark", { view: "color" }).on("change", updateQuery);
 
     // Brightness/Contrast Effect
     const brightnessContrastFolder = pane.addFolder({ title: "Brightness/Contrast Effect" });
-    brightnessContrastFolder.addBinding(state.effects.brightnessContrast, "active").on("change", updateEffects);
+    brightnessContrastFolder.addBinding(state.effects.brightnessContrast, "active").on("change", updateQuery);
     brightnessContrastFolder
         .addBinding(state.effects.brightnessContrast, "brightness", { min: 0, max: 2 })
-        .on("change", updateEffects);
+        .on("change", updateQuery);
     brightnessContrastFolder
         .addBinding(state.effects.brightnessContrast, "contrast", { min: 0, max: 2 })
-        .on("change", updateEffects);
+        .on("change", updateQuery);
 
     // Hue/Saturation Effect
     const hueSaturationFolder = pane.addFolder({ title: "Hue/Saturation Effect" });
-    hueSaturationFolder.addBinding(state.effects.hueSaturation, "active").on("change", updateEffects);
+    hueSaturationFolder.addBinding(state.effects.hueSaturation, "active").on("change", updateQuery);
     hueSaturationFolder
         .addBinding(state.effects.hueSaturation, "hue", { min: -180, max: 180 })
-        .on("change", updateEffects);
+        .on("change", updateQuery);
     hueSaturationFolder
         .addBinding(state.effects.hueSaturation, "saturation", { min: 0, max: 2 })
-        .on("change", updateEffects);
+        .on("change", updateQuery);
 
     // Blend Effect
     const blendFolder = pane.addFolder({ title: "Blend Effect" });
-    blendFolder.addBinding(state.effects.blend, "active").on("change", updateEffects);
+    blendFolder.addBinding(state.effects.blend, "active").on("change", updateQuery);
     blendFolder
         .addBinding(state.effects.blend, "mode", {
             options: {
@@ -129,18 +139,18 @@ export function initPane(updateEffects: (ev?: BindingApiEvents<any>["change"]) =
                 overlay: "overlay",
             },
         })
-        .on("change", updateEffects);
+        .on("change", updateQuery);
     blendFolder
         .addBinding(state.effects.blend, "color", { view: "color", color: { alpha: true } })
-        .on("change", updateEffects);
+        .on("change", updateQuery);
     // blendFolder
     //     .addBinding(state.effects.blend, "image", { options: VIDEO_SOURCE_OPTIONS }) // Add image prop dropdown
     //     .on("change", updateEffects);
 
     // Alpha Mask Effect
     const alphaMaskFolder = pane.addFolder({ title: "Alpha Mask Effect" });
-    alphaMaskFolder.addBinding(state.effects.alphaMask, "active").on("change", updateEffects);
-    alphaMaskFolder.addBinding(state.effects.alphaMask, "isLuminance").on("change", updateEffects);
+    alphaMaskFolder.addBinding(state.effects.alphaMask, "active").on("change", updateQuery);
+    alphaMaskFolder.addBinding(state.effects.alphaMask, "isLuminance").on("change", updateQuery);
     // alphaMaskFolder
     //     .addBinding(state.effects.alphaMask, "mask", { options: VIDEO_SOURCE_OPTIONS }) // Add mask prop dropdown
     //     .on("change", ({value}) => {
@@ -149,7 +159,7 @@ export function initPane(updateEffects: (ev?: BindingApiEvents<any>["change"]) =
 
     // Displacement Effect
     const displacementFolder = pane.addFolder({ title: "Displacement Effect" });
-    displacementFolder.addBinding(state.effects.displacement, "active").on("change", updateEffects);
+    displacementFolder.addBinding(state.effects.displacement, "active").on("change", updateQuery);
     displacementFolder
         .addBinding(state.effects.displacement, "wrap", {
             options: {
@@ -158,20 +168,20 @@ export function initPane(updateEffects: (ev?: BindingApiEvents<any>["change"]) =
                 mirror: "mirror",
             },
         })
-        .on("change", updateEffects);
+        .on("change", updateQuery);
     displacementFolder
         .addBinding(state.effects.displacement, "scaleX", { min: 0, max: 1 })
-        .on("change", updateEffects);
+        .on("change", updateQuery);
     displacementFolder
         .addBinding(state.effects.displacement, "scaleY", { min: 0, max: 1 })
-        .on("change", updateEffects);
+        .on("change", updateQuery);
     // displacementFolder
     //     .addBinding(state.effects.displacement, "map", { options: VIDEO_SOURCE_OPTIONS })
     //     .on("change", updateEffects);
 
     // Turbulence Effect
     const turbulenceFolder = pane.addFolder({ title: "Turbulence Effect" });
-    turbulenceFolder.addBinding(state.effects.turbulence, "active").on("change", updateEffects);
+    turbulenceFolder.addBinding(state.effects.turbulence, "active").on("change", updateQuery);
     turbulenceFolder
         .addBinding(state.effects.turbulence, "noise", {
             options: {
@@ -180,7 +190,7 @@ export function initPane(updateEffects: (ev?: BindingApiEvents<any>["change"]) =
                 worley: "worley",
             },
         })
-        .on("change", updateEffects);
+        .on("change", updateQuery);
     turbulenceFolder
         .addBinding(state.effects.turbulence, "output", {
             options: {
@@ -188,25 +198,27 @@ export function initPane(updateEffects: (ev?: BindingApiEvents<any>["change"]) =
                 DISPLACEMENT: "DISPLACEMENT",
             },
         })
-        .on("change", updateEffects);
+        .on("change", updateQuery);
     turbulenceFolder
         .addBinding(state.effects.turbulence, "frequencyX", { min: 0, max: 5 })
-        .on("change", updateEffects);
+        .on("change", updateQuery);
     turbulenceFolder
         .addBinding(state.effects.turbulence, "frequencyY", { min: 0, max: 5 })
-        .on("change", updateEffects);
+        .on("change", updateQuery);
     turbulenceFolder
         .addBinding(state.effects.turbulence, "octaves", { min: 1, max: 8 })
-        .on("change", updateEffects);
-    turbulenceFolder.addBinding(state.effects.turbulence, "isFractal").on("change", updateEffects);
-    turbulenceFolder.addBinding(state.effects.turbulence, "time", { min: 0, max: 10 }).on("change", updateEffects);
+        .on("change", updateQuery);
+    turbulenceFolder.addBinding(state.effects.turbulence, "isFractal").on("change", updateQuery);
+    turbulenceFolder.addBinding(state.effects.turbulence, "time", { min: 0, max: 10 }).on("change", updateQuery);
     // Kaleidoscope Effect
     const kaleidoscopeFolder = pane.addFolder({ title: "Kaleidoscope Effect" });
-    kaleidoscopeFolder.addBinding(state.effects.kaleidoscope, "active").on("change", updateEffects);
+    kaleidoscopeFolder.addBinding(state.effects.kaleidoscope, "active").on("change", updateQuery);
     kaleidoscopeFolder
         .addBinding(state.effects.kaleidoscope, "segments", { min: 2, max: 12 })
-        .on("change", updateEffects);
+        .on("change", updateQuery);
     kaleidoscopeFolder
         .addBinding(state.effects.kaleidoscope, "offset", { min: 0, max: 360 })
-        .on("change", updateEffects);
+        .on("change", updateQuery);
+
+    return pane;
 }
