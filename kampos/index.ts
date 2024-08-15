@@ -1,132 +1,289 @@
-// @ts-expect-error
-import { Kampos, effects } from 'kampos';
-import { CONFIG_KEYS, VIDEO_SOURCES } from './constants';
-import { getGuiConfig } from './gui-parts';
-import * as dat from 'dat.gui'
+import { Kampos, effects } from "kampos";
+import { CONFIG_KEYS, VIDEO_SOURCES } from "./constants";
+import { Pane } from "tweakpane";
 
-const GUI_CONFIG = getGuiConfig();
-
-declare namespace KAMPOS_TODO {
-    type Effect = any;
+function hexToNormalizedRGBA(hex: string): number[] {
+    hex = hex.replace(/^#/, "");
+    let r,
+        g,
+        b,
+        a = 1.0;
+    if (hex.length === 6) {
+        r = parseInt(hex.substring(0, 2), 16);
+        g = parseInt(hex.substring(2, 4), 16);
+        b = parseInt(hex.substring(4, 6), 16);
+    } else if (hex.length === 8) {
+        r = parseInt(hex.substring(0, 2), 16);
+        g = parseInt(hex.substring(2, 4), 16);
+        b = parseInt(hex.substring(4, 6), 16);
+        a = parseInt(hex.substring(6, 8), 16) / 255;
+    } else {
+        throw new Error("Invalid hex color format");
+    }
+    return [r / 255, g / 255, b / 255, a];
 }
-let allEffects: Record<string, KAMPOS_TODO.Effect[]> = {};
+
+const GUI_CONFIG = {
+    video: VIDEO_SOURCES[0],
+    effects: {
+        duotone: {
+            active: true,
+            dark: "#ffffff",
+        },
+        brightnessContrast: {
+            active: false,
+            brightness: 1.0,
+            contrast: 1.0,
+        },
+        hueSaturation: {
+            active: false,
+            hue: 0.0,
+            saturation: 1.0,
+        },
+        blend: {
+            active: false,
+            mode: "normal",
+            color: "#000000ff",
+        },
+        alphaMask: {
+            active: false,
+            isLuminance: false,
+        },
+        displacement: {
+            active: false,
+            wrap: "stretch",
+            scaleX: 0.0,
+            scaleY: 0.0,
+        },
+        turbulence: {
+            active: false,
+            noise: "simplex",
+            output: "COLOR",
+            frequencyX: 0.0,
+            frequencyY: 0.0,
+            octaves: 1,
+            isFractal: false,
+            time: 0,
+        },
+        kaleidoscope: {
+            active: false,
+            segments: 6,
+            offset: 0,
+        },
+        fadeTransition: {
+            active: false,
+            progress: 0.0,
+        },
+        displacementTransition: {
+            active: false,
+            progress: 0.0,
+        },
+        dissolveTransition: {
+            active: false,
+            progress: 0.0,
+        },
+    },
+};
+
+// Mapping video sources for Tweakpane options
+const VIDEO_SOURCE_OPTIONS = VIDEO_SOURCES.reduce((obj, source) => {
+    obj[source] = source;
+    return obj;
+}, {} as Record<string, string>);
+
+let allEffects: Record<string, any[]> = {};
 let video: HTMLVideoElement | null = null;
-let gui: dat.GUI;
+let pane: Pane;
 let kamposInstance: Kampos | null = null;
 let activeEffects: string[] = [];
 
-
-function initGUI() {
-    gui = new dat.GUI();
-    gui.remember(GUI_CONFIG);
+function initPane() {
+    pane = new Pane();
 
     // Add video source selector
-    gui.add(GUI_CONFIG, CONFIG_KEYS.VIDEO, VIDEO_SOURCES).onChange((value: typeof VIDEO_SOURCES[number]) => {
-        changeVideoSource(value);
+    pane.addBinding(GUI_CONFIG, "video", {
+        options: VIDEO_SOURCE_OPTIONS,
+    }).on("change", ({ value }) => {
+        changeVideoSource(value as (typeof VIDEO_SOURCES)[number]);
     });
 
-    // Set up dat.GUI for each effect
-    const duotoneFolder = gui.addFolder('Duotone Effect');
-    duotoneFolder.add(GUI_CONFIG.effects.duotone, 'active').onChange(updateEffects);
-    duotoneFolder.addColor(GUI_CONFIG.effects.duotone, 'dark').onChange(updateEffects);
-    // duotoneFolder.addColor(CONFIG.effects.duotone, 'light').onChange(updateColors);
-    duotoneFolder.open();
+    // Duotone Effect
+    const duotoneFolder = pane.addFolder({ title: "Duotone Effect" });
+    duotoneFolder.addBinding(GUI_CONFIG.effects.duotone, "active").on("change", updateEffects);
+    duotoneFolder.addBinding(GUI_CONFIG.effects.duotone, "dark", { view: "color" }).on("change", updateEffects);
 
-    const brightnessContrastFolder = gui.addFolder('Brightness/Contrast Effect');
-    brightnessContrastFolder.add(GUI_CONFIG.effects.brightnessContrast, 'active').onChange(updateEffects);
+    // Brightness/Contrast Effect
+    const brightnessContrastFolder = pane.addFolder({ title: "Brightness/Contrast Effect" });
+    brightnessContrastFolder.addBinding(GUI_CONFIG.effects.brightnessContrast, "active").on("change", updateEffects);
     brightnessContrastFolder
-        .add(GUI_CONFIG.effects.brightnessContrast, 'brightness', 0, 2)
-        .onChange(updateEffects);
+        .addBinding(GUI_CONFIG.effects.brightnessContrast, "brightness", { min: 0, max: 2 })
+        .on("change", updateEffects);
     brightnessContrastFolder
-        .add(GUI_CONFIG.effects.brightnessContrast, 'contrast', 0, 2)
-        .onChange(updateEffects);
-    brightnessContrastFolder.open();
+        .addBinding(GUI_CONFIG.effects.brightnessContrast, "contrast", { min: 0, max: 2 })
+        .on("change", updateEffects);
 
-    const hueSaturationFolder = gui.addFolder('Hue/Saturation Effect');
-    hueSaturationFolder.add(GUI_CONFIG.effects.hueSaturation, 'active').onChange(updateEffects);
-    hueSaturationFolder.add(GUI_CONFIG.effects.hueSaturation, 'hue', -180, 180).onChange(updateEffects);
-    hueSaturationFolder.add(GUI_CONFIG.effects.hueSaturation, 'saturation', 0, 2).onChange(updateEffects);
-    hueSaturationFolder.open();
+    // Hue/Saturation Effect
+    const hueSaturationFolder = pane.addFolder({ title: "Hue/Saturation Effect" });
+    hueSaturationFolder.addBinding(GUI_CONFIG.effects.hueSaturation, "active").on("change", updateEffects);
+    hueSaturationFolder
+        .addBinding(GUI_CONFIG.effects.hueSaturation, "hue", { min: -180, max: 180 })
+        .on("change", updateEffects);
+    hueSaturationFolder
+        .addBinding(GUI_CONFIG.effects.hueSaturation, "saturation", { min: 0, max: 2 })
+        .on("change", updateEffects);
 
-    const blendFolder = gui.addFolder('Blend Effect');
-    blendFolder.add(GUI_CONFIG.effects.blend, 'active').onChange(updateEffects);
-    blendFolder.add(GUI_CONFIG.effects.blend, 'mode', ['normal', 'multiply', 'screen', 'overlay']).onChange(updateEffects);
-    blendFolder.addColor(GUI_CONFIG.effects.blend, 'color').onChange(updateEffects);
-    blendFolder.open();
+    // Blend Effect
+    const blendFolder = pane.addFolder({ title: "Blend Effect" });
+    blendFolder.addBinding(GUI_CONFIG.effects.blend, "active").on("change", updateEffects);
+    blendFolder
+        .addBinding(GUI_CONFIG.effects.blend, "mode", {
+            options: {
+                normal: "normal",
+                multiply: "multiply",
+                screen: "screen",
+                overlay: "overlay",
+            },
+        })
+        .on("change", updateEffects);
+    blendFolder
+        .addBinding(GUI_CONFIG.effects.blend, "color", { view: "color", color: { alpha: true } })
+        .on("change", updateEffects);
 
-    const alphaMaskFolder = gui.addFolder('Alpha Mask Effect');
-    alphaMaskFolder.add(GUI_CONFIG.effects.alphaMask, 'active').onChange(updateEffects);
-    alphaMaskFolder.add(GUI_CONFIG.effects.alphaMask, 'isLuminance').onChange(updateEffects);
-    alphaMaskFolder.open();
+    // Alpha Mask Effect
+    const alphaMaskFolder = pane.addFolder({ title: "Alpha Mask Effect" });
+    alphaMaskFolder.addBinding(GUI_CONFIG.effects.alphaMask, "active").on("change", updateEffects);
+    alphaMaskFolder.addBinding(GUI_CONFIG.effects.alphaMask, "isLuminance").on("change", updateEffects);
 
-    const displacementFolder = gui.addFolder('Displacement Effect');
-    displacementFolder.add(GUI_CONFIG.effects.displacement, 'active').onChange(updateEffects);
-    displacementFolder.add(GUI_CONFIG.effects.displacement, 'wrap', ['stretch', 'repeat', 'mirror']).onChange(updateEffects);
-    displacementFolder.add(GUI_CONFIG.effects.displacement, 'scaleX', 0, 1).onChange(updateEffects);
-    displacementFolder.add(GUI_CONFIG.effects.displacement, 'scaleY', 0, 1).onChange(updateEffects);
-    displacementFolder.open();
+    // Displacement Effect
+    const displacementFolder = pane.addFolder({ title: "Displacement Effect" });
+    displacementFolder.addBinding(GUI_CONFIG.effects.displacement, "active").on("change", updateEffects);
+    displacementFolder
+        .addBinding(GUI_CONFIG.effects.displacement, "wrap", {
+            options: {
+                stretch: "stretch",
+                repeat: "repeat",
+                mirror: "mirror",
+            },
+        })
+        .on("change", updateEffects);
+    displacementFolder
+        .addBinding(GUI_CONFIG.effects.displacement, "scaleX", { min: 0, max: 1 })
+        .on("change", updateEffects);
+    displacementFolder
+        .addBinding(GUI_CONFIG.effects.displacement, "scaleY", { min: 0, max: 1 })
+        .on("change", updateEffects);
 
-    const turbulenceFolder = gui.addFolder('Turbulence Effect');
-    turbulenceFolder.add(GUI_CONFIG.effects.turbulence, 'active').onChange(updateEffects);
-    turbulenceFolder.add(GUI_CONFIG.effects.turbulence, 'noise', ['simplex', 'perlin', 'worley']).onChange(updateEffects);
-    turbulenceFolder.add(GUI_CONFIG.effects.turbulence, 'output', ['COLOR', 'DISPLACEMENT']).onChange(updateEffects);
-    turbulenceFolder.add(GUI_CONFIG.effects.turbulence, 'frequencyX', 0, 5).onChange(updateEffects);
-    turbulenceFolder.add(GUI_CONFIG.effects.turbulence, 'frequencyY', 0, 5).onChange(updateEffects);
-    turbulenceFolder.add(GUI_CONFIG.effects.turbulence, 'octaves', 1, 8).onChange(updateEffects);
-    turbulenceFolder.add(GUI_CONFIG.effects.turbulence, 'isFractal').onChange(updateEffects);
-    turbulenceFolder.add(GUI_CONFIG.effects.turbulence, 'time', 0, 10).onChange(updateEffects);
-    turbulenceFolder.open();
+    // Turbulence Effect
+    const turbulenceFolder = pane.addFolder({ title: "Turbulence Effect" });
+    turbulenceFolder.addBinding(GUI_CONFIG.effects.turbulence, "active").on("change", updateEffects);
+    turbulenceFolder
+        .addBinding(GUI_CONFIG.effects.turbulence, "noise", {
+            options: {
+                simplex: "simplex",
+                perlin: "perlin",
+                worley: "worley",
+            },
+        })
+        .on("change", updateEffects);
+    turbulenceFolder
+        .addBinding(GUI_CONFIG.effects.turbulence, "output", {
+            options: {
+                COLOR: "COLOR",
+                DISPLACEMENT: "DISPLACEMENT",
+            },
+        })
+        .on("change", updateEffects);
+    turbulenceFolder
+        .addBinding(GUI_CONFIG.effects.turbulence, "frequencyX", { min: 0, max: 5 })
+        .on("change", updateEffects);
+    turbulenceFolder
+        .addBinding(GUI_CONFIG.effects.turbulence, "frequencyY", { min: 0, max: 5 })
+        .on("change", updateEffects);
+    turbulenceFolder
+        .addBinding(GUI_CONFIG.effects.turbulence, "octaves", { min: 1, max: 8 })
+        .on("change", updateEffects);
+    turbulenceFolder.addBinding(GUI_CONFIG.effects.turbulence, "isFractal").on("change", updateEffects);
+    turbulenceFolder.addBinding(GUI_CONFIG.effects.turbulence, "time", { min: 0, max: 10 }).on("change", updateEffects);
 
-    const kaleidoscopeFolder = gui.addFolder('Kaleidoscope Effect');
-    kaleidoscopeFolder.add(GUI_CONFIG.effects.kaleidoscope, 'active').onChange(updateEffects);
-    kaleidoscopeFolder.add(GUI_CONFIG.effects.kaleidoscope, 'segments', 2, 12).onChange(updateEffects);
-    kaleidoscopeFolder.add(GUI_CONFIG.effects.kaleidoscope, 'offset', 0, 360).onChange(updateEffects);
-    kaleidoscopeFolder.open();
+    // Kaleidoscope Effect
+    const kaleidoscopeFolder = pane.addFolder({ title: "Kaleidoscope Effect" });
+    kaleidoscopeFolder.addBinding(GUI_CONFIG.effects.kaleidoscope, "active").on("change", updateEffects);
+    kaleidoscopeFolder
+        .addBinding(GUI_CONFIG.effects.kaleidoscope, "segments", { min: 2, max: 12 })
+        .on("change", updateEffects);
+    kaleidoscopeFolder
+        .addBinding(GUI_CONFIG.effects.kaleidoscope, "offset", { min: 0, max: 360 })
+        .on("change", updateEffects);
+    // Fade Transition Effect
+    const fadeTransitionFolder = pane.addFolder({ title: "Fade Transition Effect" });
+    fadeTransitionFolder.addBinding(GUI_CONFIG.effects.fadeTransition, "active").on("change", updateEffects);
+    fadeTransitionFolder
+        .addBinding(GUI_CONFIG.effects.fadeTransition, "progress", { min: 0, max: 1 })
+        .on("change", updateEffects);
 
-    const fadeTransitionFolder = gui.addFolder('Fade Transition Effect');
-    fadeTransitionFolder.add(GUI_CONFIG.effects.fadeTransition, 'active').onChange(updateEffects);
-    fadeTransitionFolder.add(GUI_CONFIG.effects.fadeTransition, 'progress', 0, 1).onChange(updateEffects);
-    fadeTransitionFolder.open();
+    // Displacement Transition Effect
+    const displacementTransitionFolder = pane.addFolder({ title: "Displacement Transition Effect" });
+    displacementTransitionFolder
+        .addBinding(GUI_CONFIG.effects.displacementTransition, "active")
+        .on("change", updateEffects);
+    displacementTransitionFolder
+        .addBinding(GUI_CONFIG.effects.displacementTransition, "progress", { min: 0, max: 1 })
+        .on("change", updateEffects);
 
-    const displacementTransitionFolder = gui.addFolder('Displacement Transition Effect');
-    displacementTransitionFolder.add(GUI_CONFIG.effects.displacementTransition, 'active').onChange(updateEffects);
-    displacementTransitionFolder.add(GUI_CONFIG.effects.displacementTransition, 'progress', 0, 1).onChange(updateEffects);
-    displacementTransitionFolder.open();
-
-    const dissolveTransitionFolder = gui.addFolder('Dissolve Transition Effect');
-    dissolveTransitionFolder.add(GUI_CONFIG.effects.dissolveTransition, 'active').onChange(updateEffects);
-    dissolveTransitionFolder.add(GUI_CONFIG.effects.dissolveTransition, 'progress', 0, 1).onChange(updateEffects);
-    dissolveTransitionFolder.open();
-
-    // Setup for each effect as shown above
-    // ...
+    // Dissolve Transition Effect
+    const dissolveTransitionFolder = pane.addFolder({ title: "Dissolve Transition Effect" });
+    dissolveTransitionFolder.addBinding(GUI_CONFIG.effects.dissolveTransition, "active").on("change", updateEffects);
+    dissolveTransitionFolder
+        .addBinding(GUI_CONFIG.effects.dissolveTransition, "progress", { min: 0, max: 1 })
+        .on("change", updateEffects);
 }
 
 function updateActiveEffects() {
-    console.log('Updating active effects...');
-    //@ts-expect-error
-    activeEffects = Object.keys(effects).filter((effectName) => (GUI_CONFIG.effects[effectName]).active);
+    activeEffects = Object.keys(effects).filter((effectName) => GUI_CONFIG.effects[effectName].active);
 }
+
 function updateEffects() {
-    console.log('Updating effects...');
+    if (kamposInstance) {
+        kamposInstance.stop();
+    }
     initKampos();
 }
 
+function resolveConfig(config: any) {
+    return Object.fromEntries(
+        Object.entries(config).map(([key, value]) => {
+            if (typeof value === "string" && value.startsWith("#")) {
+                return [key, hexToNormalizedRGBA(value)];
+            }
+            return [key, value];
+        })
+    );
+}
+
 async function initKampos() {
-    const target = document.querySelector('#target');
+    const target = document.querySelector("#target");
     updateActiveEffects();
     allEffects = {};
     activeEffects.forEach((effectName) => {
-        //@ts-expect-error
-        allEffects[effectName] = effects[effectName](GUI_CONFIG.effects[effectName] as Kampos.Effect);
+        allEffects[effectName] = effects[effectName](resolveConfig(GUI_CONFIG.effects[effectName]));
     });
-
     kamposInstance = new Kampos({
         target,
         effects: Object.values(allEffects),
     });
 
-    // Set the video source and start playing
+    kamposInstance.setSource({
+        media: video,
+        width: video?.videoWidth,
+        height: video?.videoHeight,
+    });
+
+    kamposInstance.play();
+    kamposInstance = new Kampos({
+        target,
+        effects: Object.values(allEffects),
+    });
+
     kamposInstance.setSource({
         media: video,
         width: video?.videoWidth,
@@ -144,40 +301,39 @@ async function initDemo() {
         kamposInstance.play();
         updateEffects();
     } catch (error) {
-        console.error('Error initializing demo:', error);
-        console.error('There was an error initializing the demo. Please check the console for more information.');
+        console.error("Error initializing demo:", error);
     }
 }
 
-const getVideoElement = () => document.querySelector('#video') as HTMLVideoElement;
+const getVideoElement = () => document.querySelector("#video") as HTMLVideoElement;
 
 function changeVideoSource(videoFileName: string) {
     const videoElement = getVideoElement();
     videoElement.src = `./demo/${videoFileName}`;
     videoElement.load();
     videoElement.play();
-
-    // Reinitialize Kampos with the new video source
-    videoElement.addEventListener('loadeddata', async () => {
-        await initKampos();
-        kamposInstance.play();
-    }, { once: true });
+    videoElement.addEventListener(
+        "loadeddata",
+        async () => {
+            await initKampos();
+            kamposInstance.play();
+        },
+        { once: true }
+    );
 }
-
-
-document.addEventListener('DOMContentLoaded', () => {
-    initGUI();
+document.addEventListener("DOMContentLoaded", () => {
+    initPane();
     initDemo();
 });
 
 function prepareVideo() {
-    return new Promise<HTMLVideoElement>((resolve, reject) => {
+    return new Promise((resolve, reject) => {
         const video = getVideoElement();
         if (video.readyState >= 2) {
             resolve(video);
         } else {
-            video.addEventListener('loadeddata', () => resolve(video), { once: true });
-            video.addEventListener('error', (e) => reject(new Error(`Video loading error: ${e.message}`)), {
+            video.addEventListener("loadeddata", () => resolve(video), { once: true });
+            video.addEventListener("error", (e) => reject(new Error(`Video loading error: ${e.message}`)), {
                 once: true,
             });
         }

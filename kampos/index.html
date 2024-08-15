@@ -4,17 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kampos Duotone Demo</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js"></script>
     <style>
-        body { margin: 0; overflow: hidden; }
-        main { width: 100vw; height: 100vh; }
-        #target { width: 100%; height: 100%; }
+        body { margin: 0;  }
+        #target {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+         }
     </style>
 </head>
 <body>
-    <main>
-        <canvas id="target"></canvas>
-    </main>
+    <canvas id="target"></canvas>
     <video id="video" src="./demo/cloudy-night.mp4" loop muted hidden></video>
     <script src="index.ts" type="module"></script>
 </body>

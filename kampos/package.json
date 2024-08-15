@@ -25,9 +25,11 @@
   "homepage": "https://github.com/wix-playground/wow-demos#readme",
   "dependencies": {
     "dat.gui": "^0.7.9",
-    "kampos": "^0.9.1"
+    "kampos": "^0.9.1",
+    "tweakpane": "^4.0.4"
   },
   "devDependencies": {
+    "@tweakpane/core": "^2.0.4",
     "@types/dat.gui": "^0.7.13",
     "typescript": "^5.5.4",
     "vite": "^5.4.0"
