@@ -3,7 +3,7 @@ import { Kampos, effects } from "kampos";
 import {  getVideoElement } from "./constants";
 import { BindingApiEvents } from "tweakpane";
 import debounce from "debounce";
-import { initPane, GUI_CONFIG } from "./pane";
+import { initPane, state } from "./pane";
 
 function hexToNormalizedRGBA(hex: string): number[] {
     hex = hex.replace(/^#/, "");
@@ -35,7 +35,7 @@ let activeEffects: string[] = [];
 
 function updateActiveEffects() {
     // @ts-expect-error
-    activeEffects = Object.keys(effects).filter((effectName) => GUI_CONFIG.effects[effectName].active);
+    activeEffects = Object.keys(effects).filter((effectName) => state.effects[effectName].active);
 }
 
 const debounceReinitKampos = debounce(initKampos, 300);
@@ -63,7 +63,7 @@ async function initKampos() {
     allEffects = {};
     activeEffects.forEach((effectName) => {
         // @ts-expect-error
-        allEffects[effectName] = effects[effectName](resolveConfig(GUI_CONFIG.effects[effectName]));
+        allEffects[effectName] = effects[effectName](resolveConfig(state.effects[effectName]));
     });
     kamposInstance = new Kampos({
         target,
