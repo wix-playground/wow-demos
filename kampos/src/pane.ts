@@ -70,7 +70,7 @@ const DEFAULT_STATE = {
     },
 };
 
-export const state = JSON.parse(JSON.stringify(DEFAULT_STATE));
+export const state = structuredClone(DEFAULT_STATE);
 
 let pane: Pane;
 
@@ -99,10 +99,9 @@ export function initPane() {
     };
 
     pane.addButton({ title: "Reset" }).on("click", () => {
-        // not working ???
-        console.log("Reset", DEFAULT_STATE);
-        pane.importState(DEFAULT_STATE);
-        setState(DEFAULT_STATE);
+        setState(null);
+        window.location.reload();
+
     });
 
     // Add video source selector for the first video

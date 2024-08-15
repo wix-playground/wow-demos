@@ -16,10 +16,14 @@ export function onStateChange(callback: (query: any) => void) {
     });
 }
 
-export function setState(value: any) {
+export function setState(value?: any) {
     window.dispatchEvent(queryChangeEvent);
 
     const query = new URLSearchParams(window.location.search);
-    query.set(STATE_KEY, JSON.stringify(value));
+    if (!value) {
+        query.delete(STATE_KEY);
+    } else {
+        query.set(STATE_KEY, JSON.stringify(value));
+    }
     history.replaceState(null, "", `?${query.toString()}`);
 }
