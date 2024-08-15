@@ -72,14 +72,11 @@ const DEFAULT_STATE = {
 
 export const state = structuredClone(DEFAULT_STATE);
 
-let pane: Pane;
-
-const setStateDebounced = debounce(() => {
-    setState(pane.exportState());
-}, 300);
-
 export function initPane() {
-    pane = new Pane();
+    const pane = new Pane();
+    const setStateDebounced = debounce(() => {
+        setState(pane.exportState());
+    }, 300);
 
     const updateQuery = () => {
         setStateDebounced();
