@@ -1,6 +1,8 @@
+// @ts-expect-error
 import { Kampos, effects } from "kampos";
 import { CONFIG_KEYS, VIDEO_SOURCES } from "./constants";
-import { Pane } from "tweakpane";
+import { BindingApiEvents, Pane } from "tweakpane";
+import debounce from "debounce";
 
 function hexToNormalizedRGBA(hex: string): number[] {
     hex = hex.replace(/^#/, "");
@@ -91,8 +93,9 @@ const VIDEO_SOURCE_OPTIONS = VIDEO_SOURCES.reduce((obj, source) => {
     return obj;
 }, {} as Record<string, string>);
 
+const getVideoElement = () => document.querySelector("#video") as HTMLVideoElement;
 let allEffects: Record<string, any[]> = {};
-let video: HTMLVideoElement | null = null;
+let video = getVideoElement();
 let pane: Pane;
 let kamposInstance: Kampos | null = null;
 let activeEffects: string[] = [];
@@ -214,39 +217,19 @@ function initPane() {
     kaleidoscopeFolder
         .addBinding(GUI_CONFIG.effects.kaleidoscope, "offset", { min: 0, max: 360 })
         .on("change", updateEffects);
-    // Fade Transition Effect
-    const fadeTransitionFolder = pane.addFolder({ title: "Fade Transition Effect" });
-    fadeTransitionFolder.addBinding(GUI_CONFIG.effects.fadeTransition, "active").on("change", updateEffects);
-    fadeTransitionFolder
-        .addBinding(GUI_CONFIG.effects.fadeTransition, "progress", { min: 0, max: 1 })
-        .on("change", updateEffects);
-
-    // Displacement Transition Effect
-    const displacementTransitionFolder = pane.addFolder({ title: "Displacement Transition Effect" });
-    displacementTransitionFolder
-        .addBinding(GUI_CONFIG.effects.displacementTransition, "active")
-        .on("change", updateEffects);
-    displacementTransitionFolder
-        .addBinding(GUI_CONFIG.effects.displacementTransition, "progress", { min: 0, max: 1 })
-        .on("change", updateEffects);
-
-    // Dissolve Transition Effect
-    const dissolveTransitionFolder = pane.addFolder({ title: "Dissolve Transition Effect" });
-    dissolveTransitionFolder.addBinding(GUI_CONFIG.effects.dissolveTransition, "active").on("change", updateEffects);
-    dissolveTransitionFolder
-        .addBinding(GUI_CONFIG.effects.dissolveTransition, "progress", { min: 0, max: 1 })
-        .on("change", updateEffects);
 }
 
 function updateActiveEffects() {
+    // @ts-expect-error
     activeEffects = Object.keys(effects).filter((effectName) => GUI_CONFIG.effects[effectName].active);
 }
 
-function updateEffects() {
-    if (kamposInstance) {
-        kamposInstance.stop();
+const debounceReinitKampos = debounce(initKampos, 300);
+function updateEffects(ev?: BindingApiEvents<any>['change']) {
+    if(ev && ev.last || !ev){
+        initKampos();
+        debounceReinitKampos();
     }
-    initKampos();
 }
 
 function resolveConfig(config: any) {
@@ -265,6 +248,7 @@ async function initKampos() {
     updateActiveEffects();
     allEffects = {};
     activeEffects.forEach((effectName) => {
+        // @ts-expect-error
         allEffects[effectName] = effects[effectName](resolveConfig(GUI_CONFIG.effects[effectName]));
     });
     kamposInstance = new Kampos({
@@ -305,14 +289,12 @@ async function initDemo() {
     }
 }
 
-const getVideoElement = () => document.querySelector("#video") as HTMLVideoElement;
 
 function changeVideoSource(videoFileName: string) {
-    const videoElement = getVideoElement();
-    videoElement.src = `./demo/${videoFileName}`;
-    videoElement.load();
-    videoElement.play();
-    videoElement.addEventListener(
+    video.src = `./demo/${videoFileName}`;
+    video.load();
+    video.play();
+    video.addEventListener(
         "loadeddata",
         async () => {
             await initKampos();
@@ -327,8 +309,8 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function prepareVideo() {
-    return new Promise((resolve, reject) => {
-        const video = getVideoElement();
+    return new Promise<HTMLVideoElement>((resolve, reject) => {
+     const video = getVideoElement();
         if (video.readyState >= 2) {
             resolve(video);
         } else {
