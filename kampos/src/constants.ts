@@ -7,8 +7,4 @@ export const VIDEO_SOURCES = [
     'wheat-field.mp4',
 ];
 
-export const CONFIG_KEYS = {
-    SAVE: 'Save to File',
-    LOAD: 'Load from Files',
-    VIDEO: 'Video Source',
-};
+export const getVideoElement = () => document.querySelector("#video") as HTMLVideoElement;

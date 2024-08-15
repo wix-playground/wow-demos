@@ -1,31 +1,10 @@
-// @ts-expect-error
-import { Kampos, effects } from "kampos";
-import { CONFIG_KEYS, VIDEO_SOURCES } from "./constants";
+
+import { getVideoElement, VIDEO_SOURCES } from "./constants";
 import { BindingApiEvents, Pane } from "tweakpane";
-import debounce from "debounce";
 
-function hexToNormalizedRGBA(hex: string): number[] {
-    hex = hex.replace(/^#/, "");
-    let r,
-        g,
-        b,
-        a = 1.0;
-    if (hex.length === 6) {
-        r = parseInt(hex.substring(0, 2), 16);
-        g = parseInt(hex.substring(2, 4), 16);
-        b = parseInt(hex.substring(4, 6), 16);
-    } else if (hex.length === 8) {
-        r = parseInt(hex.substring(0, 2), 16);
-        g = parseInt(hex.substring(2, 4), 16);
-        b = parseInt(hex.substring(4, 6), 16);
-        a = parseInt(hex.substring(6, 8), 16) / 255;
-    } else {
-        throw new Error("Invalid hex color format");
-    }
-    return [r / 255, g / 255, b / 255, a];
-}
 
-const GUI_CONFIG = {
+
+export const GUI_CONFIG = {
     video: VIDEO_SOURCES[0],
     effects: {
         duotone: {
@@ -87,27 +66,35 @@ const GUI_CONFIG = {
     },
 };
 
+let pane: Pane;
+
 // Mapping video sources for Tweakpane options
 const VIDEO_SOURCE_OPTIONS = VIDEO_SOURCES.reduce((obj, source) => {
     obj[source] = source;
     return obj;
 }, {} as Record<string, string>);
 
-const getVideoElement = () => document.querySelector("#video") as HTMLVideoElement;
-let allEffects: Record<string, any[]> = {};
-let video = getVideoElement();
-let pane: Pane;
-let kamposInstance: Kampos | null = null;
-let activeEffects: string[] = [];
 
-function initPane() {
+export function initPane(updateEffects: (ev?: BindingApiEvents<any>['change']) => void) {
     pane = new Pane();
 
     // Add video source selector
     pane.addBinding(GUI_CONFIG, "video", {
         options: VIDEO_SOURCE_OPTIONS,
     }).on("change", ({ value }) => {
-        changeVideoSource(value as (typeof VIDEO_SOURCES)[number]);
+        const videoFileName = value as (typeof VIDEO_SOURCES)[number];
+
+    const video = getVideoElement();
+    video.src = `./demo/${videoFileName}`;
+    video.load();
+    video.play();
+    video.addEventListener(
+        "loadeddata",
+         () => {
+            updateEffects();
+        },
+        { once: true }
+    );
     });
 
     // Duotone Effect
@@ -136,7 +123,7 @@ function initPane() {
         .on("change", updateEffects);
 
     // Blend Effect
-    const blendFolder = pane.addFolder({ title: "Blend Effect" });
+    const blendFolder = pane.addFolder({ title: "Blend Effect (missing image prop" });
     blendFolder.addBinding(GUI_CONFIG.effects.blend, "active").on("change", updateEffects);
     blendFolder
         .addBinding(GUI_CONFIG.effects.blend, "mode", {
@@ -153,12 +140,12 @@ function initPane() {
         .on("change", updateEffects);
 
     // Alpha Mask Effect
-    const alphaMaskFolder = pane.addFolder({ title: "Alpha Mask Effect" });
+    const alphaMaskFolder = pane.addFolder({ title: "Alpha Mask Effect (missing mask prop)" });
     alphaMaskFolder.addBinding(GUI_CONFIG.effects.alphaMask, "active").on("change", updateEffects);
     alphaMaskFolder.addBinding(GUI_CONFIG.effects.alphaMask, "isLuminance").on("change", updateEffects);
 
     // Displacement Effect
-    const displacementFolder = pane.addFolder({ title: "Displacement Effect" });
+    const displacementFolder = pane.addFolder({ title: "Displacement Effect (missing map prop)" });
     displacementFolder.addBinding(GUI_CONFIG.effects.displacement, "active").on("change", updateEffects);
     displacementFolder
         .addBinding(GUI_CONFIG.effects.displacement, "wrap", {
@@ -217,107 +204,4 @@ function initPane() {
     kaleidoscopeFolder
         .addBinding(GUI_CONFIG.effects.kaleidoscope, "offset", { min: 0, max: 360 })
         .on("change", updateEffects);
-}
-
-function updateActiveEffects() {
-    // @ts-expect-error
-    activeEffects = Object.keys(effects).filter((effectName) => GUI_CONFIG.effects[effectName].active);
-}
-
-const debounceReinitKampos = debounce(initKampos, 300);
-function updateEffects(ev?: BindingApiEvents<any>['change']) {
-    if(ev && ev.last || !ev){
-        initKampos();
-        debounceReinitKampos();
-    }
-}
-
-function resolveConfig(config: any) {
-    return Object.fromEntries(
-        Object.entries(config).map(([key, value]) => {
-            if (typeof value === "string" && value.startsWith("#")) {
-                return [key, hexToNormalizedRGBA(value)];
-            }
-            return [key, value];
-        })
-    );
-}
-
-async function initKampos() {
-    const target = document.querySelector("#target");
-    updateActiveEffects();
-    allEffects = {};
-    activeEffects.forEach((effectName) => {
-        // @ts-expect-error
-        allEffects[effectName] = effects[effectName](resolveConfig(GUI_CONFIG.effects[effectName]));
-    });
-    kamposInstance = new Kampos({
-        target,
-        effects: Object.values(allEffects),
-    });
-
-    kamposInstance.setSource({
-        media: video,
-        width: video?.videoWidth,
-        height: video?.videoHeight,
-    });
-
-    kamposInstance.play();
-    kamposInstance = new Kampos({
-        target,
-        effects: Object.values(allEffects),
-    });
-
-    kamposInstance.setSource({
-        media: video,
-        width: video?.videoWidth,
-        height: video?.videoHeight,
-    });
-
-    kamposInstance.play();
-}
-
-async function initDemo() {
-    try {
-        video = await prepareVideo();
-        await initKampos();
-        video.play();
-        kamposInstance.play();
-        updateEffects();
-    } catch (error) {
-        console.error("Error initializing demo:", error);
-    }
-}
-
-
-function changeVideoSource(videoFileName: string) {
-    video.src = `./demo/${videoFileName}`;
-    video.load();
-    video.play();
-    video.addEventListener(
-        "loadeddata",
-        async () => {
-            await initKampos();
-            kamposInstance.play();
-        },
-        { once: true }
-    );
-}
-document.addEventListener("DOMContentLoaded", () => {
-    initPane();
-    initDemo();
-});
-
-function prepareVideo() {
-    return new Promise<HTMLVideoElement>((resolve, reject) => {
-     const video = getVideoElement();
-        if (video.readyState >= 2) {
-            resolve(video);
-        } else {
-            video.addEventListener("loadeddata", () => resolve(video), { once: true });
-            video.addEventListener("error", (e) => reject(new Error(`Video loading error: ${e.message}`)), {
-                once: true,
-            });
-        }
-    });
 }
