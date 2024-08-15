@@ -3,7 +3,8 @@ import { Pane } from "tweakpane";
 import { setState } from "./state";
 import debounce from "debounce";
 
-export const state = {
+
+const DEFAULT_STATE = {
     video: DEFAULT_VIDEO_SOURCE_OPTION,
     video2: 'none',
     effects: {
@@ -69,6 +70,8 @@ export const state = {
     },
 };
 
+export const state = JSON.parse(JSON.stringify(DEFAULT_STATE));
+
 let pane: Pane;
 
 const setStateDebounced = debounce(() => {
@@ -94,6 +97,13 @@ export function initPane() {
             { once: true }
         );
     };
+
+    pane.addButton({ title: "Reset" }).on("click", () => {
+        // not working ???
+        console.log("Reset", DEFAULT_STATE);
+        pane.importState(DEFAULT_STATE);
+        setState(DEFAULT_STATE);
+    });
 
     // Add video source selector for the first video
     pane.addBinding(state, "video", {
