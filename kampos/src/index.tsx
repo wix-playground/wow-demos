@@ -3,7 +3,7 @@ import './index.css';
 import { render } from 'solid-js/web';
 import './components/fps';
 import './utils/kampos-init';
-
+import './utils/drag-n-drop';
 import App from './App';
 
 const root = document.getElementById('root');
