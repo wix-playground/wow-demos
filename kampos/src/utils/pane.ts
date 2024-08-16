@@ -5,6 +5,7 @@ import { setState } from "./state";
 import debounce from "debounce";
 
 const pane = new Pane();
+window.pane = pane;
 pane.registerPlugin(CamerakitPlugin);
 const DEFAULT_STATE = {
     video: DEFAULT_VIDEO_SOURCE_OPTION,
@@ -94,7 +95,6 @@ export function initPane() {
         window.location.reload();
     });
 
-    // Add video source selector for the first video
     pane.addBinding(window.state, "video", {
         options: VIDEO_SOURCE_OPTIONS,
     }).on("change", ({ value }) => {

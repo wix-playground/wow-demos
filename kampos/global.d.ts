@@ -1,4 +1,9 @@
+import { Pane } from "tweakpane";
+
 export {};
+
+
+declare global {
 
 type State = {
     video: string;
@@ -66,9 +71,8 @@ type State = {
         };
     }
 }
-
-declare global {
   interface Window {
     state: State;
+    pane: Pane;
   }
 }

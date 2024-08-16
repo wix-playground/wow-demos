@@ -1,33 +1,37 @@
-const STATE_KEY = "s";
-const QUERY_CHANGE_KEY = "queryChange";
+const STATE_KEY = 's';
+const QUERY_CHANGE_KEY = 'queryChange';
 const queryChangeEvent = new Event(QUERY_CHANGE_KEY);
 
+let cachedQueryValue: any = null;
+
 export function getQueryValue() {
-    const value = JSON.parse(new URLSearchParams(window.location.search).get(STATE_KEY) || "{}");
-    if(Object.keys(value).length === 0) {
-        return null;
-    }
-    return value;
+  if (cachedQueryValue !== null) {
+    return cachedQueryValue;
+  }
+
+  const value = JSON.parse(localStorage.getItem(STATE_KEY) || '{}');
+  if (Object.keys(value).length === 0) {
+    return null;
+  }
+  cachedQueryValue = value;
+  return value;
 }
 
 export function onStateChange(callback: (query: any, currentState: any) => void) {
-    window.addEventListener("popstate", () => {
-        callback(getQueryValue(), getQueryValue());
-    });
-
-    window.addEventListener(QUERY_CHANGE_KEY, () => {
-        callback(getQueryValue(), getQueryValue());
-    });
+  window.addEventListener(QUERY_CHANGE_KEY, () => {
+    cachedQueryValue = null; // Invalidate cache
+    callback(getQueryValue(), getQueryValue());
+  });
 }
 
 export function setState(value?: any) {
+  if (!value) {
+    localStorage.removeItem(STATE_KEY);
+    cachedQueryValue = null;
+  } else {
+    console.log('setState', value);
+    localStorage.setItem(STATE_KEY, JSON.stringify(value));
+    cachedQueryValue = value;
+  }
     window.dispatchEvent(queryChangeEvent);
-
-    const query = new URLSearchParams(window.location.search);
-    if (!value) {
-        query.delete(STATE_KEY);
-    } else {
-        query.set(STATE_KEY, JSON.stringify(value));
-    }
-    history.replaceState(null, "", `?${query.toString()}`);
 }

@@ -4,10 +4,10 @@ import { setState, getQueryValue } from '../utils/state';
 import { setVideoSource } from '../utils/utilts';
 
 export function VideoSelector() {
-    const [selectedVideo, setSelectedVideo] = createSignal(getQueryValue().children.find((v) => v.label === 'video')?.binding.value);
+    const [selectedVideo, setSelectedVideo] = createSignal(getQueryValue()?.children?.find((v) => v.label === 'video')?.binding.value);
   onMount(() => {
     const initialState = getQueryValue(); // Access the global state using getQueryValue
-    const initialVideo = initialState.children.find((v) => v.label === 'video')?.binding.value;
+    const initialVideo = initialState?.children?.find((v) => v.label === 'video')?.binding.value;
     if (initialVideo) {
       updateSelectedVideo(initialVideo);
     }
@@ -23,12 +23,12 @@ export function VideoSelector() {
 
   const selectVideo = (source) => {
     const currentState = getQueryValue();
-    const videoChild = currentState.children.find((v) => v.label === 'video');
+    const videoChild = currentState?.children?.find((v) => v.label === 'video');
     if (videoChild) {
       videoChild.binding.value = source;
     }
     setVideoSource(getVideoElement(), source);
-    setState(currentState); // Set the global state
+    setState(currentState);
     updateSelectedVideo(source);
   };
 

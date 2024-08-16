@@ -2,6 +2,7 @@ import { Kampos, effects } from "kampos";
 import {  getVideoElement } from "../constants";
 import { initPane } from "./pane";
 import { getQueryValue, onStateChange, setState } from "./state";
+import { setVideoSource } from "./utilts";
 
 function hexToNormalizedRGBA(hex: string): number[] {
     hex = hex.replace(/^#/, "");
@@ -31,11 +32,6 @@ let kamposInstance: Kampos | null = null;
 let activeEffects: string[] = [];
 
 
-function updateActiveEffects() {
-    // @ts-expect-error
-    activeEffects = Object.keys(effects).filter((effectName) => state.effects[effectName].active);
-}
-
 function updateEffects() {
     initKampos();
 }
@@ -51,6 +47,10 @@ function resolveConfig(config: any) {
     );
 }
 
+function updateActiveEffects() {
+    activeEffects = Object.keys(effects).filter((effectName) => window.state.effects[effectName].active);
+}
+
 async function initKampos() {
     const target = document.querySelector("#target");
     updateActiveEffects();
@@ -58,18 +58,6 @@ async function initKampos() {
     activeEffects.forEach((effectName) => {
         allEffects[effectName] = effects[effectName](resolveConfig(window.state.effects[effectName]));
     });
-    kamposInstance = new Kampos({
-        target,
-        effects: Object.values(allEffects),
-    });
-
-    kamposInstance.setSource({
-        media: video,
-        width: video?.videoWidth,
-        height: video?.videoHeight,
-    });
-
-    kamposInstance.play();
     kamposInstance = new Kampos({
         target,
         effects: Object.values(allEffects),
@@ -146,11 +134,16 @@ async function initDemo() {
 document.addEventListener("DOMContentLoaded", () => {
     const pane = initPane();
     initDemo();
-    const queryState = getQueryValue();
-    pane.importState(queryState);
-    setState(queryState || pane.exportState());
 
-    onStateChange(()=>{
+    onStateChange((value)=>{
+        pane.importState(value);
         updateEffects();
+        console.log(window.state.video, getVideoElement().src);
+        if(window.state.video !== getVideoElement().src){
+            setVideoSource(getVideoElement(), window.state.video);
+        }
     });
+
+    const queryState = getQueryValue();
+    setState(queryState || pane.exportState());
 });
