@@ -57,7 +57,7 @@ class VideoSelector extends HTMLElement {
           ([name, source]) => `
             <img
               class="thumbnail${this.currentSelected === source ? ' selected' : ''}"
-              src="./demo/${source.replace('.mp4', '.jpg')}"
+              src="./assets/${source.replace('.mp4', '.jpg')}"
               alt="${name}"
               data-source="${source}"
             />
