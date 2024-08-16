@@ -90,13 +90,6 @@ export function initPane() {
         video.src = `./demo/${videoFileName}`;
         video.load();
         video.play();
-        video.addEventListener(
-            "loadeddata",
-            () => {
-                updateQuery();
-            },
-            { once: true }
-        );
     };
 
     pane.addButton({ title: "Reset" }).on("click", () => {

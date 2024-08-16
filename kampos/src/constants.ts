@@ -1,4 +1,4 @@
- const VIDEO_SOURCES = [
+export const VIDEO_SOURCES = [
     'cloudy-night.mp4',
     'drop-water.mp4',
     'man-on-beach.mp4',
@@ -15,9 +15,8 @@ const VIDEO_MASK_SOURCES = [
     firstVideoSource,
 ];
 
-
 export const VIDEO_SOURCE_OPTIONS = VIDEO_SOURCES.reduce((obj, source) => {
-    obj[source.replace('.mp4', '').replaceAll('-', ' ')] = source;
+    obj[source] = source;
     return obj;
 }, {} as Record<string, string>);
 
@@ -28,6 +27,5 @@ export const VIDEO_MASK_SOURCE_OPTIONS = VIDEO_MASK_SOURCES.reduce((obj, source)
 
 export const DEFAULT_VIDEO_SOURCE_OPTION = firstVideoSource;
 export const DEFAULT_MASK_VIDEO_SOURCE_OPTION = VIDEO_MASK_SOURCES[0];
-
 
 export const getVideoElement = () => document.querySelector("#video") as HTMLVideoElement;

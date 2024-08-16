@@ -116,9 +116,9 @@ async function initDemo() {
 document.addEventListener("DOMContentLoaded", () => {
     const pane = initPane();
     initDemo();
-    const state = getQueryValue();
-    pane.importState(state);
-    setState(state);
+    const queryState = getQueryValue();
+    pane.importState(queryState);
+    setState(queryState || pane.exportState());
 
     onStateChange(()=>{
         updateEffects();

@@ -3,16 +3,20 @@ const QUERY_CHANGE_KEY = "queryChange";
 const queryChangeEvent = new Event(QUERY_CHANGE_KEY);
 
 export function getQueryValue() {
-    return JSON.parse(new URLSearchParams(window.location.search).get(STATE_KEY) || "{}");
+    const value = JSON.parse(new URLSearchParams(window.location.search).get(STATE_KEY) || "{}");
+    if(Object.keys(value).length === 0) {
+        return null;
+    }
+    return value;
 }
 
-export function onStateChange(callback: (query: any) => void) {
+export function onStateChange(callback: (query: any, currentState: any) => void) {
     window.addEventListener("popstate", () => {
-        callback(getQueryValue());
+        callback(getQueryValue(), getQueryValue());
     });
 
     window.addEventListener(QUERY_CHANGE_KEY, () => {
-        callback(getQueryValue());
+        callback(getQueryValue(), getQueryValue());
     });
 }
 
