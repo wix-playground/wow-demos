@@ -140,8 +140,8 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(() => {
             updateEffects();
         }, 200);
-        console.log(window.state.video, getVideoElement().src);
-        if(window.state.video !== getVideoElement().src){
+
+        if(!getVideoElement().src.endsWith(window.state.video)){
             setVideoSource(getVideoElement(), window.state.video);
         }
     });
