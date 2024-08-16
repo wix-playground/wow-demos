@@ -15,6 +15,10 @@
             width: 100%;
             height: 100%;
          }
+
+        #target.active {
+            opacity: 0.5;
+        }
     </style>
 </head>
 <body>
@@ -25,6 +29,7 @@
     <video-selector></video-selector>
 
     <div id="fpsMeter">FPS: <span id="fps">0</span></div>
+
     <script src="src/index.ts" type="module"></script>
     <script src="src/fps.ts" type="module"></script>
     <script src="src/video-selector.ts" type="module"></script>

@@ -1,16 +1,6 @@
 import { setState, getQueryValue } from './state';
 import { getVideoElement, VIDEO_SOURCE_OPTIONS } from './constants';
 import { setVideoSource } from './utilts';
-
-interface State {
-  children: Array<{
-    label: string;
-    binding: {
-      value: string;
-    };
-  }>;
-}
-
 class VideoSelector extends HTMLElement {
   private currentSelected: string | null = null;
 
@@ -22,8 +12,8 @@ class VideoSelector extends HTMLElement {
   connectedCallback() {
     this.render();
     this.setupEventListeners();
-    const initialState = getQueryValue() as State;
-    const initialVideo = initialState.children.find((v) => v.label === 'video')?.binding.value;
+    const initialState = getQueryValue();
+    const initialVideo = initialState.children.find((v: any) => v.label === 'video')?.binding.value;
     if (initialVideo) {
       this.updateSelectedVideo(initialVideo);
     }
@@ -92,13 +82,11 @@ class VideoSelector extends HTMLElement {
   }
 
   selectVideo(source: string) {
-    const currentState = getQueryValue() as State;
-    console.log('currentState', currentState);
-    const videoChild = currentState.children.find((v) => v.label === 'video');
+    const currentState = getQueryValue();
+    const videoChild = currentState.children.find((v: any) => v.label === 'video');
     if (videoChild) {
       videoChild.binding.value = source;
     }
-    console.log('updated state', currentState, source);
     setVideoSource(getVideoElement(), source);
     setState(currentState);
     this.updateSelectedVideo(source);
