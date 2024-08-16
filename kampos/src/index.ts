@@ -156,7 +156,7 @@ document.addEventListener("DOMContentLoaded", () => {
             updateEffects();
         }, 200);
         console.log(state.video, getVideoElement().src);
-        if(state.video !== getVideoElement().src){
+        if(!getVideoElement().src.endsWith(state.video)){
             setVideoSource(getVideoElement(), state.video);
         }
     });
