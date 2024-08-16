@@ -34,7 +34,7 @@ export function VideoSelector() {
 
   return (
     <div
-      class="fixed bottom-5 left-1/2 transform -translate-x-1/2 flex gap-2 bg-black bg-opacity-50 p-2 rounded-lg"
+      class="fixed bottom-5 left-1/2 transform -translate-x-1/2 flex gap-2 bg-black bg-opacity-50 p-2 rounded-lg overflow-auto"
     >
       {Object.entries(VIDEO_SOURCE_OPTIONS).map(([name, source]) => (
         <img
