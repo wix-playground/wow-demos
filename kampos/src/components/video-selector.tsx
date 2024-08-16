@@ -3,32 +3,27 @@ import { getVideoElement, VIDEO_SOURCE_OPTIONS } from "../constants";
 import { setState, getQueryValue } from "../utils/state";
 import { setVideoSource } from "../utils/utilts";
 
+const getCurrentVideoState = () => getQueryValue()?.children.at(-1)?.children?.find((v) => v.label === "video");
 export function VideoSelector() {
     const [selectedVideo, setSelectedVideo] = createSignal(
-        getQueryValue()?.children?.find((v) => v.label === "video")?.binding.value
+        getCurrentVideoState()
     );
     onMount(() => {
-        const initialState = getQueryValue(); // Access the global state using getQueryValue
-        const initialVideo = initialState?.children?.find((v) => v.label === "video")?.binding.value;
+        const initialVideo = getCurrentVideoState();
         if (initialVideo) {
-            updateSelectedVideo(initialVideo);
+            setSelectedVideo(initialVideo);
         }
     });
 
-    const updateSelectedVideo = (source) => {
-        setSelectedVideo(source);
-        const thumbnails = document.querySelectorAll(".thumbnail");
-    };
-
     const selectVideo = (source) => {
-        const currentState = getQueryValue();
-        const videoChild = currentState?.children?.find((v) => v.label === "video");
+        setSelectedVideo(source);
+        setVideoSource(getVideoElement(), source);
+        const videoChild = getCurrentVideoState();
         if (videoChild) {
             videoChild.binding.value = source;
         }
-        setVideoSource(getVideoElement(), source);
-        setState(currentState);
-        updateSelectedVideo(source);
+        // works cause of mutation above
+        setState(getQueryValue());
     };
 
     return (

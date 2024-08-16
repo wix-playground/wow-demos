@@ -29,12 +29,6 @@ export function initPane() {
         window.location.reload();
     });
 
-    pane.addBinding(window.state, "video", {
-        options: VIDEO_SOURCE_OPTIONS,
-    }).on("change", ({ value }) => {
-        setVideoSource(getVideoElement(), value);
-    });
-
     // Hue/Saturation Effect
     const hueSaturationFolder = pane.addFolder({ title: "Hue/Saturation Effect" });
     hueSaturationFolder.addBinding(window.state.effects.hueSaturation, "active").on("change", updateQuery);
@@ -221,5 +215,13 @@ export function initPane() {
         })
         .on("change", updateQuery);
 
+
+        // not really connected to kaleidoscopeFolder, just a hacky way to hide it
+        kaleidoscopeFolder.addBinding(window.state, "video", {
+            options: VIDEO_SOURCE_OPTIONS,
+            hidden: true,
+        }).on("change", ({ value }) => {
+            setVideoSource(getVideoElement(), value);
+        });
     return pane;
 }
