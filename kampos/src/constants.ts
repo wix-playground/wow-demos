@@ -27,6 +27,7 @@ export const VIDEO_MASK_SOURCE_OPTIONS = VIDEO_MASK_SOURCES.reduce((obj, source)
 }, {} as Record<string, string>);
 
 export const DEFAULT_VIDEO_SOURCE_OPTION = firstVideoSource;
+export const DEFAULT_MASK_VIDEO_SOURCE_OPTION = VIDEO_MASK_SOURCES[0];
 
 
 export const getVideoElement = () => document.querySelector("#video") as HTMLVideoElement;

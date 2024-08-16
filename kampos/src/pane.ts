@@ -1,4 +1,4 @@
-import { getVideoElement, DEFAULT_VIDEO_SOURCE_OPTION, VIDEO_SOURCE_OPTIONS } from "./constants";
+import { getVideoElement, DEFAULT_VIDEO_SOURCE_OPTION, VIDEO_SOURCE_OPTIONS, DEFAULT_MASK_VIDEO_SOURCE_OPTION } from "./constants";
 import { Pane } from "tweakpane";
 import * as CamerakitPlugin from "@tweakpane/plugin-camerakit";
 import { setState } from "./state";
@@ -15,6 +15,7 @@ const DEFAULT_STATE = {
         duotone: {
             active: true,
             dark: "#ffffff",
+            light: 'WIP',
         },
         brightnessContrast: {
             active: false,
@@ -30,19 +31,19 @@ const DEFAULT_STATE = {
             active: false,
             mode: "normal",
             color: "#000000ff",
-            // image: ,
+            image: '' ,
         },
         alphaMask: {
             active: false,
             isLuminance: false,
-            // mask: VIDEO_SOURCES[0],
+            mask: DEFAULT_MASK_VIDEO_SOURCE_OPTION,
         },
         displacement: {
             active: false,
             wrap: "stretch",
             scaleX: 0.0,
             scaleY: 0.0,
-            // map: VIDEO_SOURCES[0],
+            map: DEFAULT_MASK_VIDEO_SOURCE_OPTION,
         },
         turbulence: {
             active: false,
@@ -114,6 +115,7 @@ export function initPane() {
     const duotoneFolder = pane.addFolder({ title: "Duotone Effect" });
     duotoneFolder.addBinding(state.effects.duotone, "active").on("change", updateQuery);
     duotoneFolder.addBinding(state.effects.duotone, "dark", { view: "color" }).on("change", updateQuery);
+    duotoneFolder.addBinding(state.effects.duotone, "light", { view: "text", disabled: true });
 
     // Brightness/Contrast Effect
     const brightnessContrastFolder = pane.addFolder({ title: "Brightness/Contrast Effect" });
@@ -161,9 +163,9 @@ export function initPane() {
     blendFolder
         .addBinding(state.effects.blend, "color", { view: "color", color: { alpha: true } })
         .on("change", updateQuery);
-    // blendFolder
-    //     .addBinding(state.effects.blend, "image", { options: VIDEO_SOURCE_OPTIONS }) // Add image prop dropdown
-    //     .on("change", updateEffects);
+    blendFolder
+        .addBinding(state.effects.blend, "image", { options: VIDEO_SOURCE_OPTIONS, disabled: true })
+        .on("change", updateQuery);
 
     // Alpha Mask Effect
     const alphaMaskFolder = pane.addFolder({ title: "Alpha Mask Effect (WIP)", expanded: false });
@@ -173,11 +175,11 @@ export function initPane() {
     alphaMaskFolder.addBinding(state.effects.alphaMask, "isLuminance",{
         disabled: true,
     }).on("change", updateQuery);
-    // alphaMaskFolder
-    //     .addBinding(state.effects.alphaMask, "mask", { options: VIDEO_SOURCE_OPTIONS }) // Add mask prop dropdown
-    //     .on("change", ({value}) => {
-    //         setVideoSource(getSecondVideoElement(), value);
-    //     });
+    alphaMaskFolder
+        .addBinding(state.effects.alphaMask, "mask", { options: VIDEO_SOURCE_OPTIONS, disabled: true })
+        .on("change", ({value}) => {
+            // setVideoSource(getSecondVideoElement(), value);
+        });
 
     // Displacement Effect
     const displacementFolder = pane.addFolder({ title: "Displacement Effect (WIP)", expanded: false });
@@ -211,9 +213,9 @@ export function initPane() {
             max: 1,
         })
         .on("change", updateQuery);
-    // displacementFolder
-    //     .addBinding(state.effects.displacement, "map", { options: VIDEO_SOURCE_OPTIONS })
-    //     .on("change", updateEffects);
+    displacementFolder
+        .addBinding(state.effects.displacement, "map", { options: VIDEO_SOURCE_OPTIONS, disabled: true })
+        .on("change", updateQuery);
 
     // Turbulence Effect
     const turbulenceFolder = pane.addFolder({ title: "Turbulence Effect (WIP)", expanded: false });
