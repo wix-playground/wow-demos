@@ -1,4 +1,4 @@
-import { getVideoElement, DEFAULT_VIDEO_SOURCE_OPTION, VIDEO_SOURCE_OPTIONS, DEFAULT_MASK_VIDEO_SOURCE_OPTION } from "../constants";
+import { getVideoElement, VIDEO_SOURCE_OPTIONS, DEFAULT_STATE } from "../constants";
 import { Pane } from "tweakpane";
 import * as CamerakitPlugin from "@tweakpane/plugin-camerakit";
 import { setState } from "./state";
@@ -7,78 +7,12 @@ import debounce from "debounce";
 const pane = new Pane();
 window.pane = pane;
 pane.registerPlugin(CamerakitPlugin);
-const DEFAULT_STATE = {
-    video: DEFAULT_VIDEO_SOURCE_OPTION,
-    video2: "none",
-    effects: {
-        duotone: {
-            active: true,
-            dark: "#ffffff",
-            light: 'WIP',
-        },
-        brightnessContrast: {
-            active: false,
-            brightness: 1.0,
-            contrast: 1.0,
-        },
-        hueSaturation: {
-            active: false,
-            hue: 0.0,
-            saturation: 1.0,
-        },
-        blend: {
-            active: false,
-            mode: "normal",
-            color: "#000000ff",
-            image: '' ,
-        },
-        alphaMask: {
-            active: false,
-            isLuminance: false,
-            mask: DEFAULT_MASK_VIDEO_SOURCE_OPTION,
-        },
-        displacement: {
-            active: false,
-            wrap: "stretch",
-            scaleX: 0.0,
-            scaleY: 0.0,
-            map: DEFAULT_MASK_VIDEO_SOURCE_OPTION,
-        },
-        turbulence: {
-            active: false,
-            noise: "simplex",
-            output: "COLOR",
-            frequencyX: 0.0,
-            frequencyY: 0.0,
-            octaves: 1,
-            isFractal: false,
-            time: 0,
-        },
-        kaleidoscope: {
-            active: false,
-            segments: 6,
-            offset: 0,
-        },
-        fadeTransition: {
-            active: false,
-            progress: 0.0,
-        },
-        displacementTransition: {
-            active: false,
-            progress: 0.0,
-        },
-        dissolveTransition: {
-            active: false,
-            progress: 0.0,
-        },
-    },
-};
 
 window.state = structuredClone(DEFAULT_STATE);
 export function initPane() {
     const setStateDebounced = debounce(() => {
         setState(pane.exportState());
-    }, 300);
+    }, 50);
 
     const updateQuery = () => {
         setStateDebounced();
@@ -101,11 +35,15 @@ export function initPane() {
         setVideoSource(getVideoElement(), value);
     });
 
-    // Duotone Effect
-    const duotoneFolder = pane.addFolder({ title: "Duotone Effect" });
-    duotoneFolder.addBinding(window.state.effects.duotone, "active").on("change", updateQuery);
-    duotoneFolder.addBinding(window.state.effects.duotone, "dark", { view: "color" }).on("change", updateQuery);
-    duotoneFolder.addBinding(window.state.effects.duotone, "light", { view: "text", disabled: true });
+    // Hue/Saturation Effect
+    const hueSaturationFolder = pane.addFolder({ title: "Hue/Saturation Effect" });
+    hueSaturationFolder.addBinding(window.state.effects.hueSaturation, "active").on("change", updateQuery);
+    hueSaturationFolder
+        .addBinding(window.state.effects.hueSaturation, "hue", { min: -180, max: 180 })
+        .on("change", updateQuery);
+    hueSaturationFolder
+        .addBinding(window.state.effects.hueSaturation, "saturation", { min: 0, max: 2 })
+        .on("change", updateQuery);
 
     // Brightness/Contrast Effect
     const brightnessContrastFolder = pane.addFolder({ title: "Brightness/Contrast Effect" });
@@ -127,15 +65,11 @@ export function initPane() {
         .addBinding(window.state.effects.brightnessContrast, "contrast", { min: 0, max: 2 })
         .on("change", updateQuery);
 
-    // Hue/Saturation Effect
-    const hueSaturationFolder = pane.addFolder({ title: "Hue/Saturation Effect" });
-    hueSaturationFolder.addBinding(window.state.effects.hueSaturation, "active").on("change", updateQuery);
-    hueSaturationFolder
-        .addBinding(window.state.effects.hueSaturation, "hue", { min: -180, max: 180 })
-        .on("change", updateQuery);
-    hueSaturationFolder
-        .addBinding(window.state.effects.hueSaturation, "saturation", { min: 0, max: 2 })
-        .on("change", updateQuery);
+    // Duotone Effect
+    const duotoneFolder = pane.addFolder({ title: "Duotone Effect" });
+    duotoneFolder.addBinding(window.state.effects.duotone, "active").on("change", updateQuery);
+    duotoneFolder.addBinding(window.state.effects.duotone, "dark", { view: "color" }).on("change", updateQuery);
+    duotoneFolder.addBinding(window.state.effects.duotone, "light", { view: "text", disabled: true });
 
     // Blend Effect
     const blendFolder = pane.addFolder({ title: "Blend Effect" });
@@ -159,16 +93,20 @@ export function initPane() {
 
     // Alpha Mask Effect
     const alphaMaskFolder = pane.addFolder({ title: "Alpha Mask Effect (WIP)", expanded: false });
-    alphaMaskFolder.addBinding(window.state.effects.alphaMask, "active",{
-        disabled: true,
-    }).on("change", updateQuery);
-    alphaMaskFolder.addBinding(window.state.effects.alphaMask, "isLuminance",{
-        disabled: true,
-    }).on("change", updateQuery);
+    alphaMaskFolder
+        .addBinding(window.state.effects.alphaMask, "active", {
+            disabled: true,
+        })
+        .on("change", updateQuery);
+    alphaMaskFolder
+        .addBinding(window.state.effects.alphaMask, "isLuminance", {
+            disabled: true,
+        })
+        .on("change", updateQuery);
     alphaMaskFolder
         .addBinding(window.state.effects.alphaMask, "mask", { options: VIDEO_SOURCE_OPTIONS, disabled: true })
-        .on("change", ({value}) => {
-            console.log('mask', value);
+        .on("change", ({ value }) => {
+            console.log("mask", value);
             // setVideoSource(getSecondVideoElement(), value);
         });
 
