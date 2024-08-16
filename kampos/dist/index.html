@@ -4,18 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kampos Duotone Demo</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js"></script>
     <style>
-        body { margin: 0; overflow: hidden; }
-        main { width: 100vw; height: 100vh; }
-        #target { width: 100%; height: 100%; }
+        body { margin: 0;  }
+        #target {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+         }
+
+        #target.active {
+            opacity: 0.5;
+        }
     </style>
-  <script type="module" crossorigin src="/assets/index-EQqd3pX4.js"></script>
+  <script type="module" crossorigin src="./assets/index-DKubskIW.js"></script>
 </head>
 <body>
-    <main>
-        <canvas id="target"></canvas>
-    </main>
-    <video id="video" src="/assets/cloudy-night-CBOCL4z3.mp4" loop muted hidden></video>
+    <canvas id="target"></canvas>
+    <video id="video" src="./assets/cloudy-night-CBOCL4z3.mp4" loop muted hidden></video>
+    <!-- <video id="video2" src="./demo/cloudy-night.mp4" loop muted hidden></video> -->
+    <wow-fps-meter></wow-fps-meter>
+    <video-selector></video-selector>
+
+    <div id="fpsMeter">FPS: <span id="fps">0</span></div>
+
 </body>
 </html>

@@ -43,7 +43,7 @@ function updateEffects() {
 
 function resolveConfig(config: any) {
     return Object.fromEntries(
-        Object.entries(config).filter(([key, value]) => value !== 'none' && value !== 'WIP').map(([key, value]) => {
+        Object.entries(config).filter(([_, value]) => value !== 'none' && value !== 'WIP').map(([key, value]) => {
             if (typeof value === "string" && value.startsWith("#")) {
                 return [key, hexToNormalizedRGBA(value)];
             }

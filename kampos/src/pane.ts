@@ -171,6 +171,7 @@ export function initPane() {
     alphaMaskFolder
         .addBinding(state.effects.alphaMask, "mask", { options: VIDEO_SOURCE_OPTIONS, disabled: true })
         .on("change", ({value}) => {
+            console.log('mask', value);
             // setVideoSource(getSecondVideoElement(), value);
         });
 
