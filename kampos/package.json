@@ -26,6 +26,7 @@
     "kampos": "^0.9.1",
     "solid-js": "^1.8.11",
     "stats.js": "^0.17.0",
+    "tailwindcss-spring": "^1.0.1",
     "tweakpane": "^4.0.4"
   }
 }
