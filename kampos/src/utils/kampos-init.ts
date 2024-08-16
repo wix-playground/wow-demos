@@ -137,7 +137,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     onStateChange((value)=>{
         pane.importState(value);
-        updateEffects();
+        setTimeout(() => {
+            updateEffects();
+        }, 100);
         console.log(window.state.video, getVideoElement().src);
         if(window.state.video !== getVideoElement().src){
             setVideoSource(getVideoElement(), window.state.video);
