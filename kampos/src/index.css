@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+body {
+    margin: 0;
+    background-color: black;
+}
+
+#drag-n-drop.active {
+    background-color: blue;
+}
+
+#drag-n-drop.active #target {
+    opacity: 0.5;
+}
