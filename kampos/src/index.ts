@@ -3,6 +3,7 @@ import { Kampos, effects } from "kampos";
 import {  getVideoElement } from "./constants";
 import { initPane, state } from "./pane";
 import { getQueryValue, onStateChange, setState } from "./state";
+import { setVideoSource } from "./utilts";
 
 function hexToNormalizedRGBA(hex: string): number[] {
     hex = hex.replace(/^#/, "");
@@ -148,11 +149,18 @@ async function initDemo() {
 document.addEventListener("DOMContentLoaded", () => {
     const pane = initPane();
     initDemo();
-    const queryState = getQueryValue();
-    pane.importState(queryState);
-    setState(queryState || pane.exportState());
 
-    onStateChange(()=>{
-        updateEffects();
+    onStateChange((value)=>{
+        pane.importState(value);
+        setTimeout(() => {
+            updateEffects();
+        }, 200);
+        console.log(state.video, getVideoElement().src);
+        if(state.video !== getVideoElement().src){
+            setVideoSource(getVideoElement(), state.video);
+        }
     });
+
+    const queryState = getQueryValue();
+    setState(queryState || pane.exportState());
 });
