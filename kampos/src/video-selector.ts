@@ -1,6 +1,7 @@
 import { setState, getQueryValue } from './state';
 import { getVideoElement, VIDEO_SOURCE_OPTIONS } from './constants';
 import { setVideoSource } from './utilts';
+
 class VideoSelector extends HTMLElement {
   private currentSelected: string | null = null;
 
@@ -51,6 +52,21 @@ class VideoSelector extends HTMLElement {
         .thumbnail.selected {
           border-color: #fff;
         }
+        .drag-info {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          width: 80px;
+          height: 45px;
+          background: rgba(255, 255, 255, 0.2);
+          border-radius: 5px;
+          color: #fff;
+          font-size: 10px;
+          text-align: center;
+          cursor: default;
+          border: 2px dashed #fff;
+        }
       </style>
       ${Object.entries(VIDEO_SOURCE_OPTIONS)
         .map(
@@ -64,6 +80,9 @@ class VideoSelector extends HTMLElement {
           `
         )
         .join('')}
+      <div class="drag-info">
+        <span>Drag file</span>
+      </div>
     `;
   }
 
@@ -79,6 +98,30 @@ class VideoSelector extends HTMLElement {
         }
       }
     });
+
+    // Add drag and drop event listeners
+    this.addEventListener('dragover', this.handleDragOver.bind(this));
+    this.addEventListener('drop', this.handleDrop.bind(this));
+  }
+
+  handleDragOver(e: DragEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
+  handleDrop(e: DragEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (e.dataTransfer && e.dataTransfer.files.length > 0) {
+      const file = e.dataTransfer.files[0];
+      if (file.type.startsWith('video/')) {
+        const videoUrl = URL.createObjectURL(file);
+        this.selectVideo(videoUrl);
+      } else {
+        alert('Please drop a valid video file.');
+      }
+    }
   }
 
   selectVideo(source: string) {

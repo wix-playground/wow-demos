@@ -101,7 +101,7 @@ function prepareVideo() {
 }
 
 function setupDragAndDrop() {
-    const dropOverlay = document.getElementById('target');
+    const dropOverlay = document.getElementById('drag-n-drop');
     const body = document.body;
 
     body.addEventListener('dragenter', (e) => {
@@ -115,9 +115,7 @@ function setupDragAndDrop() {
 
     body.addEventListener('dragleave', (e) => {
         e.preventDefault();
-        if (e.target === dropOverlay) {
-            dropOverlay?.classList.remove('active');
-        }
+        dropOverlay?.classList.remove('active');
     });
 
     body.addEventListener('drop', (e) => {
