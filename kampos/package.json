@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/wix-playground/wow-demos#readme",
   "dependencies": {
+    "@tweakpane/plugin-camerakit": "^0.3.0",
     "dat.gui": "^0.7.9",
     "debounce": "^2.1.0",
     "kampos": "^0.9.1",
