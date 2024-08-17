@@ -1,7 +1,6 @@
 import { createSignal, onMount } from "solid-js";
-import { getVideoElement, VIDEO_SOURCE_OPTIONS } from "../constants";
+import { VIDEO_SOURCE_OPTIONS } from "../constants";
 import { setState, getQueryValue } from "../utils/state";
-import { setVideoSource } from "../utils/utilts";
 
 const getCurrentVideoState = () => getQueryValue()?.children.at(-1)?.children?.find((v) => v.label === "video");
 export function VideoSelector() {
@@ -17,7 +16,6 @@ export function VideoSelector() {
 
     const selectVideo = (source) => {
         setSelectedVideo(source);
-        setVideoSource(getVideoElement(), source);
         const videoChild = getCurrentVideoState();
         if (videoChild) {
             videoChild.binding.value = source;
