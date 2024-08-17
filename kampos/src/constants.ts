@@ -1,0 +1,98 @@
+export const VIDEO_SOURCES = [
+    'cloudy-night.mp4',
+    'drop-water.mp4',
+    'man-on-beach.mp4',
+    'starry-night.mp4',
+    'shell-beach.mp4',
+    'wheat-field.mp4',
+];
+
+const [firstVideoSource, ...ALL_EXCEPT_FIRST_VIDEO_SOURCES] = VIDEO_SOURCES;
+
+const VIDEO_MASK_SOURCES = [
+    'none',
+    ...ALL_EXCEPT_FIRST_VIDEO_SOURCES,
+    firstVideoSource,
+];
+
+export const VIDEO_SOURCE_OPTIONS = VIDEO_SOURCES.reduce((obj, source) => {
+    obj[source] = source;
+    return obj;
+}, {} as Record<string, string>);
+
+export const VIDEO_MASK_SOURCE_OPTIONS = VIDEO_MASK_SOURCES.reduce((obj, source) => {
+    obj[source] = source;
+    return obj;
+}, {} as Record<string, string>);
+
+export const DEFAULT_VIDEO_SOURCE_OPTION = firstVideoSource;
+export const DEFAULT_MASK_VIDEO_SOURCE_OPTION = VIDEO_MASK_SOURCES[0];
+
+export const getVideoElement = () => document.querySelector("#video") as HTMLVideoElement;
+
+export const DEFAULT_STATE = {
+    video: DEFAULT_VIDEO_SOURCE_OPTION,
+    video2: "none",
+    effects: {
+        hueSaturation: {
+            active: true,
+            hue: 0.0,
+            saturation: 1.0,
+        },
+        brightnessContrast: {
+            active: false,
+            brightness: 1.0,
+            contrast: 1.0,
+        },
+        blend: {
+            active: false,
+            mode: "normal",
+            color: "#000000ff",
+            image: '' ,
+        },
+        duotone: {
+            active: false,
+            dark: "#ffffff",
+            light: 'WIP',
+        },
+        alphaMask: {
+            active: false,
+            isLuminance: false,
+            mask: DEFAULT_MASK_VIDEO_SOURCE_OPTION,
+        },
+        displacement: {
+            active: false,
+            wrap: "stretch",
+            scaleX: 0.0,
+            scaleY: 0.0,
+            map: DEFAULT_MASK_VIDEO_SOURCE_OPTION,
+        },
+        turbulence: {
+            active: false,
+            noise: "simplex",
+            output: "COLOR",
+            frequencyX: 0.0,
+            frequencyY: 0.0,
+            octaves: 1,
+            isFractal: false,
+            time: 0,
+        },
+        kaleidoscope: {
+            active: false,
+            segments: 6,
+            offset: 0,
+        },
+        fadeTransition: {
+            active: false,
+            progress: 0.0,
+        },
+        displacementTransition: {
+            active: false,
+            progress: 0.0,
+        },
+        dissolveTransition: {
+            active: false,
+            progress: 0.0,
+        },
+    },
+};
