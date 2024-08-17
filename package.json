@@ -5,8 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "kampos": "vite ./kampos"
+    "kampos": "vite ./kampos",
+    "build": "cd kampos && npm run build"
   },
+  "workspaces": [ "./kampos", "./gradients" ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/wix-playground/wow-demos.git"
