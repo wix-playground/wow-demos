@@ -189,12 +189,12 @@ export function initPane() {
     input.accept = "application/json";
     input.style.display = "none";
     input.addEventListener("change", (event) => {
-        const file = event.target.files[0];
+        const file = (event.target as HTMLInputElement).files[0];
         if (file) {
             const reader = new FileReader();
             reader.onload = (e) => {
                 try {
-                    const json = JSON.parse(e.target.result);
+                    const json = JSON.parse(e.target.result as string);
                     console.log("Imported JSON:", json);
 
                     if (!json.children) {
