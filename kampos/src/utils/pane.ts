@@ -10,7 +10,7 @@ pane.registerPlugin(CamerakitPlugin);
 
 window.state = structuredClone(DEFAULT_STATE);
 export function initPane() {
-    const setVideoSource = (video: HTMLVideoElement, videoFileName: string) => {
+    const setVideoSource = (video, videoFileName) => {
         video.src = `./assets/${videoFileName}`;
         video.load();
         video.play();
@@ -150,6 +150,7 @@ export function initPane() {
         min: 0,
         max: 10,
     });
+
     // Kaleidoscope Effect
     const kaleidoscopeFolder = pane.addFolder({ title: "Kaleidoscope Effect" });
     kaleidoscopeFolder.addBinding(window.state.effects.kaleidoscope, "active");
@@ -172,6 +173,51 @@ export function initPane() {
             setVideoSource(getVideoElement(), value);
         });
 
+    pane.addButton({ title: "Export JSON" }).on("click", () => {
+        const dataStr = JSON.stringify(pane.exportState(), null, 2);
+        const blob = new Blob([dataStr], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "kampos-preset.json";
+        a.click();
+        URL.revokeObjectURL(url);
+    });
+
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "application/json";
+    input.style.display = "none";
+    input.addEventListener("change", (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const json = JSON.parse(e.target.result);
+                    console.log("Imported JSON:", json);
+
+                    if (!json.children) {
+                        throw new Error("Invalid JSON structure: Missing 'children' key.");
+                    }
+
+                    pane.importState(json);
+                    setState(json);
+                } catch (error) {
+                    console.error("Error during import:", error);
+                    alert(`An error occurred: ${error.message}`);
+                }
+            };
+            reader.readAsText(file);
+        }
+    });
+
+    pane.addButton({ title: "Import JSON" }).on("click", () => {
+        input.click();
+    });
+
+    document.body.appendChild(input);
+
     const setStateDebounced = debounce(() => {
         setState(pane.exportState());
     }, 50);
@@ -179,5 +225,6 @@ export function initPane() {
     pane.on("change", () => {
         setStateDebounced();
     });
+
     return pane;
 }
