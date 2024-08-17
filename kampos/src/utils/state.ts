@@ -29,7 +29,6 @@ export function setState(value?: any) {
     localStorage.removeItem(STATE_KEY);
     cachedQueryValue = null;
   } else {
-    console.log('setState', value);
     localStorage.setItem(STATE_KEY, JSON.stringify(value));
     cachedQueryValue = value;
   }
