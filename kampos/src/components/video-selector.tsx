@@ -5,14 +5,8 @@ import { setState, getQueryValue } from "../utils/state";
 const getCurrentVideoState = () => getQueryValue()?.children.at(-1)?.children?.find((v) => v.label === "video");
 export function VideoSelector() {
     const [selectedVideo, setSelectedVideo] = createSignal(
-        getCurrentVideoState()
+        getCurrentVideoState().binding.value
     );
-    onMount(() => {
-        const initialVideo = getCurrentVideoState();
-        if (initialVideo) {
-            setSelectedVideo(initialVideo);
-        }
-    });
 
     const selectVideo = (source) => {
         setSelectedVideo(source);
