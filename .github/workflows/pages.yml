@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Build and deploy to GitHub Pages
 
 on:
   push:
@@ -21,7 +21,7 @@ jobs:
       - name: Install dependencies for all workspaces
         run: npm install --workspaces
 
-      - name: Build project
+      - name: Build all projects
         run: npm run build --workspaces
 
       - name: Deploy to GitHub Pages
