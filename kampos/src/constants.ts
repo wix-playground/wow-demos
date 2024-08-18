@@ -2,6 +2,8 @@ const ASSETS_PREFIX = "./assets";
 
 export const DEFAULT_VIDEO_SOURCE_OPTION = 'Cloudy Night';
 export const VIDEO_SOURCE_OPTIONS = {
+    'tunnel futuristic': ASSETS_PREFIX+'/tunnel-futuristic.mp4',
+    'neon terrain': ASSETS_PREFIX+'/neon-terrain.mp4',
     'cubes': ASSETS_PREFIX+'/cubes.mp4',
     'tunnel in': ASSETS_PREFIX+'/tunnel-in.mp4',
     'dunets': ASSETS_PREFIX+'/dunets.mp4',

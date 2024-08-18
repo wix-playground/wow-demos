@@ -20,14 +20,14 @@ export function VideoSelector() {
     };
 
     return (
-        <div class="fixed bottom-5 left-1/2 transform -translate-x-1/2 w-2/3 flex gap-3 bg-black bg-opacity-50 p-3 rounded-lg backdrop-blur-md">
+        <div class="fixed bottom-5 left-1/2 transform -translate-x-1/2 w-[90%] flex gap-3 bg-black bg-opacity-50 p-3 rounded-lg backdrop-blur-md">
             {Object.entries(VIDEO_SOURCE_OPTIONS).map(([name, source]) => (
                 <button
                     type="button"
                     onClick={() => selectVideo(source)}
                     class="thumbnail w-[110px] h-[65px] border-2 rounded cursor-pointer transition-transform spring-bounce-30 spring-duration-300 hover:scale-[1.2] hover:shadow-lg border-transparent aria-[selected]:border-white bg-cover bg-center bg-no-repeat"
                     aria-selected={selectedVideo() === source ? "true" : undefined}
-                    style={{ "background-image": `url(${source.replace(".mp4", ".jpg")})` }}
+                    style={{ "background-image": `url(${source.replace(".mp4", ".png")})` }}
                 >
                     <span class="sr-only">{name}</span>
                 </button>
