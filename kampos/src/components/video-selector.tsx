@@ -12,6 +12,7 @@ export function VideoSelector() {
         setSelectedVideo(source);
         const videoChild = getCurrentVideoState();
         if (videoChild) {
+            console.log('setting source', source);
             videoChild.binding.value = source;
         }
         // works cause of mutation above

@@ -1,10 +1,29 @@
 const STATE_KEY = 's';
+const VERSION_KEY = 'v';
 const QUERY_CHANGE_KEY = 'queryChange';
 const queryChangeEvent = new Event(QUERY_CHANGE_KEY);
 
 let cachedQueryValue: any = null;
 
+// Use Vite's import.meta.env for versioning
+const CURRENT_VERSION = import.meta.env.VITE_APP_VERSION || import.meta.env.MODE;
+console.log('CURRENT_VERSION', CURRENT_VERSION);
+function checkAndUpdateVersion() {
+  const storedVersion = localStorage.getItem(VERSION_KEY);
+  if (storedVersion !== CURRENT_VERSION) {
+    localStorage.removeItem(STATE_KEY);
+    localStorage.setItem(VERSION_KEY, CURRENT_VERSION);
+    return true;
+  }
+  return false;
+}
+
 export function getQueryValue() {
+  if (checkAndUpdateVersion()) {
+    cachedQueryValue = null;
+    return null;
+  }
+
   if (cachedQueryValue !== null) {
     return cachedQueryValue;
   }
@@ -32,5 +51,5 @@ export function setState(value?: any) {
     localStorage.setItem(STATE_KEY, JSON.stringify(value));
     cachedQueryValue = value;
   }
-    window.dispatchEvent(queryChangeEvent);
+  window.dispatchEvent(queryChangeEvent);
 }
