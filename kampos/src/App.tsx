@@ -10,7 +10,7 @@ const App: Component = () => {
              />
         </div>
         <video id="video" src="./assets/cloudy-night.mp4" loop muted hidden></video>
-        <video id="videoLoader" loop muted hidden></video>
+        <video id="video2" loop muted hidden></video>
         <VideoSelector />
     </>
   );

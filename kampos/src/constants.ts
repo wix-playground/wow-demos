@@ -18,6 +18,7 @@ const VIDEO_MASK_SOURCE_OPTIONS = {
 export const DEFAULT_MASK_VIDEO_SOURCE_OPTION = VIDEO_MASK_SOURCE_OPTIONS.none;
 
 export const getVideoElement = () => document.querySelector("#video") as HTMLVideoElement;
+export const getSecondVideoElement = () => document.querySelector("#video2") as HTMLVideoElement;
 
 export const IMAGE_OPTIONS = [
     { text: "none", value: "none", src: "" },

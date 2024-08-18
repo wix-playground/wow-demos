@@ -1,3 +1,5 @@
+import { getSecondVideoElement } from "../constants";
+import { resolveVideo } from "../utils/video-utils";
 
 function loadImage(src) {
     return new Promise((resolve, reject) => {
@@ -20,28 +22,11 @@ function loadImage(src) {
 function loadVideo(src) {
     return new Promise((resolve, reject) => {
         console.log("Starting video load for:", src);
-        const video = document.createElement("video");
-        if (!video) {
-            console.error("Video element not found");
-            reject(new Error("Video element not found"));
-            return;
-        }
+        const video = getSecondVideoElement();
         video.src = src;
-        console.log("Video src set to:", video.src);
-
-        if (video.readyState >= 2) {
-            console.log("Video already loaded");
-            resolve(video);
-        } else {
-            video.addEventListener("loadeddata", () => {
-                console.log("Video loaded successfully");
-                resolve(video);
-            }, { once: true });
-            video.addEventListener("error", (e) => {
-                console.error("Video loading error:", e);
-                reject(new Error(`Video loading error: ${e.message}`));
-            }, { once: true });
-        }
+        video.load();
+        video.play();
+        resolveVideo(video, resolve, reject);
     });
 }
 

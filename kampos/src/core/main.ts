@@ -2,7 +2,7 @@ import { Kampos, effects } from "kampos";
 import { getVideoElement } from "../constants";
 import { initPane } from "./pane";
 import { getQueryValue, onStateChange, setState } from "../utils/state";
-import { setVideoSource } from "../utils/video-utils";
+import { resolveVideo, setVideoSource } from "../utils/video-utils";
 import { resolveMediaFromPath } from "./media-resolution";
 
 let allEffects: Record<string, any[]> = {};
@@ -82,14 +82,7 @@ async function initKampos() {
 function prepareVideo() {
     return new Promise<HTMLVideoElement>((resolve, reject) => {
         const video = getVideoElement();
-        if (video.readyState >= 2) {
-            resolve(video);
-        } else {
-            video.addEventListener("loadeddata", () => resolve(video), { once: true });
-            video.addEventListener("error", (e) => reject(new Error(`Video loading error: ${e.message}`)), {
-                once: true,
-            });
-        }
+        resolveVideo(video, resolve, reject);
     });
 }
 
