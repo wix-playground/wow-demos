@@ -1,8 +1,9 @@
 import { Kampos, effects } from "kampos";
-import {  getVideoElement } from "../constants";
+import { getVideoElement } from "../constants";
 import { initPane } from "./pane";
 import { getQueryValue, onStateChange, setState } from "./state";
 import { setVideoSource } from "./utilts";
+import { resolveMediaFromPath } from "./kampos-media";
 
 function hexToNormalizedRGBA(hex: string): number[] {
     hex = hex.replace(/^#/, "");
@@ -25,26 +26,33 @@ function hexToNormalizedRGBA(hex: string): number[] {
     return [r / 255, g / 255, b / 255, a];
 }
 
-
 let allEffects: Record<string, any[]> = {};
 let video = getVideoElement();
 let kamposInstance: Kampos | null = null;
 let activeEffects: string[] = [];
 
-
 function updateEffects() {
     initKampos();
 }
 
-function resolveConfig(config: any) {
-    return Object.fromEntries(
-        Object.entries(config).filter(([_, value]) => value !== 'none' && value !== 'WIP').map(([key, value]) => {
-            if (typeof value === "string" && value.startsWith("#")) {
-                return [key, hexToNormalizedRGBA(value)];
-            }
-            return [key, value];
-        })
+
+async function resolveConfig(config: any) {
+    const entries = await Promise.all(
+        Object.entries(config)
+            .filter(([_, value]) => value !== "none" && value !== "WIP")
+            .map(async ([key, value]) => {
+                if (typeof value === "string") {
+                    if (value.startsWith("#")) {
+                        return [key, hexToNormalizedRGBA(value)];
+                    }
+                    const resolvedValue = await resolveMediaFromPath(value);
+                    return [key, resolvedValue];
+                }
+                return [key, value];
+            })
     );
+
+    return Object.fromEntries(entries);
 }
 
 function updateActiveEffects() {
@@ -55,9 +63,14 @@ async function initKampos() {
     const target = document.querySelector("#target");
     updateActiveEffects();
     allEffects = {};
-    activeEffects.forEach((effectName) => {
-        allEffects[effectName] = effects[effectName](resolveConfig(window.state.effects[effectName]));
-    });
+    for (const effectName of activeEffects) {
+        const effectConfig = await resolveConfig(window.state.effects[effectName]);
+        allEffects[effectName] = effects[effectName](effectConfig);
+        console.log(effectName);
+        if (effectName === "blend") {
+            console.log(effectConfig);
+        }
+    }
     kamposInstance = new Kampos({
         target,
         effects: Object.values(allEffects),
@@ -74,7 +87,7 @@ async function initKampos() {
 
 function prepareVideo() {
     return new Promise<HTMLVideoElement>((resolve, reject) => {
-     const video = getVideoElement();
+        const video = getVideoElement();
         if (video.readyState >= 2) {
             resolve(video);
         } else {
@@ -85,7 +98,6 @@ function prepareVideo() {
         }
     });
 }
-
 
 async function initDemo() {
     try {
@@ -103,15 +115,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const pane = initPane();
     initDemo();
 
-    onStateChange((value)=>{
+    onStateChange((value) => {
         pane.importState(value);
         setTimeout(() => {
             updateEffects();
         }, 200);
 
-        if(!getVideoElement().src.endsWith(window.state.video)){
-            setVideoSource(getVideoElement(), window.state.video);
-        }
+        setVideoSource(getVideoElement(), window.state.video);
     });
 
     const queryState = getQueryValue();

@@ -26,7 +26,7 @@ export function VideoSelector() {
                     onClick={() => selectVideo(source)}
                     class="thumbnail w-[110px] h-[65px] border-2 rounded cursor-pointer transition-transform spring-bounce-30 spring-duration-300 hover:scale-[1.2] hover:shadow-lg border-transparent aria-[selected]:border-white bg-cover bg-center bg-no-repeat"
                     aria-selected={selectedVideo() === source ? "true" : undefined}
-                    style={{ "background-image": `url(./assets/${source.replace(".mp4", ".jpg")})` }}
+                    style={{ "background-image": `url(${source.replace(".mp4", ".jpg")})` }}
                 >
                     <span class="sr-only">{name}</span>
                 </button>

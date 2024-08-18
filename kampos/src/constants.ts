@@ -1,34 +1,31 @@
-export const VIDEO_SOURCES = [
-    'cloudy-night.mp4',
-    'drop-water.mp4',
-    'man-on-beach.mp4',
-    'starry-night.mp4',
-    'shell-beach.mp4',
-    'wheat-field.mp4',
-];
+const ASSETS_PREFIX = "./assets";
 
-const [firstVideoSource, ...ALL_EXCEPT_FIRST_VIDEO_SOURCES] = VIDEO_SOURCES;
+export const DEFAULT_VIDEO_SOURCE_OPTION = 'Cloudy Night';
+export const VIDEO_SOURCE_OPTIONS = {
+    'cloudy night': ASSETS_PREFIX+'/cloudy-night.mp4',
+    'drop water': ASSETS_PREFIX+'/drop-water.mp4',
+    'man on beach': ASSETS_PREFIX+'/man-on-beach.mp4',
+    'starry night': ASSETS_PREFIX+'/starry-night.mp4',
+    'shell beach': ASSETS_PREFIX+'/shell-beach.mp4',
+    'wheat field': ASSETS_PREFIX+'/wheat-field.mp4',
+}
 
-const VIDEO_MASK_SOURCES = [
-    'none',
-    ...ALL_EXCEPT_FIRST_VIDEO_SOURCES,
-    firstVideoSource,
-];
+const VIDEO_MASK_SOURCE_OPTIONS = {
+    'none': 'none',
+    ...VIDEO_SOURCE_OPTIONS,
+}
 
-export const VIDEO_SOURCE_OPTIONS = VIDEO_SOURCES.reduce((obj, source) => {
-    obj[source] = source;
-    return obj;
-}, {} as Record<string, string>);
-
-export const VIDEO_MASK_SOURCE_OPTIONS = VIDEO_MASK_SOURCES.reduce((obj, source) => {
-    obj[source] = source;
-    return obj;
-}, {} as Record<string, string>);
-
-export const DEFAULT_VIDEO_SOURCE_OPTION = firstVideoSource;
-export const DEFAULT_MASK_VIDEO_SOURCE_OPTION = VIDEO_MASK_SOURCES[0];
+export const DEFAULT_MASK_VIDEO_SOURCE_OPTION = VIDEO_MASK_SOURCE_OPTIONS.none;
 
 export const getVideoElement = () => document.querySelector("#video") as HTMLVideoElement;
+
+export const IMAGE_OPTIONS = [
+    { text: "none", value: "none", src: "" },
+    { text: "Cloud", value: ASSETS_PREFIX+"/disp-cloud.png", src: "./disp-cloud.png" },
+    { text: "Snow", value: ASSETS_PREFIX+"/disp-snow.jpg", src: "./disp-snow.jpg" },
+    { text: "Liquid", value: ASSETS_PREFIX+"/disp-liquid.jpg", src: "./disp-liquid.jpg" },
+    { text: "Triangle", value: ASSETS_PREFIX+"/disp-tri.jpg", src: "./disp-tri.jpg" },
+];
 
 export const DEFAULT_STATE = {
     video: DEFAULT_VIDEO_SOURCE_OPTION,
@@ -48,12 +45,12 @@ export const DEFAULT_STATE = {
             active: false,
             mode: "normal",
             color: "#000000ff",
-            image: '' ,
+            image: IMAGE_OPTIONS[0].value,
         },
         duotone: {
             active: false,
             dark: "#ffffff",
-            light: 'WIP',
+            light: "WIP",
         },
         alphaMask: {
             active: false,

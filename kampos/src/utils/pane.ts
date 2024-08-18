@@ -1,4 +1,4 @@
-import { getVideoElement, VIDEO_SOURCE_OPTIONS, DEFAULT_STATE } from "../constants";
+import { getVideoElement, VIDEO_SOURCE_OPTIONS, DEFAULT_STATE, IMAGE_OPTIONS } from "../constants";
 import { Pane } from "tweakpane";
 import * as CamerakitPlugin from "@tweakpane/plugin-camerakit";
 import { setState } from "./state";
@@ -9,9 +9,13 @@ window.pane = pane;
 pane.registerPlugin(CamerakitPlugin);
 
 window.state = structuredClone(DEFAULT_STATE);
+const isDevQuery = window.location.search.includes('dev');
+const disabledButNotForDev = !isDevQuery;
+console.log('isDevQuery', disabledButNotForDev);
+
 export function initPane() {
     const setVideoSource = (video, videoFileName) => {
-        video.src = `./assets/${videoFileName}`;
+        video.src = `${videoFileName}`;
         video.load();
         video.play();
     };
@@ -47,7 +51,7 @@ export function initPane() {
     const duotoneFolder = pane.addFolder({ title: "Duotone Effect" });
     duotoneFolder.addBinding(window.state.effects.duotone, "active");
     duotoneFolder.addBinding(window.state.effects.duotone, "dark", { view: "color" });
-    duotoneFolder.addBinding(window.state.effects.duotone, "light", { view: "text", disabled: true });
+    duotoneFolder.addBinding(window.state.effects.duotone, "light", { view: "text", disabled: disabledButNotForDev });
 
     // Blend Effect
     const blendFolder = pane.addFolder({ title: "Blend Effect" });
@@ -61,59 +65,55 @@ export function initPane() {
         },
     });
     blendFolder.addBinding(window.state.effects.blend, "color", { view: "color", color: { alpha: true } });
-    blendFolder.addBinding(window.state.effects.blend, "image", { options: VIDEO_SOURCE_OPTIONS, disabled: true });
+    blendFolder.addBinding(window.state.effects.blend, "image", { options: IMAGE_OPTIONS });
 
     // Alpha Mask Effect
     const alphaMaskFolder = pane.addFolder({ title: "Alpha Mask Effect (WIP)", expanded: false });
     alphaMaskFolder.addBinding(window.state.effects.alphaMask, "active", {
-        disabled: true,
+        disabled: disabledButNotForDev,
     });
     alphaMaskFolder.addBinding(window.state.effects.alphaMask, "isLuminance", {
-        disabled: true,
+        disabled: disabledButNotForDev,
     });
     alphaMaskFolder
-        .addBinding(window.state.effects.alphaMask, "mask", { options: VIDEO_SOURCE_OPTIONS, disabled: true })
-        .on("change", ({ value }) => {
-            console.log("mask", value);
-            // setVideoSource(getSecondVideoElement(), value);
-        });
+        .addBinding(window.state.effects.alphaMask, "mask", { options: VIDEO_SOURCE_OPTIONS, disabled: disabledButNotForDev });
 
     // Displacement Effect
     const displacementFolder = pane.addFolder({ title: "Displacement Effect (WIP)", expanded: false });
     displacementFolder.addBinding(window.state.effects.displacement, "active", {
-        disabled: true,
+        disabled: disabledButNotForDev,
     });
     displacementFolder.addBinding(window.state.effects.displacement, "wrap", {
-        disabled: true,
+        disabled: disabledButNotForDev,
         options: {
             stretch: "stretch",
-            disabled: true,
+            disabled: disabledButNotForDev,
             repeat: "repeat",
             mirror: "mirror",
         },
     });
     displacementFolder.addBinding(window.state.effects.displacement, "scaleX", {
-        disabled: true,
+        disabled: disabledButNotForDev,
         min: 0,
         max: 1,
     });
     displacementFolder.addBinding(window.state.effects.displacement, "scaleY", {
-        disabled: true,
+        disabled: disabledButNotForDev,
         min: 0,
         max: 1,
     });
     displacementFolder.addBinding(window.state.effects.displacement, "map", {
         options: VIDEO_SOURCE_OPTIONS,
-        disabled: true,
+        disabled: disabledButNotForDev,
     });
 
     // Turbulence Effect
     const turbulenceFolder = pane.addFolder({ title: "Turbulence Effect (WIP)", expanded: false });
     turbulenceFolder.addBinding(window.state.effects.turbulence, "active", {
-        disabled: true,
+        disabled: disabledButNotForDev,
     });
     turbulenceFolder.addBinding(window.state.effects.turbulence, "noise", {
-        disabled: true,
+        disabled: disabledButNotForDev,
         options: {
             simplex: "simplex",
             perlin: "perlin",
@@ -121,32 +121,32 @@ export function initPane() {
         },
     });
     turbulenceFolder.addBinding(window.state.effects.turbulence, "output", {
-        disabled: true,
+        disabled: disabledButNotForDev,
         options: {
             COLOR: "COLOR",
             DISPLACEMENT: "DISPLACEMENT",
         },
     });
     turbulenceFolder.addBinding(window.state.effects.turbulence, "frequencyX", {
-        disabled: true,
+        disabled: disabledButNotForDev,
         min: 0,
         max: 5,
     });
     turbulenceFolder.addBinding(window.state.effects.turbulence, "frequencyY", {
-        disabled: true,
+        disabled: disabledButNotForDev,
         min: 0,
         max: 5,
     });
     turbulenceFolder.addBinding(window.state.effects.turbulence, "octaves", {
-        disabled: true,
+        disabled: disabledButNotForDev,
         min: 1,
         max: 8,
     });
     turbulenceFolder.addBinding(window.state.effects.turbulence, "isFractal", {
-        disabled: true,
+        disabled: disabledButNotForDev,
     });
     turbulenceFolder.addBinding(window.state.effects.turbulence, "time", {
-        disabled: true,
+        disabled: disabledButNotForDev,
         min: 0,
         max: 10,
     });
