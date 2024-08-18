@@ -1,7 +1,7 @@
 import { getVideoElement, VIDEO_SOURCE_OPTIONS, DEFAULT_STATE, IMAGE_OPTIONS } from "../constants";
 import { Pane } from "tweakpane";
 import * as CamerakitPlugin from "@tweakpane/plugin-camerakit";
-import { setState } from "./state";
+import { setState } from "../utils/state";
 import debounce from "debounce";
 
 const pane = new Pane();

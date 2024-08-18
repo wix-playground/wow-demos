@@ -1,9 +1,13 @@
 import { Kampos, effects } from "kampos";
 import { getVideoElement } from "../constants";
 import { initPane } from "./pane";
-import { getQueryValue, onStateChange, setState } from "./state";
-import { setVideoSource } from "./utilts";
-import { resolveMediaFromPath } from "./kampos-media";
+import { getQueryValue, onStateChange, setState } from "../utils/state";
+import { setVideoSource } from "../utils/video-utils";
+import { resolveMediaFromPath } from "./media-resolution";
+
+let allEffects: Record<string, any[]> = {};
+let video = getVideoElement();
+let kamposInstance: Kampos | null = null;
 
 function hexToNormalizedRGBA(hex: string): number[] {
     hex = hex.replace(/^#/, "");
@@ -26,16 +30,6 @@ function hexToNormalizedRGBA(hex: string): number[] {
     return [r / 255, g / 255, b / 255, a];
 }
 
-let allEffects: Record<string, any[]> = {};
-let video = getVideoElement();
-let kamposInstance: Kampos | null = null;
-let activeEffects: string[] = [];
-
-function updateEffects() {
-    initKampos();
-}
-
-
 async function resolveConfig(config: any) {
     const entries = await Promise.all(
         Object.entries(config)
@@ -55,21 +49,21 @@ async function resolveConfig(config: any) {
     return Object.fromEntries(entries);
 }
 
-function updateActiveEffects() {
-    activeEffects = Object.keys(effects).filter((effectName) => window.state.effects[effectName].active);
+function updateEffects() {
+    initKampos();
+}
+
+function getActiveEffects() {
+    return Object.keys(effects).filter((effectName) => window.state.effects[effectName].active);
 }
 
 async function initKampos() {
     const target = document.querySelector("#target");
-    updateActiveEffects();
     allEffects = {};
-    for (const effectName of activeEffects) {
+    for (const effectName of getActiveEffects()) {
         const effectConfig = await resolveConfig(window.state.effects[effectName]);
         allEffects[effectName] = effects[effectName](effectConfig);
-        console.log(effectName);
-        if (effectName === "blend") {
-            console.log(effectConfig);
-        }
+        console.log(`[config] ${effectName}:`, effectConfig);
     }
     kamposInstance = new Kampos({
         target,

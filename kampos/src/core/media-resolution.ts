@@ -20,7 +20,7 @@ function loadImage(src) {
 function loadVideo(src) {
     return new Promise((resolve, reject) => {
         console.log("Starting video load for:", src);
-        const video = document.getElementById("videoLoader") as HTMLVideoElement;
+        const video = document.createElement("video");
         if (!video) {
             console.error("Video element not found");
             reject(new Error("Video element not found"));
