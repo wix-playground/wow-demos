@@ -1,8 +1,8 @@
-import { createSignal, onMount } from "solid-js";
+import { createSignal } from "solid-js";
 import { VIDEO_SOURCE_OPTIONS } from "../constants";
 import { setState, getQueryValue } from "../utils/state";
 
-const getCurrentVideoState = () => getQueryValue()?.children.at(-1)?.children?.find((v) => v.label === "video");
+const getCurrentVideoState = () => getQueryValue()?.children.find(v=>v.title==='Kaleidoscope Effect')?.children?.find((v) => v.label === "video");
 export function VideoSelector() {
     const [selectedVideo, setSelectedVideo] = createSignal(
         getCurrentVideoState()?.binding?.value
