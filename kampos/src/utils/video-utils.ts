@@ -5,6 +5,17 @@ export const setVideoSource = (video: HTMLVideoElement, videoFileName: string) =
     video.src = videoFileName;
     video.load();
     video.play();
+    if ('startViewTransition' in document) {
+        document.startViewTransition(() => {
+            video.src = videoFileName;
+            video.load();
+            video.play();
+        });
+    } else {
+        video.src = videoFileName;
+        video.load();
+        video.play();
+    }
 };
 
 
