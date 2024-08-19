@@ -76,7 +76,7 @@ export function initPane() {
         disabled: disabledButNotForDev,
     });
     alphaMaskFolder
-        .addBinding(window.state.effects.alphaMask, "mask", { options: VIDEO_SOURCE_OPTIONS, disabled: disabledButNotForDev });
+        .addBinding(window.state.effects.alphaMask, "mask", { options: IMAGE_OPTIONS, disabled: disabledButNotForDev });
 
     // Displacement Effect
     const displacementFolder = pane.addFolder({ title: "Displacement Effect (WIP)", expanded: false });
