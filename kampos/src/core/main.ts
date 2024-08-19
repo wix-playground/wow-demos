@@ -107,8 +107,6 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(() => {
             updateEffects();
         }, 200);
-
-        setVideoSource(getVideoElement(), window.state.video);
     });
 
     const queryState = getQueryValue();
