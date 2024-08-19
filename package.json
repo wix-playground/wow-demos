@@ -1,0 +1,35 @@
+{
+  "name": "wow-demos",
+  "version": "0.0.5",
+  "description": "Playground and demos of wow!Team",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"no test specified\"",
+    "kampos": "npm run dev --workspace=kampos",
+    "build": "cd kampos && npm run build"
+  },
+  "workspaces": [
+    "./kampos",
+    "./gradients",
+    "./shape-divider"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wix-playground/wow-demos.git"
+  },
+  "keywords": [
+    "wow",
+    "wow!Team",
+    "demo",
+    "playground"
+  ],
+  "author": "wow!Team",
+  "license": "WTFPL",
+  "bugs": {
+    "url": "https://github.com/wix-playground/wow-demos/issues"
+  },
+  "homepage": "https://github.com/wix-playground/wow-demos#readme",
+  "devDependencies": {
+    "vite": "^5.4.0"
+  }
+}

@@ -1,0 +1,60 @@
+{
+    "fonts": [
+        {
+            "url": "https://fonts.gstatic.com/s/abrilfatface/v18/zOL64pLDlL1D99S8g8PtiKchm-BsjOLhZBY.ttf",
+            "family": "Abril Fatface",
+            "variant": "regular",
+            "features": {}
+        },
+        {
+            "url": "https://fonts.gstatic.com/s/gorditas/v18/ll84K2aTVD26DsPEtThUIooIvAoShA1i.ttf",
+            "family": "Gorditas",
+            "variant": "700",
+            "features": {}
+        },
+        {
+            "url": "https://fonts.gstatic.com/s/inconsolata/v21/QldgNThLqRwH-OJ1UHjlKENVzkWGVkL3GZQmAwLYxYWI2qfdm7LppwU7aRr8lleY2co.ttf",
+            "family": "Inconsolata",
+            "variant": "800",
+            "features": {}
+        },
+        {
+            "url": "https://fonts.gstatic.com/s/loversquarrel/v19/Yq6N-LSKXTL-5bCy8ksBzpQ_-zAsY7pO6siz.ttf",
+            "family": "Lovers Quarrel",
+            "variant": "regular",
+            "features": {}
+        },
+        {
+            "url": "https://fonts.gstatic.com/s/tomorrow/v13/WBLhrETNbFtZCeGqgR1RXEXIBsShiVd4.ttf",
+            "family": "Tomorrow",
+            "variant": "900",
+            "features": {}
+        },
+        {
+            "url": "https://fonts.gstatic.com/s/karantina/v9/buExpo24ccnh31GVMABxTC8f-P5Oaiw4cw.ttf",
+            "family": "Karantina",
+            "variant": "700",
+            "features": {},
+            "defaults": true
+        },
+        {
+            "url": "https://fonts.gstatic.com/s/alef/v18/FeVQS0NQpLYglo50L5la2bxii28.ttf",
+            "family": "Alef",
+            "variant": "700",
+            "features": {}
+        }
+    ],
+    "paths": [
+        {
+            "path": "m597,49c0,0 -30,169 -177,162c-147,-7 -167,140 -167,140c0,0 -31,143 -194,116",
+            "defaults": true
+        },
+        {
+            "path": "m363.50001,517.99998c-129.00553,0 -233.50001,-104.49447 -233.50001,-233.49999c0,-129.00552 104.49448,-233.49999 233.50001,-233.49999c129.00553,0 233.50001,104.49447 233.50001,233.49999c0,129.00552 -104.49448,233.49999 -233.50001,233.49999z"
+        },
+
+        {
+            "path": "m99,30l532,0l0,532l-532,0l0,-532z"
+        }
+    ]
+}

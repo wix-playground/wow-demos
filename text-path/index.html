@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="controls">
+            <fieldset class="text-input">
+                <legend>Text</legend>
+                <input data-setting-change class="text-input-text" form="form" type="text" name="t" value="I AM TEXT">
+                <button form="form" type="submit" class="text-input-submit">Apply</button>
+            </fieldset>
+            <fieldset>
+                <legend>Text Controls</legend>
+                <div class="font-list">
+                    <ul class="font-list-items" id="fontList">
+                        <template id="font-item-template">
+                            <li class="font-item">
+                                <label>
+                                    <input form="form" data-setting-change data-font-input class="font-input"
+                                        type="radio" name="ff" value="">
+                                    <span data-font-name class="font-name">Font Name</span>
+                                </label>
+                            </li>
+                        </template>
+                    </ul>
+                </div>
+                <label>
+                    <span>Size</span>
+                    <input form="form" data-setting-change type="number" name="fs" value="72">
+                </label>
+                <label>
+                    <span>Resize with Shape</span>
+                    <input form="form" data-setting-change type="checkbox" name="frs">
+                </label>
+                <label>
+                    <span>Horizontal Align</span>
+                    <select form="form" data-setting-change name="ta">
+                        <option value="start">Left</option>
+                        <option value="middle">Center</option>
+                        <option value="end">Right</option>
+                    </select>
+                </label>
+                <label>
+                    <span>Vertical Align</span>
+                    <select form="form" data-setting-change name="tva">
+                        <option value="auto">Top</option>
+                        <option value="central">Middle</option>
+                        <option value="hanging">Bottom</option>
+                    </select>
+                </label>
+                <label>
+                    <span>Direction</span>
+                    <select form="form" data-setting-change name="td">
+                        <option value="lrt" selected>Left to Right</option>
+                        <option value="rtl">Right to Left</option>
+                    </select>
+                </label>
+                <label>
+                    <span>Manual Offset</span>
+                    <i>
+                        X <input form="form" data-setting-change type="number" name="tox" value="0">
+                        Y <input form="form" data-setting-change type="number" name="toy" value="0">
+                    </i>
+                </label>
+                <label>
+                    <span>Spacing (pt)</span>
+                    <input form="form" data-setting-input type="number" min="-100" max="100" step="1" name="tls"
+                        value="0">
+                </label>
+                <label>
+                    <span>Spread</span>
+                    <input form="form" data-setting-input type="range" min="0" max="1" step="0.001" name="tll"
+                        value="0">
+                </label>
+                <label>
+                    <span>Fill Color</span>
+                    <input form="form" data-setting-input type="color" name="tfc" value="#000000">
+                </label>
+                <label>
+                    <span>Fill Opacity</span>
+                    <input form="form" data-setting-input type="range" min="0" max="1" step="0.01" name="tfo" value="1">
+                </label>
+                <label>
+                    <span>Stroke width</span>
+                    <input form="form" data-setting-change type="number" name="tsw" value="0">
+                </label>
+                <label>
+                    <span>Stroke Color</span>
+                    <input form="form" data-setting-input type="color" name="tsc" value="#ff0000">
+                </label>
+            </fieldset>
+            <fieldset>
+                <legend>Shape</legend>
+                <div class="path-list">
+                    <ul class="path-list-items" id="pathList">
+                        <template id="path-item-template">
+                            <li class="path-item">
+                                <label>
+
+                                    <input form="form" data-setting-change data-path-input class="path-input"
+                                        type="radio" name="pi" value="">
+                                    <svg width="32" height="32" viewBox="0 0 800 600" data-thumb class="path-thumb"
+                                        xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+                                        <path />
+                                    </svg>
+                                </label>
+                            </li>
+                        </template>
+                    </ul>
+                </div>
+                <label>
+                    <span>Reverse</span>
+                    <input form="form" data-setting-change type="checkbox" name="rp">
+                </label>
+                <label>
+                    <span>Flip X</span>
+                    <input form="form" data-setting-change type="checkbox" name="fxp">
+                </label>
+                <label>
+                    <span>Flip Y</span>
+                    <input form="form" data-setting-change type="checkbox" name="fyp">
+                </label>
+                <label>
+                    <span>Show Shape</span>
+                    <input form="form" data-setting-change type="checkbox" checked name="ss">
+                </label>
+                <label>
+                    <span>Fill Color</span>
+                    <input form="form" data-setting-input type="color" name="sfc" value="#00ff00">
+                </label>
+                <label>
+                    <span>Fill Opacity</span>
+                    <input form="form" data-setting-input type="range" min="0" max="1" step="0.01" name="sfo" value="0">
+                </label>
+                <label>
+                    <span>Stroke width</span>
+                    <input form="form" data-setting-change type="number" name="ssw" value="2">
+                </label>
+                <label>
+                    <span>Stroke Color</span>
+                    <input form="form" data-setting-input type="color" name="ssc" value="#ff0000">
+                </label>
+            </fieldset>
+            <fieldset>
+                <legend>Animation</legend>
+                <label>
+                    <button id="play-btn">▶ Play</button>
+                    <button id="pause-btn" hidden>🁢🁢 Pause</button>
+                </label>
+                <label>
+                    <span>Type</span>
+                    <i>
+                        <input form="form" data-setting-change type="radio" name="at" value="smil" checked> <span>SMIL</span>
+                        <input form="form" data-setting-change type="radio" name="at" value="js"> <span>Javascript</span>
+                    </i>
+                </label>
+                <label>
+                    <span>Direction</span>
+                    <select data-setting-change form="form" name="adi">
+                        <option value="f">Forward</option>
+                        <option value="b">Backward</option>
+                        <option value="fb">Alternate</option>
+                    </select>
+                </label>
+                <label>
+                    <span>Duration (ms)</span>
+                    <input data-setting-change form="form" type="number" name="ad" min="0" step="1" value="0">
+                </label>
+                <label>
+                    <span>Repeat (-1 for ∞)</span>
+                    <input data-setting-change form="form" type="number" name="ar" min="-1" step="1" value="0">
+                </label>
+                <label>
+                    <span>Seamless</span>
+                    <input data-setting-change form="form" name="as" type="checkbox">
+                </label>
+            </fieldset>
+        </div>
+        <div class="result" id="result">
+            <div class="resizable-box" data-resizable id="box">
+                <div class="content">
+                    <svg id="text-svg" viewBox="59 49 538 422" xmlns="http://www.w3.org/2000/svg"
+                        preserveAspectRatio="xMidYMid meet">
+                        <path fill="none" id="text-path-path"
+                            d="m597,49c0,0 -30,169 -177,162c-147,-7 -167,140 -167,140c0,0 -31,143 -194,116" />
+                        <text>
+                            <textPath id="text-path-text" href="#text-path-path">.</textPath>
+                        </text>
+                    </svg>
+                </div>
+                <div class="resizable-box-handle" data-handle="top-left"></div>
+                <div class="resizable-box-handle" data-handle="top-right"></div>
+                <div class="resizable-box-handle" data-handle="bottom-left"></div>
+                <div class="resizable-box-handle" data-handle="bottom-right"></div>
+                <div class="resizable-box-handle" data-handle="top"></div>
+                <div class="resizable-box-handle" data-handle="right"></div>
+                <div class="resizable-box-handle" data-handle="bottom"></div>
+                <div class="resizable-box-handle" data-handle="left"></div>
+                <input form="form" type="hidden" name="x"></input>
+                <input form="form" type="hidden" name="y"></input>
+                <input form="form" type="hidden" name="w"></input>
+                <input form="form" type="hidden" name="h"></input>
+            </div>
+        </div>
+    </div>
+    <form name="form" id="form"></form>
+    <script src="./index.js" type="module"></script>
+</body>
+
+</html>

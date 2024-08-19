@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name='viewport' content='width=device-width,initial-scale=1'>
+    <title>Motion Stage</title>
+    <style>
+        body {
+            margin: 0;
+        }
+
+        #comp-wrapper {
+            width: 25vw;
+            margin: 30vh auto;
+        }
+
+        #component {
+            aspect-ratio: 4 / 3;
+            background-image: linear-gradient(45deg, lightgoldenrodyellow, lightcoral, cornflowerblue, darkseagreen);
+        }
+
+        .debug-stage #component {
+            border: 1px dashed magenta;
+        }
+
+        .debug-stage #comp-wrapper {
+            border: 1px dashed navy;
+        }
+    </style>
+    <style id="effectStyle"></style>
+</head>
+<body>
+    <main>
+        <div id="comp-wrapper">
+            <section id="component"></section>
+        </div>
+    </main>
+</body>
+</html>

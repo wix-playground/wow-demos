@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta name='viewport' content='width=device-width,initial-scale=1'>
+    <title>Video Crop Demo</title>
+    <style>
+        body {
+            height: 100vh;
+            text-align: center;
+            padding: 2em;
+        }
+
+        #video {
+            display: inline-block;
+            height: 70vh;
+            -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+            /*-webkit-mask-size: 100%;*/
+            /*mask-size: 100%;*/
+            -webkit-mask-position: center;
+            mask-position: center;
+        }
+
+        #clip-container {
+            display: flex;
+            height: 10vh;
+        }
+
+        .clip {
+            flex: 1;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .clip svg {
+            width: 200px;
+        }
+
+        .clip path {
+            fill: black;
+        }
+
+        .clip.hide svg {
+            visibility: hidden;
+        }
+
+        #text-dummy,
+        #clip-dummy {
+            position: absolute;
+            top: 0;
+            left: 0;
+            visibility: hidden;
+            font-size: 60px;
+        }
+
+        #edit-text {
+            position: absolute;
+            top: 30px;
+            right: 10px;
+            cursor: pointer;
+        }
+
+        #edit-text-input {
+            display: none;
+            position: absolute;
+            left: 0;
+            top: 60px;
+            /*font-family: 'Allerta Stencil', sans-serif;*/
+            font-family: Impact, sans-serif;
+            font-size: 60px;
+            font-weight: bold;
+        }
+
+        #edit-text-input.show {
+            display: block;
+            height: 10vh;
+        }
+
+        #controls {
+            padding: 1em;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div id="controls">
+            <input type="color" id="background-color" name="background-color"
+                   value="#ffffff"/>
+            <span class="value">#ffffff</span>
+
+            <label>
+                <span>Video: </span>
+                <select id="video-selector">
+                    <option value="https://video.wixstatic.com/video/11062b_a99a5bf5c6e640eea97cec2352836173/1080p/mp4/file.mp4">Fishes</option>
+                    <option value="https://video.wixstatic.com/video/11062b_ba2c921477734f8b84ef0c71f64a2562/1080p/mp4/file.mp4">Galaxya</option>
+                    <option value="https://video.wixstatic.com/video/11062b_6ceb80744f45401caf9eb666caeb9887/1080p/mp4/file.mp4">Tigris</option>
+                    <option value="https://video.wixstatic.com/video/11062b_f0d5e0c342cc49dca298de0225d2247c/1080p/mp4/file.mp4">Beach</option>
+                </select>
+            </label>
+
+            <label>
+                <input type="checkbox" id="luminance-toggle" name="luminance-toggle"/>
+                <span>Luminance</span>
+            </label>
+        </div>
+
+        <video id="video"
+               src="https://video.wixstatic.com/video/11062b_a99a5bf5c6e640eea97cec2352836173/1080p/mp4/file.mp4"
+               loop
+               muted
+               autoplay
+               crossorigin="anonymous"
+               playsinline
+               preload="auto"></video>
+
+        <div id="clip-container"></div>
+
+        <div id="text-dummy"></div>
+        <div id="clip-dummy"></div>
+    </main>
+
+    <script src="index.js"></script>
+</body>
+</html>

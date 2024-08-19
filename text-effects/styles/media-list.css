@@ -1,0 +1,109 @@
+:root {
+  --icon-size-px: 14px;
+  --font-size-px: 12px;
+  --box-size-px: 24px;
+  --base-color: hsl(0 0% 100%);
+  --base-text-color: hsl(0 0% 10%);
+  --checked-color: hsl(219, 100%, 80%);
+  --hover-color: hsl(219, 100%, 70%);
+  --focus-color: hsl(219, 100%, 60%);
+  --base-color-border: hsl(0 0% 70%);
+  --checked-color-border: hsl(219, 100%, 70%);
+  --hover-color-border: hsl(219, 100%, 60%);
+  --focus-color-border: hsl(219, 100%, 50%);
+  --accent-color: hsl(219, 100%, 50%);
+}
+@media (prefers-color-scheme: dark) {
+  :root body:not(.light) {
+    color-scheme: dark;
+    --base-color: hsl(0 0% 20%);
+    --base-text-color: hsl(0 0% 80%);
+    --checked-color: hsl(219, 100%, 30%);
+    --hover-color: rgb(0, 71, 204);
+    --focus-color: hsl(219, 100%, 50%);
+    --base-color-border: hsl(0 0% 30%);
+    --checked-color-border: hsl(219, 100%, 40%);
+    --hover-color-border: hsl(219, 100%, 50%);
+    --focus-color-border: hsl(219, 100%, 60%);
+    --accent-color: hsl(219, 100%, 60%);
+  }
+}
+
+/*
+ * Media list
+ */
+.media-list {
+  --media-item-height-px: 50px;
+  position: relative;
+}
+
+.media-list-items {
+  list-style-type: none;
+  padding: 0;
+  margin: 0.5em 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.media-thumb {
+  display: block;
+  border: 1px solid var(--base-color-border);
+  opacity: 0.8;
+  width: 100%;
+  height: var(--media-item-height-px);
+  -o-object-fit: cover;
+     object-fit: cover;
+  box-sizing: border-box;
+  overflow: hidden;
+  border-radius: 3px;
+}
+.media-thumb:hover {
+  border-color: var(--hover-color-border);
+  opacity: 1;
+}
+
+.media-item {
+  width: 50px;
+}
+.media-item label {
+  padding: 0;
+}
+.media-item svg {
+  padding: 7px;
+  overflow: visible;
+}
+.media-item path {
+  fill-opacity: 0;
+  stroke-width: 2px;
+  stroke: var(--accent-color);
+  vector-effect: non-scaling-stroke;
+}
+.media-item path.reversed {
+  display: none;
+}
+.media-item input {
+  opacity: 0;
+  position: absolute;
+  pointer-events: none;
+}
+.media-item input:checked + .media-thumb {
+  border-color: var(--checked-color-border);
+  box-shadow: 0 0 0px 1px var(--checked-color-border);
+  opacity: 1;
+}
+.media-item input:focus + .media-thumb {
+  border-color: var(--focus-color-border);
+  opacity: 1;
+}
+
+.media-item-other {
+  display: flex;
+  align-content: center;
+  justify-content: space-between;
+  padding: 1px 2px;
+}
+.media-item-other i {
+  font-style: normal;
+  line-height: 1.5;
+}/*# sourceMappingURL=media-list.css.map */

@@ -1,0 +1,3157 @@
+[
+  {
+    "lerp": {
+      "Lerp": 0.9
+    },
+    "Section-1": {
+      "height": {
+        "Section Height": 100
+      },
+      "H1-s1_e1": {
+        "type": {
+          "Animation Type": "in-out"
+        },
+        "in": {
+          "effects": {
+            "Rotate": 30,
+            "Rotate Y": 180,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 0.7000000000000001,
+            "Scale Y": 0.7000000000000001,
+            "Opacity": 0,
+            "Hue Rotate": 0,
+            "Ghost": false,
+            "position": {
+              "Angle": 0,
+              "Distance": 60
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "out": {
+          "effects": {
+            "Rotate": -30,
+            "Rotate Y": 0,
+            "Rotate X": 120,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 0.5,
+            "Scale Y": 0.5,
+            "Opacity": 0,
+            "Hue Rotate": 0,
+            "Ghost": false,
+            "position": {
+              "Angle": 0,
+              "Distance": -220
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "cont": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "transOrigin": {
+          "Trans Origin": "left"
+        }
+      },
+      "H1-s1_e2": {
+        "type": {
+          "Animation Type": "in-out"
+        },
+        "in": {
+          "effects": {
+            "Rotate": 30,
+            "Rotate Y": 180,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 0.7000000000000001,
+            "Scale Y": 0.7000000000000001,
+            "Opacity": 0,
+            "Hue Rotate": 0,
+            "Ghost": false,
+            "position": {
+              "Angle": 0,
+              "Distance": 60
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0.02
+          }
+        },
+        "out": {
+          "effects": {
+            "Rotate": -30,
+            "Rotate Y": 0,
+            "Rotate X": 120,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 0.5,
+            "Scale Y": 0.5,
+            "Opacity": 0,
+            "Hue Rotate": 0,
+            "Ghost": false,
+            "position": {
+              "Angle": 0,
+              "Distance": -220
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0.02
+          }
+        },
+        "cont": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "transOrigin": {
+          "Trans Origin": "left"
+        }
+      },
+      "H1-s1_e3": {
+        "type": {
+          "Animation Type": "in-out"
+        },
+        "in": {
+          "effects": {
+            "Rotate": 30,
+            "Rotate Y": 180,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 0.7000000000000001,
+            "Scale Y": 0.7000000000000001,
+            "Opacity": 0,
+            "Hue Rotate": 0,
+            "Ghost": false,
+            "position": {
+              "Angle": 0,
+              "Distance": 60
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0.04
+          }
+        },
+        "out": {
+          "effects": {
+            "Rotate": -30,
+            "Rotate Y": 0,
+            "Rotate X": 120,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 0.5,
+            "Scale Y": 0.5,
+            "Opacity": 0,
+            "Hue Rotate": 0,
+            "Ghost": false,
+            "position": {
+              "Angle": 0,
+              "Distance": -220
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0.04
+          }
+        },
+        "cont": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "transOrigin": {
+          "Trans Origin": "left"
+        }
+      },
+      "H1-s1_e4": {
+        "type": {
+          "Animation Type": "in-out"
+        },
+        "in": {
+          "effects": {
+            "Rotate": 30,
+            "Rotate Y": 180,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 0.7000000000000001,
+            "Scale Y": 0.7000000000000001,
+            "Opacity": 0,
+            "Hue Rotate": 0,
+            "Ghost": false,
+            "position": {
+              "Angle": 0,
+              "Distance": 60
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0.06
+          }
+        },
+        "out": {
+          "effects": {
+            "Rotate": -30,
+            "Rotate Y": 0,
+            "Rotate X": 120,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 0.5,
+            "Scale Y": 0.5,
+            "Opacity": 0,
+            "Hue Rotate": 0,
+            "Ghost": false,
+            "position": {
+              "Angle": 0,
+              "Distance": -220
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0.06
+          }
+        },
+        "cont": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "transOrigin": {
+          "Trans Origin": "left"
+        }
+      },
+      "H1-s1_e5": {
+        "type": {
+          "Animation Type": "in-out"
+        },
+        "in": {
+          "effects": {
+            "Rotate": 30,
+            "Rotate Y": 180,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 0.7000000000000001,
+            "Scale Y": 0.7000000000000001,
+            "Opacity": 0,
+            "Hue Rotate": 0,
+            "Ghost": false,
+            "position": {
+              "Angle": 0,
+              "Distance": 60
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0.08
+          }
+        },
+        "out": {
+          "effects": {
+            "Rotate": -30,
+            "Rotate Y": 0,
+            "Rotate X": 120,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 0.5,
+            "Scale Y": 0.5,
+            "Opacity": 0,
+            "Hue Rotate": 0,
+            "Ghost": false,
+            "position": {
+              "Angle": 0,
+              "Distance": -220
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0.08
+          }
+        },
+        "cont": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "transOrigin": {
+          "Trans Origin": "left"
+        }
+      },
+      "H1-s1_e6": {
+        "type": {
+          "Animation Type": "in-out"
+        },
+        "in": {
+          "effects": {
+            "Rotate": 30,
+            "Rotate Y": 180,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 0.7000000000000001,
+            "Scale Y": 0.7000000000000001,
+            "Opacity": 0,
+            "Hue Rotate": 0,
+            "Ghost": false,
+            "position": {
+              "Angle": 0,
+              "Distance": 60
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0.1
+          }
+        },
+        "out": {
+          "effects": {
+            "Rotate": -30,
+            "Rotate Y": 0,
+            "Rotate X": 120,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 0.5,
+            "Scale Y": 0.5,
+            "Opacity": 0,
+            "Hue Rotate": 0,
+            "Ghost": false,
+            "position": {
+              "Angle": 0,
+              "Distance": -220
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0.1
+          }
+        },
+        "cont": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "transOrigin": {
+          "Trans Origin": "left"
+        }
+      },
+      "H1-s1_e7": {
+        "type": {
+          "Animation Type": "in-out"
+        },
+        "in": {
+          "effects": {
+            "Rotate": 30,
+            "Rotate Y": 180,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 0.7000000000000001,
+            "Scale Y": 0.7000000000000001,
+            "Opacity": 0,
+            "Hue Rotate": 0,
+            "Ghost": false,
+            "position": {
+              "Angle": 0,
+              "Distance": 60
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0.12
+          }
+        },
+        "out": {
+          "effects": {
+            "Rotate": -30,
+            "Rotate Y": 0,
+            "Rotate X": 120,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 0.5,
+            "Scale Y": 0.5,
+            "Opacity": 0,
+            "Hue Rotate": 0,
+            "Ghost": false,
+            "position": {
+              "Angle": 0,
+              "Distance": -220
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0.12
+          }
+        },
+        "cont": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "transOrigin": {
+          "Trans Origin": "left"
+        }
+      },
+      "H1-s1_e8": {
+        "type": {
+          "Animation Type": "in-out"
+        },
+        "in": {
+          "effects": {
+            "Rotate": 30,
+            "Rotate Y": 180,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 0.7000000000000001,
+            "Scale Y": 0.7000000000000001,
+            "Opacity": 0,
+            "Hue Rotate": 0,
+            "Ghost": false,
+            "position": {
+              "Angle": 0,
+              "Distance": 60
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0.14
+          }
+        },
+        "out": {
+          "effects": {
+            "Rotate": -30,
+            "Rotate Y": 0,
+            "Rotate X": 120,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 0.5,
+            "Scale Y": 0.5,
+            "Opacity": 0,
+            "Hue Rotate": 0,
+            "Ghost": false,
+            "position": {
+              "Angle": 0,
+              "Distance": -220
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0.14
+          }
+        },
+        "cont": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "transOrigin": {
+          "Trans Origin": "left"
+        }
+      },
+      "H1-s1_e9": {
+        "type": {
+          "Animation Type": "in-out"
+        },
+        "in": {
+          "effects": {
+            "Rotate": 30,
+            "Rotate Y": 180,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 0.7000000000000001,
+            "Scale Y": 0.7000000000000001,
+            "Opacity": 0,
+            "Hue Rotate": 0,
+            "Ghost": false,
+            "position": {
+              "Angle": 0,
+              "Distance": 60
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0.16
+          }
+        },
+        "out": {
+          "effects": {
+            "Rotate": -30,
+            "Rotate Y": 0,
+            "Rotate X": 120,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 0.5,
+            "Scale Y": 0.5,
+            "Opacity": 0,
+            "Hue Rotate": 0,
+            "Ghost": false,
+            "position": {
+              "Angle": 0,
+              "Distance": -220
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0.16
+          }
+        },
+        "cont": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "transOrigin": {
+          "Trans Origin": "left"
+        }
+      },
+      "H1-s1_e10": {
+        "type": {
+          "Animation Type": "in-out"
+        },
+        "in": {
+          "effects": {
+            "Rotate": 30,
+            "Rotate Y": 180,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 0.7000000000000001,
+            "Scale Y": 0.7000000000000001,
+            "Opacity": 0,
+            "Hue Rotate": 0,
+            "Ghost": false,
+            "position": {
+              "Angle": 0,
+              "Distance": 60
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0.18
+          }
+        },
+        "out": {
+          "effects": {
+            "Rotate": -30,
+            "Rotate Y": 0,
+            "Rotate X": 120,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 0.5,
+            "Scale Y": 0.5,
+            "Opacity": 0,
+            "Hue Rotate": 0,
+            "Ghost": false,
+            "position": {
+              "Angle": 0,
+              "Distance": -220
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0.18
+          }
+        },
+        "cont": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "transOrigin": {
+          "Trans Origin": "left"
+        }
+      }
+    },
+    "Section-2": {
+      "height": {
+        "Section Height": 100
+      },
+      "H1-s2_e1": {
+        "type": {
+          "Animation Type": "in-out"
+        },
+        "in": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": -0.04
+          }
+        },
+        "out": {
+          "effects": {
+            "Rotate": 360,
+            "Rotate Y": 0,
+            "Rotate X": 180,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 300
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": -0.04
+          }
+        },
+        "cont": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "transOrigin": {
+          "Trans Origin": "center"
+        }
+      },
+      "H1-s2_e2": {
+        "type": {
+          "Animation Type": "in-out"
+        },
+        "in": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": -0.07
+          }
+        },
+        "out": {
+          "effects": {
+            "Rotate": 360,
+            "Rotate Y": 0,
+            "Rotate X": 180,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 300
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": -0.07
+          }
+        },
+        "cont": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "transOrigin": {
+          "Trans Origin": "center"
+        }
+      },
+      "H1-s2_e3": {
+        "type": {
+          "Animation Type": "in-out"
+        },
+        "in": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": -0.1
+          }
+        },
+        "out": {
+          "effects": {
+            "Rotate": 360,
+            "Rotate Y": 0,
+            "Rotate X": 180,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 300
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": -0.1
+          }
+        },
+        "cont": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "transOrigin": {
+          "Trans Origin": "center"
+        }
+      },
+      "H1-s2_e4": {
+        "type": {
+          "Animation Type": "in-out"
+        },
+        "in": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": -0.13
+          }
+        },
+        "out": {
+          "effects": {
+            "Rotate": 360,
+            "Rotate Y": 0,
+            "Rotate X": 180,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 300
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": -0.13
+          }
+        },
+        "cont": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "transOrigin": {
+          "Trans Origin": "center"
+        }
+      },
+      "H1-s2_e5": {
+        "type": {
+          "Animation Type": "in-out"
+        },
+        "in": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": -0.16
+          }
+        },
+        "out": {
+          "effects": {
+            "Rotate": 360,
+            "Rotate Y": 0,
+            "Rotate X": 180,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 300
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": -0.16
+          }
+        },
+        "cont": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "transOrigin": {
+          "Trans Origin": "center"
+        }
+      },
+      "H1-s2_e6": {
+        "type": {
+          "Animation Type": "in-out"
+        },
+        "in": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset":  -0.19
+          }
+        },
+        "out": {
+          "effects": {
+            "Rotate": 360,
+            "Rotate Y": 0,
+            "Rotate X": 180,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 300
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": -0.19
+          }
+        },
+        "cont": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "transOrigin": {
+          "Trans Origin": "center"
+        }
+      },
+      "H1-s2_e7": {
+        "type": {
+          "Animation Type": "in-out"
+        },
+        "in": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset":  -0.22
+          }
+        },
+        "out": {
+          "effects": {
+            "Rotate": 360,
+            "Rotate Y": 0,
+            "Rotate X": 180,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 300
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": -0.22
+          }
+        },
+        "cont": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "transOrigin": {
+          "Trans Origin": "center"
+        }
+      },
+      "H1-s2_e8": {
+        "type": {
+          "Animation Type": "in-out"
+        },
+        "in": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": -0.25
+          }
+        },
+        "out": {
+          "effects": {
+            "Rotate": 360,
+            "Rotate Y": 0,
+            "Rotate X": 180,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 300
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": -0.25
+          }
+        },
+        "cont": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "transOrigin": {
+          "Trans Origin": "center"
+        }
+      }
+    },
+    "Section-3": {
+      "height": {
+        "Section Height": 100
+      },
+      "IMG-s3_e1": {
+        "type": {
+          "Animation Type": "in-out"
+        },
+        "in": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "out": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "cont": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "transOrigin": {
+          "Trans Origin": "center"
+        }
+      },
+      "IMG-s3_e2": {
+        "type": {
+          "Animation Type": "in-out"
+        },
+        "in": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "out": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "cont": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "transOrigin": {
+          "Trans Origin": "center"
+        }
+      },
+      "IMG-s3_e3": {
+        "type": {
+          "Animation Type": "in-out"
+        },
+        "in": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "out": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "cont": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "transOrigin": {
+          "Trans Origin": "center"
+        }
+      },
+      "IMG-s3_e4": {
+        "type": {
+          "Animation Type": "in-out"
+        },
+        "in": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "out": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "cont": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "transOrigin": {
+          "Trans Origin": "center"
+        }
+      },
+      "IMG-s3_e5": {
+        "type": {
+          "Animation Type": "in-out"
+        },
+        "in": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "out": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "cont": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "transOrigin": {
+          "Trans Origin": "center"
+        }
+      },
+      "IMG-s3_e6": {
+        "type": {
+          "Animation Type": "in-out"
+        },
+        "in": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "out": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "cont": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "transOrigin": {
+          "Trans Origin": "center"
+        }
+      }
+    },
+    "Section-4": {
+      "height": {
+        "Section Height": 100
+      },
+      "IMG-s4_e1": {
+        "type": {
+          "Animation Type": "in-out"
+        },
+        "in": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "out": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "cont": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "transOrigin": {
+          "Trans Origin": "center"
+        }
+      },
+      "IMG-s4_e2": {
+        "type": {
+          "Animation Type": "in-out"
+        },
+        "in": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "out": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "cont": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "transOrigin": {
+          "Trans Origin": "center"
+        }
+      },
+      "IMG-s4_e3": {
+        "type": {
+          "Animation Type": "in-out"
+        },
+        "in": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "out": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "cont": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "transOrigin": {
+          "Trans Origin": "center"
+        }
+      },
+      "IMG-s4_e4": {
+        "type": {
+          "Animation Type": "in-out"
+        },
+        "in": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "out": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "cont": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "transOrigin": {
+          "Trans Origin": "center"
+        }
+      }
+    },
+    "Section-5": {
+      "height": {
+        "Section Height": 100
+      },
+      "IMG-s5_e1": {
+        "type": {
+          "Animation Type": "in-out"
+        },
+        "in": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "out": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "cont": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "transOrigin": {
+          "Trans Origin": "center"
+        }
+      },
+      "IMG-s5_e2": {
+        "type": {
+          "Animation Type": "in-out"
+        },
+        "in": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "out": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "cont": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "transOrigin": {
+          "Trans Origin": "center"
+        }
+      }
+    },
+    "Section-6": {
+      "height": {
+        "Section Height": 100
+      },
+      "DIV-s6_e1": {
+        "type": {
+          "Animation Type": "in-out"
+        },
+        "in": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "out": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "cont": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "transOrigin": {
+          "Trans Origin": "center"
+        }
+      },
+      "IMG-s6_e2": {
+        "type": {
+          "Animation Type": "in-out"
+        },
+        "in": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "out": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "cont": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "transOrigin": {
+          "Trans Origin": "center"
+        }
+      },
+      "H3-s6_e3": {
+        "type": {
+          "Animation Type": "in-out"
+        },
+        "in": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "out": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "cont": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "transOrigin": {
+          "Trans Origin": "center"
+        }
+      },
+      "DIV-s6_e4": {
+        "type": {
+          "Animation Type": "in-out"
+        },
+        "in": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "out": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "cont": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "transOrigin": {
+          "Trans Origin": "center"
+        }
+      },
+      "H3-s6_e5": {
+        "type": {
+          "Animation Type": "in-out"
+        },
+        "in": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "out": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "cont": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "transOrigin": {
+          "Trans Origin": "center"
+        }
+      },
+      "IMG-s6_e6": {
+        "type": {
+          "Animation Type": "in-out"
+        },
+        "in": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "out": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "cont": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "transOrigin": {
+          "Trans Origin": "center"
+        }
+      },
+      "DIV-s6_e7": {
+        "type": {
+          "Animation Type": "in-out"
+        },
+        "in": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "out": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "cont": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "transOrigin": {
+          "Trans Origin": "center"
+        }
+      },
+      "IMG-s6_e8": {
+        "type": {
+          "Animation Type": "in-out"
+        },
+        "in": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "out": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "cont": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "transOrigin": {
+          "Trans Origin": "center"
+        }
+      },
+      "H3-s6_e9": {
+        "type": {
+          "Animation Type": "in-out"
+        },
+        "in": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "out": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "cont": {
+          "effects": {
+            "Rotate": 0,
+            "Rotate Y": 0,
+            "Rotate X": 0,
+            "Skew X": 0,
+            "Skew Y": 0,
+            "Scale X": 1,
+            "Scale Y": 1,
+            "Opacity": 1,
+            "Hue Rotate": 0,
+            "Ghost": true,
+            "position": {
+              "Angle": 0,
+              "Distance": 0
+            }
+          },
+          "travelSettings": {
+            "Hint": false,
+            "Anchor": "modeSelf",
+            "Duration": 1,
+            "Offset": 0
+          }
+        },
+        "transOrigin": {
+          "Trans Origin": "center"
+        }
+      }
+    }
+  }
+]

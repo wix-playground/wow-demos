@@ -1,0 +1,79 @@
+main {
+    display: grid;
+    grid-template: "controls text stage" 100vh / 30% 30% 40%;
+}
+
+#csstext {
+    grid-area: text;
+}
+
+#stage {
+    grid-area: stage;
+}
+
+.maximize-stage #stage {
+    grid-area: 1 / 1 / -1 / -1;
+    z-index: 1;
+    position: relative;
+    background-color: white;
+}
+
+.maximize-stage #csstext {
+    grid-area: 1 / 1 / 2 / 3;
+    z-index: 2;
+    position: relative;
+}
+
+iframe {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+}
+
+aside {
+    grid-area: controls;
+}
+
+#controls-output-content {
+    display: inline-block;
+    width: 100%;
+    text-align: left;
+}
+
+#stage-controls {
+    position: fixed;
+    top: 10px;
+    right: 2px;
+}
+
+label {
+    cursor: pointer;
+}
+
+aside fieldset {
+    display: flex;
+    flex-direction: column;
+}
+
+aside fieldset label + label {
+    display: block;
+    margin-top: 0.7rem;
+}
+
+aside legend:has(input[name="screen-in-mode"]:not(:checked)) ~ * {
+    display: none !important;
+}
+
+aside label:has(input[name="screen-in-name"]) + fieldset,
+aside label:has(input[name="screen-in-mobile-name"]) + fieldset {
+    display: none;
+}
+
+aside label:has(input[name="screen-in-name"]:checked) + fieldset,
+aside label:has(input[name="screen-in-mobile-name"]:checked) + fieldset {
+    display: block;
+}
+
+aside label:has(input[name="screen-in-name"]:checked) + fieldset:has(legend:only-child)::before,
+aside label:has(input[name="screen-in-mobile-name"]:checked) + fieldset:has(legend:only-child)::before {
+    content: "Nothing to see here...";
+}

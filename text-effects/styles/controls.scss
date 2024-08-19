@@ -1,0 +1,124 @@
+// @use "./media-list.scss";
+@import url(./media-list.css);
+
+.controls {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  padding: 1em;
+  color: var(--base-text-color);
+  background: var(--base-color);
+  border-right: 1px solid hsl(0deg, 0%, 50%);
+  overflow-y: scroll;
+  overflow-x: hidden;
+  accent-color: var(--accent-color);
+
+  .text-input {
+    textarea {
+      width: 100%;
+      resize: none;
+      box-sizing: border-box;
+      border-color: var(--base-color-border);
+      font-family: sans-serif;
+      line-height: 1.2;
+      padding: 0.5em;
+
+      &:focus {
+        outline: none;
+        border-color: var(--focus-color-border);
+      }
+    }
+  }
+
+  .with-effect:not(:checked) ~ fieldset {
+    opacity: 0;
+    position: absolute;
+    pointer-events: none;
+  }
+
+  // ul,
+  // li {
+  //     list-style-type: none;
+  //     padding: 0;
+  //     margin: 0;
+  // }
+}
+.controls-section {
+  border: 1px solid var(--base-color-border);
+  margin: 0.5em 0;
+
+  legend {
+    font-weight: bold;
+  }
+  > label {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+    padding: 1px 2px;
+  }
+
+  input {
+    vertical-align: middle;
+  }
+
+  i {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.3em;
+    [type="radio"] {
+      margin: 3px 0 3px 3px;
+    }
+  }
+
+  input[type="color"] {
+    padding: 0;
+    background: none;
+    border: none;
+    margin: 0 -2px;
+    cursor: context-menu;
+  }
+
+  input[type="color"],
+  input[type="number"] {
+    min-width: 3em;
+    flex-basis: 0;
+  }
+
+  input[type="number"] {
+    width: 3em;
+  }
+}
+
+.effect-section {
+  border: 1px solid var(--base-color-border);
+  margin: 0.5em 0;
+  padding: 0.6em 0.5em 0.5em;
+  > label {
+    font-weight: bold;
+  }
+  .controls-section {
+    border-width: 1px 0 0 0;
+    padding: 0.5em 0 0;
+  }
+}
+
+.box-dimensions {
+  input[type="number"] {
+    font-size: 0.9em;
+    width: 3.5em;
+    &:not(:hover, :focus) {
+      &::-webkit-inner-spin-button,
+      &::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+    }
+  }
+}
+// h3 {
+//     margin-top: 0.5em;
+//     margin-bottom: 0.2em;
+//     font-size: 0.9rem;
+// }
