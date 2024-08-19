@@ -1,6 +1,7 @@
 export const setVideoSource = (video: HTMLVideoElement, videoFileName: string) => {
-    if (!video.src.endsWith(window.state.video)) return;
+    if (video.src.endsWith(videoFileName.replace('./', '/'))) return;
     console.log("Setting video source to:", videoFileName);
+
     video.src = videoFileName;
     video.load();
     video.play();

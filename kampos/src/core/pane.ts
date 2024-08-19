@@ -3,6 +3,7 @@ import { Pane } from "tweakpane";
 import * as CamerakitPlugin from "@tweakpane/plugin-camerakit";
 import { setState } from "../utils/state";
 import debounce from "debounce";
+import { setVideoSource } from "../utils/video-utils";
 
 const pane = new Pane();
 window.pane = pane;
@@ -14,12 +15,6 @@ const disabledButNotForDev = !isDevQuery;
 console.log('isDevQuery', disabledButNotForDev);
 
 export function initPane() {
-    const setVideoSource = (video, videoFileName) => {
-        video.src = `${videoFileName}`;
-        video.load();
-        video.play();
-    };
-
     pane.addButton({ title: "Reset" }).on("click", () => {
         setState(null);
         window.location.reload();
