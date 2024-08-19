@@ -9,8 +9,22 @@ const App: Component = () => {
                 class="absolute inset-0 z-0 w-full h-full"
              />
         </div>
-        <video id="video" src="./assets/cloudy-night.mp4" loop muted hidden></video>
-        <video id="video2" loop muted hidden></video>
+        <video id="video" src="./assets/cloudy-night.mp4"
+               autoplay
+               loop
+               muted
+               preload="auto"
+               crossorigin="anonymous"
+               hidden
+               playsinline></video>
+        <video id="video2"
+               autoplay
+               loop
+               muted
+               preload="auto"
+               crossorigin="anonymous"
+               hidden
+               playsinline></video>
         <VideoSelector />
     </>
   );
