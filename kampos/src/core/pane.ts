@@ -89,12 +89,9 @@ export function initPane() {
     });
 
     // Displacement Effect
-    const displacementFolder = pane.addFolder({ title: "Displacement Effect (WIP)", expanded: false });
-    displacementFolder.addBinding(window.state.effects.displacement, "active", {
-        disabled: disabledButNotForDev,
-    });
+    const displacementFolder = pane.addFolder({ title: "Displacement Effect", expanded: false });
+    displacementFolder.addBinding(window.state.effects.displacement, "active");
     displacementFolder.addBinding(window.state.effects.displacement, "wrap", {
-        disabled: disabledButNotForDev,
         options: {
             clamp: "CLAMP",
             discard: "DISCARD",
@@ -102,18 +99,15 @@ export function initPane() {
         },
     });
     displacementFolder.addBinding(window.state.effects.displacement, "scaleX", {
-        disabled: disabledButNotForDev,
         min: 0,
         max: 1,
     });
     displacementFolder.addBinding(window.state.effects.displacement, "scaleY", {
-        disabled: disabledButNotForDev,
         min: 0,
         max: 1,
     });
     displacementFolder.addBinding(window.state.effects.displacement, "map", {
         options: VIDEO_SOURCE_OPTIONS,
-        disabled: disabledButNotForDev,
     });
 
     // Turbulence Effect
