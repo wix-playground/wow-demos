@@ -2,7 +2,7 @@ import { Kampos, effects } from "kampos";
 import { getVideoElement } from "../constants";
 import { initPane } from "./pane";
 import { getQueryValue, onStateChange, setState } from "../utils/state";
-import { resolveVideo } from "../utils/video-utils";
+import { resolveVideo } from "../utils/media-utils";
 import { onEffectApplied, resolveConfig, splitEffectConfigToInitialsAndSetters } from "./kampos-effects";
 
 let willBeAppliedEffects: Record<string, any[]> = {};
@@ -24,7 +24,8 @@ async function initKampos() {
     for (const effectName of getActiveEffects()) {
         const effectConfig = await resolveConfig(window.state.effects[effectName]);
         console.log(`[config] ${effectName}:`, effectConfig);
-        const { initials, setters } = splitEffectConfigToInitialsAndSetters(effectConfig);
+        const { initials, setters } = splitEffectConfigToInitialsAndSetters(effectName, effectConfig);
+        console.log('split',effectName, initials, setters);
         willBeAppliedEffects[effectName] = effects[effectName](initials);
         Object.entries(setters).forEach(([key, value]) => {
             willBeAppliedEffects[effectName][key] = value;

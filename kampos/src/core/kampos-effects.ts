@@ -1,5 +1,34 @@
-import { resolveMediaFromPath } from "./media-resolution";
+import { loadImage, loadVideo } from "../utils/media-utils";
 
+const mediaResolutionCache = new Map();
+async function resolveMediaFromPath(path: string) {
+    // Check if the path has already been resolved
+    if (mediaResolutionCache.has(path)) {
+        return mediaResolutionCache.get(path);
+    }
+
+    const extension = path.split(".").pop().toLowerCase();
+    let resolvedValue;
+
+    try {
+        if (["png", "jpg", "jpeg", "gif"].includes(extension)) {
+            resolvedValue = await loadImage(path);
+        } else if (["mp4", "webm", "ogg"].includes(extension)) {
+            resolvedValue = await loadVideo(path);
+        } else {
+            // Fallback: Return the path as a string if it doesn't match expected extensions
+            resolvedValue = path;
+        }
+
+        // Store the resolved value in the cache
+        mediaResolutionCache.set(path, resolvedValue);
+        return resolvedValue;
+    } catch (error) {
+        console.error(error);
+        // In case of an error, return the path itself as a fallback
+        return path;
+    }
+}
 
 function hexToNormalizedRGBA(hex: string): number[] {
     hex = hex.replace(/^#/, "");
@@ -40,26 +69,28 @@ export async function resolveConfig(config: any) {
 
     return Object.fromEntries(entries);
 }
+
 const EffectsPropsHasToBeOnInit: Record<string, string[]> = {
     alphaMask: ['isLuminance'],
+    blend: ['image'],
 };
 
-export function splitEffectConfigToInitialsAndSetters(effectConfig: any) {
+export function splitEffectConfigToInitialsAndSetters(effectName: string, effectConfig: any) {
     const initials: any = {};
     const setters: any = {};
+    const propsToInitialize = EffectsPropsHasToBeOnInit[effectName] || [];
+
     Object.entries(effectConfig).forEach(([key, value]) => {
-        if (EffectsPropsHasToBeOnInit[key]) {
-            EffectsPropsHasToBeOnInit[key].forEach((prop) => {
-                if (typeof value[prop] !== 'undefined') {
-                    initials[prop] = value[prop];
-                }
-            });
+        if (propsToInitialize.includes(key)) {
+            initials[key] = value;
         } else {
             setters[key] = value;
         }
     });
-    return {initials, setters} as const;
+
+    return { initials, setters } as const;
 }
+
 export const onEffectApplied = (willBeAppliedEffects: any, effectName: string) => {
     const onEffectAppliedMapper = {
         alphaMask: () => {
