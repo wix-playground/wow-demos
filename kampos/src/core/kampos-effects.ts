@@ -1,3 +1,4 @@
+import { effects } from "kampos";
 import { loadImage, loadVideo } from "../utils/media-utils";
 
 const mediaResolutionCache = new Map();
@@ -51,9 +52,26 @@ function hexToNormalizedRGBA(hex: string): number[] {
     return [r / 255, g / 255, b / 255, a];
 }
 
-export async function resolveConfig(config: any) {
+const effectConfigResolvers ={
+    'displacement': ({scaleX, scaleY, wrap, ...effectConfig}) => ({
+        ...effectConfig,
+        wrap: effects.displacement[wrap],
+        scale: {
+            x: scaleX,
+            y: scaleY,
+        },
+    }),
+};
+function getEffectConfigResolver(effectName: string) {
+    const fallbackResolver = (effectConfig) => effectConfig;
+    return effectName in effectConfigResolvers ? effectConfigResolvers[effectName] : fallbackResolver;
+
+}
+
+export async function resolveConfig(effectName: string, config: any) {
+    const effectConfigResolver = getEffectConfigResolver(effectName);
     const entries = await Promise.all(
-        Object.entries(config)
+        Object.entries(effectConfigResolver(config))
             .filter(([_, value]) => value !== "none" && value !== "WIP")
             .map(async ([key, value]) => {
                 if (typeof value === "string") {
@@ -73,6 +91,7 @@ export async function resolveConfig(config: any) {
 const EffectsPropsHasToBeOnInit: Record<string, string[]> = {
     alphaMask: ['isLuminance'],
     blend: ['image'],
+    displacement: ['wrap', 'scale'],
 };
 
 export function splitEffectConfigToInitialsAndSetters(effectName: string, effectConfig: any) {
@@ -96,6 +115,10 @@ export const onEffectApplied = (willBeAppliedEffects: any, effectName: string) =
         alphaMask: () => {
             willBeAppliedEffects[effectName].textures[0].update = true
         },
+        displacement: () => {
+            console.log("displacement effect applied");
+            willBeAppliedEffects[effectName].textures[0].update = true
+        }
     };
     onEffectAppliedMapper[effectName]?.();
 }

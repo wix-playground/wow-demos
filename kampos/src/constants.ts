@@ -67,8 +67,8 @@ export const DEFAULT_STATE = {
         },
         duotone: {
             active: false,
-            dark: "#ffffff",
-            light: "WIP",
+            dark: "#000000",
+            light: "#ffffff",
         },
         alphaMask: {
             active: false,
