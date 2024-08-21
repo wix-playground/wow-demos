@@ -9,7 +9,7 @@ import { Pane } from "tweakpane";
 import * as CamerakitPlugin from "@tweakpane/plugin-camerakit";
 import { setState } from "../utils/state";
 import debounce from "debounce";
-import { setVideoSource } from "../utils/video-utils";
+import { setVideoSource } from "../utils/media-utils";
 
 const pane = new Pane();
 window.pane = pane;
