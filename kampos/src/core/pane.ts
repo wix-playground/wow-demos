@@ -59,11 +59,23 @@ export function initPane() {
     blendFolder.addBinding(window.state.effects.blend, "active");
     blendFolder.addBinding(window.state.effects.blend, "mode", {
         options: {
-            normal: "normal",
-            multiply: "multiply",
-            screen: "screen",
-            overlay: "overlay",
-        },
+            'normal': 'normal',
+            'multiply': 'multiply',
+            'screen': 'screen',
+            'overlay': 'overlay',
+            'darken': 'darken',
+            'lighten': 'lighten',
+            'color-dodge': 'color-dodge',
+            'color-burn': 'color-burn',
+            'hard-light': 'hard-light',
+            'soft-light': 'soft-light',
+            'difference': 'difference',
+            'exclusion': 'exclusion',
+            'hue': 'hue',
+            'saturation': 'saturation',
+            'color': 'color',
+            'luminosity': 'luminosity',
+        }
     });
     blendFolder.addBinding(window.state.effects.blend, "color", { view: "color", color: { alpha: true } });
     blendFolder.addBinding(window.state.effects.blend, "image", { options: IMAGE_OPTIONS });
