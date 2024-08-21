@@ -1,4 +1,10 @@
-import { getVideoElement, VIDEO_SOURCE_OPTIONS, DEFAULT_STATE, IMAGE_OPTIONS } from "../constants";
+import {
+    getVideoElement,
+    VIDEO_SOURCE_OPTIONS,
+    DEFAULT_STATE,
+    IMAGE_OPTIONS,
+    VIDEO_AND_IMAGE_OPTIONS,
+} from "../constants";
 import { Pane } from "tweakpane";
 import * as CamerakitPlugin from "@tweakpane/plugin-camerakit";
 import { setState } from "../utils/state";
@@ -10,9 +16,9 @@ window.pane = pane;
 pane.registerPlugin(CamerakitPlugin);
 
 window.state = structuredClone(DEFAULT_STATE);
-const isDevQuery = window.location.search.includes('dev');
+const isDevQuery = window.location.search.includes("dev");
 const disabledButNotForDev = !isDevQuery;
-console.log('isDevQuery', disabledButNotForDev);
+console.log("isDevQuery", disabledButNotForDev);
 
 export function initPane() {
     pane.addButton({ title: "Reset" }).on("click", () => {
@@ -63,15 +69,12 @@ export function initPane() {
     blendFolder.addBinding(window.state.effects.blend, "image", { options: IMAGE_OPTIONS });
 
     // Alpha Mask Effect
-    const alphaMaskFolder = pane.addFolder({ title: "Alpha Mask Effect (WIP)", expanded: false });
-    alphaMaskFolder.addBinding(window.state.effects.alphaMask, "active", {
-        disabled: disabledButNotForDev,
+    const alphaMaskFolder = pane.addFolder({ title: "Alpha Mask Effect", expanded: false });
+    alphaMaskFolder.addBinding(window.state.effects.alphaMask, "active");
+    alphaMaskFolder.addBinding(window.state.effects.alphaMask, "isLuminance");
+    alphaMaskFolder.addBinding(window.state.effects.alphaMask, "mask", {
+        options: VIDEO_AND_IMAGE_OPTIONS,
     });
-    alphaMaskFolder.addBinding(window.state.effects.alphaMask, "isLuminance", {
-        disabled: disabledButNotForDev,
-    });
-    alphaMaskFolder
-        .addBinding(window.state.effects.alphaMask, "mask", { options: IMAGE_OPTIONS, disabled: disabledButNotForDev });
 
     // Displacement Effect
     const displacementFolder = pane.addFolder({ title: "Displacement Effect (WIP)", expanded: false });
