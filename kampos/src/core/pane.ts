@@ -52,7 +52,7 @@ export function initPane() {
     const duotoneFolder = pane.addFolder({ title: "Duotone Effect" });
     duotoneFolder.addBinding(window.state.effects.duotone, "active");
     duotoneFolder.addBinding(window.state.effects.duotone, "dark", { view: "color" });
-    duotoneFolder.addBinding(window.state.effects.duotone, "light", { view: "text", disabled: disabledButNotForDev });
+    duotoneFolder.addBinding(window.state.effects.duotone, "light", { view: "color" });
 
     // Blend Effect
     const blendFolder = pane.addFolder({ title: "Blend Effect" });
@@ -96,10 +96,9 @@ export function initPane() {
     displacementFolder.addBinding(window.state.effects.displacement, "wrap", {
         disabled: disabledButNotForDev,
         options: {
-            stretch: "stretch",
-            disabled: disabledButNotForDev,
-            repeat: "repeat",
-            mirror: "mirror",
+            clamp: "CLAMP",
+            discard: "DISCARD",
+            wrap: "WRAP",
         },
     });
     displacementFolder.addBinding(window.state.effects.displacement, "scaleX", {

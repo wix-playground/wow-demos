@@ -22,10 +22,10 @@ async function initKampos() {
     const target = document.querySelector("#target");
     willBeAppliedEffects = {};
     for (const effectName of getActiveEffects()) {
-        const effectConfig = await resolveConfig(window.state.effects[effectName]);
+        const effectConfig = await resolveConfig(effectName, window.state.effects[effectName]);
         console.log(`[config] ${effectName}:`, effectConfig);
         const { initials, setters } = splitEffectConfigToInitialsAndSetters(effectName, effectConfig);
-        console.log('split',effectName, initials, setters);
+        console.log('split',effectName, {initials, setters});
         willBeAppliedEffects[effectName] = effects[effectName](initials);
         Object.entries(setters).forEach(([key, value]) => {
             willBeAppliedEffects[effectName][key] = value;
