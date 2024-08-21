@@ -2,13 +2,12 @@ import { Kampos, effects } from "kampos";
 import { getVideoElement } from "../constants";
 import { initPane } from "./pane";
 import { getQueryValue, onStateChange, setState } from "../utils/state";
-import { resolveVideo, setVideoSource } from "../utils/video-utils";
+import { resolveVideo } from "../utils/video-utils";
 import { resolveMediaFromPath } from "./media-resolution";
 
-let allEffects: Record<string, any[]> = {};
+let willBeAppliedEffects: Record<string, any[]> = {};
 let video = getVideoElement();
-let kamposInstance: Kampos | null = null;
-
+let kamposInstance: any | null = null;
 function hexToNormalizedRGBA(hex: string): number[] {
     hex = hex.replace(/^#/, "");
     let r,
@@ -57,17 +56,51 @@ function getActiveEffects() {
     return Object.keys(effects).filter((effectName) => window.state.effects[effectName].active);
 }
 
+const EffectsPropsHasToBeOnInit: Record<string, string[]> = {
+    alphaMask: ['isLuminance'],
+};
+function splitEffectConfigToInitialsAndSetters(effectConfig: any) {
+    const initials: any = {};
+    const setters: any = {};
+    Object.entries(effectConfig).forEach(([key, value]) => {
+        if (EffectsPropsHasToBeOnInit[key]) {
+            EffectsPropsHasToBeOnInit[key].forEach((prop) => {
+                if (typeof value[prop] !== 'undefined') {
+                    initials[prop] = value[prop];
+                }
+            });
+        } else {
+            setters[key] = value;
+        }
+    });
+    return {initials, setters} as const;
+}
+const onEffectApplied = (willBeAppliedEffects: any, effectName: string) => {
+    const onEffectAppliedMapper = {
+        alphaMask: () => {
+            willBeAppliedEffects[effectName].textures[0].update = true
+        },
+    };
+    onEffectAppliedMapper[effectName]?.();
+}
+
 async function initKampos() {
     const target = document.querySelector("#target");
-    allEffects = {};
+    willBeAppliedEffects = {};
     for (const effectName of getActiveEffects()) {
         const effectConfig = await resolveConfig(window.state.effects[effectName]);
-        allEffects[effectName] = effects[effectName](effectConfig);
         console.log(`[config] ${effectName}:`, effectConfig);
+        const { initials, setters } = splitEffectConfigToInitialsAndSetters(effectConfig);
+        willBeAppliedEffects[effectName] = effects[effectName](initials);
+        Object.entries(setters).forEach(([key, value]) => {
+            willBeAppliedEffects[effectName][key] = value;
+        });
+
+        onEffectApplied(willBeAppliedEffects, effectName);
     }
     kamposInstance = new Kampos({
         target,
-        effects: Object.values(allEffects),
+        effects: Object.values(willBeAppliedEffects),
     });
 
     kamposInstance.setSource({

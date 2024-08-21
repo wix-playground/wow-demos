@@ -25,13 +25,25 @@ export const DEFAULT_MASK_VIDEO_SOURCE_OPTION = VIDEO_MASK_SOURCE_OPTIONS.none;
 export const getVideoElement = () => document.querySelector("#video") as HTMLVideoElement;
 export const getSecondVideoElement = () => document.querySelector("#video2") as HTMLVideoElement;
 
-export const IMAGE_OPTIONS = [
-    { text: "none", value: "none", src: "" },
-    { text: "Cloud", value: ASSETS_PREFIX+"/disp-cloud.png", src: "./disp-cloud.png" },
-    { text: "Snow", value: ASSETS_PREFIX+"/disp-snow.jpg", src: "./disp-snow.jpg" },
-    { text: "Liquid", value: ASSETS_PREFIX+"/disp-liquid.jpg", src: "./disp-liquid.jpg" },
-    { text: "Triangle", value: ASSETS_PREFIX+"/disp-tri.jpg", src: "./disp-tri.jpg" },
-];
+export const IMAGE_OPTIONS = {
+    'none': 'none',
+    'Cloud': ASSETS_PREFIX+"/disp-cloud.png",
+    'Snow': ASSETS_PREFIX+"/disp-snow.jpg",
+    'Liquid': ASSETS_PREFIX+"/disp-liquid.jpg",
+    'Triangle': ASSETS_PREFIX+"/disp-tri.jpg",
+}
+
+function addCategoryToMediaName(value: Record<string, string>, text) {
+    return Object.entries(value).filter(([key, value]) => value !== "none").reduce((result, [key, value]) => {
+        result[`${text} ${key}`] = value;
+        return result;
+    }, {} as Record<string, string>);
+}
+export const VIDEO_AND_IMAGE_OPTIONS = {
+    'none': 'none',
+    ...addCategoryToMediaName(IMAGE_OPTIONS, '[image]'),
+    ...addCategoryToMediaName(VIDEO_SOURCE_OPTIONS, '[video]'),
+}
 
 export const DEFAULT_STATE = {
     video: DEFAULT_VIDEO_SOURCE_OPTION,
@@ -51,7 +63,7 @@ export const DEFAULT_STATE = {
             active: false,
             mode: "normal",
             color: "#000000ff",
-            image: IMAGE_OPTIONS[0].value,
+            image: IMAGE_OPTIONS.none,
         },
         duotone: {
             active: false,
