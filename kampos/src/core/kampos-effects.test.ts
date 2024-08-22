@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { resolveConfig } from './kampos-effects';
 import * as mediaUtils from '../utils/media-utils';
+import { EFFECT_NAMES } from '../constants';
 
 // Mock the module that contains loadImage and loadVideo
 vi.mock('../utils/media-utils', () => ({
@@ -135,7 +136,6 @@ it('should resolve paths that start with canvas as the kamposCanvas instance', a
   });
 
 
-const displacementEffectName = 'displacement';
 const unknownEffectName = 'unknownEffect';
 
 describe('resolveConfig with effect config resolver logic', () => {
@@ -147,7 +147,7 @@ describe('resolveConfig with effect config resolver logic', () => {
         backgroundImage: '/path/to/image.png',
       };
 
-      const resolvedConfig = await resolveConfig(displacementEffectName, config);
+      const resolvedConfig = await resolveConfig(EFFECT_NAMES.displacement, config);
 
       expect(resolvedConfig.scale).toEqual({
         x: 2,
@@ -167,7 +167,7 @@ describe('resolveConfig with effect config resolver logic', () => {
           wrap: wrapType,
         };
 
-        const resolvedConfig = await resolveConfig(displacementEffectName, config);
+        const resolvedConfig = await resolveConfig(EFFECT_NAMES.displacement, config);
 
         expect(resolvedConfig.wrap).toContain(expectedContain);
       });

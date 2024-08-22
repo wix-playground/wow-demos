@@ -1,5 +1,6 @@
 import { effects, noise } from "kampos";
 import { loadImage, loadVideo } from "../utils/media-utils";
+import { EFFECT_NAMES } from "../constants";
 
 const mediaResolutionCache = new Map();
 async function resolveMediaFromPath(path: string) {
@@ -56,7 +57,7 @@ function hexToNormalizedRGBA(hex: string): number[] {
 }
 
 const effectConfigResolvers ={
-    'displacement': ({scaleX, scaleY, wrap, ...effectConfig}) => ({
+    [EFFECT_NAMES.displacement]: ({scaleX, scaleY, wrap, ...effectConfig}) => ({
         ...effectConfig,
         wrap: effects.displacement[wrap],
         scale: {
@@ -64,7 +65,7 @@ const effectConfigResolvers ={
             y: scaleY,
         },
     }),
-    'turbulence': ({noise: noiseParam, frequencyX, frequencyY, output, ...effectConfig}) => ({
+    [EFFECT_NAMES.turbulence]: ({noise: noiseParam, frequencyX, frequencyY, output, ...effectConfig}) => ({
         ...effectConfig,
         noise: noise[noiseParam],
         output: effects.turbulence[output],
