@@ -17,8 +17,6 @@ pane.registerPlugin(CamerakitPlugin);
 
 window.state = structuredClone(DEFAULT_STATE);
 const isDevQuery = window.location.search.includes("dev");
-const disabledButNotForDev = !isDevQuery;
-console.log("isDevQuery", disabledButNotForDev);
 
 export function initPane() {
     pane.addButton({ title: "Reset" }).on("click", () => {
@@ -111,45 +109,37 @@ export function initPane() {
     });
 
     // Turbulence Effect
-    const turbulenceFolder = pane.addFolder({ title: "Turbulence Effect (WIP)", expanded: false });
+    const turbulenceFolder = pane.addFolder({ title: "Turbulence Effect", expanded: false });
     turbulenceFolder.addBinding(window.state.effects.turbulence, "active", {
-        disabled: disabledButNotForDev,
     });
     turbulenceFolder.addBinding(window.state.effects.turbulence, "noise", {
-        disabled: disabledButNotForDev,
         options: {
+            perlinNoise: "perlinNoise",
             simplex: "simplex",
-            perlin: "perlin",
-            worley: "worley",
+            cellular: "cellular",
         },
     });
     turbulenceFolder.addBinding(window.state.effects.turbulence, "output", {
-        disabled: disabledButNotForDev,
         options: {
             COLOR: "COLOR",
             DISPLACEMENT: "DISPLACEMENT",
         },
     });
     turbulenceFolder.addBinding(window.state.effects.turbulence, "frequencyX", {
-        disabled: disabledButNotForDev,
         min: 0,
         max: 5,
     });
     turbulenceFolder.addBinding(window.state.effects.turbulence, "frequencyY", {
-        disabled: disabledButNotForDev,
         min: 0,
         max: 5,
     });
     turbulenceFolder.addBinding(window.state.effects.turbulence, "octaves", {
-        disabled: disabledButNotForDev,
         min: 1,
         max: 8,
     });
     turbulenceFolder.addBinding(window.state.effects.turbulence, "isFractal", {
-        disabled: disabledButNotForDev,
     });
     turbulenceFolder.addBinding(window.state.effects.turbulence, "time", {
-        disabled: disabledButNotForDev,
         min: 0,
         max: 10,
     });
