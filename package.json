@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"no test specified\"",
     "kampos": "npm run dev --workspace=kampos",
-    "build": "cd kampos && npm run build"
+    "build": "cd kampos && npm run build",
+    "prettier": "prettier --write ."
   },
   "workspaces": [
     "./kampos",
@@ -32,6 +33,7 @@
   "devDependencies": {
     "happy-dom": "^14.12.3",
     "jsdom": "^24.1.1",
+    "prettier": "^3.3.3",
     "vite": "^5.4.2",
     "vitest": "^2.0.5"
   }
