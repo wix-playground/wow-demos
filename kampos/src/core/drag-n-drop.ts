@@ -1,4 +1,4 @@
-import { getVideoElement } from "../constants";
+import { getVideoElement } from '../constants';
 
 function setupDragAndDrop() {
     const dropOverlay = document.getElementById('drag-n-drop');
@@ -32,6 +32,6 @@ function setupDragAndDrop() {
     });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', () => {
     setupDragAndDrop();
 });

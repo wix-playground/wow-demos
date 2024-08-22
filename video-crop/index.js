@@ -16,7 +16,7 @@ const SVG = {
     fest4: 'svg/fest4.svg',
     fest5: 'svg/fest5.svg',
     // fest6: 'svg/fest6.svg'
-    fest7: 'svg/fest7.svg'
+    fest7: 'svg/fest7.svg',
 };
 
 const TEXT_SVG = `<svg viewBox="0 0 200 200" height="200" width="200" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
@@ -36,9 +36,10 @@ const symbols = /[\r\n%#()<>?\[\\\]^`{|}]/g;
 
 function encodeSVG(data) {
     // Use single quotes instead of double to avoid encoding.
-    const escaped = data.replace( /"/g, '\'' )
-        .replace( />\s{1,}</g, "><" )
-        .replace( /\s{2,}/g, " " )
+    const escaped = data
+        .replace(/"/g, "'")
+        .replace(/>\s{1,}</g, '><')
+        .replace(/\s{2,}/g, ' ')
         .replace(symbols, encodeURIComponent);
 
     return `url("data:image/svg+xml,${escaped}")`;
@@ -48,11 +49,10 @@ const prefix = 'webkitMaskImage' in video.style ? 'webkitMask' : 'mask';
 
 let lastSVGMask;
 
-function applyMask (svg) {
+function applyMask(svg) {
     if (svg) {
         lastSVGMask = svg;
-    }
-    else {
+    } else {
         svg = lastSVGMask;
     }
 
@@ -77,12 +77,11 @@ function applyMask (svg) {
     video.style[`${prefix}Image`] = encodeSVG(svg);
 }
 
-function fetchSVG (url) {
-    return fetch(new Request(url))
-        .then(response => response.text());
+function fetchSVG(url) {
+    return fetch(new Request(url)).then((response) => response.text());
 }
 
-function main () {
+function main() {
     const handler = (svg, id) => {
         const div = document.createElement('div');
         div.classList.add('clip');
@@ -92,11 +91,12 @@ function main () {
         clipContainer.appendChild(div);
     };
 
-    const fetching = new Promise(resolve => {
-        Promise.all(Object.keys(SVG).map(id => {
-            return fetchSVG(SVG[id])
-                .then(svg => handler(svg, id));
-        }))
+    const fetching = new Promise((resolve) => {
+        Promise.all(
+            Object.keys(SVG).map((id) => {
+                return fetchSVG(SVG[id]).then((svg) => handler(svg, id));
+            }),
+        )
             .then(() => {
                 handler(TEXT_SVG, 'text');
             })
@@ -104,14 +104,14 @@ function main () {
     });
 
     fetching.then(() => {
-        const clipClickHandler = e => {
+        const clipClickHandler = (e) => {
             const clip = e.target.closest('svg');
 
             if (clip) {
                 const clone = clip.cloneNode(true);
                 clipDummy.appendChild(clone);
 
-                const {width, height, x, y} = clone.getBBox();
+                const { width, height, x, y } = clone.getBBox();
                 clone.setAttribute('viewBox', `${x} ${y} ${width} ${height}`);
                 clone.setAttribute('preserveAspectRatio', 'xMidYMid meet');
 
@@ -123,20 +123,20 @@ function main () {
 
         clipContainer.addEventListener('click', clipClickHandler);
 
-        videoSelector.addEventListener('change', e => {
+        videoSelector.addEventListener('change', (e) => {
             const index = e.target.selectedIndex;
             const src = e.target.children[index].value;
 
             video.src = src;
         });
 
-        backgroundColor.addEventListener('input', e => {
+        backgroundColor.addEventListener('input', (e) => {
             const value = e.target.value;
 
             document.body.style.backgroundColor = value;
         });
 
-        luminanceToggle.addEventListener('change', e => {
+        luminanceToggle.addEventListener('change', (e) => {
             applyMask();
         });
 
@@ -153,7 +153,7 @@ function main () {
         textButton.appendChild(editTextInput);
         editTextInput.style.width = MAX_WIDTH;
 
-        editTextButton.addEventListener('click', e => {
+        editTextButton.addEventListener('click', (e) => {
             e.stopPropagation();
 
             const textElement = textButton.querySelector('text');
@@ -171,7 +171,7 @@ function main () {
             textDummy.innerText = editTextInput.value;
             textDummy.style.fontSize = fontSizeString;
 
-            const cancelHandler = clear => {
+            const cancelHandler = (clear) => {
                 editTextInput.classList.remove('show');
                 editTextInput.removeEventListener('keydown', keydownHandler);
                 editTextInput.blur();
@@ -190,13 +190,13 @@ function main () {
                 textElement.innerHTML = editTextInput.value;
 
                 clipClickHandler({
-                    target: textElement
+                    target: textElement,
                 });
 
                 cancelHandler();
             };
 
-            const clickOutsideHandler = e => {
+            const clickOutsideHandler = (e) => {
                 e.stopPropagation();
                 applyHandler();
                 document.body.removeEventListener('click', clickOutsideHandler, true);
@@ -204,7 +204,7 @@ function main () {
 
             document.body.addEventListener('click', clickOutsideHandler, true);
 
-            const keydownHandler = e => {
+            const keydownHandler = (e) => {
                 if (e.code === 'Enter') {
                     applyHandler();
                 } else if (e.code === 'Escape') {
@@ -215,7 +215,7 @@ function main () {
                     textDummy.innerText = editTextInput.value;
                     textDummy.style.fontSize = fontSizeString;
 
-                    let {width} = textDummy.getBoundingClientRect();
+                    let { width } = textDummy.getBoundingClientRect();
 
                     if (width > parseInt(MAX_WIDTH)) {
                         while (width > parseInt(MAX_WIDTH)) {
@@ -225,8 +225,7 @@ function main () {
                             textDummy.style.fontSize = fontSizeString;
                             width = textDummy.getBoundingClientRect().width;
                         }
-                    }
-                    else {
+                    } else {
                         while (width < parseInt(MAX_WIDTH) && fontSize < 60) {
                             fontSize += 1;
                             fontSizeString = `${fontSize}px`;
@@ -244,17 +243,17 @@ function main () {
         });
     });
 
-    function dragEnter (e) {
+    function dragEnter(e) {
         e.stopPropagation();
         e.preventDefault();
     }
 
-    function dragOver (e) {
+    function dragOver(e) {
         e.stopPropagation();
         e.preventDefault();
     }
 
-    function drop (e) {
+    function drop(e) {
         e.stopPropagation();
         e.preventDefault();
 
@@ -270,7 +269,7 @@ function main () {
 
                 clipDummy.innerHTML = source_data;
                 const clone = clipDummy.querySelector('svg');
-                const {width, height, x, y} = clone.getBBox();
+                const { width, height, x, y } = clone.getBBox();
                 clone.setAttribute('viewBox', `${x} ${y} ${width} ${height}`);
 
                 applyMask(clone.outerHTML);

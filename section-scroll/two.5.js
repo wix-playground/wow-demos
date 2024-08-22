@@ -22,7 +22,6 @@ function clamp(min, max, value) {
  * @return {Object}
  */
 
-
 function defaultTo(obj, defaults) {
     return Object.assign(Object.create(defaults), obj);
 }
@@ -32,7 +31,6 @@ function defaultTo(obj, defaults) {
  * @param {...Object} objects
  * @return {Object}
  */
-
 
 function clone(...objects) {
     return Object.assign({}, ...objects);
@@ -45,7 +43,6 @@ function clone(...objects) {
  * @param {number} t interpolation factor
  * @return {number}
  */
-
 
 function lerp(a, b, t) {
     return a * (1 - t) + b * t;
@@ -68,8 +65,7 @@ const DEFAULTS$3 = {
 
     scrollClear(container, wrapper, x, y) {
         container.style.transform = '';
-    }
-
+    },
 };
 /*
  * Utilities for scroll controller
@@ -112,7 +108,6 @@ function calcPosition(p, snaps) {
  * @return {number} effect progress, between 0 and 1
  */
 
-
 function calcProgress(p, start, end, duration) {
     let progress = 0;
 
@@ -136,7 +131,6 @@ function calcProgress(p, start, end, duration) {
  * @return {function}
  */
 
-
 function getEffect$1(config) {
     const _config = defaultTo(config, DEFAULTS$3);
 
@@ -150,14 +144,10 @@ function getEffect$1(config) {
      * Prepare snap points data.
      */
 
-    const snaps = (_config.snaps || [] // sort points by start position
-    ).sort((a, b) => a.start > b.start ? 1 : -1) // map objects to arrays of [start, end]
-        .map(snap => {
-            const {
-                start,
-                duration,
-                end
-            } = snap;
+    const snaps = (_config.snaps || []) // sort points by start position
+        .sort((a, b) => (a.start > b.start ? 1 : -1)) // map objects to arrays of [start, end]
+        .map((snap) => {
+            const { start, duration, end } = snap;
             return [start, end == null ? start + duration : end];
         }); // calculate extra scroll if we have snaps
 
@@ -168,7 +158,7 @@ function getEffect$1(config) {
      * Prepare scenes data.
      */
 
-    _config.scenes.forEach(scene => {
+    _config.scenes.forEach((scene) => {
         if (scene.end == null) {
             scene.end = scene.start + scene.duration;
         } else if (scene.duration == null) {
@@ -178,7 +168,6 @@ function getEffect$1(config) {
     /*
      * Setup Smooth Scroll technique
      */
-
 
     if (container) {
         function setSize() {
@@ -198,49 +187,49 @@ function getEffect$1(config) {
         if (_config.observeSize && window.ResizeObserver) {
             resizeObserver = new window.ResizeObserver(setSize);
             resizeObserver.observe(container, {
-                box: 'border-box'
+                box: 'border-box',
             });
         }
         /*
          * Setup wrapper element and reset progress.
          */
 
-
         if (wrapper) {
             if (!wrapper.contains(container)) {
-                console.error('When defined, the wrapper element %o must be a parent of the container element %o', wrapper, container);
+                console.error(
+                    'When defined, the wrapper element %o must be a parent of the container element %o',
+                    wrapper,
+                    container,
+                );
                 throw new Error('Wrapper element is not a parent of container element');
             } // if we got a wrapper element set its style
-
 
             Object.assign(wrapper.style, {
                 position: 'fixed',
                 width: '100%',
                 height: '100%',
-                overflow: 'hidden'
+                overflow: 'hidden',
             }); // get current scroll position (support window, element and window in IE)
 
             let x = root.scrollX || root.pageXOffset || root.scrollLeft || 0;
             let y = root.scrollY || root.pageYOffset || root.scrollTop || 0; // increment current scroll position by accumulated snap point durations
 
             if (horizontal) {
-                x = snaps.reduce((acc, [start, end]) => start < acc ? acc + (end - start) : acc, x);
+                x = snaps.reduce((acc, [start, end]) => (start < acc ? acc + (end - start) : acc), x);
             } else {
-                y = snaps.reduce((acc, [start, end]) => start < acc ? acc + (end - start) : acc, y);
+                y = snaps.reduce((acc, [start, end]) => (start < acc ? acc + (end - start) : acc), y);
             } // update scroll and progress to new calculated position
-
 
             _config.resetProgress({
                 x,
-                y
+                y,
             }); // render current position
-
 
             controller({
                 x,
                 y,
                 vx: 0,
-                vy: 0
+                vy: 0,
             });
         }
     }
@@ -248,21 +237,23 @@ function getEffect$1(config) {
      * Observe entry and exit of scenes into view
      */
 
-
     if (_config.observeViewport && window.IntersectionObserver) {
-        viewportObserver = new window.IntersectionObserver(function (intersections) {
-            intersections.forEach(intersection => {
-                (scenesByElement.get(intersection.target) || []).forEach(scene => {
-                    scene.disabled = !intersection.isIntersecting;
+        viewportObserver = new window.IntersectionObserver(
+            function (intersections) {
+                intersections.forEach((intersection) => {
+                    (scenesByElement.get(intersection.target) || []).forEach((scene) => {
+                        scene.disabled = !intersection.isIntersecting;
+                    });
                 });
-            });
-        }, {
-            root: wrapper || null,
-            rootMargin: _config.viewportRootMargin,
-            threshold: 0
-        });
+            },
+            {
+                root: wrapper || null,
+                rootMargin: _config.viewportRootMargin,
+                threshold: 0,
+            },
+        );
 
-        _config.scenes.forEach(scene => {
+        _config.scenes.forEach((scene) => {
             if (scene.viewport) {
                 let scenesArray = scenesByElement.get(scene.viewport);
 
@@ -288,13 +279,7 @@ function getEffect$1(config) {
      * @param {number} progress.vy
      */
 
-
-    function controller({
-                            x,
-                            y,
-                            vx,
-                            vy
-                        }) {
+    function controller({ x, y, vx, vy }) {
         x = +x.toFixed(1);
         y = +y.toFixed(1);
         const velocity = horizontal ? +vx.toFixed(4) : +vy.toFixed(4); // if nothing changed bail out
@@ -322,24 +307,18 @@ function getEffect$1(config) {
          * Perform scene progression.
          */
 
-
-        _config.scenes.forEach(scene => {
+        _config.scenes.forEach((scene) => {
             // if active
             if (!scene.disabled) {
-                const {
-                    start,
-                    end,
-                    duration
-                } = scene; // get global scroll progress
+                const { start, end, duration } = scene; // get global scroll progress
 
-                const t = horizontal ? scene.pauseDuringSnap ? _x : x : scene.pauseDuringSnap ? _y : y; // calculate scene's progress
+                const t = horizontal ? (scene.pauseDuringSnap ? _x : x) : scene.pauseDuringSnap ? _y : y; // calculate scene's progress
 
                 const progress = calcProgress(t, start, end, duration); // run effect
 
                 scene.effect(scene, progress, velocity);
             }
         }); // cache last position
-
 
         lastX = x;
         lastY = y;
@@ -358,7 +337,7 @@ function getEffect$1(config) {
                     position: '',
                     width: '',
                     height: '',
-                    overflow: ''
+                    overflow: '',
                 });
             }
 
@@ -380,10 +359,7 @@ function getEffect$1(config) {
     return controller;
 }
 
-function getHandler$2({
-                          progress,
-                          root
-                      }) {
+function getHandler$2({ progress, root }) {
     function handler() {
         // get current scroll position (support window, element and window in IE)
         progress.x = root.scrollX || root.pageXOffset || root.scrollLeft || 0;
@@ -403,7 +379,7 @@ function getHandler$2({
     return {
         handler,
         on,
-        off
+        off,
     };
 }
 
@@ -474,8 +450,7 @@ const ticker = {
         if (!ticker.pool.size) {
             ticker.stop();
         }
-    }
-
+    },
 };
 /**
  * @private
@@ -487,7 +462,7 @@ const DEFAULTS$2 = {
     animationActive: false,
     animationFriction: 0.4,
     velocityActive: false,
-    velocityMax: 1
+    velocityMax: 1,
 };
 /**
  * Initialize a WebGL target with effects.
@@ -504,13 +479,13 @@ class Two5 {
             x: 0,
             y: 0,
             vx: 0,
-            vy: 0
+            vy: 0,
         };
         this.currentProgress = {
             x: 0,
             y: 0,
             vx: 0,
-            vy: 0
+            vy: 0,
         };
         this.measures = [];
         this.effects = [];
@@ -520,7 +495,6 @@ class Two5 {
     /**
      * Setup events and effects, and starts animation loop.
      */
-
 
     on() {
         this.setupEvents();
@@ -532,7 +506,6 @@ class Two5 {
      * Removes events and stops animation loop.
      */
 
-
     off() {
         // stop animation
         this.ticker.remove(this);
@@ -542,17 +515,13 @@ class Two5 {
      * Handle animation frame work.
      */
 
-
     tick() {
         // choose the object we iterate on
         const progress = this.config.animationActive ? this.currentProgress : this.progress; // cache values for calculating deltas for velocity
 
-        const {
-            x,
-            y
-        } = progress; // perform any registered measures
+        const { x, y } = progress; // perform any registered measures
 
-        this.measures.forEach(measure => measure()); // if animation is active interpolate to next point
+        this.measures.forEach((measure) => measure()); // if animation is active interpolate to next point
 
         if (this.config.animationActive) {
             this.lerp();
@@ -563,17 +532,15 @@ class Two5 {
             const dy = progress.y - y;
             const factorX = dx < 0 ? -1 : 1;
             const factorY = dy < 0 ? -1 : 1;
-            progress.vx = Math.min(this.config.velocityMax, Math.abs(dx)) / this.config.velocityMax * factorX;
-            progress.vy = Math.min(this.config.velocityMax, Math.abs(dy)) / this.config.velocityMax * factorY;
+            progress.vx = (Math.min(this.config.velocityMax, Math.abs(dx)) / this.config.velocityMax) * factorX;
+            progress.vy = (Math.min(this.config.velocityMax, Math.abs(dy)) / this.config.velocityMax) * factorY;
         } // perform all registered effects
 
-
-        this.effects.forEach(effect => effect(this.config.animationActive ? this.currentProgress : this.progress));
+        this.effects.forEach((effect) => effect(this.config.animationActive ? this.currentProgress : this.progress));
     }
     /**
      * Calculate current progress.
      */
-
 
     lerp() {
         this.currentProgress.x = lerp(this.currentProgress.x, this.progress.x, 1 - this.config.animationFriction);
@@ -589,7 +556,6 @@ class Two5 {
      * @return {function[]} list of effects to perform
      */
 
-
     getEffects() {
         return [];
     }
@@ -597,14 +563,12 @@ class Two5 {
      * Registers effects.
      */
 
-
     setupEffects() {
         this.effects.push(...this.getEffects());
     }
     /**
      * Clears registered effects and measures.
      */
-
 
     teardownEffects() {
         this.measures.length = 0;
@@ -614,12 +578,10 @@ class Two5 {
      * Stop all events and effects, and remove all DOM side effects.
      */
 
-
     destroy() {
         this.off();
         this.teardownEffects();
     }
-
 }
 /**
  * @typedef {Object} two5Config
@@ -659,11 +621,7 @@ class Scroll extends Two5 {
      * @param {number} progress.y
      */
 
-
-    resetProgress({
-                      x,
-                      y
-                  }) {
+    resetProgress({ x, y }) {
         this.progress.x = x;
         this.progress.y = y;
         this.progress.vx = 0;
@@ -684,7 +642,6 @@ class Scroll extends Two5 {
      * @return {function[]}
      */
 
-
     getEffects() {
         return [getEffect$1(this.config)];
     }
@@ -692,11 +649,10 @@ class Scroll extends Two5 {
      * Register scroll position measuring.
      */
 
-
     setupEvents() {
         const config = {
             root: this.config.root,
-            progress: this.progress
+            progress: this.progress,
         };
         this.measures.push(getHandler$2(config).handler);
     }
@@ -704,16 +660,14 @@ class Scroll extends Two5 {
      * Remove scroll measuring handler.
      */
 
-
     teardownEvents() {
         this.measures.length = 0;
     }
 
     teardownEffects() {
-        this.effects.forEach(effect => effect.destroy && effect.destroy());
+        this.effects.forEach((effect) => effect.destroy && effect.destroy());
         super.teardownEffects();
     }
-
 }
 /**
  * @typedef {Object} SnapPoint
@@ -794,14 +748,10 @@ const DEFAULTS$1 = {
     scaleInvertX: false,
     scaleInvertY: false,
     scaleMaxX: 0.5,
-    scaleMaxY: 0.5
+    scaleMaxY: 0.5,
 };
 
-function formatTransition({
-                              property,
-                              duration,
-                              easing
-                          }) {
+function formatTransition({ property, duration, easing }) {
     return `${property} ${duration}ms ${easing}`;
 }
 
@@ -810,7 +760,7 @@ function getEffect(config) {
 
     const container = _config.container;
     const perspectiveZ = _config.perspectiveZ;
-    _config.layers = _config.layers.map(layer => defaultTo(layer, _config));
+    _config.layers = _config.layers.map((layer) => defaultTo(layer, _config));
     /*
      * Init effect
      * also set transition if required.
@@ -818,14 +768,14 @@ function getEffect(config) {
 
     if (container) {
         const containerStyle = {
-            perspective: `${perspectiveZ}px`
+            perspective: `${perspectiveZ}px`,
         };
 
         if (_config.transitionActive && _config.perspectiveActive) {
             containerStyle.transition = formatTransition({
                 property: 'perspective-origin',
                 duration: _config.transitionDuration,
-                easing: _config.transitionEasing
+                easing: _config.transitionEasing,
             });
         }
 
@@ -835,8 +785,7 @@ function getEffect(config) {
      * Setup layers styling
      */
 
-
-    _config.layers.forEach(layer => {
+    _config.layers.forEach((layer) => {
         const layerStyle = {};
 
         if (!layer.allowPointer) {
@@ -847,7 +796,7 @@ function getEffect(config) {
             layerStyle.transition = formatTransition({
                 property: 'transform',
                 duration: layer.transitionDuration,
-                easing: layer.transitionEasing
+                easing: layer.transitionEasing,
             });
         } else {
             delete layerStyle.transition;
@@ -856,10 +805,7 @@ function getEffect(config) {
         return Object.assign(layer.el.style, layerStyle);
     });
 
-    return function tilt({
-                             x,
-                             y
-                         }) {
+    return function tilt({ x, y }) {
         const len = _config.layers.length;
 
         _config.layers.forEach((layer, index) => {
@@ -868,8 +814,14 @@ function getEffect(config) {
             let translatePart = '';
 
             if (layer.translationActive) {
-                const translateXVal = layer.translationActive === 'y' ? 0 : (layer.translationInvertX ? -1 : 1) * layer.translationMaxX * (2 * x - 1) * depth;
-                const translateYVal = layer.translationActive === 'x' ? 0 : (layer.translationInvertY ? -1 : 1) * layer.translationMaxY * (2 * y - 1) * depth;
+                const translateXVal =
+                    layer.translationActive === 'y'
+                        ? 0
+                        : (layer.translationInvertX ? -1 : 1) * layer.translationMaxX * (2 * x - 1) * depth;
+                const translateYVal =
+                    layer.translationActive === 'x'
+                        ? 0
+                        : (layer.translationInvertY ? -1 : 1) * layer.translationMaxY * (2 * y - 1) * depth;
                 translatePart = `translate3d(${translateXVal.toFixed(2)}px, ${translateYVal.toFixed(2)}px, ${translateZVal}px)`;
             } else {
                 translatePart = `translateZ(${translateZVal}px)`;
@@ -887,8 +839,10 @@ function getEffect(config) {
             }
 
             if (layer.tiltActive) {
-                rotateXVal = layer.tiltActive === 'x' ? 0 : (layer.tiltInvertY ? -1 : 1) * layer.tiltMaxY * (1 - y * 2) * depth;
-                rotateYVal = layer.tiltActive === 'y' ? 0 : (layer.tiltInvertX ? -1 : 1) * layer.tiltMaxX * (x * 2 - 1) * depth;
+                rotateXVal =
+                    layer.tiltActive === 'x' ? 0 : (layer.tiltInvertY ? -1 : 1) * layer.tiltMaxY * (1 - y * 2) * depth;
+                rotateYVal =
+                    layer.tiltActive === 'y' ? 0 : (layer.tiltInvertX ? -1 : 1) * layer.tiltMaxX * (x * 2 - 1) * depth;
 
                 if (_config.invertRotation) {
                     // see https://developer.mozilla.org/en-US/docs/Web/Guide/Events/Using_device_orientation_with_3D_transforms#Orientation_compensation
@@ -901,8 +855,10 @@ function getEffect(config) {
             let skewPart = '';
 
             if (layer.skewActive) {
-                const skewXVal = layer.skewActive === 'y' ? 0 : (layer.skewInvertX ? -1 : 1) * layer.skewMaxX * (1 - x * 2) * depth;
-                const skewYVal = layer.skewActive === 'x' ? 0 : (layer.skewInvertY ? -1 : 1) * layer.skewMaxY * (1 - y * 2) * depth;
+                const skewXVal =
+                    layer.skewActive === 'y' ? 0 : (layer.skewInvertX ? -1 : 1) * layer.skewMaxX * (1 - x * 2) * depth;
+                const skewYVal =
+                    layer.skewActive === 'x' ? 0 : (layer.skewInvertY ? -1 : 1) * layer.skewMaxY * (1 - y * 2) * depth;
                 skewPart = ` skew(${skewXVal.toFixed(2)}deg, ${skewYVal.toFixed(2)}deg)`;
             }
 
@@ -911,8 +867,16 @@ function getEffect(config) {
             if (layer.scaleActive) {
                 const scaleXInput = layer.scaleActive === 'yy' ? y : x;
                 const scaleYInput = layer.scaleActive === 'xx' ? x : y;
-                const scaleXVal = layer.scaleActive === 'y' ? 1 : 1 + (layer.scaleInvertX ? -1 : 1) * layer.scaleMaxX * (Math.abs(0.5 - scaleXInput) * 2) * depth;
-                const scaleYVal = layer.scaleActive === 'x' ? 1 : 1 + (layer.scaleInvertY ? -1 : 1) * layer.scaleMaxY * (Math.abs(0.5 - scaleYInput) * 2) * depth;
+                const scaleXVal =
+                    layer.scaleActive === 'y'
+                        ? 1
+                        : 1 +
+                          (layer.scaleInvertX ? -1 : 1) * layer.scaleMaxX * (Math.abs(0.5 - scaleXInput) * 2) * depth;
+                const scaleYVal =
+                    layer.scaleActive === 'x'
+                        ? 1
+                        : 1 +
+                          (layer.scaleInvertY ? -1 : 1) * layer.scaleMaxY * (Math.abs(0.5 - scaleYInput) * 2) * depth;
                 scalePart = ` scale(${scaleXVal.toFixed(2)}, ${scaleYVal.toFixed(2)})`;
             }
 
@@ -952,10 +916,7 @@ function getEffect(config) {
     };
 }
 
-function getHandler$1({
-                          target,
-                          progress
-                      }) {
+function getHandler$1({ target, progress }) {
     let rect;
 
     if (target && target !== window) {
@@ -966,22 +927,14 @@ function getHandler$1({
             left: 0,
             top: 0,
             width: window.innerWidth,
-            height: window.innerHeight
+            height: window.innerHeight,
         };
     }
 
-    const {
-        width,
-        height,
-        left,
-        top
-    } = rect;
+    const { width, height, left, top } = rect;
 
     function handler(event) {
-        const {
-            clientX,
-            clientY
-        } = event; // percentage of position progress
+        const { clientX, clientY } = event; // percentage of position progress
 
         const x = clamp(0, 1, (clientX - left) / width);
         const y = clamp(0, 1, (clientY - top) / height);
@@ -1000,7 +953,7 @@ function getHandler$1({
     return {
         on,
         off,
-        handler
+        handler,
     };
 }
 
@@ -1012,14 +965,14 @@ function getHandler$1({
 const DEFAULTS = {
     samples: 3,
     maxBeta: 15,
-    maxGamma: 15
+    maxGamma: 15,
 };
 function getHandler({
-                        progress,
-                        samples = DEFAULTS.samples,
-                        maxBeta = DEFAULTS.maxBeta,
-                        maxGamma = DEFAULTS.maxGamma
-                    }) {
+    progress,
+    samples = DEFAULTS.samples,
+    maxBeta = DEFAULTS.maxBeta,
+    maxGamma = DEFAULTS.maxGamma,
+}) {
     const hasSupport = window.DeviceOrientationEvent && 'ontouchstart' in window.document.body;
 
     if (!hasSupport) {
@@ -1035,7 +988,6 @@ function getHandler({
             return;
         } // initial angles calibration
 
-
         if (samples > 0) {
             lastGammaZero = gammaZero;
             lastBetaZero = betaZero;
@@ -1050,7 +1002,6 @@ function getHandler({
 
             samples -= 1;
         } // get angles progress
-
 
         const x = clamp(0, 1, (event.gamma - gammaZero + maxGamma) / totalAngleX);
         const y = clamp(0, 1, (event.beta - betaZero + maxBeta) / totalAngleY);
@@ -1069,7 +1020,7 @@ function getHandler({
     return {
         on,
         off,
-        handler
+        handler,
     };
 }
 
@@ -1095,25 +1046,29 @@ class Tilt extends Two5 {
      * Creates config of layers to be animated during the effect.
      */
 
-
     createLayers() {
         // container defaults to document.body
         const layersContainer = this.container || window.document.body; // use config.layers or query elements from DOM
 
         this.layers = this.config.layers || [...layersContainer.querySelectorAll('[data-tilt-layer]')];
-        this.layers = this.layers.map(layer => {
-            let config; // if layer is an Element convert it to a TiltLayer object and augment it with data attributes
+        this.layers = this.layers
+            .map((layer) => {
+                let config; // if layer is an Element convert it to a TiltLayer object and augment it with data attributes
 
-            if (layer instanceof Element) {
-                config = Object.assign({
-                    el: layer
-                }, layer.dataset);
-            } else if (typeof layer == 'object' && layer) {
-                config = layer;
-            }
+                if (layer instanceof Element) {
+                    config = Object.assign(
+                        {
+                            el: layer,
+                        },
+                        layer.dataset,
+                    );
+                } else if (typeof layer == 'object' && layer) {
+                    config = layer;
+                }
 
-            return config; // discard garbage
-        }).filter(x => x);
+                return config; // discard garbage
+            })
+            .filter((x) => x);
     }
     /**
      * Initializes and returns tilt effect.
@@ -1121,16 +1076,23 @@ class Tilt extends Two5 {
      * @return {[tilt]}
      */
 
-
     getEffects() {
-        return [getEffect( // we invert rotation transform order in case of device orientation,
-            // see: https://developer.mozilla.org/en-US/docs/Web/Guide/Events/Using_device_orientation_with_3D_transforms#Orientation_compensation
-            clone({
-                invertRotation: !!this.usingGyroscope
-            }, this.config, {
-                container: this.container,
-                layers: this.layers
-            }))];
+        return [
+            getEffect(
+                // we invert rotation transform order in case of device orientation,
+                // see: https://developer.mozilla.org/en-US/docs/Web/Guide/Events/Using_device_orientation_with_3D_transforms#Orientation_compensation
+                clone(
+                    {
+                        invertRotation: !!this.usingGyroscope,
+                    },
+                    this.config,
+                    {
+                        container: this.container,
+                        layers: this.layers,
+                    },
+                ),
+            ),
+        ];
     }
     /**
      * Setup event handler for tilt effect.
@@ -1138,14 +1100,13 @@ class Tilt extends Two5 {
      * If feature detection fails, handler is set on MouseOver event.
      */
 
-
     setupEvents() {
         // attempt usage of DeviceOrientation event
         const gyroscopeHandler = getHandler({
             progress: this.progress,
             samples: this.config.gyroscopeSamples,
             maxBeta: this.config.maxBeta,
-            maxGamma: this.config.maxGamma
+            maxGamma: this.config.maxGamma,
         });
 
         if (gyroscopeHandler) {
@@ -1158,7 +1119,7 @@ class Tilt extends Two5 {
              */
             this.tiltHandler = getHandler$1({
                 target: this.config.mouseTarget,
-                progress: this.progress
+                progress: this.progress,
             });
         }
 
@@ -1168,11 +1129,9 @@ class Tilt extends Two5 {
      * Removes registered event handler.
      */
 
-
     teardownEvents() {
         this.tiltHandler.off();
     }
-
 }
 /**
  * @typedef {Object} TiltLayer

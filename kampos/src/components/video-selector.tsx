@@ -1,12 +1,13 @@
-import { createSignal } from "solid-js";
-import { VIDEO_SOURCE_OPTIONS } from "../constants";
-import { setState, getQueryValue } from "../utils/state";
+import { createSignal } from 'solid-js';
+import { VIDEO_SOURCE_OPTIONS } from '../constants';
+import { setState, getQueryValue } from '../utils/state';
 
-const getCurrentVideoState = () => getQueryValue()?.children.find(v=>v.title==='Kaleidoscope Effect')?.children?.find((v) => v.label === "video");
+const getCurrentVideoState = () =>
+    getQueryValue()
+        ?.children.find((v) => v.title === 'Kaleidoscope Effect')
+        ?.children?.find((v) => v.label === 'video');
 export function VideoSelector() {
-    const [selectedVideo, setSelectedVideo] = createSignal(
-        getCurrentVideoState()?.binding?.value
-    );
+    const [selectedVideo, setSelectedVideo] = createSignal(getCurrentVideoState()?.binding?.value);
 
     const selectVideo = (source) => {
         setSelectedVideo(source);
@@ -26,8 +27,8 @@ export function VideoSelector() {
                     type="button"
                     onClick={() => selectVideo(source)}
                     class="thumbnail w-[110px] h-[65px] border-2 rounded cursor-pointer transition-transform spring-bounce-30 spring-duration-300 hover:scale-[1.2] hover:shadow-lg border-transparent aria-[selected]:border-white bg-cover bg-center bg-no-repeat"
-                    aria-selected={selectedVideo() === source ? "true" : undefined}
-                    style={{ "background-image": `url(${source.replace(".mp4", ".png")})` }}
+                    aria-selected={selectedVideo() === source ? 'true' : undefined}
+                    style={{ 'background-image': `url(${source.replace('.mp4', '.png')})` }}
                 >
                     <span class="sr-only">{name}</span>
                 </button>

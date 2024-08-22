@@ -120,7 +120,7 @@ export function relative(path) {
     let x = 0;
     let y = 0;
 
-    return path.map(seg => {
+    return path.map((seg) => {
         seg = [...seg];
         let type = seg[0];
         const command = type.toLowerCase();
@@ -140,7 +140,7 @@ export function relative(path) {
                     seg[1] -= x;
                     break;
                 default:
-                    for (let i = 1; i < seg.length;) {
+                    for (let i = 1; i < seg.length; ) {
                         seg[i++] -= x;
                         seg[i++] -= y;
                     }
@@ -175,11 +175,11 @@ export function relative(path) {
 }
 
 /**
-* redefine `path` with absolute coordinates
-*
-* @param {Array} path
-* @return {Array}
-*/
+ * redefine `path` with absolute coordinates
+ *
+ * @param {Array} path
+ * @return {Array}
+ */
 
 export function absolute(path) {
     let startX = 0;
@@ -187,7 +187,7 @@ export function absolute(path) {
     let x = 0;
     let y = 0;
 
-    return path.map(seg => {
+    return path.map((seg) => {
         seg = [...seg];
         let type = seg[0];
         const command = type.toUpperCase();
@@ -207,7 +207,7 @@ export function absolute(path) {
                     seg[1] += x;
                     break;
                 default:
-                    for (let i = 1; i < seg.length;) {
+                    for (let i = 1; i < seg.length; ) {
                         seg[i++] += x;
                         seg[i++] += y;
                     }
@@ -246,5 +246,5 @@ export function absolute(path) {
  * @returns {string}
  */
 export function scalePath(path, sx, sy) {
-    return serialize(scaleSegments(parse(path), sx ,sy));
+    return serialize(scaleSegments(parse(path), sx, sy));
 }

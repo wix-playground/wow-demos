@@ -1,73 +1,74 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="cache-control" content="no-cache" />
-    <meta http-equiv="pragma" content="no-cache" />
-    <meta name='viewport' content='width=device-width,initial-scale=1'>
-    <title>Gradients Playground</title>
-    <style>
-        body, main, section {
-            margin: 0;
-        }
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="cache-control" content="no-cache" />
+        <meta http-equiv="pragma" content="no-cache" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>Gradients Playground</title>
+        <style>
+            body,
+            main,
+            section {
+                margin: 0;
+            }
 
-        body {
-            min-height: 100vh;
-            display: grid;
-            grid-template: 'stage' 1fr / 1fr;
-            overflow: hidden;
-        }
+            body {
+                min-height: 100vh;
+                display: grid;
+                grid-template: 'stage' 1fr / 1fr;
+                overflow: hidden;
+            }
 
-        main {
-            position: relative;
-            width: var(--canvas-width, 100%);
-            height: var(--canvas-height, 100%);
-            grid-area: stage;
-            background-image: var(--gradient);
-            background-blend-mode: var(--blendMode);
-            place-self: center;
-            border: 2px dashed crimson;
-            box-sizing: border-box;
-        }
+            main {
+                position: relative;
+                width: var(--canvas-width, 100%);
+                height: var(--canvas-height, 100%);
+                grid-area: stage;
+                background-image: var(--gradient);
+                background-blend-mode: var(--blendMode);
+                place-self: center;
+                border: 2px dashed crimson;
+                box-sizing: border-box;
+            }
 
-        main[data-action="add"] {
-            cursor: pointer;
-        }
+            main[data-action='add'] {
+                cursor: pointer;
+            }
 
-        main[data-action="move"] {
-            cursor: move;
-        }
+            main[data-action='move'] {
+                cursor: move;
+            }
 
-        .circle {
-            box-sizing: border-box;
-            position: absolute;
-            top: var(--y);
-            left: var(--x);
-            width: var(--radius);
-            aspect-ratio: 1 / 1;
-            /*height: var(--radius);*/
-            border-radius: 50%;
-            pointer-events: none;
-       }
+            .circle {
+                box-sizing: border-box;
+                position: absolute;
+                top: var(--y);
+                left: var(--x);
+                width: var(--radius);
+                aspect-ratio: 1 / 1;
+                /*height: var(--radius);*/
+                border-radius: 50%;
+                pointer-events: none;
+            }
 
-        [data-show-circles="all"] .circle {
-            border: 2px dashed black;
-        }
+            [data-show-circles='all'] .circle {
+                border: 2px dashed black;
+            }
 
-        [data-show-circles="last"] .circle:last-of-type {
-            border: 2px dashed black;
-        }
+            [data-show-circles='last'] .circle:last-of-type {
+                border: 2px dashed black;
+            }
 
-        .circle[data-hover="true"],
-        [data-show-circles="last"] .circle[data-hover="true"] {
-            border: 2px dotted black;
-        }
-    </style>
-</head>
-<body>
-    <main data-show-circles="last" data-action="add">
-    </main>
-    <script src="dat.gui.js"></script>
-    <script src="index.js?v=1"></script>
-</body>
+            .circle[data-hover='true'],
+            [data-show-circles='last'] .circle[data-hover='true'] {
+                border: 2px dotted black;
+            }
+        </style>
+    </head>
+    <body>
+        <main data-show-circles="last" data-action="add"></main>
+        <script src="dat.gui.js"></script>
+        <script src="index.js?v=1"></script>
+    </body>
 </html>

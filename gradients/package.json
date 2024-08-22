@@ -1,25 +1,25 @@
 {
-  "name": "wow-gradient-playground",
-  "version": "0.0.1",
-  "description": "wow!Team playground for gradients",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"no test specified\"",
-    "build": "echo \"no build specified\""
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/wix-playground/wow-demos.git"
-  },
-  "keywords": [
-    "CSS",
-    "SVG",
-    "gradients",
-    "blend-mode"
-  ],
-  "author": "wow!Team",
-  "license": "WTFPL",
-  "dependencies": {
-    "dat.gui": "^0.7.7"
-  }
+    "name": "wow-gradient-playground",
+    "version": "0.0.1",
+    "description": "wow!Team playground for gradients",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"no test specified\"",
+        "build": "echo \"no build specified\""
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/wix-playground/wow-demos.git"
+    },
+    "keywords": [
+        "CSS",
+        "SVG",
+        "gradients",
+        "blend-mode"
+    ],
+    "author": "wow!Team",
+    "license": "WTFPL",
+    "dependencies": {
+        "dat.gui": "^0.7.7"
+    }
 }

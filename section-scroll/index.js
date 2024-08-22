@@ -205,7 +205,7 @@ const guiSettings = {
     },
     transOrigin: {
         [EFFECTS_CONFIG.TRANS_ORIGIN.LABEL]: TRANSFORM_ORIGIN_OPT.center,
-    }
+    },
 };
 
 const CONFIG = {};
@@ -263,8 +263,8 @@ function restart() {
                     (elemDistFromTop < window.innerHeight
                         ? elemDistFromTop
                         : elemDistFromBottom < window.innerHeight
-                        ? elemDistFromBottom
-                        : window.innerHeight)) /
+                          ? elemDistFromBottom
+                          : window.innerHeight)) /
                 2;
 
             effectStartOffset[elemName] = {
@@ -339,7 +339,7 @@ function restart() {
                 const anchor = animationAnchors[elemName][animationDirection];
                 const offset = effectStartOffset[elemName][animationDirection][anchor].current;
                 const duration = effectDuration[elemName][animationDirection][anchor].current;
-            
+
                 updateHint(elemName, offset, duration, animationDirection);
                 applyStyle(element, elemStyle, animationDirection);
             }
@@ -395,7 +395,7 @@ function createScenes() {
                             }
                         },
                     },
-                ]
+                ],
             );
         });
     });
@@ -454,7 +454,7 @@ function initGUI() {
     GUI.add(importExport, 'Load from File');
 
     addLerp();
-    addToggleAllGhosts()
+    addToggleAllGhosts();
 
     sections.forEach((section, index) => {
         const sectionName = `Section-${index + 1}`;
@@ -513,7 +513,6 @@ function addElementToGUI(element, elemName, sectionFolder, sectionName) {
         },
     };
 
-
     const effectsFolderIn = elemFolder.addFolder('In Animation');
     const effectsFolderOut = elemFolder.addFolder('Out Animation');
     const effectsFolderCont = elemFolder.addFolder('Continuous');
@@ -528,7 +527,7 @@ function addElementToGUI(element, elemName, sectionFolder, sectionName) {
 
     addHints(elemName);
     addGhosts(element);
-    
+
     // addTransformOrigin(element, sectionName, elemName, elemFolder)
     addTypeAndTransOrigin(element, sectionName, elemName, elemFolder);
     addScrollEffects(element, sectionName, TransformationsFolderIn, elemName, ANIMATION_DIRECTION_OPT.in);
@@ -578,37 +577,37 @@ function addHints(elementName) {
     document.body.appendChild(hintCont);
 }
 
-function addTypeAndTransOrigin (element, sectionName, elemName, elemFolder) {
+function addTypeAndTransOrigin(element, sectionName, elemName, elemFolder) {
     const transOriginCtrllr = elemFolder
-    .add(CONFIG[sectionName][elemName].transOrigin, EFFECTS_CONFIG.TRANS_ORIGIN.LABEL, TRANSFORM_ORIGIN_OPT)
-    .onChange((val) => {
-        const [originX, originY] = TRANSFORM_ORIGIN_VALS[val];
-        element.style.setProperty(`--trans-origin-x`, originX);
-        element.style.setProperty(`--trans-origin-y`, originY);
-        element.nextElementSibling.style.setProperty(`--trans-origin-x-out`, originX);
-        element.nextElementSibling.style.setProperty(`--trans-origin-y-out`, originY);
-        resetChildrenStyle(element);
-        init();
-    });
+        .add(CONFIG[sectionName][elemName].transOrigin, EFFECTS_CONFIG.TRANS_ORIGIN.LABEL, TRANSFORM_ORIGIN_OPT)
+        .onChange((val) => {
+            const [originX, originY] = TRANSFORM_ORIGIN_VALS[val];
+            element.style.setProperty(`--trans-origin-x`, originX);
+            element.style.setProperty(`--trans-origin-y`, originY);
+            element.nextElementSibling.style.setProperty(`--trans-origin-x-out`, originX);
+            element.nextElementSibling.style.setProperty(`--trans-origin-y-out`, originY);
+            resetChildrenStyle(element);
+            init();
+        });
 
     const typeCtrllr = elemFolder
-    .add(CONFIG[sectionName][elemName].type, EFFECTS_CONFIG.ANIMATION_TYPE.LABEL, ANIMATION_TYPE_OPT)
-    .onChange((animationType) => {
-        animationTypes[elemName] = animationType;
-        if (animationType === ANIMATION_TYPE_OPT.continuous) {
-            element.nextElementSibling.style.setProperty(`--no-ghost-out`, 0);
-            element.nextElementSibling.nextElementSibling.style.setProperty(`--no-ghost-in`, 0);
-        } else {
-            element.nextElementSibling.style.setProperty(`--no-ghost-out`, 0.1);
-            element.nextElementSibling.nextElementSibling.style.setProperty(`--no-ghost-in`, 0.1);
-        }
-        init();
-    });
+        .add(CONFIG[sectionName][elemName].type, EFFECTS_CONFIG.ANIMATION_TYPE.LABEL, ANIMATION_TYPE_OPT)
+        .onChange((animationType) => {
+            animationTypes[elemName] = animationType;
+            if (animationType === ANIMATION_TYPE_OPT.continuous) {
+                element.nextElementSibling.style.setProperty(`--no-ghost-out`, 0);
+                element.nextElementSibling.nextElementSibling.style.setProperty(`--no-ghost-in`, 0);
+            } else {
+                element.nextElementSibling.style.setProperty(`--no-ghost-out`, 0.1);
+                element.nextElementSibling.nextElementSibling.style.setProperty(`--no-ghost-in`, 0.1);
+            }
+            init();
+        });
 
     controllers[sectionName][elemName] = {
         type: typeCtrllr,
         transOrigin: transOriginCtrllr,
-    }    
+    };
 }
 
 function makeDynamicHeight(section, sectionFolder, sectionName) {
@@ -734,15 +733,15 @@ function addScrollEffects(element, sectionName, folder, elemName, direction) {
         });
 
     const clipCtrllr = folder
-    .add(CONFIG[sectionName][elemName][direction].effects, ...Object.values(EFFECTS_CONFIG.CLIP))
-    .onChange((val) => {
-        element.style.setProperty(`--clip-${direction}`, `${-val}%`);
-        element.nextElementSibling.style.setProperty(`--clip-${direction}`, `${100 - val}%`);
+        .add(CONFIG[sectionName][elemName][direction].effects, ...Object.values(EFFECTS_CONFIG.CLIP))
+        .onChange((val) => {
+            element.style.setProperty(`--clip-${direction}`, `${-val}%`);
+            element.nextElementSibling.style.setProperty(`--clip-${direction}`, `${100 - val}%`);
 
-        resetChildrenStyle(element);
-        init();
-    });
-    
+            resetChildrenStyle(element);
+            init();
+        });
+
     const ghostCtrllr = folder
         .add(CONFIG[sectionName][elemName][direction].effects, ...Object.values(EFFECTS_CONFIG.GHOST))
         .onChange((showGhost) => {
@@ -755,16 +754,16 @@ function addScrollEffects(element, sectionName, folder, elemName, direction) {
         });
 
     const perspectiveCtrllr = folder
-    .add(CONFIG[sectionName][elemName][direction].effects, ...Object.values(EFFECTS_CONFIG.PERSPECTIVE))
-    .onChange((perspective) => {
-        element.style.setProperty(`--perspective`, `${perspective}px`);
-        element.nextElementSibling.style.setProperty(`--perspective-out`,`${perspective}px`);
-        resetChildrenStyle(element);
-        init();
-    });
+        .add(CONFIG[sectionName][elemName][direction].effects, ...Object.values(EFFECTS_CONFIG.PERSPECTIVE))
+        .onChange((perspective) => {
+            element.style.setProperty(`--perspective`, `${perspective}px`);
+            element.nextElementSibling.style.setProperty(`--perspective-out`, `${perspective}px`);
+            resetChildrenStyle(element);
+            init();
+        });
 
     controllers[sectionName][elemName] = {
-        ...controllers[sectionName][elemName],  
+        ...controllers[sectionName][elemName],
         [direction]: {
             effects: {
                 [EFFECTS_CONFIG.ROTATE.LABEL]: rotateCtrllr,
@@ -797,11 +796,11 @@ function addScrollModifications(element, sectionName, folder, elemName, directio
             animationAnchors[elemName][direction] = animationAnchor;
             hint.style.setProperty(
                 `--offset-top-${direction}`,
-                `${effectStartOffset[elemName][direction][animationAnchor].current}px`
+                `${effectStartOffset[elemName][direction][animationAnchor].current}px`,
             );
             hint.style.setProperty(
                 `--duration-${direction}`,
-                `${effectDuration[elemName][direction][animationAnchor].current}px`
+                `${effectDuration[elemName][direction][animationAnchor].current}px`,
             );
             init();
         });
@@ -819,7 +818,9 @@ function addScrollModifications(element, sectionName, folder, elemName, directio
                 const isOverlapping = outAnimationStart < inAnimationEnd;
                 if (isOverlapping) {
                     effectStartOffset[elemName].out[animationAnchor].current = inAnimationEnd;
-                    document.querySelector(`.hint-out-${elemName}`).style.setProperty(`--offset-top-out`, `${inAnimationEnd}px`);
+                    document
+                        .querySelector(`.hint-out-${elemName}`)
+                        .style.setProperty(`--offset-top-out`, `${inAnimationEnd}px`);
                 }
             }
             hint.style.setProperty(`--duration-${direction}`, `${durationRef.current}px`);
@@ -876,19 +877,19 @@ function addLerp() {
     controllers.lerp = lerpController;
 }
 
-function addToggleAllGhosts () {
+function addToggleAllGhosts() {
     let showGhosts = true;
     const button = document.querySelector('.ghosts-toggle');
     button.addEventListener('click', () => {
         showGhosts = !showGhosts;
         if (showGhosts) {
-            button.innerText = "Hide all Ghosts"
+            button.innerText = 'Hide all Ghosts';
         } else {
-            button.innerText = "Show all Ghosts"
+            button.innerText = 'Show all Ghosts';
         }
         for (const direction in ANIMATION_DIRECTION_OPT) {
             const ghosts = document.querySelectorAll(`.ghost-${direction}`);
-            ghosts.forEach(ghost => ghost.style.setProperty(`--no-ghost-${direction}`, showGhosts ? .1 : 0)) 
+            ghosts.forEach((ghost) => ghost.style.setProperty(`--no-ghost-${direction}`, showGhosts ? 0.1 : 0));
         }
     });
 }
@@ -908,11 +909,13 @@ function preventOverlap(direction, offsetRef, elemName, animationAnchor) {
     if (direction === ANIMATION_DIRECTION_OPT.in) {
         const outAnimationStartOffset = effectStartOffset[elemName].out[animationAnchor].current;
         const inAnimationDuration = effectDuration[elemName].in[animationAnchor].current;
-        const inAnimationEnd = offsetRef.current + inAnimationDuration
+        const inAnimationEnd = offsetRef.current + inAnimationDuration;
         const isOverlapping = outAnimationStartOffset < inAnimationEnd;
         if (isOverlapping) {
             effectStartOffset[elemName].out[animationAnchor].current = inAnimationEnd;
-            document.querySelector(`.hint-out-${elemName}`).style.setProperty(`--offset-top-out`, `${inAnimationEnd}px`);
+            document
+                .querySelector(`.hint-out-${elemName}`)
+                .style.setProperty(`--offset-top-out`, `${inAnimationEnd}px`);
         }
     }
 }
@@ -973,7 +976,7 @@ function applyStyle(element, elementCSS) {
     element.style.setProperty(`--scale-x-in`, elementCSS.scaleXIn);
     element.style.setProperty(`--scale-y-in`, elementCSS.scaleYIn);
     element.style.setProperty(`--no-ghost-in`, elementCSS.ghostIn);
-    
+
     element.style.setProperty(`--x-trans-out`, elementCSS.xTransOut);
     element.style.setProperty(`--y-trans-out`, elementCSS.yTransOut);
     element.style.setProperty(`--rotate-out`, elementCSS.rotateOut);
@@ -986,7 +989,7 @@ function applyStyle(element, elementCSS) {
     element.style.setProperty(`--scale-x-out`, elementCSS.scaleXOut);
     element.style.setProperty(`--scale-y-out`, elementCSS.scaleYOut);
     element.style.setProperty(`--no-ghost-out`, elementCSS.ghostOut);
-    
+
     element.style.setProperty(`--perspective`, elementCSS.perspective);
     element.style.setProperty(`--trans-origin-x`, elementCSS.transOriginX);
     element.style.setProperty(`--trans-origin-y`, elementCSS.transOriginY);
@@ -1006,7 +1009,7 @@ function getStyle(element) {
         scaleXIn: window.getComputedStyle(element).getPropertyValue(`--scale-x-in`),
         scaleYIn: window.getComputedStyle(element).getPropertyValue(`--scale-y-in`),
         ghostIn: window.getComputedStyle(element).getPropertyValue(`--no-ghost-in`),
-        
+
         xTransOut: window.getComputedStyle(element).getPropertyValue(`--x-trans-out`),
         yTransOut: window.getComputedStyle(element).getPropertyValue(`--y-trans-out`),
         rotateOut: window.getComputedStyle(element).getPropertyValue(`--rotate-out`),
@@ -1019,7 +1022,7 @@ function getStyle(element) {
         scaleXOut: window.getComputedStyle(element).getPropertyValue(`--scale-x-out`),
         scaleYOut: window.getComputedStyle(element).getPropertyValue(`--scale-y-out`),
         ghostOut: window.getComputedStyle(element).getPropertyValue(`--no-ghost-out`),
-        
+
         xTransCont: window.getComputedStyle(element).getPropertyValue(`--x-trans-cont`),
         yTransCont: window.getComputedStyle(element).getPropertyValue(`--y-trans-cont`),
         rotateCont: window.getComputedStyle(element).getPropertyValue(`--rotate-cont`),
@@ -1032,7 +1035,7 @@ function getStyle(element) {
         scaleXCont: window.getComputedStyle(element).getPropertyValue(`--scale-x-cont`),
         scaleYCont: window.getComputedStyle(element).getPropertyValue(`--scale-y-cont`),
         ghostCont: window.getComputedStyle(element).getPropertyValue(`--no-ghost-cont`),
-        
+
         perspective: window.getComputedStyle(element).getPropertyValue(`--perspective`),
         transOriginXIn: window.getComputedStyle(element).getPropertyValue(`--trans-origin-x`),
         transOriginYIn: window.getComputedStyle(element).getPropertyValue(`--trans-origin-y`),
@@ -1064,22 +1067,30 @@ function setValues(rememberedValues) {
                 .slice(1) // remove height property
                 .forEach((elem, idx) => {
                     const elemName = `${sectionsElements[sectionName][idx].tagName}-s${index + 1}_e${idx + 1}`;
-                    ['in', 'out', 'cont'].forEach(animationType => {
-                        for (const [key, value] of Object.entries(elem[animationType].effects)) { //effects
+                    ['in', 'out', 'cont'].forEach((animationType) => {
+                        for (const [key, value] of Object.entries(elem[animationType].effects)) {
+                            //effects
                             if (key === 'position') {
-                                controllers[sectionName][elemName][animationType].effects.position.Distance.setValue(value.Distance);
-                                controllers[sectionName][elemName][animationType].effects.position.Angle.setValue(value.Angle);
-
+                                controllers[sectionName][elemName][animationType].effects.position.Distance.setValue(
+                                    value.Distance,
+                                );
+                                controllers[sectionName][elemName][animationType].effects.position.Angle.setValue(
+                                    value.Angle,
+                                );
                             } else {
                                 controllers[sectionName][elemName][animationType].effects[key].setValue(value);
                             }
                         }
-                        for (const [key, value] of Object.entries(elem[animationType].travelSettings)) { //travelSettings
-                            key !== 'Hint' && controllers[sectionName][elemName][animationType].travelSettings[key].setValue(value);
+                        for (const [key, value] of Object.entries(elem[animationType].travelSettings)) {
+                            //travelSettings
+                            key !== 'Hint' &&
+                                controllers[sectionName][elemName][animationType].travelSettings[key].setValue(value);
                         }
-                    })
+                    });
                     controllers[sectionName][elemName].type.setValue(elem.type[EFFECTS_CONFIG.ANIMATION_TYPE.LABEL]);
-                    controllers[sectionName][elemName].transOrigin.setValue(elem.transOrigin[EFFECTS_CONFIG.TRANS_ORIGIN.LABEL]);
+                    controllers[sectionName][elemName].transOrigin.setValue(
+                        elem.transOrigin[EFFECTS_CONFIG.TRANS_ORIGIN.LABEL],
+                    );
                 });
         });
 }
