@@ -1,25 +1,25 @@
 const ASSETS_PREFIX = "./assets";
 
-export const DEFAULT_VIDEO_SOURCE_OPTION = 'Cloudy Night';
+export const DEFAULT_VIDEO_SOURCE_OPTION = "Cloudy Night";
 export const VIDEO_SOURCE_OPTIONS = {
-    'tunnel futuristic': ASSETS_PREFIX+'/tunnel-futuristic.mp4',
-    'neon terrain': ASSETS_PREFIX+'/neon-terrain.mp4',
-    'cubes': ASSETS_PREFIX+'/cubes.mp4',
-    'tunnel in': ASSETS_PREFIX+'/tunnel-in.mp4',
-    'dunets': ASSETS_PREFIX+'/dunets.mp4',
-    'cloudy night': ASSETS_PREFIX+'/cloudy-night.mp4',
-    'drop water': ASSETS_PREFIX+'/drop-water.mp4',
-    'man on beach': ASSETS_PREFIX+'/man-on-beach.mp4',
-    'starry night': ASSETS_PREFIX+'/starry-night.mp4',
-    'shell beach': ASSETS_PREFIX+'/shell-beach.mp4',
-    'wheat field': ASSETS_PREFIX+'/wheat-field.mp4',
-    'canvas': 'canvas',
-}
+    "tunnel futuristic": ASSETS_PREFIX + "/tunnel-futuristic.mp4",
+    "neon terrain": ASSETS_PREFIX + "/neon-terrain.mp4",
+    cubes: ASSETS_PREFIX + "/cubes.mp4",
+    "tunnel in": ASSETS_PREFIX + "/tunnel-in.mp4",
+    dunets: ASSETS_PREFIX + "/dunets.mp4",
+    "cloudy night": ASSETS_PREFIX + "/cloudy-night.mp4",
+    "drop water": ASSETS_PREFIX + "/drop-water.mp4",
+    "man on beach": ASSETS_PREFIX + "/man-on-beach.mp4",
+    "starry night": ASSETS_PREFIX + "/starry-night.mp4",
+    "shell beach": ASSETS_PREFIX + "/shell-beach.mp4",
+    "wheat field": ASSETS_PREFIX + "/wheat-field.mp4",
+    canvas: "canvas",
+};
 
 const VIDEO_MASK_SOURCE_OPTIONS = {
-    'none': 'none',
+    none: "none",
     ...VIDEO_SOURCE_OPTIONS,
-}
+};
 
 export const DEFAULT_MASK_VIDEO_SOURCE_OPTION = VIDEO_MASK_SOURCE_OPTIONS.none;
 
@@ -27,24 +27,26 @@ export const getVideoElement = () => document.querySelector("#video") as HTMLVid
 export const getSecondVideoElement = () => document.querySelector("#video2") as HTMLVideoElement;
 
 export const IMAGE_OPTIONS = {
-    'none': 'none',
-    'Cloud': ASSETS_PREFIX+"/disp-cloud.png",
-    'Snow': ASSETS_PREFIX+"/disp-snow.jpg",
-    'Liquid': ASSETS_PREFIX+"/disp-liquid.jpg",
-    'Triangle': ASSETS_PREFIX+"/disp-tri.jpg",
-}
+    none: "none",
+    Cloud: ASSETS_PREFIX + "/disp-cloud.png",
+    Snow: ASSETS_PREFIX + "/disp-snow.jpg",
+    Liquid: ASSETS_PREFIX + "/disp-liquid.jpg",
+    Triangle: ASSETS_PREFIX + "/disp-tri.jpg",
+};
 
 function addCategoryToMediaName(value: Record<string, string>, text) {
-    return Object.entries(value).filter(([key, value]) => value !== "none").reduce((result, [key, value]) => {
-        result[`${text} ${key}`] = value;
-        return result;
-    }, {} as Record<string, string>);
+    return Object.entries(value)
+        .filter(([key, value]) => value !== "none")
+        .reduce((result, [key, value]) => {
+            result[`${text} ${key}`] = value;
+            return result;
+        }, {} as Record<string, string>);
 }
 export const VIDEO_AND_IMAGE_OPTIONS = {
-    'none': 'none',
-    ...addCategoryToMediaName(IMAGE_OPTIONS, '[image]'),
-    ...addCategoryToMediaName(VIDEO_SOURCE_OPTIONS, '[video]'),
-}
+    none: "none",
+    ...addCategoryToMediaName(IMAGE_OPTIONS, "[image]"),
+    ...addCategoryToMediaName(VIDEO_SOURCE_OPTIONS, "[video]"),
+};
 
 export const DEFAULT_STATE = {
     video: DEFAULT_VIDEO_SOURCE_OPTION,
@@ -113,7 +115,13 @@ export const DEFAULT_STATE = {
     },
 };
 
-
 export const EFFECT_NAMES = {
-    'turbulence': 'turbulence',
+    hueSaturation: "hueSaturation",
+    brightnessContrast: "brightnessContrast",
+    blend: "blend",
+    duotone: "duotone",
+    alphaMask: "alphaMask",
+    displacement: "displacement",
+    turbulence: "turbulence",
+    kaleidoscope: "kaleidoscope",
 } as const;
