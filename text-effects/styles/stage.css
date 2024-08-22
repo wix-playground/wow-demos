@@ -1,46 +1,47 @@
 .comp .content {
-  width: 100%;
-  height: 100%;
-  display: grid;
-  grid-template: 1fr/1fr;
-  grid-template-areas: "content";
-  place-items: center;
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template: 1fr/1fr;
+    grid-template-areas: 'content';
+    place-items: center;
 }
 .comp .content .media,
 .comp .content svg {
-  grid-area: content;
-  width: 100%;
-  height: 100%;
-  min-width: 0;
-  min-height: 0;
+    grid-area: content;
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
 }
 .comp .content .media video,
 .comp .content .media img,
 .comp .content svg video,
 .comp .content svg img {
-  -o-object-fit: cover;
-     object-fit: cover;
-  width: 100%;
-  height: 100%;
+    -o-object-fit: cover;
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
 }
 .comp .content svg {
-  overflow: visible;
+    overflow: visible;
 }
 .comp .content svg path,
 .comp .content svg text,
 .comp .content svg textPath,
 .comp .content svg tspan {
-  vector-effect: non-scaling-stroke;
+    vector-effect: non-scaling-stroke;
 }
 .comp:hover + .wireframe-layer {
-  opacity: 1;
+    opacity: 1;
 }
 
 .wireframe-layer {
-  opacity: 0;
-  transition: opacity 0.15s 0.3s ease-out;
+    opacity: 0;
+    transition: opacity 0.15s 0.3s ease-out;
 }
-.wireframe-layer:hover, [data-dragging-within] .wireframe-layer {
-  opacity: 1;
-  transition: opacity 0.25s ease-in;
-}/*# sourceMappingURL=stage.css.map */
+.wireframe-layer:hover,
+[data-dragging-within] .wireframe-layer {
+    opacity: 1;
+    transition: opacity 0.25s ease-in;
+} /*# sourceMappingURL=stage.css.map */

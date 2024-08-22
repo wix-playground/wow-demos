@@ -10,19 +10,19 @@ const config = {
         name: 'vgl',
         file: 'build.js',
         format: 'umd',
-        sourcemap: false
+        sourcemap: false,
     },
     plugins: [
         resolve(),
         commonjs({
-            include: /node_modules/
+            include: /node_modules/,
         }),
         globals(),
         builtins(),
         progress({
-            clearLine: false
-        })
-    ]
+            clearLine: false,
+        }),
+    ],
 };
 
 export default config;

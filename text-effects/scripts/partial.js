@@ -9,8 +9,7 @@ window.partial = (file, removeScript = true) => {
         document.write(`<!-- Source: ${file} -->`);
         document.write(request.responseText);
         if (removeScript) {
-            scr.parentNode.removeChild(scr)
+            scr.parentNode.removeChild(scr);
         }
     }
 };
-

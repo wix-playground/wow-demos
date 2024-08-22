@@ -1,9 +1,9 @@
-import { Kampos, effects } from "kampos";
-import { EFFECT_NAMES, getVideoElement } from "../constants";
-import { initPane } from "./pane";
-import { getQueryValue, onStateChange, setState } from "../utils/state";
-import { resolveVideo } from "../utils/media-utils";
-import { onEffectApplied, resolveConfig, splitEffectConfigToInitialsAndSetters } from "./kampos-effects";
+import { Kampos, effects } from 'kampos';
+import { EFFECT_NAMES, getVideoElement } from '../constants';
+import { initPane } from './pane';
+import { getQueryValue, onStateChange, setState } from '../utils/state';
+import { resolveVideo } from '../utils/media-utils';
+import { onEffectApplied, resolveConfig, splitEffectConfigToInitialsAndSetters } from './kampos-effects';
 
 let willBeAppliedEffects: Record<string, any[]> = {};
 let video = getVideoElement();
@@ -18,17 +18,17 @@ function getActiveEffects() {
 }
 
 function initTurbulenceEffect(effect) {
-    const target = document.querySelector("#canvas");
+    const target = document.querySelector('#canvas');
     window.kamposCanvas = new Kampos({
         target,
         effects: [effect],
-        noSource: true
+        noSource: true,
     });
     window.kamposCanvas.play((time) => (effect.time = time * 2)); // TOOD: maybe configurable
-};
+}
 
 async function initKampos() {
-    const target = document.querySelector("#target");
+    const target = document.querySelector('#target');
     willBeAppliedEffects = {};
     for (const effectName of getActiveEffects()) {
         const effectConfig = await resolveConfig(effectName, window.state.effects[effectName]);
@@ -41,7 +41,7 @@ async function initKampos() {
             effect[key] = value;
         });
         onEffectApplied(effect, effectName);
-        if(effectName === EFFECT_NAMES.turbulence) {
+        if (effectName === EFFECT_NAMES.turbulence) {
             initTurbulenceEffect(effect);
             continue;
         }
@@ -76,11 +76,11 @@ async function initDemo() {
         kamposInstance.play();
         updateEffects();
     } catch (error) {
-        console.error("Error initializing demo:", error);
+        console.error('Error initializing demo:', error);
     }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', () => {
     const pane = initPane();
     initDemo();
 

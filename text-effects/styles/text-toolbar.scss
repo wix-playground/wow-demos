@@ -16,8 +16,6 @@
   --hover-color-border: hsl(219, 100%, 60%);
   --focus-color-border: hsl(219, 100%, 50%);
 
-
-
   display: flex;
   flex-wrap: wrap;
   //height: var(--box-size-px);
@@ -197,7 +195,7 @@
   .style-color-button {
     height: var(--box-size-px);
 
-    input[type="color"] {
+    input[type='color'] {
       appearance: none;
       padding: 0;
       width: var(--box-size-px);
@@ -208,10 +206,10 @@
         border-color: var(--hover-color-border);
       }
     }
-    input[type="color"]::-webkit-color-swatch-wrapper {
+    input[type='color']::-webkit-color-swatch-wrapper {
       padding: 0;
     }
-    input[type="color"]::-webkit-color-swatch {
+    input[type='color']::-webkit-color-swatch {
       border: clamp(1px, calc(var(--box-size-px) / 12), 2px) solid var(--base-color);
 
       &:hover {

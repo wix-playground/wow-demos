@@ -29,13 +29,10 @@ async function textToPath(
             liga: true,
             rlig: true,
         },
-    }
+    },
 ) {
     const font = await opentypeJs.load(fontUrl);
-    const bidiText = bidi.getReorderedString(
-        text,
-        bidi.getEmbeddingLevels(text, textDir)
-    );
+    const bidiText = bidi.getReorderedString(text, bidi.getEmbeddingLevels(text, textDir));
     const paths = font.getPaths(bidiText, 0, 0, fontSize, options);
     return paths.map((path) => path.toSVG());
 }
@@ -49,7 +46,6 @@ async function getConfig() {
     const response = await fetch('./data.json');
     return await response.json();
 }
-
 
 /**
  * Helper matcher for SVG encoding
@@ -131,9 +127,7 @@ async function setSvgText({
         state.get('fontSize') !== fontSize ||
         state.get('textDir') !== textDir
     ) {
-        linesPaths = await Promise.all(
-            lines.map((line) => textToPath(line, url, fontSize, textDir))
-        );
+        linesPaths = await Promise.all(lines.map((line) => textToPath(line, url, fontSize, textDir)));
         state.set('linesPaths', linesPaths);
         state.set('text', lines.join());
         state.set('fontUrl', url);
@@ -159,18 +153,12 @@ async function setSvgText({
             let transform;
 
             if (textVertical) {
-                const spacing = letterSpacing
-                    ? `translate(0 ${letterSpacing * i})`
-                    : '';
+                const spacing = letterSpacing ? `translate(0 ${letterSpacing * i})` : '';
                 const rect = path.getBBox();
-                const vertical = `rotate(-90,${rect.x + rect.width / 2},${
-                    rect.y + rect.height / 2
-                })`;
+                const vertical = `rotate(-90,${rect.x + rect.width / 2},${rect.y + rect.height / 2})`;
                 transform = `${vertical}${spacing}`;
             } else {
-                transform = letterSpacing
-                    ? `translate(${letterSpacing * i} 0)`
-                    : '';
+                transform = letterSpacing ? `translate(${letterSpacing * i} 0)` : '';
             }
 
             if (transform) {
@@ -193,10 +181,7 @@ async function setSvgText({
             gLeft = svgGroupWidth - gWidth;
         }
 
-        g.setAttribute(
-            'transform',
-            `translate(${gLeft} ${(fontSize + lineSpacing) * i})`
-        );
+        g.setAttribute('transform', `translate(${gLeft} ${(fontSize + lineSpacing) * i})`);
     });
 
     // Set Transforms
@@ -215,10 +200,7 @@ async function setSvgText({
     // After all the manipulations - measure the exact boundaries and resize the box
     const { x, y, width, height } = svg.getBBox();
     svg.setAttribute('viewBox', `${x} ${y} ${width} ${height}`);
-    svg.setAttribute(
-        'preserveAspectRatio',
-        textAspect === 'keep' ? 'xMidYMid meet' : 'none'
-    );
+    svg.setAttribute('preserveAspectRatio', textAspect === 'keep' ? 'xMidYMid meet' : 'none');
     // Create mask
     const serialized = encodeSVG(svg.outerHTML);
     console.log(serialized);
@@ -239,7 +221,7 @@ async function setSvgText({
     if (textShadowOpacity) {
         svgAndMedia.style.filter = `drop-shadow(${textShadowX}px ${textShadowY}px ${textShadowBlur}px ${hex2rgba(
             textShadowColor,
-            textShadowOpacity
+            textShadowOpacity,
         )})`;
     }
 }
@@ -289,9 +271,7 @@ function setMedia({ mi: selectedIndex }) {
  */
 function setupStage({ sb: stageBackground, sbi: stageBackgroundImage }) {
     $id('result').style.backgroundColor = stageBackground;
-    $id('result').style.backgroundImage = /^https?|data|blob/.test(
-        stageBackgroundImage
-    )
+    $id('result').style.backgroundImage = /^https?|data|blob/.test(stageBackgroundImage)
         ? `url(${stageBackgroundImage})`
         : stageBackgroundImage;
 }
@@ -302,9 +282,7 @@ function setupStage({ sb: stageBackground, sbi: stageBackgroundImage }) {
  */
 function loadWebFonts() {
     const fonts = state.get('fonts');
-    const families = fonts.map(
-        ({ family, variant = 400 }) => `${family}:${variant}`
-    );
+    const families = fonts.map(({ family, variant = 400 }) => `${family}:${variant}`);
     webfontloader.load({
         google: {
             families,
@@ -385,12 +363,12 @@ function setupTextSettings() {
     [...$selectAll('[data-setting-change')]?.forEach((input) =>
         input.addEventListener('change', () => {
             form.requestSubmit();
-        })
+        }),
     );
     [...$selectAll('[data-setting-input')]?.forEach((input) =>
         input.addEventListener('input', () => {
             form.requestSubmit();
-        })
+        }),
     );
 
     $id('copy-url').addEventListener('click', (event) => {
@@ -424,16 +402,12 @@ function setupFormDefaults() {
             } else if (element.type === 'select-multiple') {
                 const values = urlParams.getAll(element.name);
                 [...element.querySelectorAll('option')].map(
-                    (option) =>
-                        (option.selected = values.includes(option.value))
+                    (option) => (option.selected = values.includes(option.value)),
                 );
             } else {
                 element.value = urlParams.get(element.name);
             }
-        } else if (
-            (element.type === 'checkbox' || element.type === 'radio') &&
-            element.checked
-        ) {
+        } else if ((element.type === 'checkbox' || element.type === 'radio') && element.checked) {
             element.checked = false;
         }
     }
@@ -520,30 +494,16 @@ function setupBoxResize(textBox = $id('text-box')) {
 
             const handleMove = ({ offsetX, offsetY }) => {
                 if (corner === 'top-left') {
-                    newDim.top = Math.min(
-                        offsetY,
-                        initialDim.height + initialDim.top - 10
-                    );
-                    newDim.left = Math.min(
-                        offsetX,
-                        initialDim.width + initialDim.left - 10
-                    );
+                    newDim.top = Math.min(offsetY, initialDim.height + initialDim.top - 10);
+                    newDim.left = Math.min(offsetX, initialDim.width + initialDim.left - 10);
                     newDim.width = initialDim.width + initialDim.left - offsetX;
-                    newDim.height =
-                        initialDim.height + initialDim.top - offsetY;
+                    newDim.height = initialDim.height + initialDim.top - offsetY;
                 } else if (corner === 'top-right') {
-                    newDim.top = Math.min(
-                        offsetY,
-                        initialDim.height + initialDim.top - 10
-                    );
+                    newDim.top = Math.min(offsetY, initialDim.height + initialDim.top - 10);
                     newDim.width = offsetX - initialDim.left;
-                    newDim.height =
-                        initialDim.height + initialDim.top - offsetY;
+                    newDim.height = initialDim.height + initialDim.top - offsetY;
                 } else if (corner === 'bottom-left') {
-                    newDim.left = Math.min(
-                        offsetX,
-                        initialDim.width + initialDim.left - 10
-                    );
+                    newDim.left = Math.min(offsetX, initialDim.width + initialDim.left - 10);
                     newDim.width = initialDim.width + initialDim.left - offsetX;
                     newDim.height = offsetY - initialDim.top;
                 } else if (corner === 'bottom-right') {
@@ -556,16 +516,8 @@ function setupBoxResize(textBox = $id('text-box')) {
 
                 container.dataset.dragging = 'true';
 
-                const top = clamp(
-                    Math.min(-newDim.height, 0) + 10,
-                    containerH - 10,
-                    newDim.top
-                );
-                const left = clamp(
-                    Math.min(-newDim.width, 0) + 10,
-                    containerW - 10,
-                    newDim.left
-                );
+                const top = clamp(Math.min(-newDim.height, 0) + 10, containerH - 10, newDim.top);
+                const left = clamp(Math.min(-newDim.width, 0) + 10, containerW - 10, newDim.left);
                 const width = clamp(10, containerW * 2, newDim.width);
                 const height = clamp(10, containerH * 2, newDim.height);
 
@@ -577,22 +529,19 @@ function setupBoxResize(textBox = $id('text-box')) {
 
             container.setPointerCapture(event.pointerId);
             container.addEventListener('pointermove', handleMove);
-            container.addEventListener(
-                'pointerup',
-                function handlePointerUp(e) {
-                    delete container.dataset.dragging;
+            container.addEventListener('pointerup', function handlePointerUp(e) {
+                delete container.dataset.dragging;
 
-                    // Save box dimensions
-                    form.elements['y'].value = textBox.style.top;
-                    form.elements['x'].value = textBox.style.left;
-                    form.elements['w'].value = textBox.style.width;
-                    form.elements['h'].value = textBox.style.height;
-                    form.requestSubmit();
+                // Save box dimensions
+                form.elements['y'].value = textBox.style.top;
+                form.elements['x'].value = textBox.style.left;
+                form.elements['w'].value = textBox.style.width;
+                form.elements['h'].value = textBox.style.height;
+                form.requestSubmit();
 
-                    container.removeEventListener('pointerup', handlePointerUp);
-                    container.removeEventListener('pointermove', handleMove);
-                }
-            );
+                container.removeEventListener('pointerup', handlePointerUp);
+                container.removeEventListener('pointermove', handleMove);
+            });
         });
     });
 }
@@ -609,7 +558,7 @@ const state = new Map(
         fontUrl: '',
         fontSize: 0,
         textDir: '',
-    })
+    }),
 );
 async function init() {
     const { fonts, media } = await getConfig();

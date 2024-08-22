@@ -4,7 +4,7 @@
     height: 100%;
     display: grid;
     grid-template: 1fr / 1fr;
-    grid-template-areas: "content";
+    grid-template-areas: 'content';
     place-items: center;
 
     .media,
@@ -38,9 +38,8 @@
   &:hover + .wireframe-layer {
     opacity: 1;
   }
-
 }
-.wireframe-layer{
+.wireframe-layer {
   opacity: 0;
   transition: opacity 0.15s 0.3s ease-out;
 

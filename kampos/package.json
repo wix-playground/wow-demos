@@ -1,33 +1,33 @@
 {
-  "name": "vite-template-solid",
-  "version": "0.0.0",
-  "description": "",
-  "scripts": {
-    "start": "vite",
-    "dev": "vite",
-    "build": "vite build",
-    "serve": "vite preview",
-    "test": "vitest"
-  },
-  "license": "MIT",
-  "devDependencies": {
-    "@tweakpane/core": "^2.0.4",
-    "@types/stats.js": "^0.17.3",
-    "autoprefixer": "^10.4.17",
-    "postcss": "^8.4.33",
-    "solid-devtools": "^0.29.2",
-    "tailwindcss": "^3.4.1",
-    "typescript": "^5.3.3",
-    "vite": "^5.0.11",
-    "vite-plugin-solid": "^2.8.2"
-  },
-  "dependencies": {
-    "@tweakpane/plugin-camerakit": "^0.3.0",
-    "debounce": "^2.1.0",
-    "kampos": "^0.10.0",
-    "solid-js": "^1.8.11",
-    "stats.js": "^0.17.0",
-    "tailwindcss-spring": "^1.0.1",
-    "tweakpane": "^4.0.4"
-  }
+    "name": "vite-template-solid",
+    "version": "0.0.0",
+    "description": "",
+    "scripts": {
+        "start": "vite",
+        "dev": "vite",
+        "build": "vite build",
+        "serve": "vite preview",
+        "test": "vitest"
+    },
+    "license": "MIT",
+    "devDependencies": {
+        "@tweakpane/core": "^2.0.4",
+        "@types/stats.js": "^0.17.3",
+        "autoprefixer": "^10.4.17",
+        "postcss": "^8.4.33",
+        "solid-devtools": "^0.29.2",
+        "tailwindcss": "^3.4.1",
+        "typescript": "^5.3.3",
+        "vite": "^5.0.11",
+        "vite-plugin-solid": "^2.8.2"
+    },
+    "dependencies": {
+        "@tweakpane/plugin-camerakit": "^0.3.0",
+        "debounce": "^2.1.0",
+        "kampos": "^0.10.0",
+        "solid-js": "^1.8.11",
+        "stats.js": "^0.17.0",
+        "tailwindcss-spring": "^1.0.1",
+        "tweakpane": "^4.0.4"
+    }
 }

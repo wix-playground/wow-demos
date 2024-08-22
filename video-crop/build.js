@@ -1,7 +1,7 @@
 (function (factory) {
-    typeof define === 'function' && define.amd ? define(factory) :
-    factory();
-}(function () { 'use strict';
+    typeof define === 'function' && define.amd ? define(factory) : factory();
+})(function () {
+    'use strict';
 
     const video = document.querySelector('#video');
     const clipDummy = document.querySelector('#clip-dummy');
@@ -21,7 +21,7 @@
         fest4: 'svg/fest4.svg',
         fest5: 'svg/fest5.svg',
         // fest6: 'svg/fest6.svg'
-        fest7: 'svg/fest7.svg'
+        fest7: 'svg/fest7.svg',
     };
 
     const TEXT_SVG = `<svg viewBox="0 0 200 200" height="200" width="200" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
@@ -37,10 +37,10 @@
     <text x="5" y="120">TIGER</text>
 </svg>`;
 
-    function drawInlineSVG (ctx, rawSVG, callback) {
-        const svg = new Blob([rawSVG], {type:"image/svg+xml"}),
+    function drawInlineSVG(ctx, rawSVG, callback) {
+        const svg = new Blob([rawSVG], { type: 'image/svg+xml' }),
             url = URL.createObjectURL(svg),
-            img = new Image;
+            img = new Image();
 
         img.onload = function () {
             ctx.drawImage(this, 0, 0);
@@ -51,7 +51,7 @@
         img.src = url;
     }
 
-    function applyMask (clip) {
+    function applyMask(clip) {
         clip.setAttribute('width', video.offsetWidth);
         clip.setAttribute('height', video.offsetHeight);
 
@@ -61,18 +61,17 @@
         // if ('maskImage' in canvas.style || 'webkitMaskImage' in canvas.style) {
         drawInlineSVG(ctx, clip.outerHTML, function () {
             const mask = `url(${canvas.toDataURL()})`;
-            video.style.webkitMaskImage = mask;  // -> PNG data-uri
+            video.style.webkitMaskImage = mask; // -> PNG data-uri
             // video.style.maskImage = mask;  // -> PNG data-uri
         });
         // }
     }
 
-    function fetchSVG (url) {
-        return fetch(new Request(url))
-            .then(response => response.text());
+    function fetchSVG(url) {
+        return fetch(new Request(url)).then((response) => response.text());
     }
 
-    function main () {
+    function main() {
         const handler = (svg, id) => {
             const div = document.createElement('div');
             div.classList.add('clip');
@@ -82,11 +81,12 @@
             clipContainer.appendChild(div);
         };
 
-        const fetching = new Promise(resolve => {
-            Promise.all(Object.keys(SVG).map(id => {
-                return fetchSVG(SVG[id])
-                    .then(svg => handler(svg, id));
-            }))
+        const fetching = new Promise((resolve) => {
+            Promise.all(
+                Object.keys(SVG).map((id) => {
+                    return fetchSVG(SVG[id]).then((svg) => handler(svg, id));
+                }),
+            )
                 .then(() => {
                     handler(TEXT_SVG, 'text');
                 })
@@ -94,14 +94,14 @@
         });
 
         fetching.then(() => {
-            const clipClickHandler = e => {
+            const clipClickHandler = (e) => {
                 const clip = e.target.closest('svg');
 
                 if (clip) {
                     const clone = clip.cloneNode(true);
                     clipDummy.appendChild(clone);
 
-                    const {width, height, x, y} = clone.getBBox();
+                    const { width, height, x, y } = clone.getBBox();
                     clone.setAttribute('viewBox', `${x} ${y} ${width} ${height}`);
 
                     clone.remove();
@@ -112,14 +112,14 @@
 
             clipContainer.addEventListener('click', clipClickHandler);
 
-            videoSelector.addEventListener('change', e => {
+            videoSelector.addEventListener('change', (e) => {
                 const index = e.target.selectedIndex;
                 const src = e.target.children[index].value;
 
                 video.src = src;
             });
 
-            backgroundColor.addEventListener('input', e => {
+            backgroundColor.addEventListener('input', (e) => {
                 const value = e.target.value;
 
                 document.body.style.backgroundColor = value;
@@ -138,7 +138,7 @@
             textButton.appendChild(editTextInput);
             editTextInput.style.width = MAX_WIDTH;
 
-            editTextButton.addEventListener('click', e => {
+            editTextButton.addEventListener('click', (e) => {
                 e.stopPropagation();
 
                 const textElement = textButton.querySelector('text');
@@ -156,7 +156,7 @@
                 textDummy.innerText = editTextInput.value;
                 textDummy.style.fontSize = fontSizeString;
 
-                const cancelHandler = clear => {
+                const cancelHandler = (clear) => {
                     editTextInput.classList.remove('show');
                     editTextInput.removeEventListener('keydown', keydownHandler);
                     editTextInput.blur();
@@ -175,13 +175,13 @@
                     textElement.innerHTML = editTextInput.value;
 
                     clipClickHandler({
-                        target: textElement
+                        target: textElement,
                     });
 
                     cancelHandler();
                 };
 
-                const clickOutsideHandler = e => {
+                const clickOutsideHandler = (e) => {
                     e.stopPropagation();
                     applyHandler();
                     document.body.removeEventListener('click', clickOutsideHandler, true);
@@ -189,7 +189,7 @@
 
                 document.body.addEventListener('click', clickOutsideHandler, true);
 
-                const keydownHandler = e => {
+                const keydownHandler = (e) => {
                     if (e.code === 'Enter') {
                         applyHandler();
                     } else if (e.code === 'Escape') {
@@ -200,7 +200,7 @@
                         textDummy.innerText = editTextInput.value;
                         textDummy.style.fontSize = fontSizeString;
 
-                        let {width} = textDummy.getBoundingClientRect();
+                        let { width } = textDummy.getBoundingClientRect();
 
                         if (width > parseInt(MAX_WIDTH)) {
                             while (width > parseInt(MAX_WIDTH)) {
@@ -210,8 +210,7 @@
                                 textDummy.style.fontSize = fontSizeString;
                                 width = textDummy.getBoundingClientRect().width;
                             }
-                        }
-                        else {
+                        } else {
                             while (width < parseInt(MAX_WIDTH) && fontSize < 60) {
                                 fontSize += 1;
                                 fontSizeString = `${fontSize}px`;
@@ -231,5 +230,4 @@
     }
 
     main();
-
-}));
+});

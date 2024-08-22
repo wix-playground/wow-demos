@@ -14,13 +14,13 @@ function setFormEvents(form) {
     [...$selectAll('[data-setting-change')]?.forEach((input) =>
         input.addEventListener('change', () => {
             form.requestSubmit();
-        })
+        }),
     );
 
     [...$selectAll('[data-setting-input')]?.forEach((input) =>
         input.addEventListener('input', () => {
             form.requestSubmit();
-        })
+        }),
     );
 
     form.addEventListener('submit', (e) => {
@@ -373,7 +373,7 @@ const state = new Map(
         selectedPath: -1,
         paths: [],
         timeline: null,
-    })
+    }),
 );
 
 async function init() {
