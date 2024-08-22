@@ -16,7 +16,6 @@ window.pane = pane;
 pane.registerPlugin(CamerakitPlugin);
 
 window.state = structuredClone(DEFAULT_STATE);
-const isDevQuery = window.location.search.includes("dev");
 
 export function initPane() {
     pane.addButton({ title: "Reset" }).on("click", () => {
@@ -122,7 +121,7 @@ export function initPane() {
     turbulenceFolder.addBinding(window.state.effects.turbulence, "output", {
         options: {
             COLOR: "COLOR",
-            DISPLACEMENT: "DISPLACEMENT",
+            ALPHA: "ALPHA",
         },
     });
     turbulenceFolder.addBinding(window.state.effects.turbulence, "frequencyX", {

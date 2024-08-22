@@ -9,6 +9,7 @@ const App: Component = () => {
                 class="absolute inset-0 z-0 w-full h-full"
              />
         </div>
+        <canvas id="canvas" class="hidden" />
         <video id="video" src="./assets/cloudy-night.mp4"
                autoplay
                loop

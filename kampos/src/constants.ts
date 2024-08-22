@@ -13,6 +13,7 @@ export const VIDEO_SOURCE_OPTIONS = {
     'starry night': ASSETS_PREFIX+'/starry-night.mp4',
     'shell beach': ASSETS_PREFIX+'/shell-beach.mp4',
     'wheat field': ASSETS_PREFIX+'/wheat-field.mp4',
+    'canvas': 'canvas',
 }
 
 const VIDEO_MASK_SOURCE_OPTIONS = {
@@ -111,3 +112,8 @@ export const DEFAULT_STATE = {
         },
     },
 };
+
+
+export const EFFECT_NAMES = {
+    'turbulence': 'turbulence',
+} as const;

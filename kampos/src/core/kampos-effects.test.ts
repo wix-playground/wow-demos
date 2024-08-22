@@ -37,6 +37,31 @@ describe('resolveConfig', () => {
     });
   });
 
+it('should resolve paths that start with canvas as the kamposCanvas instance', async () => {
+    // Add DOM elements with ids canvas2 and canvas3
+    document.body.innerHTML = `
+      <canvas id="canvas"></canvas>
+      <canvas id="canvas2"></canvas>
+    `;
+
+    const config = {
+      video: 'canvas',
+      media: 'canvas2'
+    };
+
+    const resolvedConfig = await resolveConfig(noMattersEffectName, config);
+
+    expect(resolvedConfig).toEqual({
+      video: document.getElementById('canvas'),
+      media: document.getElementById('canvas2'),
+    });
+    expect(resolvedConfig).not.toEqual({
+        video: null,
+        media: null,
+    })
+  });
+
+
   it('should filter out "none" and "WIP" values', async () => {
     const config = {
       backgroundColor: '#ff0000',

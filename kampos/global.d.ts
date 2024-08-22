@@ -74,5 +74,6 @@ type State = {
   interface Window {
     state: State;
     pane: Pane;
+    kamposCanvas: any;// TODO kamposInstance
   }
 }

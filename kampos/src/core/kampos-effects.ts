@@ -16,6 +16,9 @@ async function resolveMediaFromPath(path: string) {
             resolvedValue = await loadImage(path);
         } else if (["mp4", "webm", "ogg"].includes(extension)) {
             resolvedValue = await loadVideo(path);
+        } else if (path.startsWith("canvas")) {
+            console.log("resolving canvas vladd", path);
+            resolvedValue = document.getElementById(path);
         } else {
             // Fallback: Return the path as a string if it doesn't match expected extensions
             resolvedValue = path;
@@ -120,18 +123,14 @@ export function splitEffectConfigToInitialsAndSetters(effectName: string, effect
     return { initials, setters } as const;
 }
 
-export const onEffectApplied = (willBeAppliedEffects: any, effectName: string) => {
+export const onEffectApplied = (effect, effectName: string) => {
     const onEffectAppliedMapper = {
         alphaMask: () => {
-            willBeAppliedEffects[effectName].textures[0].update = true
+            effect.textures[0].update = true
         },
         displacement: () => {
-            willBeAppliedEffects[effectName].textures[0].update = true
+            effect.textures[0].update = true
         },
-        // turbulence: () => {
-        //     console.log("turbulence after effect applied");
-        //     willBeAppliedEffects[effectName].textures[0].update = true
-        // },
     };
     onEffectAppliedMapper[effectName]?.();
 }
