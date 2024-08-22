@@ -1,6 +1,6 @@
 main {
     display: grid;
-    grid-template: "controls text stage" 100vh / 30% 30% 40%;
+    grid-template: 'controls text stage' 100vh / 30% 30% 40%;
 }
 
 #csstext {
@@ -59,21 +59,21 @@ aside fieldset label + label {
     margin-top: 0.7rem;
 }
 
-aside legend:has(input[name="screen-in-mode"]:not(:checked)) ~ * {
+aside legend:has(input[name='screen-in-mode']:not(:checked)) ~ * {
     display: none !important;
 }
 
-aside label:has(input[name="screen-in-name"]) + fieldset,
-aside label:has(input[name="screen-in-mobile-name"]) + fieldset {
+aside label:has(input[name='screen-in-name']) + fieldset,
+aside label:has(input[name='screen-in-mobile-name']) + fieldset {
     display: none;
 }
 
-aside label:has(input[name="screen-in-name"]:checked) + fieldset,
-aside label:has(input[name="screen-in-mobile-name"]:checked) + fieldset {
+aside label:has(input[name='screen-in-name']:checked) + fieldset,
+aside label:has(input[name='screen-in-mobile-name']:checked) + fieldset {
     display: block;
 }
 
-aside label:has(input[name="screen-in-name"]:checked) + fieldset:has(legend:only-child)::before,
-aside label:has(input[name="screen-in-mobile-name"]:checked) + fieldset:has(legend:only-child)::before {
-    content: "Nothing to see here...";
+aside label:has(input[name='screen-in-name']:checked) + fieldset:has(legend:only-child)::before,
+aside label:has(input[name='screen-in-mobile-name']:checked) + fieldset:has(legend:only-child)::before {
+    content: 'Nothing to see here...';
 }

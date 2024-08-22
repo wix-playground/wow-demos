@@ -15,7 +15,7 @@ body {
     grid-template-columns: max-content 1fr;
     grid-template-rows: auto;
     grid-auto-flow: row;
-    grid-template-areas: "controls result";
+    grid-template-areas: 'controls result';
     font-size: 0.8rem;
 }
 
@@ -47,7 +47,7 @@ li {
     margin: 0;
 }
 
-fieldset{
+fieldset {
     margin-bottom: 0.6em;
 }
 
@@ -70,14 +70,14 @@ input {
 i {
     display: flex;
     align-items: center;
-    gap: .3em;
+    gap: 0.3em;
 }
 
-i [type="radio"] {
+i [type='radio'] {
     margin: 3px 0 3px 3px;
 }
 
-input[type="color"] {
+input[type='color'] {
     padding: 0;
     background: none;
     border: none;
@@ -85,12 +85,13 @@ input[type="color"] {
     cursor: context-menu;
 }
 
-input[type="color"], input[type="number"] {
+input[type='color'],
+input[type='number'] {
     min-width: 3em;
     flex-basis: 0;
 }
 
-input[type="number"] {
+input[type='number'] {
     width: 3em;
 }
 
@@ -106,7 +107,7 @@ input[type="number"] {
 .text-input {
     display: flex;
     flex-direction: raw;
-    gap: .5em;
+    gap: 0.5em;
 }
 
 .text-input-text {
@@ -142,9 +143,7 @@ input[type="number"] {
 .font-list-items:where(:focus-within, :hover) {
     z-index: 1;
 }
-.font-list-items:not(:focus-within, :hover)
-    :not(:checked, :active)
-    + .font-name {
+.font-list-items:not(:focus-within, :hover) :not(:checked, :active) + .font-name {
     display: none;
 }
 
@@ -211,7 +210,7 @@ input[type="number"] {
 }
 
 .path-item path {
-    stroke:hsl(300, 87%, 28%);
+    stroke: hsl(300, 87%, 28%);
     stroke-width: 4px;
     fill: none;
     vector-effect: non-scaling-stroke;
@@ -221,12 +220,10 @@ input[type="number"] {
     z-index: 1;
 }
 
-.path-list-items:not(:focus-within, :hover)
-    :not(:checked, :active)
-    + .path-thumb {
-        opacity: 0;
-        position: absolute;
-        pointer-events: none;
+.path-list-items:not(:focus-within, :hover) :not(:checked, :active) + .path-thumb {
+    opacity: 0;
+    position: absolute;
+    pointer-events: none;
 }
 
 .path-thumb {
@@ -260,20 +257,17 @@ input[type="number"] {
 }
 
 .path-input:focus + .path-thumb {
-     background: hsl(219, 100%, 80%);
+    background: hsl(219, 100%, 80%);
     border-color: hsl(219, 100%, 40%);
     opacity: 1;
 }
-
-
-
 
 .content {
     width: 100%;
     height: 100%;
 }
 
-.content  svg {
+.content svg {
     --font-scale-factor: 1;
 
     width: 100%;
@@ -284,4 +278,3 @@ input[type="number"] {
 .content :where(path, text, textPath) {
     vector-effect: non-scaling-stroke;
 }
-

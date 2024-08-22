@@ -5,7 +5,16 @@ import { createDocumentWireframe, makeWireframeElementResizable } from 'https://
 import { urlToForm, formToUrl } from 'https://tombigel.github.io/form-to-url-to-form/index.js';
 import { scalePath } from './scripts/path-utils.js';
 import { setTextToolbarFontList } from './scripts/text-toolbar.js';
-import { $id, $selectAll, getTemplateItem, hex2rgba, getRotatedBoundingRectScale, throttle, mapRange, $select } from '../utils/utils.js';
+import {
+    $id,
+    $selectAll,
+    getTemplateItem,
+    hex2rgba,
+    getRotatedBoundingRectScale,
+    throttle,
+    mapRange,
+    $select,
+} from '../utils/utils.js';
 
 const ns = 'http://www.w3.org/2000/svg';
 
@@ -95,10 +104,10 @@ function updateText({
             tspan.setAttributeNS(null, 'x', '0');
             tspan.setAttributeNS(null, 'dy', `${lineHeight}em`);
             return tspan;
-        })
+        }),
     );
 
-    text.style.dominantBaseline = "hanging";
+    text.style.dominantBaseline = 'hanging';
     text.style.fill = color;
     text.style.fontFamily = family;
     text.style.fontSize = `calc(${size}px * var(--font-scale-factor))`;
@@ -115,14 +124,13 @@ function updateText({
     text.style.overflow = 'visible';
 
     if (align === 'justify') {
-        setJustifyText({tj: justify, fs: size, lh: lineHeight})
+        setJustifyText({ tj: justify, fs: size, lh: lineHeight });
     } else {
         text.style.letterSpacing = `${letterSpacing}px`;
         text.style.wordSpacing = `${wordSpacing}px`;
         const { x, y, width, height } = text.getBBox();
         svg.setAttributeNS(null, 'viewBox', `${x} ${y} ${width} ${height}`);
     }
-
 
     comp.style.mixBlendMode = blendMode;
 
@@ -139,7 +147,7 @@ function updateText({
     stage.style.backgroundImage = /^https?|data|blob/.test(bgImage) ? `url(${bgImage})` : bgImage;
 }
 
-function setJustifyText({tj: justify, fs: size, lh: lineHeight}) {
+function setJustifyText({ tj: justify, fs: size, lh: lineHeight }) {
     const comp = $id('comp-1');
     const content = comp.querySelector('.content');
     const svg = content.querySelector('.main-svg');
@@ -149,19 +157,19 @@ function setJustifyText({tj: justify, fs: size, lh: lineHeight}) {
     const width = Math.max(...spans.map((s) => s.getComputedTextLength()));
 
     spans.forEach((s, index, list) => {
-        s.setAttributeNS(null, "textLength", width);
+        s.setAttributeNS(null, 'textLength', width);
 
         const ratio = mapRange(0, 1, 1, width / s.getComputedTextLength(), justify);
 
-        const fontSize = size * (ratio);
+        const fontSize = size * ratio;
 
         if (index === 0) {
-          list[0].setAttributeNS(null, "dy", fontSize * lineHeight);
+            list[0].setAttributeNS(null, 'dy', fontSize * lineHeight);
         }
 
-        list[index + 1]?.setAttributeNS(null, "dy", fontSize * lineHeight);
+        list[index + 1]?.setAttributeNS(null, 'dy', fontSize * lineHeight);
 
-        s.setAttributeNS(null, "font-size", fontSize);
+        s.setAttributeNS(null, 'font-size', fontSize);
     });
 
     const { x, y, height } = text.getBBox();
@@ -190,11 +198,10 @@ function updateMask({
 
     if (mediaItem === '@other') {
         const mediaSuffix = mediaOther.split('.').pop();
-        const mediaType = mediaSuffix === 'mp4' ? 'video' : 'image'
+        const mediaType = mediaSuffix === 'mp4' ? 'video' : 'image';
         setMedia(content, mediaOther, mediaType);
     } else {
         setMedia(content, ...mediaItem.split('|'));
-
     }
 
     use.setAttributeNS(null, 'href', `#${text.id}`);
@@ -329,9 +336,9 @@ function setPathSize({
     ta: align,
     td: dir,
 }) {
-    manualOffsetX = +manualOffsetX
-    manualOffsetY = +manualOffsetY
-    pathTextSpread = +pathTextSpread
+    manualOffsetX = +manualOffsetX;
+    manualOffsetY = +manualOffsetY;
+    pathTextSpread = +pathTextSpread;
 
     const d = $id(`${flipSide ? 'htap' : 'path'}-${pathIndex}`).getAttributeNS(null, 'd');
 
@@ -367,11 +374,11 @@ function setPathSize({
     const textLength = baseTextLength + (pathLength - baseTextLength) * pathTextSpread;
     const baseOffset =
         align === 'right' ? pathLength - textLength : align === 'center' ? (pathLength - textLength) / 2 : 0;
-        textPath.setAttribute('startOffset', baseOffset + manualOffsetX);
-        textPath.textLength.baseVal.value = textLength;
-        text.style.dominantBaseline = pathVerticalAlign;
-        text.style.baselineShift = manualOffsetY;
-        text.style.textAnchor = dir === 'rtl' ? 'end' : 'start';
+    textPath.setAttribute('startOffset', baseOffset + manualOffsetX);
+    textPath.textLength.baseVal.value = textLength;
+    text.style.dominantBaseline = pathVerticalAlign;
+    text.style.baselineShift = manualOffsetY;
+    text.style.textAnchor = dir === 'rtl' ? 'end' : 'start';
 }
 
 function setFormEvents(form) {
@@ -382,12 +389,12 @@ function setFormEvents(form) {
     [...$selectAll('[data-setting-change')]?.forEach((input) =>
         input.addEventListener('change', () => {
             throttledSubmit();
-        })
+        }),
     );
     [...$selectAll('[data-setting-input')]?.forEach((input) =>
         input.addEventListener('input', () => {
             throttledSubmit();
-        })
+        }),
     );
 
     form.addEventListener('submit', (e) => {
@@ -493,7 +500,7 @@ function setPathsList(paths) {
  * @param {ConfigData['fonts']} fonts
  */
 function loadWebFonts(fonts) {
-    const families = fonts.map(({ family, variants = ["400"] }) => `${family}:${variants}`);
+    const families = fonts.map(({ family, variants = ['400'] }) => `${family}:${variants}`);
     webfontloader.load({
         google: {
             families,
@@ -520,7 +527,7 @@ function onMove(event) {
     }
 
     const comp = $id('comp-1');
-    const {top, left, width, height} = comp.style;
+    const { top, left, width, height } = comp.style;
 
     form.x.value = parseInt(left, 10);
     form.y.value = parseInt(top, 10);
@@ -556,7 +563,7 @@ async function init() {
             container: 'stage',
             onMove: onMove,
             onEnd: onEnd,
-        })
+        }),
     );
 }
 

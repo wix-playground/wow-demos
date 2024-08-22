@@ -1,6 +1,6 @@
-import { effects, noise } from "kampos";
-import { loadImage, loadVideo } from "../utils/media-utils";
-import { EFFECT_NAMES } from "../constants";
+import { effects, noise } from 'kampos';
+import { loadImage, loadVideo } from '../utils/media-utils';
+import { EFFECT_NAMES } from '../constants';
 
 const mediaResolutionCache = new Map();
 async function resolveMediaFromPath(path: string) {
@@ -9,16 +9,16 @@ async function resolveMediaFromPath(path: string) {
         return mediaResolutionCache.get(path);
     }
 
-    const extension = path.split(".").pop().toLowerCase();
+    const extension = path.split('.').pop().toLowerCase();
     let resolvedValue;
 
     try {
-        if (["png", "jpg", "jpeg", "gif"].includes(extension)) {
+        if (['png', 'jpg', 'jpeg', 'gif'].includes(extension)) {
             resolvedValue = await loadImage(path);
-        } else if (["mp4", "webm", "ogg"].includes(extension)) {
+        } else if (['mp4', 'webm', 'ogg'].includes(extension)) {
             resolvedValue = await loadVideo(path);
-        } else if (path.startsWith("canvas")) {
-            console.log("resolving canvas vladd", path);
+        } else if (path.startsWith('canvas')) {
+            console.log('resolving canvas vladd', path);
             resolvedValue = document.getElementById(path);
         } else {
             // Fallback: Return the path as a string if it doesn't match expected extensions
@@ -36,7 +36,7 @@ async function resolveMediaFromPath(path: string) {
 }
 
 function hexToNormalizedRGBA(hex: string): number[] {
-    hex = hex.replace(/^#/, "");
+    hex = hex.replace(/^#/, '');
     let r,
         g,
         b,
@@ -51,13 +51,13 @@ function hexToNormalizedRGBA(hex: string): number[] {
         b = parseInt(hex.substring(4, 6), 16);
         a = parseInt(hex.substring(6, 8), 16) / 255;
     } else {
-        throw new Error("Invalid hex color format");
+        throw new Error('Invalid hex color format');
     }
     return [r / 255, g / 255, b / 255, a];
 }
 
-const effectConfigResolvers ={
-    [EFFECT_NAMES.displacement]: ({scaleX, scaleY, wrap, ...effectConfig}) => ({
+const effectConfigResolvers = {
+    [EFFECT_NAMES.displacement]: ({ scaleX, scaleY, wrap, ...effectConfig }) => ({
         ...effectConfig,
         wrap: effects.displacement[wrap],
         scale: {
@@ -65,7 +65,7 @@ const effectConfigResolvers ={
             y: scaleY,
         },
     }),
-    [EFFECT_NAMES.turbulence]: ({noise: noiseParam, frequencyX, frequencyY, output, ...effectConfig}) => ({
+    [EFFECT_NAMES.turbulence]: ({ noise: noiseParam, frequencyX, frequencyY, output, ...effectConfig }) => ({
         ...effectConfig,
         noise: noise[noiseParam],
         output: effects.turbulence[output],
@@ -78,24 +78,23 @@ const effectConfigResolvers ={
 function getEffectConfigResolver(effectName: string) {
     const fallbackResolver = (effectConfig) => effectConfig;
     return effectName in effectConfigResolvers ? effectConfigResolvers[effectName] : fallbackResolver;
-
 }
 
 export async function resolveConfig(effectName: string, config: any) {
     const effectConfigResolver = getEffectConfigResolver(effectName);
     const entries = await Promise.all(
         Object.entries(effectConfigResolver(config))
-            .filter(([_, value]) => value !== "none" && value !== "WIP")
+            .filter(([_, value]) => value !== 'none' && value !== 'WIP')
             .map(async ([key, value]) => {
-                if (typeof value === "string") {
-                    if (value.startsWith("#")) {
+                if (typeof value === 'string') {
+                    if (value.startsWith('#')) {
                         return [key, hexToNormalizedRGBA(value)];
                     }
                     const resolvedValue = await resolveMediaFromPath(value);
                     return [key, resolvedValue];
                 }
                 return [key, value];
-            })
+            }),
     );
 
     return Object.fromEntries(entries);
@@ -127,11 +126,11 @@ export function splitEffectConfigToInitialsAndSetters(effectName: string, effect
 export const onEffectApplied = (effect, effectName: string) => {
     const onEffectAppliedMapper = {
         alphaMask: () => {
-            effect.textures[0].update = true
+            effect.textures[0].update = true;
         },
         displacement: () => {
-            effect.textures[0].update = true
+            effect.textures[0].update = true;
         },
     };
     onEffectAppliedMapper[effectName]?.();
-}
+};
