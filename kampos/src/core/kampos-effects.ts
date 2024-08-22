@@ -1,4 +1,4 @@
-import { effects } from "kampos";
+import { effects, noise } from "kampos";
 import { loadImage, loadVideo } from "../utils/media-utils";
 
 const mediaResolutionCache = new Map();
@@ -61,6 +61,15 @@ const effectConfigResolvers ={
             y: scaleY,
         },
     }),
+    'turbulence': ({noise: noiseParam, frequencyX, frequencyY, output, ...effectConfig}) => ({
+        ...effectConfig,
+        noise: noise[noiseParam],
+        output: effects.turbulence[output],
+        frequency: {
+            x: frequencyX,
+            y: frequencyY,
+        },
+    }),
 };
 function getEffectConfigResolver(effectName: string) {
     const fallbackResolver = (effectConfig) => effectConfig;
@@ -92,6 +101,7 @@ const EffectsPropsHasToBeOnInit: Record<string, string[]> = {
     alphaMask: ['isLuminance'],
     blend: ['image'],
     displacement: ['wrap', 'scale'],
+    turbulence: ['noise', 'output'],
 };
 
 export function splitEffectConfigToInitialsAndSetters(effectName: string, effectConfig: any) {
@@ -116,9 +126,12 @@ export const onEffectApplied = (willBeAppliedEffects: any, effectName: string) =
             willBeAppliedEffects[effectName].textures[0].update = true
         },
         displacement: () => {
-            console.log("displacement effect applied");
             willBeAppliedEffects[effectName].textures[0].update = true
-        }
+        },
+        // turbulence: () => {
+        //     console.log("turbulence after effect applied");
+        //     willBeAppliedEffects[effectName].textures[0].update = true
+        // },
     };
     onEffectAppliedMapper[effectName]?.();
 }
