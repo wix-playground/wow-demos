@@ -1,5 +1,5 @@
 import { Kampos, effects } from "kampos";
-import { getVideoElement } from "../constants";
+import { EFFECT_NAMES, getVideoElement } from "../constants";
 import { initPane } from "./pane";
 import { getQueryValue, onStateChange, setState } from "../utils/state";
 import { resolveVideo } from "../utils/media-utils";
@@ -17,6 +17,15 @@ function getActiveEffects() {
     return Object.keys(effects).filter((effectName) => window.state.effects[effectName].active);
 }
 
+function initTurbulenceEffect(effect) {
+    const target = document.querySelector("#canvas");
+    window.kamposCanvas = new Kampos({
+        target,
+        effects: [effect],
+        noSource: true
+    });
+    window.kamposCanvas.play((time) => (effect.time = time * 2)); // TOOD: maybe configurable
+};
 
 async function initKampos() {
     const target = document.querySelector("#target");
@@ -25,13 +34,18 @@ async function initKampos() {
         const effectConfig = await resolveConfig(effectName, window.state.effects[effectName]);
         console.log(`[config] ${effectName}:`, effectConfig);
         const { initials, setters } = splitEffectConfigToInitialsAndSetters(effectName, effectConfig);
-        console.log('split',effectName, {initials, setters});
-        willBeAppliedEffects[effectName] = effects[effectName](initials);
-        Object.entries(setters).forEach(([key, value]) => {
-            willBeAppliedEffects[effectName][key] = value;
-        });
+        // console.log('split',effectName, {initials, setters});
+        const effect = effects[effectName](initials);
 
-        onEffectApplied(willBeAppliedEffects, effectName);
+        Object.entries(setters).forEach(([key, value]) => {
+            effect[key] = value;
+        });
+        onEffectApplied(effect, effectName);
+        if(effectName === EFFECT_NAMES.turbulence) {
+            initTurbulenceEffect(effect);
+            continue;
+        }
+        willBeAppliedEffects[effectName] = effect;
     }
     kamposInstance = new Kampos({
         target,
